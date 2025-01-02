@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/feature/authentication/register/view/personal_details.dart';
+import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
+import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_view.dart';
 import 'package:freedom_driver/feature/splash/splash_screen.dart';
@@ -19,6 +22,21 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case MainActivityScreen.routeName:
       return _pageBuilder(
         (_) => const MainActivityScreen(),
+        settings: settings,
+      );
+    case RegisterFormScreen.routeName:
+      return _pageBuilder(
+        (_) => const RegisterFormScreen(),
+        settings: settings,
+      );
+    case VerifyOtpScreen.routeName:
+      return _pageBuilder(
+        (_) => const VerifyOtpScreen(),
+        settings: settings,
+      );
+    case PersonalDetailScreen.routeName:
+      return _pageBuilder(
+        (_) => const PersonalDetailScreen(),
         settings: settings,
       );
     default:

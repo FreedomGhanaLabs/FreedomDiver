@@ -5,6 +5,11 @@ LinearGradient get gradient => const LinearGradient(
       end: Alignment.bottomRight,
       colors: [Color(0xffF59E0B), Color(0xffE61D2A)],
     );
+LinearGradient get greenGradient => const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xffF59E0B), Color(0xffC8E61D)],
+    );
 
 LinearGradient get locationSearchFillGradient => const LinearGradient(
       begin: Alignment.topLeft,

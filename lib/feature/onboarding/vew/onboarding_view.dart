@@ -118,7 +118,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                       FreedomButton(
                         height: 57.76.h,
                         useGradient: true,
-                        gradient: gradient,
+                        gradient: greenGradient,
                         borderRadius: BorderRadius.circular(13),
                         onPressed: () {},
                         buttonTitle: Text(

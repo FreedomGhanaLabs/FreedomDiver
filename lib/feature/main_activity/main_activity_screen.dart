@@ -61,10 +61,10 @@ class _MainActivityScreen extends StatelessWidget {
                     backgroundColor: Colors.white,
                     icon: state.currentIndex == index
                         ? SvgPicture.asset(
-                            'assets/images/nav_icon/active/${activeIconData['icon']}',
+                            'assets/nav/active_icon/${activeIconData['icon']}',
                           )
                         : SvgPicture.asset(
-                            'assets/images/nav_icon/inactive/${inActiveIconData['icon']}',
+                            'assets/nav/inactive_icon/${inActiveIconData['icon']}',
                           ),
                     label: state.currentIndex == index
                         ? activeIconData['label']

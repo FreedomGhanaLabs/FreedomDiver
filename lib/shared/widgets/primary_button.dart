@@ -91,7 +91,7 @@ class FreedomButton extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (leadingIcon.isNotEmpty)
-                      SvgPicture.asset('assets/images/$leadingIcon.svg'),
+                      SvgPicture.asset('assets/app_icons/$leadingIcon.svg'),
                     if (leadingIcon.isNotEmpty) const SizedBox(width: 8),
                     FittedBox(child: buttonTitle),
                   ],
