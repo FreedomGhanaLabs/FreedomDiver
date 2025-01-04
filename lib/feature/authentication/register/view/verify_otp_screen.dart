@@ -197,7 +197,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     useLoader: true,
                     borderRadius: BorderRadius.circular(10),
                     width: double.infinity,
-                    title: state?.isLoading == true ? 'Loading' : 'Verify',
+                    title: state.isLoading == true ? 'Loading' : 'Verify',
                     child: state.isLoading == true
                         ? const CircularProgressIndicator(
                             strokeWidth: 2,

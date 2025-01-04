@@ -48,3 +48,6 @@ Color get fillColor2 => const Color(0xA3FFFCF8);
 Color get hintTextColor => const Color(0xFFA6A39D);
 Color get darkGoldColor => const Color(0xffF59E0B);
 Color get greyColor => const Color(0x4CD9D9D9);
+Color get lightGreyColor => const Color(0x0CA6A6A6);
+Color get dropdownHintTextColor => const Color(0x99272727);
+Color get yellowGold => const Color(0xFFFFBA40);

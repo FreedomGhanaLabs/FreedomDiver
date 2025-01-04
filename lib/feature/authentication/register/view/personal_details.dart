@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/feature/kyc/view/vehicle_details_screen.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
@@ -184,7 +185,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                             emailKey.currentState!.validate()) {
                           Navigator.pushNamed(
                             context,
-                            MainActivityScreen.routeName,
+                            VehicleDetailsScreen.routeName,
                           );
                         }
                         context

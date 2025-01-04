@@ -23,7 +23,7 @@ class TextFieldFactory extends StatefulWidget {
     this.prefixText,
     this.focusNode,
     this.keyboardType,
-    this.initialBorderColor,
+    this.errorBorderColor,
     this.fieldActiveBorderColor,
     this.inputFormatters,
     this.enabledBorderColor,
@@ -65,7 +65,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -108,7 +108,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -145,7 +145,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -179,7 +179,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -218,7 +218,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -238,7 +238,7 @@ class TextFieldFactory extends StatefulWidget {
     Widget? prefixText,
     FocusNode? focusNode,
     TextInputType? keyboardType,
-    Color? initialBorderColor,
+    Color? errorBorderColor,
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
@@ -250,6 +250,7 @@ class TextFieldFactory extends StatefulWidget {
     int? maxLines,
     BorderRadius? focusedBorderRadius,
     Widget? suffixIcon,
+    Color? focusedBorderColor,
   }) =>
       TextFieldFactory(
         controller: controller,
@@ -261,7 +262,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: errorBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -273,6 +274,7 @@ class TextFieldFactory extends StatefulWidget {
         maxLines: maxLines,
         focusedBorderRadius: focusedBorderRadius,
         suffixIcon: suffixIcon,
+        focusedBorderColor: focusedBorderColor,
       );
   final TextEditingController controller;
   final Widget? suffixIcon;
@@ -290,7 +292,7 @@ class TextFieldFactory extends StatefulWidget {
   final Widget? prefixText;
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
-  final Color? initialBorderColor;
+  final Color? errorBorderColor;
   final Color? fieldActiveBorderColor;
   final List<TextInputFormatter>? inputFormatters;
   final Color? enabledBorderColor;
@@ -343,7 +345,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
         contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
         errorBorder: OutlineInputBorder(
           borderSide:
-              BorderSide(color: widget.initialBorderColor ?? Colors.purple),
+              BorderSide(color: widget.errorBorderColor ?? Colors.purple),
           borderRadius:
               widget.borderRadius ?? const BorderRadius.all(Radius.circular(5)),
         ),
