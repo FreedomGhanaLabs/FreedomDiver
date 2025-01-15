@@ -169,17 +169,20 @@ class BackgroundVerificationScreen extends StatelessWidget {
 }
 
 class SimpleButton extends StatelessWidget {
-  const SimpleButton({
-    required this.title,
-    super.key,
-    this.borderRadius = BorderRadius.zero,
-    this.backgroundColor,
-    this.onPressed,
-  });
+  const SimpleButton(
+      {required this.title,
+      super.key,
+      this.borderRadius = BorderRadius.zero,
+      this.backgroundColor,
+      this.onPressed,
+      this.padding,
+      this.textStyle});
   final String title;
   final Color? backgroundColor;
   final BorderRadiusGeometry borderRadius;
   final void Function()? onPressed;
+  final EdgeInsetsGeometry? padding;
+  final TextStyle? textStyle;
   @override
   Widget build(BuildContext context) {
     return TextButton(
@@ -189,19 +192,21 @@ class SimpleButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius,
         ),
-        padding: const EdgeInsets.only(
-          top: 18,
-          bottom: 17,
-        ),
+        padding: padding ??
+            const EdgeInsets.only(
+              top: 18,
+              bottom: 17,
+            ),
       ),
       child: Text(
         title,
         textAlign: TextAlign.center,
-        style: GoogleFonts.poppins(
-          color: Colors.white,
-          fontSize: 17.92,
-          fontWeight: FontWeight.w600,
-        ),
+        style: textStyle ??
+            GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 17.92,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }
