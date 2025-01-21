@@ -4,30 +4,51 @@ enum ActivityType { ride, delivery }
 
 enum ActivityStatus { pending, completed }
 
-sealed class HomeState extends Equatable {
-  const HomeState();
+enum RideStatus { initial, searching, found, accepted, declined }
 
-  @override
-  List<Object> get props => [];
-}
+class HomeState extends Equatable {
+  const HomeState({
+    this.activities = const [],
+    this.rideStatus = RideStatus.initial,
+  });
 
-final class HomeInitial extends HomeState {}
-
-final class HomeActivity extends HomeState {
-  const HomeActivity({this.activities = const []});
   final List<Activity> activities;
+  final RideStatus rideStatus;
+
+  HomeState copyWith({
+    List<Activity>? activities,
+    RideStatus? rideStatus,
+  }) {
+    return HomeState(
+      activities: activities ?? this.activities,
+      rideStatus: rideStatus ?? this.rideStatus,
+    );
+  }
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [activities, rideStatus];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HomeState &&
+          runtimeType == other.runtimeType &&
+          activities == other.activities &&
+          rideStatus == other.rideStatus;
+
+  @override
+  int get hashCode => activities.hashCode ^ rideStatus.hashCode;
 }
 
 class Activity {
-  const Activity(
-      {required this.title,
-      required this.type,
-      required this.image,
-      required this.pickUpLocation,
-      required this.destination,
-      required this.status});
+  const Activity({
+    required this.title,
+    required this.type,
+    required this.image,
+    required this.pickUpLocation,
+    required this.destination,
+    required this.status,
+  });
   final String title;
   final ActivityType type;
   final String image;

@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
+import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/l10n/l10n.dart';
 import 'package:freedom_driver/router/router.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -19,8 +22,10 @@ class App extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => RegistrationFormCubit()),
           BlocProvider(create: (_) => VerifyOtpCubit()),
+          BlocProvider(create: (_) => HomeCubit()),
         ],
-        child: const MaterialApp(
+        child: MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
