@@ -11,6 +11,7 @@ import 'package:freedom_driver/feature/home/view/widgets/driver_total_earnings.d
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_order.dart';
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_score.dart';
 import 'package:freedom_driver/feature/home/view/widgets/estimated_reach_time.dart';
+import 'package:freedom_driver/feature/home/view/widgets/rider_time_line.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -169,7 +170,7 @@ class _HomeScreen extends StatelessWidget {
                         ),
                       )
                     else if (state.rideStatus == RideStatus.accepted)
-                      EstimatedReachTime(),
+                      const EstimatedReachTime(),
                     const VSpace(16),
                     Row(
                       children: [
@@ -225,11 +226,12 @@ class _HomeScreen extends StatelessWidget {
                         ),
                         const HSpace(28),
                         Expanded(
-                          child: BlocConsumer<HomeCubit, HomeState>(
-                            listener: (context, state) {},
+                          child: BlocBuilder<HomeCubit, HomeState>(
                             builder: (context, state) {
                               return SimpleButton(
-                                title: 'Search Another Area',
+                                title: state.rideStatus == RideStatus.accepted
+                                    ? 'Navigate'
+                                    : 'Search Another Area',
                                 onPressed: () {},
                                 backgroundColor: const Color(0xEDABABB1),
                                 padding: const EdgeInsets.only(
@@ -280,6 +282,16 @@ class _HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              const Column(
+                children: [
+                  VSpace(15),
+                  RiderTimeLine(
+                    activityType: ActivityType.delivery,
+                    destinationDetails: 'Ghana,Kumasi',
+                    pickUpDetails: 'Chale, Kumasi',
+                  ),
+                ],
+              )
             ],
           );
         },

@@ -56,3 +56,22 @@ class Activity {
   final String destination;
   final ActivityStatus status;
 }
+
+List<Activity> historyList = [
+  const Activity(
+    title: 'Ride',
+    type: ActivityType.ride,
+    image: 'assets/app_images/rider2.png',
+    pickUpLocation: 'Pickup Location',
+    destination: 'Destination',
+    status: ActivityStatus.pending,
+  ),
+  const Activity(
+    title: 'Delivery',
+    type: ActivityType.delivery,
+    image: 'assets/app_images/rider2.png',
+    pickUpLocation: 'Pickup Location',
+    destination: 'Destination',
+    status: ActivityStatus.completed,
+  ),
+];

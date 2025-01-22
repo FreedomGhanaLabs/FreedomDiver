@@ -169,26 +169,32 @@ class BackgroundVerificationScreen extends StatelessWidget {
 }
 
 class SimpleButton extends StatelessWidget {
-  const SimpleButton(
-      {required this.title,
-      super.key,
-      this.borderRadius = BorderRadius.zero,
-      this.backgroundColor,
-      this.onPressed,
-      this.padding,
-      this.textStyle});
+  const SimpleButton({
+    required this.title,
+    super.key,
+    this.borderRadius = BorderRadius.zero,
+    this.backgroundColor,
+    this.onPressed,
+    this.padding,
+    this.textStyle,
+    this.child,
+    this.materialTapTargetSize,
+  });
   final String title;
   final Color? backgroundColor;
   final BorderRadiusGeometry borderRadius;
   final void Function()? onPressed;
   final EdgeInsetsGeometry? padding;
   final TextStyle? textStyle;
+  final Widget? child;
+  final MaterialTapTargetSize? materialTapTargetSize;
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
         backgroundColor: backgroundColor ?? Colors.black,
+        tapTargetSize: materialTapTargetSize,
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius,
         ),
@@ -198,16 +204,17 @@ class SimpleButton extends StatelessWidget {
               bottom: 17,
             ),
       ),
-      child: Text(
-        title,
-        textAlign: TextAlign.center,
-        style: textStyle ??
-            GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 17.92,
-              fontWeight: FontWeight.w600,
-            ),
-      ),
+      child: child ??
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: textStyle ??
+                GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 17.92,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
     );
   }
 }

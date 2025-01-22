@@ -19,6 +19,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.16
   google_fonts: ^6.2.1
+  google_maps_flutter: ^2.10.0
   gradient_borders: ^1.0.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
