@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freedom_driver/feature/authentication/register/view/personal_details.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/feature/home/view/inappcall_map.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/feature/kyc/view/criminal_background_check_screen.dart';
 import 'package:freedom_driver/feature/kyc/view/vehicle_details_screen.dart';
@@ -55,6 +56,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case CriminalBackgroundCheckScreen.routeName:
       return _pageBuilder(
         (_) => const CriminalBackgroundCheckScreen(),
+        settings: settings,
+      );
+    case InAppCallMap.routeName:
+      return _pageBuilder(
+        (_) => const InAppCallMap(),
         settings: settings,
       );
     default:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:freedom_driver/feature/earnings/view/earnings_screen.dart';
 import 'package:freedom_driver/feature/home/view/home_screen.dart';
 import 'package:freedom_driver/feature/main_activity/cubit/main_activity_cubit.dart';
 
@@ -82,7 +83,7 @@ class _MainActivityScreen extends StatelessWidget {
 
 List<Widget> _pages = [
   const HomeScreen(),
-  const HomeScreen(),
+  const EarningsScreen(),
   const HomeScreen(),
   const HomeScreen(),
 ];

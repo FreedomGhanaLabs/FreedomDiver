@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
+import 'package:freedom_driver/feature/home/view/inappcall_map.dart';
 import 'package:freedom_driver/feature/home/view/widgets/build_diaglog.dart';
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_earnings.dart';
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_order.dart';
@@ -28,7 +29,16 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeScreen extends StatelessWidget {
+class _HomeScreen extends StatefulWidget {
+  @override
+  State<_HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<_HomeScreen> {
+  void navigateToInAppCallAndMap() {
+    Navigator.of(context).pushNamed('/inAppCallAndMap');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,7 +242,12 @@ class _HomeScreen extends StatelessWidget {
                                 title: state.rideStatus == RideStatus.accepted
                                     ? 'Navigate'
                                     : 'Search Another Area',
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (state.rideStatus == RideStatus.accepted) {
+                                    Navigator.of(context)
+                                        .pushNamed(InAppCallMap.routeName);
+                                  }
+                                },
                                 backgroundColor: const Color(0xEDABABB1),
                                 padding: const EdgeInsets.only(
                                   top: 6.93,
