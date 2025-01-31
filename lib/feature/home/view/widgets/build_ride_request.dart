@@ -23,14 +23,15 @@ List<Widget> buildCustomerDetail() {
       child: Padding(
         padding: const EdgeInsets.only(
           top: 13.93,
-          left: 14,
-          right: 14,
+          left: 13.2,
+          right: 13.2,
           bottom: 13.93,
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+
+            crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (index == 0)
             Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'Customer Name',
@@ -60,9 +61,12 @@ List<Widget> buildCustomerDetail() {
                   style: rideRequestTitleTextStyle,
                 ),
                 const Spacer(),
-                Text(
-                  '${rideRequest['destination']}',
-                  style: rideRequestDetailTextStyle,
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    '${rideRequest['destination']}',
+                    style: rideRequestDetailTextStyle,
+                  ),
                 ),
               ],
             ),

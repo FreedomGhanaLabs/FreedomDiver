@@ -10,17 +10,13 @@ class DriverTotalOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 184,
-      padding: const EdgeInsets.only(
-        left: 17,
-        top: 9,
-        bottom: 13,
-      ),
+      padding: const EdgeInsets.only(left: 17, top: 9, bottom: 13, right: 34),
+      width: double.infinity,
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Colors.black.withOpacity(0.119),
+            color: Colors.black.withValues(alpha: 0.119),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -32,8 +28,6 @@ class DriverTotalOrder extends StatelessWidget {
             color: Colors.black,
             fontSize: 18.66,
             fontWeight: FontWeight.w400,
-            height: 1.29,
-            letterSpacing: -0.45,
           ),
         ),
         const VSpace(5),

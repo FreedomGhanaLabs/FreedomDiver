@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
@@ -29,232 +30,235 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          const GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: sanFrancisco,
-              zoom: 13,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent,),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: sanFrancisco,
+                zoom: 13,
+              ),
             ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top,
-            left: 25,
-            child: const DecoratedBackButton(),
-          ),
-          CustomBottomSheet(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const VSpace(41),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 41,
-                        height: 41,
-                        decoration: const ShapeDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'assets/app_images/client_holder_image.png'),
-                            fit: BoxFit.fill,
+            Positioned(
+              top: MediaQuery.of(context).padding.top,
+              left: 25,
+              child: const DecoratedBackButton(),
+            ),
+            CustomBottomSheet(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const VSpace(41),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 16),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 41,
+                          height: 41,
+                          decoration: const ShapeDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/app_images/client_holder_image.png'),
+                              fit: BoxFit.fill,
+                            ),
+                            shape: OvalBorder(),
                           ),
-                          shape: OvalBorder(),
                         ),
-                      ),
-                      const HSpace(18),
-                      Text(
-                        'Dr Ben Larry Cage',
-                        style: GoogleFonts.poppins(
-                          color: Colors.black,
-                          fontSize: 15.99,
-                          fontWeight: FontWeight.w500,
+                        const HSpace(18),
+                        Text(
+                          'Dr Ben Larry Cage',
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 15.99,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
+                        const Spacer(),
+                        const TypeCapsule(),
+                      ],
+                    ),
+                  ),
+                  const VSpace(21),
+                  Container(
+                    width: 424,
+                    height: 2,
+                    decoration: const BoxDecoration(color: Color(0x72D9D9D9)),
+                  ),
+                  const VSpace(14),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 14),
+                    child: Text(
+                      'A passenger is waiting for you',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 11.59,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const Spacer(),
-                      const TypeCapsule(),
+                    ),
+                  ),
+                  const VSpace(19),
+                  // EqualSignCrossContainer(),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Column(
+                        children: [
+                          PassengerDestinationDetailBox(),
+                          VSpace(38),
+                          PassengerDestinationDetailBox(),
+                        ],
+                      ),
+                      SvgPicture.asset(
+                        'assets/app_icons/conversion.svg',
+                      ),
                     ],
                   ),
-                ),
-                const VSpace(21),
-                Container(
-                  width: 424,
-                  height: 2,
-                  decoration: const BoxDecoration(color: Color(0x72D9D9D9)),
-                ),
-                const VSpace(14),
-                Padding(
-                  padding: const EdgeInsets.only(left: 14),
-                  child: Text(
-                    'A passenger is waiting for you',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 11.59,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const VSpace(19),
-                // EqualSignCrossContainer(),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Column(
-                      children: [
-                        PassengerDestinationDetailBox(),
-                        VSpace(38),
-                        PassengerDestinationDetailBox(),
-                      ],
-                    ),
-                    SvgPicture.asset(
-                      'assets/app_icons/conversion.svg',
-                    ),
-                  ],
-                ),
-                const VSpace(29),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          'Price',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5600000023841858),
-                            fontSize: 9.15,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const VSpace(10),
-                        const Text(
-                          '\$20.5',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13.72,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          'EXpected Distance  Covered',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5600000023841858),
-                            fontSize: 9.15,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const VSpace(10),
-                        const Text(
-                          '40.5KM',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13.72,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          'Avg.TIme',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5600000023841858),
-                            fontSize: 9.15,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const VSpace(10),
-                        const Text(
-                          '30:00PM',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13.72,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                const VSpace(37),
-                Padding(
-                  padding: const EdgeInsets.only(left: 23),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  const VSpace(29),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      CustomDropDown(
-                        items: const <String>['In-App Call', 'Video Call'],
-                        initialValue: 'In-App Call',
-                        onChanged: (i) {},
-                      ),
-                      const HSpace(30),
-                      Container(
-                        margin: const EdgeInsets.only(right: 25),
-                        alignment: Alignment.center,
-                        width: 139,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: GradientBoxBorder(gradient: gradient),
-                        ),
-                        child: ShaderMask(
-                          shaderCallback: (bounds) => gradient.createShader(
-                            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                          ),
-                          child: Text(
-                            'Message',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 15.99,
-                              fontWeight: FontWeight.w500,
+                      Column(
+                        children: [
+                          Text(
+                            'Price',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5600000023841858),
+                              fontSize: 9.15,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-                        ),
+                          const VSpace(10),
+                          const Text(
+                            '\$20.5',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13.72,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            'EXpected Distance  Covered',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5600000023841858),
+                              fontSize: 9.15,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const VSpace(10),
+                          const Text(
+                            '40.5KM',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13.72,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            'Avg.TIme',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5600000023841858),
+                              fontSize: 9.15,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const VSpace(10),
+                          const Text(
+                            '30:00PM',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13.72,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        ],
                       )
                     ],
                   ),
-                ),
-                const VSpace(18),
-                const CustomDivider(),
-                const VSpace(20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 23),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: SimpleButton(
-                      title: '',
-                      onPressed: () {},
-                      borderRadius: BorderRadius.circular(5),
-                      padding: const EdgeInsets.fromLTRB(0, 13, 0, 13),
-                      backgroundColor: const Color(0xFFD47F00),
-                      child: Text(
-                        'Waiting',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 15.99,
-                          fontWeight: FontWeight.w500,
+                  const VSpace(37),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 23),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomDropDown(
+                          items: const <String>['In-App Call', 'Video Call'],
+                          initialValue: 'In-App Call',
+                          onChanged: (i) {},
+                        ),
+                        const HSpace(30),
+                        Container(
+                          margin: const EdgeInsets.only(right: 25),
+                          alignment: Alignment.center,
+                          width: 139,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: GradientBoxBorder(gradient: gradient),
+                          ),
+                          child: ShaderMask(
+                            shaderCallback: (bounds) => gradient.createShader(
+                              Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                            ),
+                            child: Text(
+                              'Message',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 15.99,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const VSpace(18),
+                  const CustomDivider(),
+                  const VSpace(20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 23),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: SimpleButton(
+                        title: '',
+                        onPressed: () {},
+                        borderRadius: BorderRadius.circular(5),
+                        padding: const EdgeInsets.fromLTRB(0, 13, 0, 13),
+                        backgroundColor: const Color(0xFFD47F00),
+                        child: Text(
+                          'Waiting',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 15.99,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const VSpace(20),
-              ],
+                  const VSpace(20),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -11,8 +11,61 @@ class DriverTotalScore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 184,
-      padding: const EdgeInsets.only(left: 17, top: 9, bottom: 13),
+      padding: const EdgeInsets.only(left: 17, top: 9, bottom: 12, right: 34),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.black.withOpacity(0.119),
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Driver Score',
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: 18.66,
+              fontWeight: FontWeight.w400,
+              height: 1.29,
+              letterSpacing: -0.45,
+            ),
+          ),
+          Row(
+            children: [
+              SvgPicture.asset('assets/app_icons/driver_score_icon.svg'),
+              const HSpace(9),
+              Text(
+                '200',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 16.82,
+                  fontWeight: FontWeight.w600,
+                  height: 1.29,
+                  letterSpacing: -0.40,
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class EarningsTotalScore extends StatelessWidget {
+  const EarningsTotalScore({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 17, top: 9, bottom: 12, right: 34),
+      height: 71,
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(

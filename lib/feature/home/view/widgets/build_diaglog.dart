@@ -74,36 +74,29 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                           color: Colors.white,
                           fontSize: 16.51,
                         ),
-                        padding: const EdgeInsets.only(
-                          left: 37,
-                          right: 37,
-                          top: 9.5,
-                          bottom: 9.5,
-                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 9.5),
                       ),
                     ),
                     const HSpace(20),
                     Expanded(
-                        child: SimpleButton(
-                            title: 'Accept',
-                            textStyle: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                            onPressed: () {
-                              context
-                                  .read<HomeCubit>()
-                                  .setRideAccepted(isAccepted: true);
-                              Navigator.of(context).pop();
-                            },
-                            backgroundColor: thickFillColor,
-                            borderRadius: BorderRadius.circular(6.90),
-                            padding: const EdgeInsets.only(
-                              left: 37,
-                              right: 37,
-                              top: 9.5,
-                              bottom: 9.6,
-                            ))),
+                      child: SimpleButton(
+                        title: 'Accept',
+                        textStyle: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        onPressed: () {
+                          context
+                              .read<HomeCubit>()
+                              .setRideAccepted(isAccepted: true);
+                          Navigator.of(context).pop();
+                        },
+                        backgroundColor: thickFillColor,
+                        borderRadius: BorderRadius.circular(6.90),
+                        padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 9.5)
+                      ),
+                    ),
                   ],
                 ),
               ],
