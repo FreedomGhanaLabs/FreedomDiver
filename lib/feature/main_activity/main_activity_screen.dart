@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/feature/earnings/view/earnings_screen.dart';
 import 'package:freedom_driver/feature/home/view/home_screen.dart';
 import 'package:freedom_driver/feature/main_activity/cubit/main_activity_cubit.dart';
+import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
+import 'package:freedom_driver/feature/rides/view/rides_screen.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
@@ -84,8 +86,8 @@ class _MainActivityScreen extends StatelessWidget {
 List<Widget> _pages = [
   const HomeScreen(),
   const EarningsScreen(),
-  const HomeScreen(),
-  const HomeScreen(),
+  const RidesScreen(),
+  const ProfileScreen(),
 ];
 
 List<Map<String, String>> _itemDetailsActive = [

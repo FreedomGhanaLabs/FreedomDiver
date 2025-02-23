@@ -8,12 +8,13 @@ class EarningsBanner extends StatelessWidget {
     required this.title,
     required this.child,
     required this.subtitle,
-    required this.svgImage,
+    required this.child2,
+
   });
   final Widget child;
   final String title;
   final String subtitle;
-  final String svgImage;
+  final Widget child2;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,10 +22,11 @@ class EarningsBanner extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment(0.99, 0.14),
-          end: Alignment(-0.99, -0.14),
+        gradient:  const LinearGradient(
+          begin: Alignment(-2.6, 0.72),
+          end: Alignment(0.99, 0.05),
           colors: [Color(0x00F6AE35), Color(0xF6FBDCA7), Colors.white],
+          stops: [0.1, 0.58, 0.7],
         ),
         shape: RoundedRectangleBorder(
           side: BorderSide(
@@ -63,7 +65,7 @@ class EarningsBanner extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          SvgPicture.asset(svgImage),
+         child2,
         ],
       ),
     );

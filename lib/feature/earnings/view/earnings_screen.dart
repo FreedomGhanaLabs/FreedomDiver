@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:freedom_driver/feature/earnings/view/driver_score_details_screen.dart';
+import 'package:freedom_driver/feature/earnings/view/wallet_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/earnings_background_widget.dart';
 import 'package:freedom_driver/feature/earnings/widgets/earnings_banner.dart';
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_earnings.dart';
@@ -66,7 +68,13 @@ class _EarningsScreenState extends State<EarningsScreen> {
                           Expanded(
                             child: Column(
                               children: [
-                                const DriverTotalScore(),
+                                GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        DriverScoreDetailsScreen.routeName,
+                                      );
+                                    },
+                                    child: const DriverTotalScore()),
                                 12.verticalSpace,
                                 const DriverTotalOrder(),
                               ],
@@ -146,7 +154,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
                               const VSpace(8),
                               SimpleButton(
                                 title: '',
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(WalletScreen.routeName);
+                                },
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 19, vertical: 12),
                                 borderRadius: BorderRadius.circular(6),
@@ -239,14 +250,17 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         ],
                       ),
                       const VSpace(15),
-                       EarningsBanner(
+                      EarningsBanner(
                         title: 'Earn C 5,000 per invite',
-                        subtitle: 'Invite your friends and family to ride with GofreedomApp', svgImage: 'assets/app_icons/3d_tag.svg',
+                        subtitle:
+                            'Invite your friends and family to ride with GofreedomApp',
+                        child2: SvgPicture.asset('assets/app_icons/3d_tag.svg'),
                         child: TextButton(
                           onPressed: () {},
                           style: TextButton.styleFrom(
                               backgroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(horizontal: 40),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 40),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(3.47))),
                           child: Text(
@@ -260,28 +274,27 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         ),
                       ),
                       const VSpace(12),
-                      const EarningsBanner(
-                        title: 'Daily Earnings Breakdown',
-                        subtitle: 'Invite your friends and family to ride with GofreedomApp', svgImage: 'assets/app_icons/stats.svg',
-                        child: SizedBox(
-
-                          child: Row(
-                            children: [
-                              Text(
-                                'Monday: ₵80.00',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 11.77,
-
-                                  fontWeight: FontWeight.w500,
-
+                      EarningsBanner(
+                          title: 'Daily Earnings Breakdown',
+                          subtitle:
+                              'Invite your friends and family to ride with GofreedomApp',
+                          child2:
+                              SvgPicture.asset('assets/app_icons/stats.svg'),
+                          child: const SizedBox(
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Monday: ₵80.00',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 11.77,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                              Icon(Icons.keyboard_arrow_down_sharp)
-                            ],
-                          ),
-                        )
-                        ),
+                                Icon(Icons.keyboard_arrow_down_sharp)
+                              ],
+                            ),
+                          )),
                       const VSpace(41)
                     ],
                   ),
@@ -518,5 +531,3 @@ class DashboardContainer extends StatelessWidget {
     );
   }
 }
-
-
