@@ -205,15 +205,6 @@ class _ScheduledRidesState extends State<ScheduledRides> {
       width: 87,
       color: Colors.red,
     );
-    // ListView.builder(
-    //         itemCount: 2,
-    //         itemBuilder: (context, index) {
-    //           return
-    //         });
-    // Expanded(
-    //     child:
-    //     )
-    // );
   }
 }
 

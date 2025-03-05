@@ -10,7 +10,7 @@ class EarningsBackgroundWidget extends StatelessWidget {
         Container(
           height: MediaQuery.of(context).size.height * 0.4,
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/app_images/decorated_scaffold.png'),
               fit: BoxFit.cover,
