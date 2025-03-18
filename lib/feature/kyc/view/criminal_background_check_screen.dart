@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
@@ -73,7 +75,8 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
               child: SimpleButton(
                 title: 'Submit for Background Check',
                 onPressed: () {
-                  Navigator.pushNamed(context, MainActivityScreen.routeName);
+                  context.read<RegistrationFormCubit>().registerDrivers();
+                  // Navigator.pushNamed(context, MainActivityScreen.routeName);
                 },
                 backgroundColor: Colors.black,
                 borderRadius: BorderRadius.circular(7),

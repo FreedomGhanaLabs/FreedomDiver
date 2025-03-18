@@ -22,3 +22,5 @@ class NotFoundException extends NetworkException {
 class InternalServerErrorException extends NetworkException {
   InternalServerErrorException(super.message);
 }
+
+

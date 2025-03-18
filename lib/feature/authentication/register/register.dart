@@ -33,6 +33,7 @@ class TextFieldFactory extends StatefulWidget {
     this.borderRadius,
     this.enabledBorderRadius,
     this.focusedBorderRadius,
+    this.obscureText,
   });
   factory TextFieldFactory.name({
     required TextEditingController controller,
@@ -134,6 +135,9 @@ class TextFieldFactory extends StatefulWidget {
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
+    String? hintText,
+    Widget? suffixIcon,
+    bool? obscureText,
   }) =>
       TextFieldFactory(
         controller: controller,
@@ -149,6 +153,9 @@ class TextFieldFactory extends StatefulWidget {
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
+        hinText: hintText,
+        suffixIcon: suffixIcon,
+        obscureText: obscureText,
       );
   factory TextFieldFactory.email({
     required TextEditingController controller,
@@ -302,6 +309,7 @@ class TextFieldFactory extends StatefulWidget {
   final BorderRadius? borderRadius;
   final BorderRadius? enabledBorderRadius;
   final BorderRadius? focusedBorderRadius;
+  final bool? obscureText;
 
   @override
   State<TextFieldFactory> createState() => _TextFieldFactoryState();
@@ -321,6 +329,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
       maxLines: widget.maxLines ?? 1,
       cursorColor: Colors.black,
       onChanged: widget.onChanged,
+      obscureText: widget.obscureText ?? false,
       style: widget.fontStyle ??
           GoogleFonts.poppins(
             fontSize: 12.sp,

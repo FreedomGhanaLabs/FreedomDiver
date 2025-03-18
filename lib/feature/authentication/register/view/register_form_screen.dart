@@ -2,8 +2,9 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
+import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
+import 'package:freedom_driver/feature/kyc/view/vehicle_details_screen.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -167,7 +168,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         context
                             .read<RegistrationFormCubit>()
                             .setPhoneNumber(phoneNumber);
-                        Navigator.pushNamed(context, '/verify_otp');
+                        Navigator.pushNamed(
+                            context, VehicleDetailsScreen.routeName);
+                        context
+                            .read<RegistrationFormCubit>()
+                            .setUserDetails(phoneNumber: phoneController.text);
                       }
                     },
                   ),
