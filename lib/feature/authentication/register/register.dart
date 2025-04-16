@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class TextFieldFactory extends StatefulWidget {
   const TextFieldFactory({
-    super.key,
     required this.controller,
+    super.key,
     this.suffixIcon,
     this.onChanged,
     this.hinText,
@@ -309,7 +309,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      inputFormatters: [],
+      inputFormatters: const [],
       controller: widget.controller,
       keyboardType: widget.keyboardType ?? TextInputType.text,
       textAlign: widget.textAlign ?? TextAlign.start,

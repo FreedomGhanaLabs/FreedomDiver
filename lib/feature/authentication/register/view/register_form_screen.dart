@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
+import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -72,7 +73,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   child: Text(
                     'Enter your phone number',
                     style: GoogleFonts.poppins(
-                        fontSize: 15.6, fontWeight: FontWeight.w500),
+                      fontSize: 15.6,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 const VSpace(7),
@@ -121,7 +124,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                   left:
                                       MediaQuery.of(context).size.width * 0.11,
                                   child: SvgPicture.asset(
-                                      'assets/app_icons/drop_down.svg'),
+                                    'assets/app_icons/drop_down.svg',
+                                  ),
                                 ),
                               ],
                             ),
@@ -154,20 +158,33 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     backGroundColor: Colors.black,
                     borderRadius: BorderRadius.circular(7),
                     width: double.infinity,
+                    useLoader: true,
                     title: 'Continue',
-                    buttonTitle: Text('Continue',
-                        style: GoogleFonts.poppins(
-                          fontSize: 17.4,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        )),
+                    buttonTitle: Text(
+                      'Continue',
+                      style: GoogleFonts.poppins(
+                        fontSize: 17.4,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     onPressed: () {
                       if (fromKey.currentState!.validate()) {
+                        final apiController = ApiController('login');
                         final phoneNumber = getFullPhoneNumber();
                         context
                             .read<RegistrationFormCubit>()
                             .setPhoneNumber(phoneNumber);
-                        Navigator.pushNamed(context, '/verify_otp');
+
+                        apiController.post(
+                          context,
+                          'phone/request',
+                          {'phone': phoneNumber},
+                          (success, res) {
+                            debugPrint(phoneNumber);
+                          },
+                        );
+                        // Navigator.pushNamed(context, '/verify_otp');
                       }
                     },
                   ),
@@ -193,8 +210,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                       height: 7,
                       width: 167,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: colorGrey),
+                        borderRadius: BorderRadius.circular(100),
+                        color: colorGrey,
+                      ),
                     ),
                   ],
                 ),
@@ -206,11 +224,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     leadingIcon: 'apple_icon',
                     borderRadius: BorderRadius.circular(7),
                     title: 'Login with Apple',
-                    buttonTitle: Text('Login with Apple',
-                        style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black)),
+                    buttonTitle: Text(
+                      'Login with Apple',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
                     titleColor: Colors.black,
                     width: double.infinity,
                     fontSize: 16,
@@ -224,11 +245,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     backGroundColor: socialLoginColor,
                     leadingIcon: 'google_icon',
                     borderRadius: BorderRadius.circular(7),
-                    buttonTitle: Text('Login with Google',
-                        style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black)),
+                    buttonTitle: Text(
+                      'Login with Google',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
                     titleColor: Colors.black,
                     fontSize: 16,
                     width: double.infinity,
@@ -257,11 +281,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                       child: Text(
                         'Already have an account?',
                         style: GoogleFonts.poppins(
-                            fontSize: 17.41, fontWeight: FontWeight.w500),
+                          fontSize: 17.41,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           );
