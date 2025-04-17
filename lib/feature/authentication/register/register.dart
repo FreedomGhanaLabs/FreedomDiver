@@ -358,7 +358,8 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
             errorBorder: OutlineInputBorder(
               borderSide:
                   BorderSide(
-                  color: widget.initialBorderColor ?? Colors.grey.shade400),
+                color: widget.initialBorderColor ?? Colors.grey.shade400,
+              ),
               borderRadius: widget.borderRadius ??
                   const BorderRadius.all(Radius.circular(5)),
             ),
