@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
+import 'package:freedom_driver/shared/api/api_controller.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -56,6 +59,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     });
   }
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final formCubit = BlocProvider.of<RegistrationFormCubit>(context);
@@ -64,24 +69,20 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       body: BlocConsumer<VerifyOtpCubit, VerifyOtpState>(
         listener: (context, state) {
           if (state.isVerified) {
-            Navigator.pushNamed(context, '/personal_details');
+            Navigator.pushNamed(context, LoginFormScreen.routeName);
           }
         },
         builder: (context, state) {
           return SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
+              padding: const EdgeInsets.symmetric(
+                horizontal: whiteSpace,
+                vertical: smallWhiteSpace,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const DecoratedBackButton(),
-                  ),
+                  const DecoratedBackButton(),
                   const VSpace(35.45),
                   Text(
                     'Enter Code',
@@ -94,15 +95,15 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                   Text(
                     'An SMS code was sent to',
                     style: GoogleFonts.poppins(
-                      fontSize: 17.67,
+                      fontSize: paragraphText,
                       color: Colors.black.withAlpha(127),
                     ),
                   ),
-                  const VSpace(5.3),
+                  const VSpace(extraSmallWhiteSpace),
                   Text(
                     '${formCubit.state.email}',
                     style: GoogleFonts.poppins(
-                      fontSize: 19.5,
+                      fontSize: normalText,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
@@ -196,16 +197,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                   const VSpace(21),
                   FreedomButton(
                     backGroundColor: Colors.black,
-                    useLoader: true,
                     borderRadius: BorderRadius.circular(10),
                     width: double.infinity,
-                    title: state.isLoading == true ? 'Loading' : 'Verify',
-                    child: state.isLoading == true
-                        ? const CircularProgressIndicator(
-                            strokeWidth: 2,
-                          )
-                        : null,
-                    onPressed: () => _onVerifyPressed(context, state),
+                    title: isLoading ? 'Verifying' : 'Verify',
+                    onPressed: () => _onVerifyPressed(context, formCubit),
                   ),
                 ],
               ),
@@ -224,14 +219,32 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     super.dispose();
   }
 
-  void _onVerifyPressed(BuildContext context, VerifyOtpState state) {
-    log('Loading state: ${state.isLoading}');
-
+  void _onVerifyPressed(BuildContext context, RegistrationFormCubit formCubit) {
+    final apiController = ApiController('auth');
     if (_otpFormKey.currentState!.validate()) {
-      context.read<VerifyOtpCubit>().verifyOtp(_otpController.text);
-      // Log states after the verify action
-      log('Verification in progress...');
-      log('isVerified: ${state.isVerified}, isLoading: ${state.isLoading}');
+      // context.read<VerifyOtpCubit>().verifyOtp(_otpController.text);
+      setState(() {
+        isLoading = true;
+      });
+      apiController.post(
+        context,
+        'verify-registration',
+        {
+          'email': formCubit.state.email,
+          'verificationCode': _otpController.text.trim(),
+        },
+        (success, data) {
+          setState(() {
+            isLoading = false;
+          });
+          if (success) {
+            Navigator.pushReplacementNamed(
+              context,
+              LoginFormScreen.routeName,
+            );
+          }
+        },
+      );
     }
   }
 }
@@ -244,6 +257,9 @@ class DecoratedBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+      },
       child: Container(
         height: 38.09,
         width: 38.09,
@@ -254,7 +270,6 @@ class DecoratedBackButton extends StatelessWidget {
           child: SvgPicture.asset('assets/app_icons/back_button.svg'),
         ),
       ),
-      onTap: () => Navigator.pop(context),
     );
   }
 }

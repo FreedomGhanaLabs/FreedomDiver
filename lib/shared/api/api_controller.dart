@@ -43,14 +43,16 @@ class ApiController {
     String endpoint,
     Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
-    bool showToast = true,
+    bool shouldShowToast = true,
   }) async {
     debugPrint(jsonEncode(data));
+    debugPrint('$baseUrl$endpoint');
     try {
       final response = await _dio.post(endpoint, data: jsonEncode(data));
+      debugPrint('${response.requestOptions}');
       final successMessage = response.data['message'].toString();
-      if (showToast && successMessage.isNotEmpty) {
-        _showToast(
+      if (shouldShowToast && successMessage.isNotEmpty) {
+        showToast(
           context,
           'Success',
           successMessage,
@@ -60,9 +62,9 @@ class ApiController {
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
-      debugPrint(msg);
-      if (showToast && msg.isNotEmpty) {
-        _showToast(context, 'Error', msg, ContentType.failure);
+      debugPrint('msg:$msg');
+      if (shouldShowToast && msg.isNotEmpty) {
+        showToast(context, 'Error', msg, ContentType.failure);
       }
       callback(false, msg);
     }
@@ -72,13 +74,13 @@ class ApiController {
     BuildContext context,
     String endpoint,
     Function(bool success, dynamic result) callback, {
-    bool showToast = false,
+    bool shouldShowToast = false,
   }) async {
     try {
       final response = await _dio.get(endpoint);
       final successMessage = response.data['message'].toString();
-      if (showToast && successMessage.isNotEmpty) {
-        _showToast(
+      if (shouldShowToast && successMessage.isNotEmpty) {
+        showToast(
           context,
           'Success',
           successMessage,
@@ -88,8 +90,8 @@ class ApiController {
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
-      if (showToast && msg.isNotEmpty) {
-        _showToast(context, 'Error', msg, ContentType.failure);
+      if (shouldShowToast && msg.isNotEmpty) {
+        showToast(context, 'Error', msg, ContentType.failure);
       }
       callback(false, msg);
     }
@@ -100,13 +102,13 @@ class ApiController {
     String endpoint,
     Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
-    bool showToast = true,
+    bool shouldShowToast = true,
   }) async {
     try {
       final response = await _dio.put(endpoint, data: data);
       final successMessage = response.data['message'].toString();
-      if (showToast && successMessage.isNotEmpty) {
-        _showToast(
+      if (shouldShowToast && successMessage.isNotEmpty) {
+        showToast(
           context,
           'Success',
           successMessage,
@@ -116,8 +118,8 @@ class ApiController {
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
-      if (showToast && msg.isNotEmpty) {
-        _showToast(context, 'Error', msg, ContentType.failure);
+      if (shouldShowToast && msg.isNotEmpty) {
+        showToast(context, 'Error', msg, ContentType.failure);
       }
       callback(false, msg);
     }
@@ -128,13 +130,13 @@ class ApiController {
     String endpoint,
     Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
-    bool showToast = true,
+    bool shouldShowToast = true,
   }) async {
     try {
       final response = await _dio.delete(endpoint, data: data);
       final successMessage = response.data['message'].toString();
-      if (showToast && successMessage.isNotEmpty) {
-        _showToast(
+      if (shouldShowToast && successMessage.isNotEmpty) {
+        showToast(
           context,
           'Success',
           successMessage,
@@ -144,8 +146,8 @@ class ApiController {
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
-      if (showToast && msg.isNotEmpty) {
-        _showToast(context, 'Error', msg, ContentType.failure);
+      if (shouldShowToast && msg.isNotEmpty) {
+        showToast(context, 'Error', msg, ContentType.failure);
       }
       callback(false, msg);
     }
@@ -157,7 +159,7 @@ class ApiController {
     String endpoint,
     FormData formData,
     Function(bool success, dynamic result) callback, {
-    bool showToast = true,
+    bool shouldShowToast = true,
   }) async {
     try {
       final response = await _dio.post(
@@ -171,15 +173,15 @@ class ApiController {
       );
 
       final successMessage = response.data['message'].toString();
-      if (showToast && successMessage.isNotEmpty) {
-        _showToast(context, 'Success', successMessage, ContentType.success);
+      if (shouldShowToast && successMessage.isNotEmpty) {
+        showToast(context, 'Success', successMessage, ContentType.success);
       }
 
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
-      if (showToast && msg.isNotEmpty) {
-        _showToast(context, 'Error', msg, ContentType.failure);
+      if (shouldShowToast && msg.isNotEmpty) {
+        showToast(context, 'Error', msg, ContentType.failure);
       }
       callback(false, msg);
     }
@@ -196,27 +198,29 @@ class ApiController {
     return 'An unexpected error occurred';
   }
 
-  void _showToast(
-    BuildContext context,
-    String title,
-    String message,
-    ContentType type,
-  ) {
-    final snackBar = SnackBar(
-      elevation: 0,
-      duration: const Duration(seconds: 5),
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: title,
-        message: message,
-        contentType: type,
-        inMaterialBanner: true,
-      ),
-    );
 
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(snackBar);
-  }
+}
+
+void showToast(
+  BuildContext context,
+  String title,
+  String message,
+  ContentType type,
+) {
+  final snackBar = SnackBar(
+    elevation: 0,
+    duration: const Duration(seconds: 5),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Colors.transparent,
+    content: AwesomeSnackbarContent(
+      title: title,
+      message: message,
+      contentType: type,
+      inMaterialBanner: true,
+    ),
+  );
+
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(snackBar);
 }

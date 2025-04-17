@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
-import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
@@ -23,7 +22,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   TextEditingController emailController = TextEditingController();
 
   String getFullEmail() {
-    return emailController.text;
+    return emailController.text.trim();
   }
 
   @override
@@ -49,26 +48,16 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     'assets/app_icons/login_logo.svg',
                   ),
                 ),
-                const VSpace(20.37),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 17),
-                  child: Text(
-                    'Enter your email number',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15.6,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                const VSpace(7),
+                const VSpace(whiteSpace),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 17),
                   child: Form(
                     key: fromKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: TextFieldFactory.email(
+                    child: TextFieldFactory(
                       controller: emailController,
-                      hintText: 'Email Address',
+                      label: 'Email Address',
+                      hintText: 'Enter your valid email address',
                       keyboardType: TextInputType.emailAddress,
                       fontStyle: const TextStyle(
                         fontSize: 19.58,
@@ -103,19 +92,19 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     ),
                     onPressed: () {
                       if (fromKey.currentState!.validate()) {
-                        final apiController = ApiController('login');
+                        // final apiController = ApiController('login');
                         final email = getFullEmail();
                         context.read<RegistrationFormCubit>().setEmail(email);
 
-                        apiController.post(
-                          context,
-                          'email/request',
-                          {'email': email},
-                          (success, res) {
-                            debugPrint(email);
-                          },
-                        );
-                        // Navigator.pushNamed(context, '/verify_otp');
+                        // apiController.post(
+                        //   context,
+                        //   'email/request',
+                        //   {'email': email},
+                        //   (success, res) {
+                        //     debugPrint(email);
+                        //   },
+                        // );
+                        Navigator.pushNamed(context, '/verify_otp');
                       }
                     },
                   ),

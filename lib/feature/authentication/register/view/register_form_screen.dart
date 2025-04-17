@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,9 +39,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final licenseNumberController = TextEditingController();
   final motorcycleNumberController = TextEditingController();
   final motorcycleYearController = TextEditingController();
-  final addressController = TextEditingController();
+  final streetController = TextEditingController();
+  final postalCodeController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
+  String countryValue = '';
+  String stateValue = '';
+  String cityValue = '';
 
   @override
   void initState() {
@@ -74,7 +80,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       licenseNumberController,
       motorcycleNumberController,
       motorcycleYearController,
-      addressController,
+      streetController,
       passwordController,
       confirmPasswordController,
     ]) {
@@ -100,17 +106,23 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         'licenseNumber': licenseNumberController.text.trim(),
         'motorcycleNumber': motorcycleNumberController.text.trim(),
         'motorcycleYear': motorcycleYearController.text.trim(),
-        'address': addressController.text.trim(),
+        'address': {
+          'street': streetController.text.trim(),
+          'city': countryValue.capitalize,
+          'state': stateValue.capitalize,
+          'country': cityValue.capitalize,
+          'postalCode': postalCodeController.text.trim(),
+        },
         'password': passwordController.text,
         'confirmPassword': confirmPasswordController.text,
       };
-      debugPrint('$data');
 
       setState(() {
         loading = true;
       });
       apiController.post(context, 'register', data, (success, result) {
         if (success) {
+          context.read<RegistrationFormCubit>().setEmail(emailController.text);
           Navigator.pushNamed(context, VerifyOtpScreen.routeName);
         }
         setState(() {
@@ -120,34 +132,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     }
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    TextInputType inputType = TextInputType.text,
-    bool? obscure,
-    String? Function(String?)? validator,
-    String? placeholder,
-    String? prefixIconUrl,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: smallWhiteSpace),
-      child: TextFieldFactory(
-        controller: controller,
-        prefixSvgUrl: prefixIconUrl,
-        label: label,
-        obscure: obscure,
-        hintText: placeholder ?? 'Enter $label',
-        keyboardType: inputType,
-        fontStyle: const TextStyle(
-          fontSize: normalText,
-          color: Colors.black,
-        ),
-        validator: validator ??
-            (val) =>
-                val == null || val.trim().isEmpty ? '$label is required' : null,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +188,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         child: Column(
                           children: [
-                            _buildTextField(
+                            buildTextField(
                               controller: fullNameController,
                               label: 'Full Name',
                               placeholder: 'Your name',
@@ -219,14 +203,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 return null;
                               },
                             ),
-                            _buildTextField(
+                            buildTextField(
                               controller: emailController,
                               label: 'Email',
                               placeholder: 'Enter Email Address',
                               inputType: TextInputType.emailAddress,
                               prefixIconUrl: 'assets/app_icons/envelope.svg',
                             ),
-                            // _buildTextField(
+                            // buildTextField(
                             //   controller: phoneController,
                             //   label: 'Phone',
                             //   placeholder: 'Enter Phone Number',
@@ -305,38 +289,61 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                               },
                             ),
 
-                            _buildTextField(
+                            buildTextField(
                               controller: motorcycleTypeController,
                               label: 'Motorcycle Type',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                             ),
-                            _buildTextField(
+                            buildTextField(
                               controller: motorcycleColorController,
                               label: 'Motorcycle Color',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                             ),
-                            _buildTextField(
+                            buildTextField(
                               controller: licenseNumberController,
                               label: 'License Number',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                             ),
-                            _buildTextField(
+                            buildTextField(
                               controller: motorcycleNumberController,
                               label: 'Motorcycle Number',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                             ),
-                            _buildTextField(
+                            buildTextField(
                               controller: motorcycleYearController,
                               label: 'Motorcycle Year',
                               inputType: TextInputType.number,
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                             ),
-                            _buildTextField(
-                              controller: addressController,
-                              label: 'Permanent Address',
+
+                            SelectState(
+                              onCountryChanged: (value) {
+                                setState(() {
+                                  countryValue = value;
+                                });
+                              },
+                              onStateChanged: (value) {
+                                setState(() {
+                                  stateValue = value;
+                                });
+                              },
+                              onCityChanged: (value) {
+                                setState(() {
+                                  cityValue = value;
+                                });
+                              },
+                            ),
+                            buildTextField(
+                              controller: streetController,
+                              label: 'Street Name',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                             ),
-                            _buildTextField(
+                            buildTextField(
+                              controller: postalCodeController,
+                              label: 'Postal Code',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            buildTextField(
                               controller: passwordController,
                               label: 'Password',
                               placeholder: 'Create a strong password',
@@ -344,7 +351,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                               prefixIconUrl:
                                   'assets/app_icons/password-type.svg',
                             ),
-                            _buildTextField(
+                            buildTextField(
                               controller: confirmPasswordController,
                               label: 'Confirm Password',
                               placeholder: 'Confirm password again',
@@ -445,4 +452,33 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       ),
     );
   }
+}
+
+Widget buildTextField({
+  required TextEditingController controller,
+  required String label,
+  TextInputType inputType = TextInputType.text,
+  bool? obscure,
+  String? Function(String?)? validator,
+  String? placeholder,
+  String? prefixIconUrl,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: smallWhiteSpace),
+    child: TextFieldFactory(
+      controller: controller,
+      prefixSvgUrl: prefixIconUrl,
+      label: label,
+      obscure: obscure,
+      hintText: placeholder ?? 'Enter $label',
+      keyboardType: inputType,
+      fontStyle: const TextStyle(
+        fontSize: normalText,
+        color: Colors.black,
+      ),
+      validator: validator ??
+          (val) =>
+              val == null || val.trim().isEmpty ? '$label is required' : null,
+    ),
+  );
 }
