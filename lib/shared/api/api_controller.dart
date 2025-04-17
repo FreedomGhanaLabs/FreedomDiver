@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dio/dio.dart';
@@ -18,7 +17,7 @@ class ApiController {
           return handler.next(options);
         },
         onError: (DioException e, handler) {
-          log('Dio Error', error: e);
+          // log('Dio Error', error: e.message);
           return handler.next(e);
         },
       ),
@@ -46,7 +45,7 @@ class ApiController {
     Function(bool success, dynamic result) callback, {
     bool showToast = true,
   }) async {
-    debugPrint(baseUrl);
+    debugPrint(jsonEncode(data));
     try {
       final response = await _dio.post(endpoint, data: jsonEncode(data));
       final successMessage = response.data['message'].toString();
@@ -61,6 +60,7 @@ class ApiController {
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
+      debugPrint(msg);
       if (showToast && msg.isNotEmpty) {
         _showToast(context, 'Error', msg, ContentType.failure);
       }
@@ -74,7 +74,6 @@ class ApiController {
     Function(bool success, dynamic result) callback, {
     bool showToast = false,
   }) async {
-
     try {
       final response = await _dio.get(endpoint);
       final successMessage = response.data['message'].toString();
@@ -152,7 +151,7 @@ class ApiController {
     }
   }
 
-    // Multipart upload handler
+  // Multipart upload handler
   Future<void> uploadFile(
     BuildContext context,
     String endpoint,
@@ -164,8 +163,9 @@ class ApiController {
       final response = await _dio.post(
         endpoint,
         data: formData,
-        options: Options(headers: {
-          'Content-Type': 'multipart/form-data',
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
           },
         ),
       );
