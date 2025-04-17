@@ -12,6 +12,7 @@ Future<void> addTokenToHive(String token) async {
   final box = await Hive.openBox(authBoxKey);
   await box.put(authTokenKey, token);
 }
-Future<void> deleteTokenToHive(String token) async {
+
+Future<void> deleteTokenToHive() async {
  await Hive.box(authBoxKey).delete(authTokenKey);
 }

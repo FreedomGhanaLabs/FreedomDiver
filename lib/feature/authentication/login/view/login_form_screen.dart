@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
-import 'package:freedom_driver/feature/authentication/register/register.dart';
+import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
+import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
@@ -20,9 +22,16 @@ class LoginFormScreen extends StatefulWidget {
 class _LoginFormScreenState extends State<LoginFormScreen> {
   final fromKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
-  String getFullEmail() {
+  bool isLoading = false;
+
+  String getEmailAddress() {
     return emailController.text.trim();
+  }
+
+  String getPassword() {
+    return passwordController.text.trim();
   }
 
   @override
@@ -38,78 +47,94 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
       body: BlocBuilder<RegistrationFormCubit, RegistrationFormState>(
         builder: (context, state) {
           return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const VSpace(67),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 17),
-                  child: SvgPicture.asset(
-                    'assets/app_icons/login_logo.svg',
+                SvgPicture.asset(
+                  'assets/app_icons/login_logo.svg',
+                ),
+                const VSpace(whiteSpace),
+                const VSpace(smallWhiteSpace),
+                const Text(
+                  'Welcome Back!',
+                  style: TextStyle(
+                    fontSize: headingText,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                // const VSpace(smallWhiteSpace),
+                Text(
+                  'Log in to your Gofreedom account and get back to what matters - riding with freedom or earning on your own schedule.',
+                  style: TextStyle(
+                    fontSize: paragraphText,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey.shade700,
+                    // fontStyle: GoogleFonts.poppins.fontFamily,
                   ),
                 ),
                 const VSpace(whiteSpace),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 17),
-                  child: Form(
-                    key: fromKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: TextFieldFactory(
-                      controller: emailController,
-                      label: 'Email Address',
-                      hintText: 'Enter your valid email address',
-                      keyboardType: TextInputType.emailAddress,
-                      fontStyle: const TextStyle(
-                        fontSize: 19.58,
-                        color: Colors.black,
+                Form(
+                  key: fromKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Column(
+                    children: [
+                      buildTextField(
+                        controller: emailController,
+                        label: 'Email',
+                        placeholder: 'Enter Email Address',
+                        inputType: TextInputType.emailAddress,
+                        prefixIconUrl: 'assets/app_icons/envelope.svg',
                       ),
-                      validator: (val) {
-                        if (val == null || val.trim().isEmpty) {
-                          return 'Email is required';
-                        }
-
-                        return null;
-                      },
-                    ),
+                      buildTextField(
+                        controller: passwordController,
+                        label: 'Password',
+                        placeholder: 'Enter your password',
+                        obscure: true,
+                        prefixIconUrl: 'assets/app_icons/password-type.svg',
+                      ),
+                    ],
                   ),
                 ),
-                const VSpace(29),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 17),
-                  child: FreedomButton(
-                    backGroundColor: Colors.black,
-                    borderRadius: BorderRadius.circular(7),
-                    width: double.infinity,
-                    useLoader: true,
-                    title: 'Continue',
-                    buttonTitle: Text(
-                      'Continue',
-                      style: GoogleFonts.poppins(
-                        fontSize: 17.4,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onPressed: () {
-                      if (fromKey.currentState!.validate()) {
-                        // final apiController = ApiController('login');
-                        final email = getFullEmail();
-                        context.read<RegistrationFormCubit>().setEmail(email);
-
-                        // apiController.post(
-                        //   context,
-                        //   'email/request',
-                        //   {'email': email},
-                        //   (success, res) {
-                        //     debugPrint(email);
-                        //   },
-                        // );
-                        Navigator.pushNamed(context, '/verify_otp');
+                const VSpace(whiteSpace),
+                FreedomButton(
+                  backGroundColor: Colors.black,
+                  borderRadius: BorderRadius.circular(7),
+                  width: double.infinity,
+                  title: isLoading ? 'Logging in...' : 'Login',
+                  onPressed: () {
+                    if (fromKey.currentState!.validate()) {
+                      if (isLoading) {
+                        return;
                       }
-                    },
-                  ),
+                      final apiController = ApiController('auth/login');
+                      final email = getEmailAddress();
+                      context.read<RegistrationFormCubit>().setEmail(email);
+                      setState(() {
+                        isLoading = true;
+                      });
+                      apiController.post(
+                        context,
+                        'email',
+                        {'email': email, 'password': getPassword()},
+                        (success, res) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          if (success) {
+                            Navigator.pushNamed(
+                              context,
+                              VerifyOtpScreen.routeName,
+                              arguments: {'type': 'login'},
+                            );
+                          }
+                        },
+                      );
+                    }
+                  },
                 ),
-                const VSpace(26),
+                const VSpace(whiteSpace),
                 Row(
                   children: [
                     Container(
@@ -136,50 +161,44 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     ),
                   ],
                 ),
-                const VSpace(28),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 17),
-                  child: FreedomButton(
-                    backGroundColor: socialLoginColor,
-                    leadingIcon: 'apple_icon',
-                    borderRadius: BorderRadius.circular(7),
-                    title: 'Login with Apple',
-                    useLoader: true,
-                    buttonTitle: Text(
-                      'Login with Apple',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
+                const VSpace(whiteSpace),
+                FreedomButton(
+                  backGroundColor: socialLoginColor,
+                  leadingIcon: 'apple_icon',
+                  borderRadius: BorderRadius.circular(7),
+                  title: 'Login with Apple',
+                  useLoader: true,
+                  buttonTitle: Text(
+                    'Login with Apple',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
-                    titleColor: Colors.black,
-                    width: double.infinity,
-                    fontSize: 16,
-                    onPressed: () {},
                   ),
+                  titleColor: Colors.black,
+                  width: double.infinity,
+                  fontSize: 16,
+                  onPressed: () {},
                 ),
-                const VSpace(20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 17),
-                  child: FreedomButton(
-                    backGroundColor: socialLoginColor,
-                    leadingIcon: 'google_icon',
-                    useLoader: true,
-                    borderRadius: BorderRadius.circular(7),
-                    buttonTitle: Text(
-                      'Login with Google',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
+                const VSpace(whiteSpace),
+                FreedomButton(
+                  backGroundColor: socialLoginColor,
+                  leadingIcon: 'google_icon',
+                  useLoader: true,
+                  borderRadius: BorderRadius.circular(7),
+                  buttonTitle: Text(
+                    'Login with Google',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
-                    titleColor: Colors.black,
-                    fontSize: 16,
-                    width: double.infinity,
-                    onPressed: () {},
                   ),
+                  titleColor: Colors.black,
+                  fontSize: 16,
+                  width: double.infinity,
+                  onPressed: () {},
                 ),
                 const VSpace(whiteSpace),
                 Center(

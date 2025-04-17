@@ -62,7 +62,6 @@ class ApiController {
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
-      debugPrint('msg:$msg');
       if (shouldShowToast && msg.isNotEmpty) {
         showToast(context, 'Error', msg, ContentType.failure);
       }
@@ -189,16 +188,16 @@ class ApiController {
 
   dynamic _handleError(dynamic error) {
     if (error is DioException) {
-      debugPrint(error.toString());
-      if (error.response?.data != null) {
-        return error.response?.data['message'] ?? 'Something went wrong';
+      debugPrint('error message: ${error.message}');
+      final errorData = error.response?.data;
+      if (errorData != null) {
+        debugPrint('Error Data: $errorData');
+        return errorData['message'] ?? errorData['msg'];
       }
-      return 'Something went wrong';
+      return 'Network Error';
     }
     return 'An unexpected error occurred';
   }
-
-
 }
 
 void showToast(
