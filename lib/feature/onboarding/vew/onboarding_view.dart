@@ -4,6 +4,7 @@ import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_one.da
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_two.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
+import 'package:freedom_driver/utilities/hive/onboarding.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -31,6 +32,19 @@ class _OnboardingViewState extends State<OnboardingView> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<void> checkFirstTimer() async {
+    final x = await getOnboardingFromHive();
+    if (x != null) {
+      await Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  @override
+  void initState() {
+    checkFirstTimer();
+    super.initState();
   }
 
   @override
@@ -98,7 +112,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                     backGroundColor: Colors.black,
                     height: 57.76.h,
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      addOnboardingToHive(true).then(
+                        (_) => Navigator.pushNamed(context, '/register'),
+                      );
                     },
                     buttonTitle: Text(
                       'Get Started',
@@ -120,7 +136,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                         useGradient: true,
                         gradient: greenGradient,
                         borderRadius: BorderRadius.circular(13),
-                        onPressed: () {},
+                        onPressed: () {
+                          addOnboardingToHive(true).then(
+                            (_) => Navigator.pushNamed(context, '/login'),
+                          );
+                        },
                         buttonTitle: Text(
                           'Continue',
                           style: GoogleFonts.poppins(

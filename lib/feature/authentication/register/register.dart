@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TextFieldFactory extends StatefulWidget {
@@ -10,7 +12,7 @@ class TextFieldFactory extends StatefulWidget {
     super.key,
     this.suffixIcon,
     this.onChanged,
-    this.hinText,
+    this.hintText,
     this.validator,
     this.autovalidateMode,
     this.errorText,
@@ -28,11 +30,11 @@ class TextFieldFactory extends StatefulWidget {
     this.inputFormatters,
     this.enabledBorderColor,
     this.focusedBorderColor,
-    this.hintText,
     this.fillColor,
     this.borderRadius,
     this.enabledBorderRadius,
     this.focusedBorderRadius,
+    this.label,
   });
   factory TextFieldFactory.name({
     required TextEditingController controller,
@@ -48,7 +50,7 @@ class TextFieldFactory extends StatefulWidget {
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
-    String? hinText,
+    String? hintText,
     Color? fillColor,
     Widget? suffixIcon,
     void Function(String)? onChanged,
@@ -69,7 +71,7 @@ class TextFieldFactory extends StatefulWidget {
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
-        hinText: hinText,
+        hintText: hintText,
         fillColor: fillColor,
         suffixIcon: suffixIcon,
         onChanged: onChanged,
@@ -116,7 +118,7 @@ class TextFieldFactory extends StatefulWidget {
         enabledBorderColor: enabledColorBorder,
         borderRadius: borderRadius,
         enabledBorderRadius: enabledBorderRadius,
-        hinText: hintText,
+        hintText: hintText,
         suffixIcon: suffixIcon,
         focusedBorderColor: focusedBorderColor,
       );
@@ -164,7 +166,7 @@ class TextFieldFactory extends StatefulWidget {
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
-    String? hinText,
+    String? hintText,
     Color? fillColor,
     Color? enabledColorBorder,
     Color? focusedBorderColor,
@@ -183,7 +185,7 @@ class TextFieldFactory extends StatefulWidget {
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
-        hinText: hinText,
+        hintText: hintText,
         fillColor: fillColor,
         enabledBorderColor: enabledColorBorder,
         focusedBorderColor: focusedBorderColor,
@@ -202,7 +204,7 @@ class TextFieldFactory extends StatefulWidget {
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
-    String? hinText,
+    String? hintText,
     Color? fillColor,
     Color? enabledBorderColor,
     BorderRadius? borderRadius,
@@ -222,7 +224,7 @@ class TextFieldFactory extends StatefulWidget {
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
-        hinText: hinText,
+        hintText: hintText,
         fillColor: fillColor,
         enabledBorderColor: enabledBorderColor,
         borderRadius: borderRadius,
@@ -242,7 +244,7 @@ class TextFieldFactory extends StatefulWidget {
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
-    String? hinText,
+    String? hintText,
     Color? fillColor,
     Color? enabledBorderColor,
     BorderRadius? borderRadius,
@@ -265,7 +267,7 @@ class TextFieldFactory extends StatefulWidget {
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
-        hinText: hinText,
+        hintText: hintText,
         fillColor: fillColor,
         enabledBorderColor: enabledBorderColor,
         borderRadius: borderRadius,
@@ -277,7 +279,8 @@ class TextFieldFactory extends StatefulWidget {
   final TextEditingController controller;
   final Widget? suffixIcon;
   final void Function(String)? onChanged;
-  final String? hinText;
+  final String? label;
+  final String? hintText;
   final String? Function(String?)? validator;
   final AutovalidateMode? autovalidateMode;
   final String? errorText;
@@ -295,7 +298,6 @@ class TextFieldFactory extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final Color? enabledBorderColor;
   final Color? focusedBorderColor;
-  final String? hintText;
   final Color? fillColor;
   final BorderRadius? borderRadius;
   final BorderRadius? enabledBorderRadius;
@@ -308,68 +310,85 @@ class TextFieldFactory extends StatefulWidget {
 class _TextFieldFactoryState extends State<TextFieldFactory> {
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      inputFormatters: const [],
-      controller: widget.controller,
-      keyboardType: widget.keyboardType ?? TextInputType.text,
-      textAlign: widget.textAlign ?? TextAlign.start,
-      textAlignVertical: widget.textAlignVertical,
-      validator: widget.validator,
-      autovalidateMode: widget.autovalidateMode,
-      maxLines: widget.maxLines ?? 1,
-      cursorColor: Colors.black,
-      onChanged: widget.onChanged,
-      style: widget.fontStyle ??
-          GoogleFonts.poppins(
-            fontSize: 12.sp,
-            color: Colors.black,
-            fontWeight: FontWeight.w500,
-          ),
-      decoration: InputDecoration(
-        fillColor: widget.fillColor ?? fillColor,
-        filled: true,
-        labelText: widget.hinText,
-        suffixIcon: widget.suffixIcon,
-        labelStyle: widget.hintTextStyle ??
-            GoogleFonts.poppins(
-              fontSize: 14.sp,
-              color: const Color(0xffE0E0E0),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.label != null)
+          Text(
+            widget.label ?? '',
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: paragraphText,
             ),
-        prefixIcon: widget.prefixText,
-        errorText: widget.errorText,
-        errorStyle: const TextStyle(
-          height: 0,
-        ),
-        contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
-        errorBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: widget.initialBorderColor ?? Colors.purple),
-          borderRadius:
-              widget.borderRadius ?? const BorderRadius.all(Radius.circular(5)),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: widget.fieldActiveBorderColor ?? Colors.orange),
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: widget.enabledBorderRadius ??
-              const BorderRadius.all(Radius.circular(5)),
-          borderSide: BorderSide(
-            color: widget.enabledBorderColor ?? Colors.transparent,
+          ),
+        const VSpace(extraSmallWhiteSpace),
+        TextFormField(
+          inputFormatters: const [],
+          controller: widget.controller,
+          keyboardType: widget.keyboardType ?? TextInputType.text,
+          textAlign: widget.textAlign ?? TextAlign.start,
+          textAlignVertical: widget.textAlignVertical,
+          validator: widget.validator,
+          autovalidateMode: widget.autovalidateMode,
+          maxLines: widget.maxLines ?? 1,
+          cursorColor: Colors.black,
+          onChanged: widget.onChanged,
+          style: widget.fontStyle ??
+              GoogleFonts.poppins(
+                fontSize: 12.sp,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+          decoration: InputDecoration(
+            fillColor: widget.fillColor ?? fillColor,
+            filled: true,
+            labelText: widget.hintText,
+            suffixIcon: widget.suffixIcon,
+            labelStyle: widget.hintTextStyle ??
+                GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  color: const Color(0xffE0E0E0),
+                ),
+            prefixIcon: widget.prefixText,
+            errorText: widget.errorText,
+            errorStyle: const TextStyle(
+              height: 0,
+            ),
+            contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
+            errorBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(
+                  color: widget.initialBorderColor ?? Colors.grey.shade400),
+              borderRadius: widget.borderRadius ??
+                  const BorderRadius.all(Radius.circular(5)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: widget.fieldActiveBorderColor ?? Colors.orange,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: widget.enabledBorderRadius ??
+                  const BorderRadius.all(Radius.circular(5)),
+              borderSide: BorderSide(
+                color: widget.enabledBorderColor ?? Colors.transparent,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: widget.focusedBorderColor ?? thickFillColor,
+              ),
+              borderRadius: widget.focusedBorderRadius ??
+                  const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+            ),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            alignLabelWithHint: true,
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: widget.focusedBorderColor ?? thickFillColor),
-          borderRadius: widget.focusedBorderRadius ??
-              const BorderRadius.all(
-                Radius.circular(5),
-              ),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        alignLabelWithHint: true,
-      ),
+      ],
     );
   }
 }

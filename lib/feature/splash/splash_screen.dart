@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
+import 'package:freedom_driver/feature/onboarding/vew/onboarding_view.dart';
+import 'package:freedom_driver/utilities/hive/onboarding.dart';
 import 'package:hive/hive.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -34,10 +37,21 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future<void>.delayed(const Duration(seconds: 2));
     final box = Hive.box<bool>('firstTimerUser');
     final isFirstTimer = box.get('isFirstTimer', defaultValue: true) ?? true;
+    final getFirstTimer = await getOnboardingFromHive();
     if (!isFirstTimer) {
-      await Navigator.pushNamed(context, MainActivityScreen.routeName);
+      await Navigator.pushReplacementNamed(
+        context,
+        MainActivityScreen.routeName,
+      );
       return;
     }
-    await Navigator.pushNamed(context, '/onBoarding');
+    if (getFirstTimer != null) {
+      await Navigator.pushReplacementNamed(
+        context,
+        LoginFormScreen.routeName,
+      );
+      return;
+    }
+    await Navigator.pushReplacementNamed(context, OnboardingView.routeName);
   }
 }

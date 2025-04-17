@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/helpers/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/utilities/hive/onboarding.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,27 +23,32 @@ class OnboardingCarouselOne extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.6,
                   width: double.infinity,
                   child: const Image(
+                    fit: BoxFit.cover,
                     image:
                         AssetImage('assets/app_images/driver_bcg_onboard.png'),
                   ),
                 ),
                 Positioned(
-                  top: 44,
-                  left: 310,
+                  top: normalWhiteSpace,
+                  right: smallWhiteSpace,
                   child: SizedBox(
                     height: 29,
                     child: TextButton(
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(roundedMd),
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 19,
                           vertical: 4,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        addOnboardingToHive(true).then(
+                          (_) => Navigator.pushNamed(context, '/login'),
+                        );
+                      },
                       child: const Text(
                         'Skip',
                         style: TextStyle(color: Colors.white, fontSize: 13.7),
@@ -49,8 +57,16 @@ class OnboardingCarouselOne extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                    top: 147,
-                    child: Image.asset('assets/app_images/bcg_decorator.png'))
+                  top: Responsive.height(context) / 7,
+                  right: Responsive.width(context) / 9,
+                  child: Image.asset('assets/app_images/bcg_decorator.png'),
+                ),
+                Positioned(
+                  bottom: -50,
+                  right: 0,
+                  child:
+                      Image.asset('assets/app_images/driver_bcg_model_1.png'),
+                ),
               ],
             ),
             const VSpace(28),
@@ -67,8 +83,11 @@ class OnboardingCarouselOne extends StatelessWidget {
 }
 
 class CarouselDescription extends StatelessWidget {
-  const CarouselDescription(
-      {super.key, required this.description, required this.title});
+  const CarouselDescription({
+    required this.description,
+    required this.title,
+    super.key,
+  });
   final String title;
   final String description;
 
@@ -80,7 +99,7 @@ class CarouselDescription extends StatelessWidget {
           title,
           overflow: TextOverflow.ellipsis,
           style: GoogleFonts.poppins(
-            fontSize: 21.4,
+            fontSize: headingText,
             fontWeight: FontWeight.w600,
             color: colorRed,
           ),
@@ -91,9 +110,12 @@ class CarouselDescription extends StatelessWidget {
           child: Text(
             textAlign: TextAlign.center,
             description,
-            style: GoogleFonts.poppins(fontSize: 16.25, color: colorBlack),
+            style: GoogleFonts.poppins(
+              fontSize: normalText,
+              color: colorBlack,
+            ),
           ),
-        )
+        ),
       ],
     );
   }

@@ -84,14 +84,17 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                 key: firstNameKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFieldFactory.name(
-                  hinText: 'Your name',
+                  hintText: 'Your name',
                   hintTextStyle: GoogleFonts.poppins(
                     fontSize: 15.06,
                     fontWeight: FontWeight.w400,
                     color: const Color(0x42F59E0B),
                   ),
                   contentPadding: const EdgeInsets.only(
-                      top: 21.06, left: 8.06, bottom: 21.06),
+                    top: 21.06,
+                    left: 8.06,
+                    bottom: 21.06,
+                  ),
                   controller: firstNameController,
                   prefixText: Padding(
                     padding:
@@ -139,13 +142,14 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                         const EdgeInsets.only(top: 21, left: 8.06, bottom: 21),
                     child: SvgPicture.asset('assets/app_icons/email_icon.svg'),
                   ),
-                  hinText: 'Your email',
+                  hintText: 'Your email',
                   validator: (email) {
                     if (email!.isEmpty) {
                       return 'Please enter your email';
                     }
                     final regX = RegExp(
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                    );
                     if (!regX.hasMatch(email)) {
                       return 'Please enter a valid email';
                     }
@@ -199,7 +203,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                       color: Colors.white,
                       fontSize: 17.92,
                       fontWeight: FontWeight.w500,
-                    )),
+                  ),
+                ),
                 fontSize: 17.92,
               ),
             ],

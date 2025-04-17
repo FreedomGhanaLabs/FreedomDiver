@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/personal_details.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
@@ -27,6 +28,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case RegisterFormScreen.routeName:
       return _pageBuilder(
         (_) => const RegisterFormScreen(),
+        settings: settings,
+      );
+    case LoginFormScreen.routeName:
+      return _pageBuilder(
+        (_) => const LoginFormScreen(),
         settings: settings,
       );
     case VerifyOtpScreen.routeName:

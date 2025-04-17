@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_one.dart';
+import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/helpers/responsive.dart';
+import 'package:freedom_driver/utilities/hive/onboarding.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
 class OnboardingCarouselTwo extends StatelessWidget {
@@ -24,8 +27,8 @@ class OnboardingCarouselTwo extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 44,
-                right: 16,
+                top: normalWhiteSpace,
+                right: smallWhiteSpace,
                 child: SizedBox(
                   height: 29,
                   child: TextButton(
@@ -39,7 +42,11 @@ class OnboardingCarouselTwo extends StatelessWidget {
                         vertical: 4,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      addOnboardingToHive(true).then(
+                        (_) => Navigator.pushNamed(context, '/login'),
+                      );
+                    },
                     child: const Text(
                       'Skip',
                       style: TextStyle(color: Colors.white, fontSize: 13.7),
@@ -48,14 +55,20 @@ class OnboardingCarouselTwo extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 219,
+                top: Responsive.height(context) / 4,
+                right: Responsive.width(context) / 2.5,
                 child: Image.asset('assets/app_images/bcg2_decorator.png'),
-              )
+              ),
+              Positioned(
+                bottom: -(Responsive.height(context) / 7),
+                right: 0,
+                child: Image.asset('assets/app_images/driver_bcg_model_2.png'),
+              ),
             ],
           ),
           const VSpace(10),
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: CarouselDescription(
               description:
                   // ignore: lines_longer_than_80_chars

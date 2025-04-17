@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 class FreedomButton extends StatelessWidget {
   const FreedomButton({
-    Key? key,
     required this.onPressed,
+    super.key,
     this.borderRadius,
     this.width,
     this.height = 57.0,
@@ -22,7 +23,7 @@ class FreedomButton extends StatelessWidget {
     this.child,
     this.useOnlBorderGradient = false,
     this.buttonTitle,
-  }) : super(key: key);
+  });
 
   final BorderRadiusGeometry? borderRadius;
   final double? width;
@@ -55,9 +56,10 @@ class FreedomButton extends StatelessWidget {
               gradient: useOnlBorderGradient ? null : gradient,
               borderRadius: borderRadius,
               border: useOnlBorderGradient
-                  ? const GradientBoxBorder(
+                  ? GradientBoxBorder(
                       gradient: LinearGradient(
-                          colors: [Color(0xFFF59E0B), Color(0xffE61D2A)]),
+                        colors: gradientColor,
+                      ),
                     )
                   : null,
             )
@@ -76,7 +78,7 @@ class FreedomButton extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.poppins(
-                      fontSize: fontSize ?? 17.41,
+                      fontSize: fontSize ?? normalText,
                       color: effectiveTextColor,
                       fontWeight: FontWeight.w500,
                     ),

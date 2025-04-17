@@ -164,7 +164,8 @@ class ApiController {
         data: formData,
         options: Options(headers: {
           'Content-Type': 'multipart/form-data',
-        }),
+          },
+        ),
       );
 
       final successMessage = response.data['message'].toString();
