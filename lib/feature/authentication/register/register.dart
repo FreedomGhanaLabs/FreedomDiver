@@ -23,7 +23,7 @@ class TextFieldFactory extends StatefulWidget {
     this.prefixText,
     this.focusNode,
     this.keyboardType,
-    this.initialBorderColor,
+    this.errorBorderColor,
     this.fieldActiveBorderColor,
     this.inputFormatters,
     this.enabledBorderColor,
@@ -33,6 +33,7 @@ class TextFieldFactory extends StatefulWidget {
     this.borderRadius,
     this.enabledBorderRadius,
     this.focusedBorderRadius,
+    this.obscureText,
   });
   factory TextFieldFactory.name({
     required TextEditingController controller,
@@ -65,7 +66,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -108,7 +109,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -134,6 +135,9 @@ class TextFieldFactory extends StatefulWidget {
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
+    String? hintText,
+    Widget? suffixIcon,
+    bool? obscureText,
   }) =>
       TextFieldFactory(
         controller: controller,
@@ -145,10 +149,13 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
+        hinText: hintText,
+        suffixIcon: suffixIcon,
+        obscureText: obscureText,
       );
   factory TextFieldFactory.email({
     required TextEditingController controller,
@@ -179,7 +186,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -218,7 +225,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: initialBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -238,7 +245,7 @@ class TextFieldFactory extends StatefulWidget {
     Widget? prefixText,
     FocusNode? focusNode,
     TextInputType? keyboardType,
-    Color? initialBorderColor,
+    Color? errorBorderColor,
     Color? fieldActiveBorderColor,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
@@ -250,6 +257,7 @@ class TextFieldFactory extends StatefulWidget {
     int? maxLines,
     BorderRadius? focusedBorderRadius,
     Widget? suffixIcon,
+    Color? focusedBorderColor,
   }) =>
       TextFieldFactory(
         controller: controller,
@@ -261,7 +269,7 @@ class TextFieldFactory extends StatefulWidget {
         prefixText: prefixText,
         focusNode: focusNode,
         keyboardType: keyboardType,
-        initialBorderColor: initialBorderColor,
+        errorBorderColor: errorBorderColor,
         fieldActiveBorderColor: fieldActiveBorderColor,
         inputFormatters: inputFormatters,
         validator: validator,
@@ -273,6 +281,7 @@ class TextFieldFactory extends StatefulWidget {
         maxLines: maxLines,
         focusedBorderRadius: focusedBorderRadius,
         suffixIcon: suffixIcon,
+        focusedBorderColor: focusedBorderColor,
       );
   final TextEditingController controller;
   final Widget? suffixIcon;
@@ -290,7 +299,7 @@ class TextFieldFactory extends StatefulWidget {
   final Widget? prefixText;
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
-  final Color? initialBorderColor;
+  final Color? errorBorderColor;
   final Color? fieldActiveBorderColor;
   final List<TextInputFormatter>? inputFormatters;
   final Color? enabledBorderColor;
@@ -300,6 +309,7 @@ class TextFieldFactory extends StatefulWidget {
   final BorderRadius? borderRadius;
   final BorderRadius? enabledBorderRadius;
   final BorderRadius? focusedBorderRadius;
+  final bool? obscureText;
 
   @override
   State<TextFieldFactory> createState() => _TextFieldFactoryState();
@@ -319,6 +329,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
       maxLines: widget.maxLines ?? 1,
       cursorColor: Colors.black,
       onChanged: widget.onChanged,
+      obscureText: widget.obscureText ?? false,
       style: widget.fontStyle ??
           GoogleFonts.poppins(
             fontSize: 12.sp,
@@ -343,7 +354,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
         contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
         errorBorder: OutlineInputBorder(
           borderSide:
-              BorderSide(color: widget.initialBorderColor ?? Colors.purple),
+              BorderSide(color: widget.errorBorderColor ?? Colors.purple),
           borderRadius:
               widget.borderRadius ?? const BorderRadius.all(Radius.circular(5)),
         ),

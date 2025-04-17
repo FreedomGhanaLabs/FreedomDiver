@@ -1,10 +1,28 @@
 part of 'kyc_cubit.dart';
 
-sealed class KycState extends Equatable {
-  const KycState();
+abstract class KycState {}
 
-  @override
-  List<Object> get props => [];
+class KycInitial extends KycState {}
+class KycImageLoading extends KycState {}
+class KycImageSelected extends KycState {
+  KycImageSelected(this.image);
+  final File image;
 }
-
-final class KycInitial extends KycState {}
+class KycImageUploadLoading extends KycState {
+  KycImageUploadLoading(this.image);
+  final File image;
+}
+class KycImageUploadSuccess extends KycState {
+  KycImageUploadSuccess(this.imageUrl, this.image);
+  final String imageUrl;
+  final File image;
+}
+class KycImageUploadFailure extends KycState {
+  KycImageUploadFailure(this.error, this.image);
+  final String error;
+  final File image;
+}
+class KycImagePickFailure extends KycState {
+  KycImagePickFailure(this.error);
+  final String error;
+}

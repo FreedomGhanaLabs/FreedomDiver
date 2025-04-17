@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/feature/authentication/register/view/personal_details.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_one.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_two.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
@@ -98,7 +99,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     backGroundColor: Colors.black,
                     height: 57.76.h,
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.pushNamed(context, PersonalDetailScreen.routeName);
                     },
                     buttonTitle: Text(
                       'Get Started',

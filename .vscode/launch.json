@@ -13,7 +13,8 @@
         "--flavor",
         "development",
         "--target",
-        "lib/main_development.dart"
+        "lib/main_development.dart",
+        "--dart-define=MAPS_API_KEY=AIzaSyAG5ZidnV3a-wuHwUg8bd_hLrEVbTvWAno"
       ]
     },
     {

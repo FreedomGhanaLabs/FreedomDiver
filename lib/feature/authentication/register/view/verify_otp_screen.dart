@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
+import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
@@ -197,7 +197,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     useLoader: true,
                     borderRadius: BorderRadius.circular(10),
                     width: double.infinity,
-                    title: state?.isLoading == true ? 'Loading' : 'Verify',
+                    title: state.isLoading == true ? 'Loading' : 'Verify',
                     child: state.isLoading == true
                         ? const CircularProgressIndicator(
                             strokeWidth: 2,
