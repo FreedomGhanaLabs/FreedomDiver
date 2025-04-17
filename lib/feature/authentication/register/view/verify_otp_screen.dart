@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +12,8 @@ import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
+import 'package:freedom_driver/shared/widgets/toaster.dart';
+import 'package:freedom_driver/utilities/hive/token.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -195,13 +196,12 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             'purpose': 'registration',
                           },
                           (success, data) {
-
                             if (success) {
                               showToast(
                                 context,
                                 'Code Resent',
                                 data['message'].toString(),
-                                ContentType.success,
+                                toastType: ToastType.success,
                               );
                             }
                           },
@@ -247,7 +247,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     String? type,
   ) {
     final isLoginType = type == 'login';
-    debugPrint(type);
     if (_otpFormKey.currentState!.validate()) {
       // context.read<VerifyOtpCubit>().verifyOtp(_otpController.text);
       setState(() {
@@ -265,9 +264,15 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             isLoading = false;
           });
           if (success) {
-            Navigator.pushReplacementNamed(
-              context,
-              MainActivityScreen.routeName,
+            final token = data['data']['token'].toString();
+            debugPrint(token);
+            addTokenToHive(token).then(
+              (onValue) => {
+                Navigator.pushReplacementNamed(
+                  context,
+                  MainActivityScreen.routeName,
+                ),
+              },
             );
           }
         },

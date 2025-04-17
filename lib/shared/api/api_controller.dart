@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
 
 class ApiController {
@@ -45,8 +46,8 @@ class ApiController {
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
   }) async {
-    debugPrint(jsonEncode(data));
-    debugPrint('$baseUrl$endpoint');
+    // debugPrint(jsonEncode(data));
+    // debugPrint('$baseUrl$endpoint');
     try {
       final response = await _dio.post(endpoint, data: jsonEncode(data));
       debugPrint('${response.requestOptions}');
@@ -56,14 +57,19 @@ class ApiController {
           context,
           'Success',
           successMessage,
-          ContentType.success,
+          toastType: ToastType.success,
         );
       }
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
       if (shouldShowToast && msg.isNotEmpty) {
-        showToast(context, 'Error', msg, ContentType.failure);
+        showToast(
+          context,
+          'Error',
+          msg,
+          toastType: ToastType.error,
+        );
       }
       callback(false, msg);
     }
@@ -83,14 +89,14 @@ class ApiController {
           context,
           'Success',
           successMessage,
-          ContentType.success,
+          toastType: ToastType.success,
         );
       }
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
       if (shouldShowToast && msg.isNotEmpty) {
-        showToast(context, 'Error', msg, ContentType.failure);
+        showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
     }
@@ -111,14 +117,14 @@ class ApiController {
           context,
           'Success',
           successMessage,
-          ContentType.success,
+          toastType: ToastType.success,
         );
       }
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
       if (shouldShowToast && msg.isNotEmpty) {
-        showToast(context, 'Error', msg, ContentType.failure);
+        showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
     }
@@ -139,14 +145,14 @@ class ApiController {
           context,
           'Success',
           successMessage,
-          ContentType.success,
+          toastType: ToastType.success,
         );
       }
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
       if (shouldShowToast && msg.isNotEmpty) {
-        showToast(context, 'Error', msg, ContentType.failure);
+        showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
     }
@@ -173,14 +179,19 @@ class ApiController {
 
       final successMessage = response.data['message'].toString();
       if (shouldShowToast && successMessage.isNotEmpty) {
-        showToast(context, 'Success', successMessage, ContentType.success);
+        showToast(
+          context,
+          'Success',
+          successMessage,
+          toastType: ToastType.success,
+        );
       }
 
       callback(true, response.data);
     } catch (e) {
       final msg = _handleError(e).toString();
       if (shouldShowToast && msg.isNotEmpty) {
-        showToast(context, 'Error', msg, ContentType.failure);
+        showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
     }
@@ -203,9 +214,11 @@ class ApiController {
 void showToast(
   BuildContext context,
   String title,
-  String message,
-  ContentType type,
-) {
+  String message, {
+  ContentType? contentType,
+  ToastType? toastType,
+  bool isSnackBar = false,
+}) {
   final snackBar = SnackBar(
     elevation: 0,
     duration: const Duration(seconds: 5),
@@ -214,12 +227,22 @@ void showToast(
     content: AwesomeSnackbarContent(
       title: title,
       message: message,
-      contentType: type,
+      contentType: contentType ?? ContentType.warning,
       inMaterialBanner: true,
     ),
   );
 
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(snackBar);
+  if (isSnackBar) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  } else {
+    CustomToast.show(
+      context: context,
+      message: message,
+      duration: const Duration(seconds: 5),
+      position: ToastPosition.top,
+      type: toastType ?? ToastType.info,
+    );
+  }
 }

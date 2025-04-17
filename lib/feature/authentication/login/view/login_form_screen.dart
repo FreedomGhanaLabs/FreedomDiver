@@ -6,7 +6,9 @@ import 'package:freedom_driver/feature/authentication/register/view/register_for
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/helpers/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/shared/widgets/gradient_text.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -98,6 +100,11 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   ),
                 ),
                 const VSpace(whiteSpace),
+                const GradientText(
+                  text: 'Forgot Password?',
+                  routeNameToMoveTo: RegisterFormScreen.routeName,
+                ),
+                const VSpace(extraSmallText),
                 FreedomButton(
                   backGroundColor: Colors.black,
                   borderRadius: BorderRadius.circular(7),
@@ -171,17 +178,18 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   buttonTitle: Text(
                     'Login with Apple',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: normalText,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
                   ),
                   titleColor: Colors.black,
                   width: double.infinity,
-                  fontSize: 16,
+                  fontSize: normalText,
                   onPressed: () {},
                 ),
                 const VSpace(whiteSpace),
+               
                 FreedomButton(
                   backGroundColor: socialLoginColor,
                   leadingIcon: 'google_icon',
@@ -190,35 +198,28 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   buttonTitle: Text(
                     'Login with Google',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: normalText,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
                   ),
                   titleColor: Colors.black,
-                  fontSize: 16,
+                  fontSize: normalText,
                   width: double.infinity,
                   onPressed: () {},
                 ),
                 const VSpace(whiteSpace),
-                Center(
-                  child: ShaderMask(
-                    blendMode: BlendMode.srcIn,
-                    shaderCallback: (bounds) => gradient.createShader(
-                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/register');
-                      },
-                      child: Text(
-                        "Don't have an account?",
-                        style: GoogleFonts.poppins(
-                          fontSize: paragraphText,
-                          fontWeight: FontWeight.w500,
-                        ),
+                SizedBox(
+                  width: Responsive.width(context),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Don't have an account? "),
+                      GradientText(
+                        text: 'Sign up here',
+                        routeNameToMoveTo: RegisterFormScreen.routeName,
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
