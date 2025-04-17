@@ -20,6 +20,9 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final _formKey = GlobalKey<FormState>();
+  final apiController = ApiController('auth');
+
+  bool hasReadTermsAndCondition = false;
 
   final firstNameController = TextEditingController();
   final surnameController = TextEditingController();
@@ -59,7 +62,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   void submitRegistration() {
     if (_formKey.currentState!.validate()) {
-      final apiController = ApiController('auth');
+      if (!hasReadTermsAndCondition) {
+        return;
+      }
       final data = {
         'firstName': firstNameController.text.trim(),
         'surname': surnameController.text.trim(),
@@ -76,11 +81,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         'confirmPassword': confirmPasswordController.text,
       };
 
-      apiController.post(context, 'register', data, (success, result) {
-        if (success) {
-          Navigator.pushNamed(context, '/verify_otp');
-        }
-      });
+      debugPrint('$data');
+
+      // apiController.post(context, 'register', data, (success, result) {
+      //   if (success) {
+      //     Navigator.pushNamed(context, '/verify_otp');
+      //   }
+      // });
     }
   }
 
@@ -88,15 +95,18 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     required TextEditingController controller,
     required String label,
     TextInputType inputType = TextInputType.text,
-    bool obscure = false,
+    bool? obscure,
     String? Function(String?)? validator,
     String? placeholder,
+    String? prefixIconUrl,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 7),
+      padding: const EdgeInsets.symmetric(vertical: smallWhiteSpace),
       child: TextFieldFactory(
         controller: controller,
+        prefixSvgUrl: prefixIconUrl,
         label: label,
+        obscure: obscure,
         hintText: placeholder ?? label,
         keyboardType: inputType,
         fontStyle: const TextStyle(
@@ -121,109 +131,152 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
             children: [
               const VSpace(largeWhiteSpace),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 17),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: smallWhiteSpace,
+                ),
                 child: Column(
                   children: [
                     SvgPicture.asset(
                       'assets/app_icons/login_logo.svg',
                     ),
-                    const VSpace(smallWhiteSpace),
-                    const Text(
-                      '  Driver Registration',
-                      style: TextStyle(
-                        fontSize: headingText,
-                        fontWeight: FontWeight.w600,
-                        // fontStyle: GoogleFonts.poppins.fontFamily,
-                      ),
-                    ),
-                   
-                    const VSpace(whiteSpace),
+                    const VSpace(extraSmallWhiteSpace),
                   ],
                 ),
               ),
               Expanded(
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: smallWhiteSpace,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 17),
-                        child: Form(
-                          key: _formKey,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          child: Column(
-                            children: [
-                              _buildTextField(
-                                controller: firstNameController,
-                                label: 'First Name',
-                              ),
-                              _buildTextField(
-                                controller: surnameController,
-                                label: 'Surname',
-                              ),
-                              _buildTextField(
-                                controller: otherNameController,
-                                label: 'Other Name',
-                              ),
-                              _buildTextField(
-                                controller: emailController,
-                                label: 'Email',
-                                inputType: TextInputType.emailAddress,
-                              ),
-                              _buildTextField(
-                                controller: phoneController,
-                                label: 'Phone',
-                                inputType: TextInputType.phone,
-                              ),
-                              _buildTextField(
-                                controller: motorcycleTypeController,
-                                label: 'Motorcycle Type',
-                              ),
-                              _buildTextField(
-                                controller: motorcycleColorController,
-                                label: 'Motorcycle Color',
-                              ),
-                              _buildTextField(
-                                controller: licenseNumberController,
-                                label: 'License Number',
-                              ),
-                              _buildTextField(
-                                controller: motorcycleNumberController,
-                                label: 'Motorcycle Number',
-                              ),
-                              _buildTextField(
-                                controller: motorcycleYearController,
-                                label: 'Motorcycle Year',
-                                inputType: TextInputType.number,
-                              ),
-                              _buildTextField(
-                                controller: addressController,
-                                label: 'Address',
-                              ),
-                              _buildTextField(
-                                controller: passwordController,
-                                label: 'Password',
-                                obscure: true,
-                              ),
-                              _buildTextField(
-                                controller: confirmPasswordController,
-                                label: 'Confirm Password',
-                                obscure: true,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return 'Confirm your password';
-                                  }
-                                  if (val != passwordController.text) {
-                                    return 'Passwords do not match';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ],
-                          ),
+                      const VSpace(smallWhiteSpace),
+                      const Text(
+                        "Driver Registration Let's Get to Know You.",
+                        style: TextStyle(
+                          fontSize: headingText,
+                          fontWeight: FontWeight.w500,
+                          // fontStyle: GoogleFonts.poppins.fontFamily,
                         ),
                       ),
-                      const VSpace(29),
+                      // const VSpace(smallWhiteSpace),
+                      Text(
+                        'Please provide a few details so we can complete your profile.',
+                        style: TextStyle(
+                          fontSize: paragraphText,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey.shade500,
+                          // fontStyle: GoogleFonts.poppins.fontFamily,
+                        ),
+                      ),
+                      const VSpace(whiteSpace),
+                      Form(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        child: Column(
+                          children: [
+                            _buildTextField(
+                              controller: firstNameController,
+                              label: 'Full Name',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: emailController,
+                              label: 'Email',
+                              inputType: TextInputType.emailAddress,
+                              prefixIconUrl: 'assets/app_icons/envelope.svg',
+                            ),
+                            _buildTextField(
+                              controller: phoneController,
+                              label: 'Phone',
+                              inputType: TextInputType.phone,
+                            ),
+                            _buildTextField(
+                              controller: motorcycleTypeController,
+                              label: 'Motorcycle Type',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: motorcycleColorController,
+                              label: 'Motorcycle Color',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: licenseNumberController,
+                              label: 'License Number',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: motorcycleNumberController,
+                              label: 'Motorcycle Number',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: motorcycleYearController,
+                              label: 'Motorcycle Year',
+                              inputType: TextInputType.number,
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: addressController,
+                              label: 'Permanent Address',
+                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                            ),
+                            _buildTextField(
+                              controller: passwordController,
+                              label: 'Password',
+                              obscure: true,
+                              prefixIconUrl:
+                                  'assets/app_icons/password-type.svg',
+                            ),
+                            _buildTextField(
+                              controller: confirmPasswordController,
+                              label: 'Confirm Password',
+                              obscure: true,
+                              prefixIconUrl:
+                                  'assets/app_icons/password-type.svg',
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'Confirm your password';
+                                }
+                                if (val != passwordController.text) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const VSpace(whiteSpace),
+                      Row(
+                        children: [
+                          Checkbox.adaptive(
+                            value: hasReadTermsAndCondition,
+                            onChanged: (x) {
+                              setState(() {
+                                hasReadTermsAndCondition =
+                                    !hasReadTermsAndCondition;
+                              });
+                            },
+                            side: BorderSide(color: gradient1),
+                            fillColor: WidgetStatePropertyAll(
+                              hasReadTermsAndCondition
+                                  ? thickFillColor
+                                  : fillColor,
+                            ),
+                          ),
+                          Text(
+                            'Read Terms and Conditions',
+                            style: TextStyle(
+                              fontSize: paragraphText,
+                              fontWeight: FontWeight.w600,
+                              color: gradient1,
+                            ),
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 17),
                         child: FreedomButton(

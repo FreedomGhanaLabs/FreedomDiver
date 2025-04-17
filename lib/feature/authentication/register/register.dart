@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -35,6 +36,9 @@ class TextFieldFactory extends StatefulWidget {
     this.enabledBorderRadius,
     this.focusedBorderRadius,
     this.label,
+    this.obscure,
+    this.prefixSvgUrl,
+    this.prefixIcon,
   });
   factory TextFieldFactory.name({
     required TextEditingController controller,
@@ -44,6 +48,8 @@ class TextFieldFactory extends StatefulWidget {
     TextAlignVertical? textAlignVertical,
     EdgeInsetsGeometry? contentPadding,
     Widget? prefixText,
+    String? prefixSvgUrl,
+    IconData? prefixIcon,
     FocusNode? focusNode,
     TextInputType? keyboardType,
     Color? initialBorderColor,
@@ -276,11 +282,16 @@ class TextFieldFactory extends StatefulWidget {
         focusedBorderRadius: focusedBorderRadius,
         suffixIcon: suffixIcon,
       );
+
+//  a different factory
   final TextEditingController controller;
   final Widget? suffixIcon;
   final void Function(String)? onChanged;
   final String? label;
+  final String? prefixSvgUrl;
+  final IconData? prefixIcon;
   final String? hintText;
+  final bool? obscure;
   final String? Function(String?)? validator;
   final AutovalidateMode? autovalidateMode;
   final String? errorText;
@@ -308,6 +319,7 @@ class TextFieldFactory extends StatefulWidget {
 }
 
 class _TextFieldFactoryState extends State<TextFieldFactory> {
+  bool canSee = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -332,6 +344,8 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
           autovalidateMode: widget.autovalidateMode,
           maxLines: widget.maxLines ?? 1,
           cursorColor: Colors.black,
+          obscureText: widget.obscure != null ? canSee : false,
+          obscuringCharacter: '*',
           onChanged: widget.onChanged,
           style: widget.fontStyle ??
               GoogleFonts.poppins(
@@ -346,19 +360,42 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
             suffixIcon: widget.suffixIcon,
             labelStyle: widget.hintTextStyle ??
                 GoogleFonts.poppins(
-                  fontSize: 14.sp,
+                  fontSize: paragraphText,
                   color: const Color(0xffE0E0E0),
                 ),
-            prefixIcon: widget.prefixText,
+            prefixIcon: widget.prefixSvgUrl != null
+                ? SizedBox(
+                    child: SvgPicture.asset(
+                      widget.prefixSvgUrl!,
+                      fit: BoxFit.scaleDown,
+                    ),
+                  )
+                : widget.prefixIcon != null
+                    ? Icon(widget.prefixIcon, size: 18)
+                    : widget.prefixText,
+            suffix: widget.obscure != null
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        canSee = !canSee;
+                      });
+                    },
+                    child: Icon(
+                      canSee
+                          ? Icons.remove_red_eye_rounded
+                          : Icons.remove_red_eye_outlined,
+                    ),
+                  )
+                : null,
             errorText: widget.errorText,
             errorStyle: const TextStyle(
               height: 0,
             ),
-            contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
+            contentPadding:
+                widget.contentPadding ?? const EdgeInsets.all(smallWhiteSpace),
             errorBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(
-                color: widget.initialBorderColor ?? Colors.grey.shade500,
+              borderSide: BorderSide(
+                color: widget.initialBorderColor ?? Colors.grey.shade100,
               ),
               borderRadius: widget.borderRadius ??
                   const BorderRadius.all(Radius.circular(5)),
@@ -367,7 +404,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
               borderSide: BorderSide(
                 color: widget.fieldActiveBorderColor ?? Colors.orange,
               ),
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
+              borderRadius: const BorderRadius.all(Radius.circular(roundedMd)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: widget.enabledBorderRadius ??
@@ -382,7 +419,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
               ),
               borderRadius: widget.focusedBorderRadius ??
                   const BorderRadius.all(
-                    Radius.circular(5),
+                    Radius.circular(roundedMd),
                   ),
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
