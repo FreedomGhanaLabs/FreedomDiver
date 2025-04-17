@@ -21,7 +21,7 @@ class InAppCallMap extends StatefulWidget {
 }
 
 class _InAppCallMapState extends State<InAppCallMap> {
-  static const LatLng sanFrancisco = LatLng(37.774546, -122.433523);
+  static LatLng sanFrancisco = const LatLng(37.774546, -122.433523);
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
       child: Scaffold(
         body: Stack(
           children: [
-            const GoogleMap(
+            GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: sanFrancisco,
                 zoom: 13,

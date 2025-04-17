@@ -75,12 +75,6 @@ class KycCubit extends Cubit<KycState> {
     }
   }
 
-  // Future<void> registerDriver(String driverJson) async {
-  //   try {
-  //
-  //   } catch (e) {}
-  // }
-  // Helper method to determine the image format
   String _getImageFormat(String path) {
     final extension = path.split('.').last.toLowerCase();
     switch (extension) {
