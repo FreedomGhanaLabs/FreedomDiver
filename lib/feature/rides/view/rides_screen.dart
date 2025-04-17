@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/home/view/widgets/rider_time_line.dart';
+import 'package:freedom_driver/feature/rides/enum.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:freedom_driver/feature/rides/enum.dart';
 
 class RidesScreen extends StatefulWidget {
   const RidesScreen({super.key});

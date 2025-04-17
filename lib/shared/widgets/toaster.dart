@@ -51,9 +51,7 @@ class CustomToast {
     Overlay.of(context).insert(_overlayEntry!);
 
     // Auto dismiss after duration
-    Future.delayed(duration, () {
-      dismiss();
-    });
+    Future.delayed(duration, dismiss);
   }
 
   static void dismiss() {
@@ -66,15 +64,14 @@ class CustomToast {
 }
 
 class _ToastWidget extends StatefulWidget {
-
   const _ToastWidget({
-    Key? key,
     required this.message,
     required this.position,
     required this.type,
     required this.width,
+    super.key,
     this.onDismiss,
-  }) : super(key: key);
+  });
   final String message;
   final ToastPosition position;
   final ToastType type;
@@ -85,7 +82,8 @@ class _ToastWidget extends StatefulWidget {
   State<_ToastWidget> createState() => _ToastWidgetState();
 }
 
-class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderStateMixin {
+class _ToastWidgetState extends State<_ToastWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -102,32 +100,32 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
     Offset beginOffset;
     switch (widget.position) {
       case ToastPosition.top:
-        beginOffset = const Offset(0.0, -1.0);
-        break;
+        beginOffset = const Offset(0, -1);
       case ToastPosition.center:
-        beginOffset = const Offset(0.0, 0.2);
-        break;
+        beginOffset = const Offset(0, 0.2);
       case ToastPosition.bottom:
-      default:
-        beginOffset = const Offset(0.0, 1.0);
-        break;
+        beginOffset = const Offset(0, 1);
     }
 
     _slideAnimation = Tween<Offset>(
       begin: beginOffset,
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.elasticOut,
+      ),
+    );
 
     _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeIn,
-    ));
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
 
     _animationController.forward();
   }
@@ -147,7 +145,6 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
       case ToastType.warning:
         return Icons.warning_amber_outlined;
       case ToastType.info:
-      default:
         return Icons.info_outline;
     }
   }
@@ -161,7 +158,6 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
       case ToastType.warning:
         return Colors.orange;
       case ToastType.info:
-      default:
         return Colors.blue;
     }
   }
@@ -172,26 +168,25 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
       child: Align(
         alignment: _getAlignmentForPosition(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           child: SlideTransition(
             position: _slideAnimation,
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: Material(
-                elevation: 6.0,
-                borderRadius: BorderRadius.circular(12.0),
+                elevation: 6,
+                borderRadius: BorderRadius.circular(12),
                 color: Colors.white,
                 child: Container(
                   width: widget.width,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _getColorForType().withOpacity(0.3),
-                      width: 1.0,
+                      color: _getColorForType().withValues(alpha: 0.3),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: _getColorForType().withOpacity(0.1),
+                        color: _getColorForType().withValues(alpha: 0.1),
                         blurRadius: 12,
                         offset: const Offset(0, 2),
                       ),
@@ -205,13 +200,13 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                         decoration: BoxDecoration(
                           color: _getColorForType(),
                           borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12.0),
-                            bottomLeft: Radius.circular(12.0),
+                            topLeft: Radius.circular(12),
+                            bottomLeft: Radius.circular(12),
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.all(12),
                         child: Icon(
                           _getIconForType(),
                           color: _getColorForType(),
@@ -220,11 +215,11 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           child: Text(
                             widget.message,
                             style: const TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 14,
                               color: Colors.black87,
                             ),
                           ),
@@ -232,9 +227,7 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                       ),
                       IconButton(
                         icon: const Icon(Icons.close, size: 18),
-                        onPressed: () {
-                          _dismissToast();
-                        },
+                        onPressed: _dismissToast,
                         color: Colors.black54,
                       ),
                     ],
@@ -294,7 +287,7 @@ extension ToastExtension on BuildContext {
 
 // Usage example widget
 class ToastExample extends StatelessWidget {
-  const ToastExample({Key? key}) : super(key: key);
+  const ToastExample({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -340,8 +333,8 @@ class ToastExample extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.showToast(
-                  message: 'This is an info toast with a longer message that may wrap to multiple lines.',
-                  type: ToastType.info,
+                  message:
+                      'This is an info toast with a longer message that may wrap to multiple lines.',
                   position: ToastPosition.center,
                   duration: const Duration(seconds: 4),
                 );

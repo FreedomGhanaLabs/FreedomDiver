@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloudinary_flutter/cloudinary_object.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart' as cld;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,13 +25,12 @@ class BackgroundVerificationScreen extends StatefulWidget {
 
 class _BackgroundVerificationScreenState
     extends State<BackgroundVerificationScreen> {
-  late final CloudinaryObject _cloudinaryObject;
+  late final CloudinaryObject cloudinaryObject;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _cloudinaryObject = CloudinaryObject.fromCloudName(cloudName: 'freedom');
+    cloudinaryObject = CloudinaryObject.fromCloudName(cloudName: 'freedom');
   }
 
   @override
@@ -80,7 +78,9 @@ class _BackgroundVerificationScreenState
                   Text(
                     'Upload a photo of a valid ID (Driver’s License, Passport, or Ghana Card) to verify your identity.',
                     style: GoogleFonts.poppins(
-                        fontSize: 9.27, fontWeight: FontWeight.w400),
+                      fontSize: 9.27,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                   const VSpace(10),
                   buildUploadDocsUI(),
@@ -97,7 +97,9 @@ class _BackgroundVerificationScreenState
                         .read<RegistrationFormCubit>()
                         .setUserDetails(securedImageUrl: state.imageUrl);
                     Navigator.pushNamed(
-                        context, CriminalBackgroundCheckScreen.routeName);
+                      context,
+                      CriminalBackgroundCheckScreen.routeName,
+                    );
                   }
                   if (state is KycImageUploadFailure) {
                     context.showToast(
@@ -258,7 +260,8 @@ class _BackgroundVerificationScreenState
             ),
           );
         }
-      }),
+        },
+      ),
     );
   }
 }

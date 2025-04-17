@@ -72,7 +72,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
           shape: RoundedRectangleBorder(
             side: BorderSide(
               strokeAlign: BorderSide.strokeAlignOutside,
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
             ),
             borderRadius: BorderRadius.circular(8),
           ),
@@ -91,7 +91,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             const Icon(
               Icons.keyboard_arrow_down_rounded,
               color: Colors.white,
-            )
+            ),
           ],
         ),
       ),

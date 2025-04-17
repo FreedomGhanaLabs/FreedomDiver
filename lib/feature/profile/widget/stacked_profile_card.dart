@@ -88,7 +88,8 @@ class ProfileCard extends StatelessWidget {
                             shape: BoxShape.circle,
                             color: Colors.white,
                             border: Border.all(
-                                color: Colors.black, width: 2),
+                              width: 2,
+                            ),
                           ),
                           child: SvgPicture.asset(
                             'assets/app_icons/edit_profile.svg',
@@ -113,7 +114,7 @@ class ProfileCard extends StatelessWidget {
                   height: 24,
                   padding: const EdgeInsets.only(left: 10),
                   decoration: ShapeDecoration(
-                    color: Colors.white.withOpacity(0.34),
+                    color: Colors.white.withValues(alpha: 0.34),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(34),
                     ),
@@ -121,7 +122,8 @@ class ProfileCard extends StatelessWidget {
                   child: Row(
                     children: [
                       SvgPicture.asset(
-                          'assets/app_icons/copy_button_icon.svg'),
+                        'assets/app_icons/copy_button_icon.svg',
+                      ),
                       const HSpace(7),
                       Text(
                         '08012345678',
@@ -145,7 +147,7 @@ class ProfileCard extends StatelessWidget {
                     decoration: TextDecoration.underline,
                     decorationColor: Colors.white,
                   ),
-                )
+                ),
               ],
             ),
           ),

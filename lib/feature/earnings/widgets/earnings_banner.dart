@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EarningsBanner extends StatelessWidget {
   const EarningsBanner({
-    super.key,
     required this.title,
     required this.child,
     required this.subtitle,
     required this.child2,
+    super.key,
 
   });
   final Widget child;
@@ -30,8 +29,7 @@ class EarningsBanner extends StatelessWidget {
         ),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 1,
-            color: Colors.black.withOpacity(0.07999999821186066),
+            color: Colors.black.withValues(alpha: 0.07999999821186066),
           ),
           borderRadius: BorderRadius.circular(13),
         ),
@@ -47,7 +45,7 @@ class EarningsBanner extends StatelessWidget {
                   color: Colors.black,
                   fontSize: 13.33,
                   fontWeight: FontWeight.w400,
-                )
+                ),
               ),
               SizedBox(
                 width: 200,

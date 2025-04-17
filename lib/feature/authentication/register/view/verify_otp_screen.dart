@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -162,11 +162,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                           blurRadius: 10,
                         ),
                       ],
-                      onChanged: (value) {
-                        if (mounted) {
-                          log(value);
-                        }
-                      },
+                      onChanged: (value) {},
                       beforeTextPaste: (text) {
                         return true;
                       },
@@ -192,19 +188,20 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
                         apiController.post(
                           context,
-                          'verify-registration',
+                          'resend-verification',
                           {
-                            'email': formCubit.state.email,
-                            'verificationCode': _otpController.text.trim(),
+                            'identifier': formCubit.state.email,
+                            'type': 'email',
+                            'purpose': 'registration',
                           },
                           (success, data) {
-                            setState(() {
-                              isLoading = false;
-                            });
+
                             if (success) {
-                              Navigator.pushReplacementNamed(
+                              showToast(
                                 context,
-                                LoginFormScreen.routeName,
+                                'Code Resent',
+                                data['message'].toString(),
+                                ContentType.success,
                               );
                             }
                           },

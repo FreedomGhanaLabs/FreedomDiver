@@ -29,7 +29,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               children: [
                 const Padding(
                     padding: EdgeInsets.only(left: 27),
-                    child: DecoratedBackButton()),
+                  child: DecoratedBackButton(),
+                ),
                 const HSpace(84.91),
                 Center(
                   child: Text(
@@ -41,7 +42,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                )
+                ),
               ],
             ),
             const VSpace(14.91),
@@ -69,12 +70,14 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     controller: nameController,
                     fillColor: Colors.white,
                     enabledColorBorder: const Color(0xFFE1E1E1),
-                    hinText: 'Full Name',
+                    hintText: 'Full Name',
                     focusedBorderColor: Colors.black,
                     // enabledBorderRadius:
                     //     const BorderRadius.all(Radius.circular(10)),
                     hintTextStyle: GoogleFonts.poppins(
-                        color: hintTextColor, fontSize: 11.50),
+                      color: hintTextColor,
+                      fontSize: 11.50,
+                    ),
                   ),
                   const VSpace(20),
                   Row(
@@ -104,7 +107,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           'Verified',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
-                              fontSize: 11.9, color: const Color(0xff52C01B)),
+                            fontSize: 11.9,
+                            color: const Color(0xff52C01B),
+                          ),
                         ),
                       ),
                     ],
@@ -113,7 +118,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   TextFieldFactory.email(
                     controller: emailController,
                     fillColor: Colors.white,
-                    hinText: 'youremail@email.com',
+                    hintText: 'youremail@email.com',
                     focusedBorderColor: Colors.black,
                     enabledColorBorder: const Color(0xFFE1E1E1),
                     // enabledBorderRadius:
@@ -148,7 +153,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           'Verified',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
-                              fontSize: 11.9, color: const Color(0xff52C01B)),
+                            fontSize: 11.9,
+                            color: const Color(0xff52C01B),
+                          ),
                         ),
                       ),
                     ],
@@ -167,7 +174,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                         top: 5,
                         bottom: 5,
                       ),
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: const BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -177,7 +184,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                         children: [
                           const Icon(Icons.edit, color: Colors.white),
                           Text('Change Number',
-                              style: GoogleFonts.poppins(color: Colors.white))
+                            style: GoogleFonts.poppins(color: Colors.white),
+                          ),
                         ],
                       ),
                     ),
@@ -199,7 +207,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       SvgPicture.asset('assets/app_icons/phone_numbers.svg'),
                     ),
                     hintTextStyle: GoogleFonts.poppins(),
-                  )
+                  ),
                 ],
               ),
             ),

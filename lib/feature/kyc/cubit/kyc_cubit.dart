@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -55,7 +54,8 @@ class KycCubit extends Cubit<KycState> {
           'file',
           file.path,
           contentType: MediaType('image', imageFormat),
-        ));
+          ),
+        );
 
       final response = await request.send();
       final responseData = await response.stream.toBytes();
@@ -68,7 +68,10 @@ class KycCubit extends Cubit<KycState> {
         emit(KycImageUploadSuccess(secureUrl, file));
       } else {
         emit(KycImageUploadFailure(
-            'Upload failed: ${response.statusCode} - $responseString', file));
+            'Upload failed: ${response.statusCode} - $responseString',
+            file,
+          ),
+        );
       }
     } catch (e) {
       emit(KycImageUploadFailure('Error uploading image: $e', file));

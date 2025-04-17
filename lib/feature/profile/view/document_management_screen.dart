@@ -47,7 +47,7 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -85,7 +85,7 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -118,7 +118,7 @@ class _VehicleInformationContainerState
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: ShapeDecoration(
         color: const Color(0x14777777),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -141,7 +141,8 @@ class _VehicleInformationContainerState
                 border: Border.all(
                   color: Colors.black.withValues(alpha: 0.209),
                 ),
-                borderRadius: BorderRadius.circular(4)),
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: DropdownButton<String>(
                 value: dropDownValue,
                 alignment: Alignment.bottomLeft,
@@ -161,7 +162,8 @@ class _VehicleInformationContainerState
                     value: value,
                     child: Text(value),
                   );
-                }).toList()),
+              }).toList(),
+            ),
           ),
           const VSpace(9),
           Text(
@@ -175,7 +177,8 @@ class _VehicleInformationContainerState
           TextFieldFactory.itemField(
             controller: widget.vehicleColor,
             fillColor: Colors.white,
-            enabledBorderColor: Colors.black.withOpacity(0.20999999344348907),
+            enabledBorderColor:
+                Colors.black.withValues(alpha: 0.20999999344348907),
           ),
           const VSpace(9),
           Text(
@@ -189,7 +192,8 @@ class _VehicleInformationContainerState
           TextFieldFactory.itemField(
             controller: widget.vehicleMakeAndModel,
             fillColor: Colors.white,
-            enabledBorderColor: Colors.black.withOpacity(0.20999999344348907),
+            enabledBorderColor:
+                Colors.black.withValues(alpha: 0.20999999344348907),
           ),
           const VSpace(9),
           Text(
@@ -203,7 +207,8 @@ class _VehicleInformationContainerState
           TextFieldFactory.itemField(
             controller: widget.vehicleMakeAndModel,
             fillColor: Colors.white,
-            enabledBorderColor: Colors.black.withOpacity(0.20999999344348907),
+            enabledBorderColor:
+                Colors.black.withValues(alpha: 0.20999999344348907),
           ),
           const VSpace(9),
           FreedomButton(
@@ -215,7 +220,7 @@ class _VehicleInformationContainerState
               fontSize: 13,
               fontWeight: FontWeight.w400,
             ),),
-          )
+          ),
         ],
       ),
     );

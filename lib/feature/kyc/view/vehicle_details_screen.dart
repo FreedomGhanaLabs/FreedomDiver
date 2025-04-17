@@ -39,217 +39,221 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      const DecoratedBackButton(),
-                      const SizedBox(width: 13.91),
-                      Text(
-                        'Vehicle and Identification Details',
-                        style: GoogleFonts.poppins(
-                          fontSize: 17.3,
-                          fontWeight: FontWeight.w500,
-                        ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    const DecoratedBackButton(),
+                    const SizedBox(width: 13.91),
+                    Text(
+                      'Vehicle and Identification Details',
+                      style: GoogleFonts.poppins(
+                        fontSize: 17.3,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
-                  ),
-                ),
-                const VSpace(8.91),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 21),
-                  child: Text(
-                    'We need a few more details about your vehicle and verification documents.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
                     ),
+                  ],
+                ),
+              ),
+              const VSpace(8.91),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 21),
+                child: Text(
+                  'We need a few more details about your vehicle and verification documents.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
                   ),
                 ),
-                const VSpace(27),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 21),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Bike Type',
-                        style: GoogleFonts.poppins(
-                          color: Colors.black,
-                          fontSize: 15.06,
-                          fontWeight: FontWeight.w500,
+              ),
+              const VSpace(27),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 21),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bike Type',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 15.06,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const VSpace(5),
+                    Form(
+                      key: bikeTypeFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFieldFactory.itemField(
+                        fillColor: lightGreyColor,
+                        controller: bikeTypeController,
+                        hintText: 'honda civic',
+                      ),
+                    ),
+                    const VSpace(11),
+                    Text(
+                      'Registration Number',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15.06,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const VSpace(12),
+                    Form(
+                      key: registrationFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFieldFactory.itemField(
+                        controller: registrationNumberController,
+                        fillColor: lightGreyColor,
+                        hintText: 'GH-09-4333-90',
+                        contentPadding: const EdgeInsets.only(
+                          top: 25,
+                          bottom: 19,
+                          left: 13,
                         ),
+                        fieldActiveBorderColor: lightGreyColor,
+                        enabledBorderColor: Colors.transparent,
+                        validator: (p0) {
+                          if (p0!.isEmpty) {
+                            return 'Registration Number is required';
+                          }
+                          return null;
+                        },
                       ),
-                      const VSpace(5),
-                      Form(
-                          key: bikeTypeFormKey,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          child: TextFieldFactory.itemField(
-                            fillColor: lightGreyColor,
-                            controller: bikeTypeController,
-                            hinText: 'honda civic',
-                          )),
-                      const VSpace(11),
-                      Text(
-                        'Registration Number',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15.06,
-                          fontWeight: FontWeight.w500,
+                    ),
+                    const VSpace(16),
+                    Text(
+                      'MotorCycle Number',
+                      style: GoogleFonts.poppins(),
+                    ),
+                    const VSpace(14),
+                    Form(
+                      key: motorCycleNumberKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFieldFactory.itemField(
+                        controller: motorCycleNumberController,
+                        fillColor: lightGreyColor,
+                        hintText: 'GH-09-4333-90',
+                        contentPadding: const EdgeInsets.only(
+                          top: 25,
+                          bottom: 19,
+                          left: 13,
                         ),
+                        fieldActiveBorderColor: lightGreyColor,
+                        enabledBorderColor: Colors.transparent,
+                        validator: (p0) {
+                          if (p0!.isEmpty) {
+                            return 'MotorCycle Number is required';
+                          }
+                          return null;
+                        },
                       ),
-                      const VSpace(12),
-                      Form(
-                        key: registrationFormKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        child: TextFieldFactory.itemField(
-                          controller: registrationNumberController,
-                          fillColor: lightGreyColor,
-                          hinText: 'GH-09-4333-90',
-                          contentPadding: const EdgeInsets.only(
-                              top: 25, bottom: 19, left: 13),
-                          fieldActiveBorderColor: lightGreyColor,
-                          enabledBorderColor: Colors.transparent,
-                          focusedBorderColor: Colors.transparent,
-                          errorBorderColor: Colors.red,
-                          validator: (p0) {
-                            if (p0!.isEmpty) {
-                              return 'Registration Number is required';
-                            }
-                            return null;
-                          },
+                    ),
+                    const VSpace(16),
+                    Text(
+                      'MotorCycle Year',
+                      style: GoogleFonts.poppins(),
+                    ),
+                    const VSpace(14),
+                    Form(
+                      key: motorCycleYearKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFieldFactory.itemField(
+                        controller: motorCycleYearController,
+                        fillColor: lightGreyColor,
+                        hintText: '2020',
+                        contentPadding: const EdgeInsets.only(
+                          top: 25,
+                          bottom: 19,
+                          left: 13,
                         ),
+                        fieldActiveBorderColor: lightGreyColor,
+                        enabledBorderColor: Colors.transparent,
+                        validator: (p0) {
+                          if (p0!.isEmpty) {
+                            return 'MotorCycle year is required';
+                          }
+                          return null;
+                        },
                       ),
-                      const VSpace(16),
-                      Text(
-                        'MotorCycle Number',
-                        style: GoogleFonts.poppins(),
-                      ),
-                      const VSpace(14),
-                      Form(
-                        key: motorCycleNumberKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        child: TextFieldFactory.itemField(
-                          controller: motorCycleNumberController,
-                          fillColor: lightGreyColor,
-                          hinText: 'GH-09-4333-90',
-                          contentPadding: const EdgeInsets.only(
-                              top: 25, bottom: 19, left: 13),
-                          fieldActiveBorderColor: lightGreyColor,
-                          enabledBorderColor: Colors.transparent,
-                          focusedBorderColor: Colors.transparent,
-                          errorBorderColor: Colors.red,
-                          validator: (p0) {
-                            if (p0!.isEmpty) {
-                              return 'MotorCycle Number is required';
-                            }
-                            return null;
-                          },
+                    ),
+                    Text(
+                      'Address',
+                      style: GoogleFonts.poppins(),
+                    ),
+                    const VSpace(14),
+                    Form(
+                      key: addressKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: TextFieldFactory.itemField(
+                        controller: addressController,
+                        fillColor: lightGreyColor,
+                        hintText: 'state/country/postal code/street/city',
+                        contentPadding: const EdgeInsets.only(
+                          top: 25,
+                          bottom: 19,
+                          left: 13,
                         ),
+                        fieldActiveBorderColor: lightGreyColor,
+                        enabledBorderColor: Colors.transparent,
+                        validator: (p0) {
+                          if (p0!.isEmpty) {
+                            return 'MotorCycle year is required';
+                          }
+                          return null;
+                        },
                       ),
-                      const VSpace(16),
-                      Text(
-                        'MotorCycle Year',
-                        style: GoogleFonts.poppins(),
-                      ),
-                      const VSpace(14),
-                      Form(
-                        key: motorCycleYearKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        child: TextFieldFactory.itemField(
-                          controller: motorCycleYearController,
-                          fillColor: lightGreyColor,
-                          hinText: '2020',
-                          contentPadding: const EdgeInsets.only(
-                              top: 25, bottom: 19, left: 13),
-                          fieldActiveBorderColor: lightGreyColor,
-                          enabledBorderColor: Colors.transparent,
-                          focusedBorderColor: Colors.transparent,
-                          errorBorderColor: Colors.red,
-                          validator: (p0) {
-                            if (p0!.isEmpty) {
-                              return 'MotorCycle year is required';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Text(
-                        'Address',
-                        style: GoogleFonts.poppins(),
-                      ),
-                      const VSpace(14),
-                      Form(
-                        key: addressKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        child: TextFieldFactory.itemField(
-                          controller: addressController,
-                          fillColor: lightGreyColor,
-                          hinText: 'state/country/postalcode/street/city',
-                          contentPadding: const EdgeInsets.only(
-                              top: 25, bottom: 19, left: 13),
-                          fieldActiveBorderColor: lightGreyColor,
-                          enabledBorderColor: Colors.transparent,
-                          focusedBorderColor: Colors.transparent,
-                          errorBorderColor: Colors.red,
-                          validator: (p0) {
-                            if (p0!.isEmpty) {
-                              return 'MotorCycle year is required';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const VSpace(40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 21,
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      if (bikeTypeFormKey.currentState!.validate() &&
-                          registrationFormKey.currentState!.validate() &&
-                          addressKey.currentState!.validate() &&
-                          motorCycleYearKey.currentState!.validate() &&
-                          bikeTypeFormKey.currentState!.validate() &&
-                          motorCycleNumberKey.currentState!.validate()) {
-                        Navigator.pushNamed(
-                          context,
-                          BackgroundVerificationScreen.routeName,
-                        );
-                        context.read<RegistrationFormCubit>().setUserDetails(
+              ),
+              const VSpace(40),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 21,
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    if (bikeTypeFormKey.currentState!.validate() &&
+                        registrationFormKey.currentState!.validate() &&
+                        addressKey.currentState!.validate() &&
+                        motorCycleYearKey.currentState!.validate() &&
+                        bikeTypeFormKey.currentState!.validate() &&
+                        motorCycleNumberKey.currentState!.validate()) {
+                      Navigator.pushNamed(
+                        context,
+                        BackgroundVerificationScreen.routeName,
+                      );
+                      context.read<RegistrationFormCubit>().setUserDetails(
                             motorcycleColor: 'red',
                             motorcycleNumber: motorCycleNumberController.text,
                             motorcycleType: bikeTypeController.text,
                             motorcycleYear: motorCycleYearController.text,
                             licenseNumber: registrationNumberController.text,
-                            address: addressController.text);
-                      }
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      padding: const EdgeInsets.only(top: 15, bottom: 15),
+                            address: addressController.text,
+                          );
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(7),
                     ),
-                    child: Text(
-                      'Continue',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17.92,
-                      ),
+                    padding: const EdgeInsets.only(top: 15, bottom: 15),
+                  ),
+                  child: Text(
+                    'Continue',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17.92,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:freedom_driver/app/view/app.dart';
 import 'package:freedom_driver/shared/theme/text_style.dart';
 
-List<Widget> buildCustomerDetail() {
+List<Widget> buildCustomerDetail(BuildContext context) {
   return List.generate(4, (index) {
-    final context = navigatorKey.currentContext;
-    final width = MediaQuery.of(context!).size.width;
+    final width = MediaQuery.of(context).size.width;
     return Container(
       width: width,
       margin: const EdgeInsets.only(bottom: 15),
@@ -15,7 +13,7 @@ List<Widget> buildCustomerDetail() {
           side: BorderSide(
             width: 1.15,
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: Colors.black.withOpacity(0.23),
+            color: Colors.black.withValues(alpha: 0.23),
           ),
           borderRadius: BorderRadius.circular(6.90),
         ),
@@ -50,7 +48,8 @@ List<Widget> buildCustomerDetail() {
                 Text('Pickup', style: rideRequestTitleTextStyle),
                 const Spacer(),
                 Text('${rideRequest['pickup']}',
-                    style: rideRequestDetailTextStyle),
+                    style: rideRequestDetailTextStyle,
+                  ),
               ],
             ),
           if (index == 2)
@@ -79,10 +78,12 @@ List<Widget> buildCustomerDetail() {
                 ),
                 const Spacer(),
                 Text('${rideRequest['estimatedFee']}',
-                    style: rideRequestDetailTextStyle),
+                    style: rideRequestDetailTextStyle,
+                  ),
               ],
             ),
-        ]),
+          ],
+        ),
       ),
     );
   });

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
-import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -22,7 +22,7 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 21),
+              padding: const EdgeInsets.only(left: whiteSpace),
               child: Row(
                 children: [
                   const DecoratedBackButton(),
@@ -39,7 +39,7 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
             ),
             const VSpace(8.91),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 21),
+              padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
               child: Text(
                 'We prioritize safety. Please upload your necessary documents for verification.',
                 style: GoogleFonts.poppins(
@@ -59,7 +59,7 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 21),
+              padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
               child: Text(
                 'We work with trusted authorities to ensure all riders meet our safety requirements. Background checks can take up to 48 hours. You’ll be notified as soon as it’s complete.',
                 style: GoogleFonts.poppins(

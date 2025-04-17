@@ -18,7 +18,7 @@ class DriverScoreDetailsScreen extends StatelessWidget {
       child: ColoredBox(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
             children: [
               Padding(
@@ -101,10 +101,10 @@ class DriverScoreDetailsScreen extends StatelessWidget {
                 decoration: ShapeDecoration(
                   color: const Color(0x0FEFEFEF),
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
+                      side: BorderSide(
                       strokeAlign: BorderSide.strokeAlignOutside,
-                      color: Colors.black.withOpacity(0.07999999821186066),
+                        color:
+                            Colors.black.withValues(alpha: 0.07999999821186066),
                     ),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -113,7 +113,7 @@ class DriverScoreDetailsScreen extends StatelessWidget {
                     children: List.generate(
                   3,
                   (index) => Padding(
-                    padding: EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: 20),
                     child: Container(
                       width: 367,
                       height: index == 2 ? 100 : 49,
@@ -143,7 +143,8 @@ class DriverScoreDetailsScreen extends StatelessWidget {
                                       fontSize: 12.64,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w500,
-                                    )),
+                                      ),
+                                    ),
                                 const HSpace(10),
                                 moreDetailsList[index].image,
                                 const Spacer(),
@@ -161,32 +162,35 @@ class DriverScoreDetailsScreen extends StatelessWidget {
                                     color: Colors.black.withValues(alpha: 0.43),
                                     fontSize: 11.98,
                                     fontWeight: FontWeight.w500,
-                                  )),
-                            )
+                                    ),
+                                  ),
+                                ),
                         ],
                       ),
                     ),
                   ),
-                )),
-              )
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
       ),
-    ));
+      ),
+    );
   }
 }
 
 class MoreDetailsModel {
-  final String title;
-  final Widget image;
-  final String ratioValue;
 
   const MoreDetailsModel({
     required this.title,
     required this.image,
     required this.ratioValue,
   });
+  final String title;
+  final Widget image;
+  final String ratioValue;
 }
 
 List<MoreDetailsModel> moreDetailsList = [

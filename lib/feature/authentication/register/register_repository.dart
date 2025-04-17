@@ -19,11 +19,11 @@ class RegisterRepository {
       final response = await _remoteDataSource.registerDriver(registerData);
       log('Response: $response');
       return response;
-    } on ServerAuthException catch (e) {
+    } on ServerAuthException {
       rethrow;
-    } on NetworkAuthException catch (e) {
+    } on NetworkAuthException {
       rethrow;
-    } on AuthException catch (e) {
+    } on AuthException {
       rethrow;
     } catch (e) {
       log(e.toString());

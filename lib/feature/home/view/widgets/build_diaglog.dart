@@ -37,12 +37,15 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                         margin: const EdgeInsets.only(left: 10),
                         height: 30,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 9.08, vertical: 3.03),
+                        horizontal: 9.08,
+                        vertical: 3.03,
+                      ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(
                               color: Colors.black
-                                  .withOpacity(0.20999999344348907)),
+                              .withValues(alpha: 0.20999999344348907),
+                        ),
                           borderRadius: BorderRadius.circular(8.08),
                         ),
                         child: Center(
@@ -60,7 +63,7 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                   ),
                 ),
                 const VSpace(18.47),
-                ...buildCustomerDetail(),
+              ...buildCustomerDetail(context),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -75,7 +78,9 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                           fontSize: 16.51,
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 9.5),
+                        horizontal: 16,
+                        vertical: 9.5,
+                      ),
                       ),
                     ),
                     const HSpace(20),
@@ -94,7 +99,10 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                         },
                         backgroundColor: thickFillColor,
                         borderRadius: BorderRadius.circular(6.90),
-                        padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 9.5)
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 9.5,
+                      ),
                       ),
                     ),
                   ],
@@ -103,5 +111,6 @@ Future<void> buildRideFoundDialog(BuildContext context) {
             ),
           ),
         );
-      });
+    },
+  );
 }

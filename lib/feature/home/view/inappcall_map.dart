@@ -1,4 +1,3 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -61,7 +60,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           decoration: const ShapeDecoration(
                             image: DecorationImage(
                               image: AssetImage(
-                                  'assets/app_images/client_holder_image.png'),
+                                'assets/app_images/client_holder_image.png',
+                              ),
                               fit: BoxFit.fill,
                             ),
                             shape: OvalBorder(),
@@ -125,7 +125,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           Text(
                             'Price',
                             style: TextStyle(
-                              color: Colors.black.withOpacity(0.5600000023841858),
+                              color: Colors.black
+                                  .withValues(alpha: 0.5600000023841858),
                               fontSize: 9.15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -133,14 +134,14 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           ),
                           const VSpace(10),
                           const Text(
-                            '\$20.5',
+                            r'$20.5',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13.72,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                             ),
-                          )
+                          ),
                         ],
                       ),
                       Column(
@@ -148,7 +149,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           Text(
                             'EXpected Distance  Covered',
                             style: TextStyle(
-                              color: Colors.black.withOpacity(0.5600000023841858),
+                              color: Colors.black
+                                  .withValues(alpha: 0.5600000023841858),
                               fontSize: 9.15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -171,7 +173,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           Text(
                             'Avg.TIme',
                             style: TextStyle(
-                              color: Colors.black.withOpacity(0.5600000023841858),
+                              color: Colors.black
+                                  .withValues(alpha: 0.5600000023841858),
                               fontSize: 9.15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -186,9 +189,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                             ),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   const VSpace(37),
@@ -225,7 +228,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -272,7 +275,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 23, top: 0),
+      padding: const EdgeInsets.only(left: 23),
       child: Container(
         width: 369,
         padding: const EdgeInsets.only(left: 8, top: 13, bottom: 12.96),
@@ -289,7 +292,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
             Text(
               'Pickup Point',
               style: GoogleFonts.poppins(
-                color: Colors.black.withOpacity(0.5099999904632568),
+                color: Colors.black.withValues(alpha: 0.5099999904632568),
                 fontSize: 7.90,
                 fontWeight: FontWeight.w400,
               ),
@@ -301,7 +304,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
                 fontSize: 9.17,
                 fontWeight: FontWeight.w600,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -335,13 +338,15 @@ class CustomBottomSheet extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 spreadRadius: 5,
-              )
+              ),
             ],
           ),
           child: SingleChildScrollView(child: child),
@@ -364,8 +369,7 @@ class TypeCapsule extends StatelessWidget {
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 1,
-            color: Colors.black.withOpacity(0.20999999344348907),
+            color: Colors.black.withValues(alpha: 0.20999999344348907),
           ),
           borderRadius: BorderRadius.circular(8),
         ),

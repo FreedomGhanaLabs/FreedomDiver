@@ -16,7 +16,7 @@ class DriverTotalScore extends StatelessWidget {
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Colors.black.withOpacity(0.119),
+            color: Colors.black.withValues(alpha: 0.119),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -47,9 +47,9 @@ class DriverTotalScore extends StatelessWidget {
                   height: 1.29,
                   letterSpacing: -0.40,
                 ),
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -70,7 +70,7 @@ class EarningsTotalScore extends StatelessWidget {
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Colors.black.withOpacity(0.119),
+            color: Colors.black.withValues(alpha: 0.119),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -101,9 +101,9 @@ class EarningsTotalScore extends StatelessWidget {
                   height: 1.29,
                   letterSpacing: -0.40,
                 ),
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

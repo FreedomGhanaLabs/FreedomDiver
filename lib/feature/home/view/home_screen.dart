@@ -94,7 +94,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                                       'assets/app_icons/down_arrow.svg',
                                     ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             const Spacer(),
@@ -132,7 +132,11 @@ class _HomeScreenState extends State<_HomeScreen> {
                         VSpace(16.25.h),
                         Container(
                           padding: const EdgeInsets.only(
-                              left: 16, top: 7.9, right: 14, bottom: 12.75),
+                            left: 16,
+                            top: 7.9,
+                            right: 14,
+                            bottom: 12.75,
+                          ),
                           decoration: ShapeDecoration(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
@@ -157,7 +161,8 @@ class _HomeScreenState extends State<_HomeScreen> {
                               const VSpace(4),
                               const Image(
                                 image: AssetImage(
-                                    'assets/app_images/driver_image.png'),
+                                  'assets/app_images/driver_image.png',
+                                ),
                               ),
                               const VSpace(16),
                               if (state.rideStatus == RideStatus.searching)
@@ -243,7 +248,8 @@ class _HomeScreenState extends State<_HomeScreen> {
                                             if (state.rideStatus ==
                                                 RideStatus.accepted) {
                                               Navigator.of(context).pushNamed(
-                                                  InAppCallMap.routeName);
+                                                InAppCallMap.routeName,
+                                              );
                                             }
                                           },
                                           backgroundColor:
@@ -263,7 +269,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                                         ),
                                       );
                                     },
-                                  )
+                                  ),
                                 ],
                               ),
                             ],
@@ -293,7 +299,9 @@ class _HomeScreenState extends State<_HomeScreen> {
                               ),
                               GestureDetector(
                                   child: SvgPicture.asset(
-                                      'assets/app_icons/right-arrow.svg')),
+                                  'assets/app_icons/right-arrow.svg',
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -306,7 +314,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                               pickUpDetails: 'Chale, Kumasi',
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -337,7 +345,7 @@ class DriverStatusToggler extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4.78),
-              color: Colors.red.withOpacity(0.1),
+              color: Colors.red.withValues(alpha: 0.1),
               border: const Border.fromBorderSide(
                 BorderSide(
                   color: Colors.red,
@@ -353,7 +361,8 @@ class DriverStatusToggler extends StatelessWidget {
                       color: darkRed,
                       fontSize: 16.25,
                       fontWeight: FontWeight.w600,
-                    )),
+                  ),
+                ),
                 const HSpace(10),
                 SvgPicture.asset(
                   'assets/app_icons/offline_icon.svg',

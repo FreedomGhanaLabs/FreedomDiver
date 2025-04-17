@@ -43,8 +43,9 @@ class _AvailabilityDashboardState extends State<AvailabilityDashboard> {
                           fontSize: 16.39,
                           fontWeight: FontWeight.w500,
                         ),
-                      )),
-                    )
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -82,7 +83,7 @@ class _AvailabilityDashboardState extends State<AvailabilityDashboard> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -140,13 +141,14 @@ class _VehicleInformationContainerState
                 border: Border.all(
                   color: Colors.black.withValues(alpha: 0.209),
                 ),
-                borderRadius: BorderRadius.circular(4)),
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: DropdownButton<String>(
                 value: dropDownValue,
                 hint: Text(
                   'Offline',
                   style: TextStyle(
-                    color: Colors.black.withOpacity(0.3799999952316284),
+                  color: Colors.black.withValues(alpha: 0.3799999952316284),
                     fontSize: 10.51,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400,
@@ -159,7 +161,7 @@ class _VehicleInformationContainerState
                 icon: const Icon(Icons.keyboard_arrow_down_sharp),
                 onChanged: (val) {
                   setState(() {
-                    dropDownValue = val!;
+                  dropDownValue = val;
                   });
                 },
                 items:
@@ -168,7 +170,8 @@ class _VehicleInformationContainerState
                     value: value,
                     child: Text(value),
                   );
-                }).toList()),
+              }).toList(),
+            ),
           ),
           const VSpace(15),
           Text(
@@ -185,7 +188,8 @@ class _VehicleInformationContainerState
                   border: Border.all(
                     color: Colors.black.withValues(alpha: 0.209),
                   ),
-                  borderRadius: BorderRadius.circular(4)),
+              borderRadius: BorderRadius.circular(4),
+            ),
               child: TimeDropdown(onTimeSelected: (val) {}, hintText:Text(
                 '6:00 AM',
                 style: GoogleFonts.poppins(
@@ -194,7 +198,9 @@ class _VehicleInformationContainerState
 
                   fontWeight: FontWeight.w400,
                 ),
-              ) ,)),
+              ),
+            ),
+          ),
           const VSpace(15),
           Text(
             'Set End Time',
@@ -210,7 +216,8 @@ class _VehicleInformationContainerState
                   border: Border.all(
                     color: Colors.black.withValues(alpha: 0.209),
                   ),
-                  borderRadius: BorderRadius.circular(4)),
+              borderRadius: BorderRadius.circular(4),
+            ),
               child: TimeDropdown(onTimeSelected: (val) {}, hintText: Text(
                 '6:00 PM',
                 style: GoogleFonts.poppins(
@@ -233,7 +240,7 @@ class _VehicleInformationContainerState
                 fontWeight: FontWeight.w400,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -242,7 +249,11 @@ class _VehicleInformationContainerState
 
 class TimeDropdown extends StatefulWidget {
   const TimeDropdown(
-      {required this.onTimeSelected, required this.hintText, super.key});
+      {
+    required this.onTimeSelected,
+    required this.hintText,
+    super.key,
+  });
   final Function(String) onTimeSelected;
   final Widget hintText;
 

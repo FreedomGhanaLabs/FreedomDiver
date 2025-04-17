@@ -1,26 +1,28 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ScoreGauge extends StatelessWidget {
-  final double score;
-  final double maxScore;
-  final List<Color> gradientColors;
-  final List<double>? stops;
-  final Color backgroundColor;
 
   const ScoreGauge({
-    Key? key,
     required this.score,
+    super.key,
     this.maxScore = 100,
     this.gradientColors = const [Colors.blue, Colors.purple],
     this.stops,
     this.backgroundColor = Colors.grey,
   })  : assert(gradientColors.length >= 2,
-            'Must provide at least 2 colors for gradient'),
+          'Must provide at least 2 colors for gradient',
+        ),
         assert(stops == null || stops.length == gradientColors.length,
-            'If stops are provided, they must match the number of colors'),
-        super(key: key);
+          'If stops are provided, they must match the number of colors',
+        );
+  final double score;
+  final double maxScore;
+  final List<Color> gradientColors;
+  final List<double>? stops;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +47,12 @@ class ScoreGauge extends StatelessWidget {
 
               child: Container(
             // height: 76,
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: OvalBorder(
                 side: BorderSide(
-                  color: Colors.black.withOpacity(0.07999999821186066),
+                    color: Colors.black.withValues(alpha: 0.07999999821186066),
                 ),
               ),
             ),
@@ -72,11 +74,6 @@ class ScoreGauge extends StatelessWidget {
 }
 
 class _GaugePainter extends CustomPainter {
-  final double score;
-  final double maxScore;
-  final List<Color> gradientColors;
-  final List<double>? stops;
-  final Color backgroundColor;
 
   _GaugePainter({
     required this.score,
@@ -85,6 +82,11 @@ class _GaugePainter extends CustomPainter {
     required this.backgroundColor,
     this.stops,
   });
+  final double score;
+  final double maxScore;
+  final List<Color> gradientColors;
+  final List<double>? stops;
+  final Color backgroundColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -94,7 +96,7 @@ class _GaugePainter extends CustomPainter {
 
     // Draw the background arc
     final backgroundPaint = Paint()
-      ..color = backgroundColor.withOpacity(0.2)
+      ..color = backgroundColor.withValues(alpha: 0.2)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 20;
     canvas.drawArc(
@@ -113,12 +115,11 @@ class _GaugePainter extends CustomPainter {
       ..shader = LinearGradient(
         colors: gradientColors,
         stops: stops,
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
       ).createShader(Rect.fromCircle(
         center: Offset(size.width / 2, size.height - radius),
         radius: radius,
-      ));
+        ),
+      );
 
     // Draw the progress arc
     canvas.drawArc(
@@ -135,7 +136,7 @@ class _GaugePainter extends CustomPainter {
     );
 
     // Draw markings at intervals
-    for (int i = 0; i <= maxScore; i += 20) {
+    for (var i = 0; i <= maxScore; i += 20) {
       final angle = pi + (i / maxScore) * pi;
       final markerStart = Offset(
         center.dx + (radius - 25) * cos(angle),
@@ -146,19 +147,19 @@ class _GaugePainter extends CustomPainter {
         center.dy + (radius + 5) * sin(angle),
       );
 
-      // canvas.drawLine(
-      //   markerStart,
-      //   markerEnd,
-      //   Paint()
-      //     ..color = Colors.grey
-      //     ..strokeWidth = 2,
-      // );
+      canvas.drawLine(
+        markerStart,
+        markerEnd,
+        Paint()
+          ..color = Colors.grey
+          ..strokeWidth = 2,
+      );
 
       // Draw the number
       textPainter.text = TextSpan(
         text: i.toString(),
         style: GoogleFonts.poppins(
-          color: Color(0xFFC2C2C2),
+          color: const Color(0xFFC2C2C2),
           fontSize: 15,
           fontWeight: FontWeight.w300,
         ),

@@ -6,10 +6,10 @@ import 'package:freedom_driver/feature/earnings/view/driver_score_details_screen
 import 'package:freedom_driver/feature/earnings/view/wallet_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/earnings_background_widget.dart';
 import 'package:freedom_driver/feature/earnings/widgets/earnings_banner.dart';
-import 'package:freedom_driver/feature/home/view/widgets/driver_total_earnings.dart';
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_order.dart';
 import 'package:freedom_driver/feature/home/view/widgets/driver_total_score.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -74,7 +74,8 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                         DriverScoreDetailsScreen.routeName,
                                       );
                                     },
-                                    child: const DriverTotalScore()),
+                                  child: const DriverTotalScore(),
+                                ),
                                 12.verticalSpace,
                                 const DriverTotalOrder(),
                               ],
@@ -100,17 +101,21 @@ class _EarningsScreenState extends State<EarningsScreen> {
                           Expanded(
                             child: DashboardContainer(
                                 svgImage: SvgPicture.asset(
-                                    'assets/app_icons/driver_score_icon.svg'),
+                                'assets/app_icons/driver_score_icon.svg',
+                              ),
                                 title: 'Number of trips',
-                                value: '200'),
+                              value: '200',
+                            ),
                           ),
                           15.horizontalSpace,
                           Expanded(
                             child: DashboardContainer(
                                 svgImage: SvgPicture.asset(
-                                    'assets/app_icons/time_icons.svg'),
+                                'assets/app_icons/time_icons.svg',
+                              ),
                                 title: 'Timely Delivery',
-                                value: '100%'),
+                              value: '100%',
+                            ),
                           ),
                         ],
                       ),
@@ -159,12 +164,15 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                       .pushNamed(WalletScreen.routeName);
                                 },
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 19, vertical: 12),
+                                  horizontal: 19,
+                                  vertical: 12,
+                                ),
                                 borderRadius: BorderRadius.circular(6),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
-                                        'assets/app_icons/withdraw_icons.svg'),
+                                      'assets/app_icons/withdraw_icons.svg',
+                                    ),
                                     const HSpace(6),
                                     Text(
                                       'Withdraw',
@@ -173,33 +181,32 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                         fontSize: 17,
                                         fontWeight: FontWeight.w400,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                           const HSpace(36),
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 9, vertical: 6),
+                                horizontal: 9,
+                                vertical: 6,
+                              ),
                               decoration: ShapeDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment(-0.00, 1.00),
-                                  end: Alignment(0, -1),
-                                  colors: [
-                                    Color(0xFFF55C0B),
-                                    Color(0xFFD04F09)
-                                  ],
+                                gradient: LinearGradient(
+                                  begin: const Alignment(-0, 1),
+                                  end: Alignment.topCenter,
+                                  colors: gradientColor,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   side: const BorderSide(
-                                    width: 1,
                                     strokeAlign: BorderSide.strokeAlignOutside,
                                     color: Color(0x21E61D2A),
                                   ),
-                                  borderRadius: BorderRadius.circular(14.32),
+                                  borderRadius:
+                                      BorderRadius.circular(roundedLg),
                                 ),
                               ),
                               child: Column(
@@ -211,15 +218,18 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                           color: Colors.white,
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(7)),
+                                                BorderRadius.circular(7),
+                                          ),
                                         ),
                                         padding: const EdgeInsets.only(
                                             top: 9,
                                             bottom: 9,
                                             left: 8,
-                                            right: 8),
+                                          right: 8,
+                                        ),
                                         child: SvgPicture.asset(
-                                            'assets/app_icons/gold_medal.svg'),
+                                          'assets/app_icons/gold_medal.svg',
+                                        ),
                                       ),
                                       const HSpace(4),
                                       Text(
@@ -229,7 +239,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                           fontSize: 10.65,
                                           fontWeight: FontWeight.w600,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                   const VSpace(3),
@@ -242,11 +252,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                     ),
                                   ),
                                   const RideBonusContainer(
-                                      totalRides: 5, requiredRides: 10),
+                                    totalRides: 5,
+                                  ),
                                 ],
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                       const VSpace(15),
@@ -262,7 +273,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 40),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(3.47))),
+                              borderRadius: BorderRadius.circular(3.47),
+                            ),
+                          ),
                           child: Text(
                             'Invite ',
                             style: GoogleFonts.poppins(
@@ -291,11 +304,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                Icon(Icons.keyboard_arrow_down_sharp)
+                              Icon(Icons.keyboard_arrow_down_sharp),
                               ],
                             ),
-                          )),
-                      const VSpace(41)
+                        ),
+                      ),
+                      const VSpace(41),
                     ],
                   ),
                 ),
@@ -329,9 +343,8 @@ class TotalEarningsWidget extends StatelessWidget {
         ),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 1,
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: Colors.black.withOpacity(0.10000000149011612),
+            color: Colors.black.withValues(alpha: 0.10000000149011612),
           ),
           borderRadius: BorderRadius.circular(23),
         ),
@@ -352,7 +365,7 @@ class TotalEarningsWidget extends StatelessWidget {
           ),
           5.verticalSpace,
           const Text(
-            '\$1,200.00',
+            r'$1,200.00',
             style: TextStyle(
               color: Colors.black,
               fontSize: 22.59,
@@ -373,7 +386,7 @@ class TotalEarningsWidget extends StatelessWidget {
               height: 1.29,
               letterSpacing: -0.30,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -382,18 +395,18 @@ class TotalEarningsWidget extends StatelessWidget {
 
 class RideBonusContainer extends StatefulWidget {
   const RideBonusContainer({
-    super.key,
     required this.totalRides,
+    super.key,
     this.requiredRides = 10,
   });
   final int totalRides;
   final int requiredRides;
 
   @override
-  _RideBonusContainerState createState() => _RideBonusContainerState();
+  RideBonusContainerState createState() => RideBonusContainerState();
 }
 
-class _RideBonusContainerState extends State<RideBonusContainer>
+class RideBonusContainerState extends State<RideBonusContainer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -406,10 +419,12 @@ class _RideBonusContainerState extends State<RideBonusContainer>
       vsync: this,
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 1.0, end: 1.1).animate(CurvedAnimation(
+    _animation = Tween<double>(begin: 1, end: 1.1).animate(
+      CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
-    ));
+      ),
+    );
   }
 
   @override
@@ -420,12 +435,12 @@ class _RideBonusContainerState extends State<RideBonusContainer>
 
   @override
   Widget build(BuildContext context) {
-    double progressPercentage =
+    final progressPercentage =
         (widget.totalRides / widget.requiredRides).clamp(0.0, 1.0);
-    bool isRewardReady = widget.totalRides >= widget.requiredRides;
+    final isRewardReady = widget.totalRides >= widget.requiredRides;
 
     return ScaleTransition(
-      scale: isRewardReady ? _animation : const AlwaysStoppedAnimation(1.0),
+      scale: isRewardReady ? _animation : const AlwaysStoppedAnimation(1),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -510,7 +525,7 @@ class DashboardContainer extends StatelessWidget {
                 SizedBox(
                   width: 24, // Fixed width for icon
                   height: 24, // Fixed height for icon
-                  child: svgImage!,
+                  child: svgImage,
                 ),
               if (svgImage != null) const SizedBox(width: 8),
               Flexible(
