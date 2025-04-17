@@ -69,7 +69,6 @@ class _ToastWidget extends StatefulWidget {
     required this.position,
     required this.type,
     required this.width,
-    super.key,
     this.onDismiss,
   });
   final String message;
