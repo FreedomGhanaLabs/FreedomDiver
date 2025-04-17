@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/feature/authentication/forgot_password/view/forgot_password_form.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/personal_details.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
@@ -20,9 +21,10 @@ import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/feature/splash/splash_screen.dart';
 import 'package:freedom_driver/router/error_route_screen.dart';
+import 'package:freedom_driver/shared/screens/success_screen.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
-  log('Route: ${settings.name}');
+  log('Next Route: ${settings.name}');
   switch (settings.name) {
     case SplashScreen.routeName:
       return _pageBuilder(
@@ -32,6 +34,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case OnboardingView.routeName:
       return _pageBuilder(
         (_) => const OnboardingView(),
+        settings: settings,
+      );
+    case SuccessScreen.routeName:
+      return _pageBuilder(
+        (_) => const SuccessScreen(),
         settings: settings,
       );
     case MainActivityScreen.routeName:
@@ -47,6 +54,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case LoginFormScreen.routeName:
       return _pageBuilder(
         (_) => const LoginFormScreen(),
+        settings: settings,
+      );
+    case ForgotPasswordFormScreen.routeName:
+      return _pageBuilder(
+        (_) => const ForgotPasswordFormScreen(),
         settings: settings,
       );
     case VerifyOtpScreen.routeName:

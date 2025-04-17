@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:freedom_driver/feature/authentication/forgot_password/view/forgot_password_form.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
@@ -8,6 +8,7 @@ import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/helpers/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/gradient_text.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -53,12 +54,9 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const VSpace(67),
-                SvgPicture.asset(
-                  'assets/app_icons/login_logo.svg',
-                ),
+                const VSpace(normalWhiteSpace),
+                const AppIcon(iconName: 'login_logo'),
                 const VSpace(whiteSpace),
-                const VSpace(smallWhiteSpace),
                 const Text(
                   'Welcome Back!',
                   style: TextStyle(
@@ -66,7 +64,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                // const VSpace(smallWhiteSpace),
+                const VSpace(extraSmallWhiteSpace),
                 Text(
                   'Log in to your Gofreedom account and get back to what matters - riding with freedom or earning on your own schedule.',
                   style: TextStyle(
@@ -102,7 +100,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 const VSpace(whiteSpace),
                 const GradientText(
                   text: 'Forgot Password?',
-                  routeNameToMoveTo: RegisterFormScreen.routeName,
+                  routeNameToMoveTo: ForgotPasswordFormScreen.routeName,
                 ),
                 const VSpace(extraSmallText),
                 FreedomButton(

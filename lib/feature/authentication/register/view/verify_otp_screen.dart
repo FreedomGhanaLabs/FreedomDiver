@@ -10,6 +10,7 @@ import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/helpers/routes_params.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
@@ -67,8 +68,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   @override
   Widget build(BuildContext context) {
     final formCubit = BlocProvider.of<RegistrationFormCubit>(context);
-    final args =
-        ModalRoute.of(context)!.settings.arguments! as Map<String, dynamic>;
+    final args = getRouteParams(context);
     final type = args['type'] as String?;
     return Scaffold(
       backgroundColor: Colors.white,
