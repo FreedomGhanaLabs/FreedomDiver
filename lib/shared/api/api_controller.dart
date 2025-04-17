@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -45,8 +46,9 @@ class ApiController {
     Function(bool success, dynamic result) callback, {
     bool showToast = true,
   }) async {
+    debugPrint(baseUrl);
     try {
-      final response = await _dio.post(endpoint, data: data);
+      final response = await _dio.post(endpoint, data: jsonEncode(data));
       final successMessage = response.data['message'].toString();
       if (showToast && successMessage.isNotEmpty) {
         _showToast(
@@ -70,9 +72,9 @@ class ApiController {
     BuildContext context,
     String endpoint,
     Function(bool success, dynamic result) callback, {
-    bool showToast = true,
+    bool showToast = false,
   }) async {
-    debugPrint(baseUrl);
+
     try {
       final response = await _dio.get(endpoint);
       final successMessage = response.data['message'].toString();

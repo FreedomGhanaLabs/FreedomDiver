@@ -344,7 +344,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
           autovalidateMode: widget.autovalidateMode,
           maxLines: widget.maxLines ?? 1,
           cursorColor: Colors.black,
-          obscureText: widget.obscure != null ? canSee : false,
+          obscureText: widget.obscure != null ? !canSee : false,
           obscuringCharacter: '*',
           onChanged: widget.onChanged,
           style: widget.fontStyle ??

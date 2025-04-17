@@ -1,13 +1,16 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
+import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RegisterFormScreen extends StatefulWidget {
@@ -23,10 +26,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final apiController = ApiController('auth');
 
   bool hasReadTermsAndCondition = false;
+  bool loading = false;
 
-  final firstNameController = TextEditingController();
-  final surnameController = TextEditingController();
-  final otherNameController = TextEditingController();
+  String countryCode = '+233';
+
+  final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final motorcycleTypeController = TextEditingController();
@@ -39,11 +43,30 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final confirmPasswordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    phoneController
+      ..text = countryCode
+      ..addListener(() {
+        if (!phoneController.text.startsWith(countryCode)) {
+          phoneController
+            ..text = countryCode +
+                phoneController.text.replaceAll(RegExp(r'^\+\d+'), '')
+            ..selection = TextSelection.fromPosition(
+              TextPosition(offset: phoneController.text.length),
+            );
+        }
+      });
+  }
+
+  String getFullPhoneNumber() {
+    return phoneController.text;
+  }
+
+  @override
   void dispose() {
     for (final controller in [
-      firstNameController,
-      surnameController,
-      otherNameController,
+      fullNameController,
       emailController,
       phoneController,
       motorcycleTypeController,
@@ -65,12 +88,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       if (!hasReadTermsAndCondition) {
         return;
       }
+      final names = fullNameController.text.trim().split(' ');
       final data = {
-        'firstName': firstNameController.text.trim(),
-        'surname': surnameController.text.trim(),
-        'otherName': otherNameController.text.trim(),
+        'firstName': names[0].capitalize,
+        'surname': names[names.length - 1].capitalize,
+        'otherName': names[1],
         'email': emailController.text.trim(),
-        'phone': phoneController.text.trim(),
+        'phone': getFullPhoneNumber(),
         'motorcycleType': motorcycleTypeController.text.trim(),
         'motorcycleColor': motorcycleColorController.text.trim(),
         'licenseNumber': licenseNumberController.text.trim(),
@@ -80,14 +104,19 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         'password': passwordController.text,
         'confirmPassword': confirmPasswordController.text,
       };
-
       debugPrint('$data');
 
-      // apiController.post(context, 'register', data, (success, result) {
-      //   if (success) {
-      //     Navigator.pushNamed(context, '/verify_otp');
-      //   }
-      // });
+      setState(() {
+        loading = true;
+      });
+      apiController.post(context, 'register', data, (success, result) {
+        if (success) {
+          Navigator.pushNamed(context, VerifyOtpScreen.routeName);
+        }
+        setState(() {
+          loading = false;
+        });
+      });
     }
   }
 
@@ -107,7 +136,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         prefixSvgUrl: prefixIconUrl,
         label: label,
         obscure: obscure,
-        hintText: placeholder ?? label,
+        hintText: placeholder ?? 'Enter $label',
         keyboardType: inputType,
         fontStyle: const TextStyle(
           fontSize: normalText,
@@ -146,7 +175,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: smallWhiteSpace,
+                    horizontal: whiteSpace,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,8 +185,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         "Driver Registration Let's Get to Know You.",
                         style: TextStyle(
                           fontSize: headingText,
-                          fontWeight: FontWeight.w500,
-                          // fontStyle: GoogleFonts.poppins.fontFamily,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       // const VSpace(smallWhiteSpace),
@@ -166,7 +194,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         style: TextStyle(
                           fontSize: paragraphText,
                           fontWeight: FontWeight.w400,
-                          color: Colors.grey.shade500,
+                          color: Colors.grey.shade700,
                           // fontStyle: GoogleFonts.poppins.fontFamily,
                         ),
                       ),
@@ -177,21 +205,106 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         child: Column(
                           children: [
                             _buildTextField(
-                              controller: firstNameController,
+                              controller: fullNameController,
                               label: 'Full Name',
+                              placeholder: 'Your name',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Full name is required';
+                                }
+                                if (value.trim().split(' ').length < 2) {
+                                  return 'At least 2 names are required';
+                                }
+                                return null;
+                              },
                             ),
                             _buildTextField(
                               controller: emailController,
                               label: 'Email',
+                              placeholder: 'Enter Email Address',
                               inputType: TextInputType.emailAddress,
                               prefixIconUrl: 'assets/app_icons/envelope.svg',
                             ),
-                            _buildTextField(
+                            // _buildTextField(
+                            //   controller: phoneController,
+                            //   label: 'Phone',
+                            //   placeholder: 'Enter Phone Number',
+                            //   inputType: TextInputType.phone,
+                            // ),
+                            TextFieldFactory.phone(
                               controller: phoneController,
-                              label: 'Phone',
-                              inputType: TextInputType.phone,
+                              fontStyle: const TextStyle(
+                                fontSize: 19.58,
+                                color: Colors.black,
+                              ),
+                              prefixText: Transform.translate(
+                                offset: const Offset(0, -5),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10,
+                                    top: 18,
+                                    bottom: 7,
+                                    right: 17,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(11),
+                                      color: const Color(0x4FF59E0B),
+                                      border: Border.all(),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        CountryCodePicker(
+                                          onChanged: (value) {
+                                            setState(() {
+                                              countryCode =
+                                                  value.dialCode ?? '+233';
+                                              phoneController.text =
+                                                  countryCode;
+                                            });
+                                          },
+                                          padding: EdgeInsets.zero,
+                                          initialSelection: 'GH',
+                                          hideMainText: true,
+                                        ),
+                                        Positioned(
+                                          top: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.014,
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.11,
+                                          child: SvgPicture.asset(
+                                            'assets/app_icons/drop_down.svg',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              validator: (val) {
+                                if (val == null || val.trim().isEmpty) {
+                                  return 'Phone number is required';
+                                }
+                                final cleanedNumber =
+                                    val.replaceAll(RegExp(r'\D'), '');
+
+                                if (cleanedNumber.isEmpty) {
+                                  return 'Please enter digits only';
+                                }
+
+                                if (cleanedNumber.length < 10) {
+                                  return 'Phone number must be at least 10 digits long';
+                                }
+
+                                return null; // Valid input
+                              },
                             ),
+
                             _buildTextField(
                               controller: motorcycleTypeController,
                               label: 'Motorcycle Type',
@@ -226,6 +339,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             _buildTextField(
                               controller: passwordController,
                               label: 'Password',
+                              placeholder: 'Create a strong password',
                               obscure: true,
                               prefixIconUrl:
                                   'assets/app_icons/password-type.svg',
@@ -233,6 +347,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             _buildTextField(
                               controller: confirmPasswordController,
                               label: 'Confirm Password',
+                              placeholder: 'Confirm password again',
                               obscure: true,
                               prefixIconUrl:
                                   'assets/app_icons/password-type.svg',
@@ -260,7 +375,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                     !hasReadTermsAndCondition;
                               });
                             },
-                            side: BorderSide(color: gradient1),
+                            side: BorderSide(color: gradient1, width: 16),
                             fillColor: WidgetStatePropertyAll(
                               hasReadTermsAndCondition
                                   ? thickFillColor
@@ -278,18 +393,21 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 17),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: smallWhiteSpace,
+                        ),
                         child: FreedomButton(
                           backGroundColor: Colors.black,
-                          borderRadius: BorderRadius.circular(7),
+                          borderRadius: BorderRadius.circular(roundedMd),
                           width: double.infinity,
-                          useLoader: true,
-                          title: 'Continue',
-                          buttonTitle: Text(
-                            'Continue',
-                            style: GoogleFonts.poppins(
+                          useLoader: loading,
+                          disabled: !hasReadTermsAndCondition,
+                          title: 'Complete Registration',
+                          buttonTitle: const Text(
+                            'Registering...',
+                            style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w500,
+                              fontSize: normalText,
                             ),
                           ),
                           onPressed: submitRegistration,

@@ -19,10 +19,11 @@ class FreedomButton extends StatelessWidget {
     this.backGroundColor,
     this.titleColor,
     this.fontSize,
-    this.useLoader,
+    this.useLoader = false,
     this.child,
     this.useOnlBorderGradient = false,
     this.buttonTitle,
+    this.disabled = false,
   });
 
   final BorderRadiusGeometry? borderRadius;
@@ -37,10 +38,11 @@ class FreedomButton extends StatelessWidget {
   final Color? backGroundColor;
   final Color? titleColor;
   final double? fontSize;
-  final bool? useLoader;
+  final bool useLoader;
   final Widget? child;
   final bool useOnlBorderGradient;
   final Widget? buttonTitle;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +67,13 @@ class FreedomButton extends StatelessWidget {
             )
           : null,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: disabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: useGradient ? Colors.transparent : backGroundColor,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: borderRadius),
         ),
-        child: useLoader == true
+        child: !useLoader
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -155,6 +155,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     leadingIcon: 'apple_icon',
                     borderRadius: BorderRadius.circular(7),
                     title: 'Login with Apple',
+                    useLoader: true,
                     buttonTitle: Text(
                       'Login with Apple',
                       style: GoogleFonts.poppins(
@@ -175,6 +176,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   child: FreedomButton(
                     backGroundColor: socialLoginColor,
                     leadingIcon: 'google_icon',
+                    useLoader: true,
                     borderRadius: BorderRadius.circular(7),
                     buttonTitle: Text(
                       'Login with Google',
