@@ -37,7 +37,7 @@ if (project.hasProperty('dart-defines')) {
             [(pair.first()): pair.last()]
         }
 }
-println(dartEnvironmentVariables)
+// println(dartEnvironmentVariables)
 
 android {
     namespace "com.freedom_driver.app.freedom_driver"
