@@ -335,6 +335,7 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
           ),
         const VSpace(extraSmallWhiteSpace),
         TextFormField(
+          keyboardAppearance: Brightness.light,
           inputFormatters: const [],
           controller: widget.controller,
           keyboardType: widget.keyboardType ?? TextInputType.text,
