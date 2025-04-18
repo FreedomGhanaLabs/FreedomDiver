@@ -67,7 +67,12 @@ class FreedomButton extends StatelessWidget {
             )
           : null,
       child: ElevatedButton(
-        onPressed: disabled ? null : onPressed,
+        onPressed: disabled
+            ? null
+            : () {
+                FocusScope.of(context).unfocus();
+                onPressed?.call();
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: useGradient ? Colors.transparent : backGroundColor,
           shadowColor: Colors.transparent,

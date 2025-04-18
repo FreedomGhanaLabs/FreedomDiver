@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
 
 class DecoratedBackButton extends StatelessWidget {
   const DecoratedBackButton({
@@ -9,17 +9,19 @@ class DecoratedBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
       child: Container(
         height: 38.09,
         width: 38.09,
         decoration:
             const BoxDecoration(color: Colors.black, shape: BoxShape.circle),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8.86, 8.86, 9.74, 9.74),
-          child: SvgPicture.asset('assets/images/back_button.svg'),
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(8.86, 8.86, 9.74, 9.74),
+          child: AppIcon(iconName: 'back_button'),
         ),
       ),
-      onTap: () => Navigator.pop(context),
     );
   }
 }

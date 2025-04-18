@@ -249,6 +249,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     final isLoginType = type == 'login';
     if (_otpFormKey.currentState!.validate()) {
       // context.read<VerifyOtpCubit>().verifyOtp(_otpController.text);
+
+      if (_otpController.text.trim().isEmpty) {
+        return;
+      }
       setState(() {
         isLoading = true;
       });
