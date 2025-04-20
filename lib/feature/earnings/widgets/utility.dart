@@ -67,7 +67,7 @@ abstract class SectionFactory extends StatelessWidget {
               child: SvgPicture.asset(
                 'assets/images/arrow_right_icon.svg',
                 colorFilter:
-                const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                    const ColorFilter.mode(Colors.black, BlendMode.srcIn),
               ),
             ),
         ],
@@ -131,12 +131,6 @@ abstract class SectionFactory extends StatelessWidget {
 
 // Model class for section items
 class SectionItem {
-  final String title;
-  final String? iconPath;
-  final String? subtitle;
-  final VoidCallback? onTap;
-  final bool showArrow;
-
   const SectionItem({
     required this.title,
     this.iconPath,
@@ -144,20 +138,30 @@ class SectionItem {
     this.onTap,
     this.showArrow = true,
   });
+  final String title;
+  final String? iconPath;
+  final String? subtitle;
+  final VoidCallback? onTap;
+  final bool showArrow;
 }
+
+// utility to get Icon url
+
+String getIconUrl(String iconName) => 'assets/app_icons/$iconName.svg';
 
 // Personal Data Section Implementation
 class PersonalDataSection extends SectionFactory {
-  const PersonalDataSection(
-      {super.key,
-        super.onItemTap,
-        super.padding,
-        super.backgroundColor,
-        super.titleStyle,
-        super.sectionTextStyle,
-        super.paddingSection,
-        this.onProfileTap,
-        this.onWalletTap});
+  const PersonalDataSection({
+    super.key,
+    super.onItemTap,
+    super.padding,
+    super.backgroundColor,
+    super.titleStyle,
+    super.sectionTextStyle,
+    super.paddingSection,
+    this.onProfileTap,
+    this.onWalletTap,
+  });
   final VoidCallback? onProfileTap;
 
   final VoidCallback? onWalletTap;
@@ -167,17 +171,17 @@ class PersonalDataSection extends SectionFactory {
 
   @override
   List<SectionItem> get sectionItems => [
-    SectionItem(
-      title: 'Profile Details',
-      iconPath: 'assets/app_icons/hamburg_icon.svg',
-      onTap: () => onProfileTap!(),
-    ),
-    SectionItem(
-      title: 'Manage Your Documents',
-      iconPath: 'assets/app_icons/gradient_document.svg',
-      onTap: () => onWalletTap!(),
-    ),
-  ];
+        SectionItem(
+          title: 'Profile Details',
+          iconPath: getIconUrl('hamburg_icon'),
+          onTap: () => onProfileTap!(),
+        ),
+        SectionItem(
+          title: 'Manage Your Documents',
+          iconPath: getIconUrl('gradient_document'),
+          onTap: () => onWalletTap!(),
+        ),
+      ];
 }
 
 // More Section Implementation
@@ -202,48 +206,51 @@ class MoreSection extends SectionFactory {
 
   @override
   List<SectionItem> get sectionItems => [
-    SectionItem(
-        title: 'Vehicle Information',
-        iconPath: 'assets/app_icons/gradient_bike.svg',
-        onTap: onTapAddress),
-    SectionItem(
-        title: 'Security and Privacy',
-        iconPath: 'assets/app_icons/availability_icon.svg',
-        onTap: onTapSecurity),
-    SectionItem(
-        title: 'Logout',
-        iconPath: 'assets/app_icons/logout.svg',
-        onTap: onTapLogout),
-  ];
+        SectionItem(
+          title: 'Vehicle Information',
+          iconPath: getIconUrl('gradient_bike'),
+          onTap: onTapAddress,
+        ),
+        SectionItem(
+          title: 'Security and Privacy',
+          iconPath: getIconUrl('availability_icon'),
+          onTap: onTapSecurity,
+        ),
+        SectionItem(
+          title: 'Logout',
+          iconPath: getIconUrl('logout'),
+          onTap: onTapLogout,
+        ),
+      ];
 }
 
 class ManagePayment extends SectionFactory {
-  ManagePayment(
-      {super.key,
-        super.backgroundColor,
-        super.padding,
-        super.titleStyle,
-        super.onItemTap,
-        super.paddingSection,
-        super.sectionTextStyle,
-        this.onMasterCardTap,
-        this.onVisaCardTap});
+  const ManagePayment({
+    super.key,
+    super.backgroundColor,
+    super.padding,
+    super.titleStyle,
+    super.onItemTap,
+    super.paddingSection,
+    super.sectionTextStyle,
+    this.onMasterCardTap,
+    this.onVisaCardTap,
+  });
   final VoidCallback? onMasterCardTap;
   final VoidCallback? onVisaCardTap;
   @override
   List<SectionItem> get sectionItems => [
-    SectionItem(
-      title: '*** **** 1234',
-      iconPath: 'assets/app_icons/mastercard.svg',
-      onTap: onMasterCardTap,
-
-    ),
-    SectionItem(
-      title: '*** **** 1234',
-      iconPath: 'assets/app_icons/visa_electron.svg',
-      onTap: () => onVisaCardTap,
-    )
-  ];
+        SectionItem(
+          title: '*** **** 1234',
+          iconPath: 'assets/app_icons/mastercard.svg',
+          onTap: onMasterCardTap,
+        ),
+        SectionItem(
+          title: '*** **** 1234',
+          iconPath: 'assets/app_icons/visa_electron.svg',
+          onTap: () => onVisaCardTap,
+        ),
+      ];
 
   @override
   String get sectionTitle => '';
