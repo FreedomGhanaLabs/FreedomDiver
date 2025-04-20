@@ -35,25 +35,31 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateUser() async {
-    await Future<void>.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(const Duration(seconds: 1));
     final box = Hive.box<bool>('firstTimerUser');
     final isFirstTimer = box.get('isFirstTimer', defaultValue: true) ?? true;
     final getFirstTimer = await getOnboardingFromHive();
     final getToken = await getTokenFromHive();
     if (!isFirstTimer || getToken != null) {
-      await Navigator.pushReplacementNamed(
+      await Navigator.pushNamedAndRemoveUntil(
         context,
         MainActivityScreen.routeName,
+        (route) => false,
       );
       return;
     }
     if (getFirstTimer != null) {
-      await Navigator.pushReplacementNamed(
+      await Navigator.pushNamedAndRemoveUntil(
         context,
         LoginFormScreen.routeName,
+        (route) => false,
       );
       return;
     }
-    await Navigator.pushReplacementNamed(context, OnboardingView.routeName);
+    await Navigator.pushNamedAndRemoveUntil(
+      context,
+      OnboardingView.routeName,
+      (route) => false,
+    );
   }
 }

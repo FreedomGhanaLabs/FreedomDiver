@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_one.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/helpers/responsive.dart';
@@ -17,7 +18,7 @@ class OnboardingCarouselTwo extends StatelessWidget {
           Stack(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.6,
+                height: MediaQuery.of(context).size.height * 0.55,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image:
@@ -44,12 +45,19 @@ class OnboardingCarouselTwo extends StatelessWidget {
                     ),
                     onPressed: () {
                       addOnboardingToHive(true).then(
-                        (_) => Navigator.pushNamed(context, '/login'),
+                        (_) => Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          LoginFormScreen.routeName,
+                          (route) => false,
+                        ),
                       );
                     },
                     child: const Text(
                       'Skip',
-                      style: TextStyle(color: Colors.white, fontSize: 13.7),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: paragraphText,
+                      ),
                     ),
                   ),
                 ),
@@ -60,7 +68,7 @@ class OnboardingCarouselTwo extends StatelessWidget {
                 child: Image.asset('assets/app_images/bcg2_decorator.png'),
               ),
               Positioned(
-                bottom: -(Responsive.height(context) / 7),
+                bottom: -(Responsive.height(context) / 5),
                 right: 0,
                 child: Image.asset('assets/app_images/driver_bcg_model_2.png'),
               ),
@@ -68,15 +76,14 @@ class OnboardingCarouselTwo extends StatelessWidget {
           ),
           const VSpace(10),
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: smallWhiteSpace),
             child: CarouselDescription(
               description:
-                  // ignore: lines_longer_than_80_chars
-                  'As a customer, finding a bike has never been easier. Track nearby riders, compare fares, and get moving – all from the palm of your hand.',
+                  'As a customer, finding a bike has never been easier. Track nearby riders, compare fares, and get moving - all from the palm of your hand.',
               title: 'Designed for Your Convenience',
             ),
           ),
-          const VSpace(20),
+          const VSpace(smallWhiteSpace),
         ],
       ),
     );

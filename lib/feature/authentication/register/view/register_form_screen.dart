@@ -2,17 +2,19 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/helpers/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/shared/widgets/gradient_text.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RegisterFormScreen extends StatefulWidget {
   const RegisterFormScreen({super.key});
@@ -121,17 +123,16 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         loading = true;
       });
       apiController.post(context, 'register', data, (success, result) {
+        setState(() {
+          loading = false;
+        });
         if (success) {
           context.read<RegistrationFormCubit>().setEmail(emailController.text);
           Navigator.pushNamed(context, VerifyOtpScreen.routeName);
         }
-        setState(() {
-          loading = false;
-        });
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,19 +143,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const VSpace(largeWhiteSpace),
-              Padding(
-                padding: const EdgeInsets.symmetric(
+              const VSpace(normalWhiteSpace),
+              const Padding(
+                padding: EdgeInsets.symmetric(
                   horizontal: smallWhiteSpace,
                 ),
-                child: Column(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/app_icons/login_logo.svg',
-                    ),
-                    const VSpace(extraSmallWhiteSpace),
-                  ],
-                ),
+                child: AppIcon(iconName: 'login_logo'),
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -166,20 +160,19 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     children: [
                       const VSpace(smallWhiteSpace),
                       const Text(
-                        "Driver Registration Let's Get to Know You.",
+                        "Let's Get to Know You.",
                         style: TextStyle(
                           fontSize: headingText,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      // const VSpace(smallWhiteSpace),
+                      const VSpace(extraSmallWhiteSpace),
                       Text(
                         'Please provide a few details so we can complete your profile.',
                         style: TextStyle(
                           fontSize: paragraphText,
                           fontWeight: FontWeight.w400,
                           color: Colors.grey.shade700,
-                          // fontStyle: GoogleFonts.poppins.fontFamily,
                         ),
                       ),
                       const VSpace(whiteSpace),
@@ -191,7 +184,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             buildTextField(
                               controller: fullNameController,
                               label: 'Full Name',
-                              placeholder: 'Your name',
+                              placeholder: 'Enter your fullname',
                               prefixIconUrl: 'assets/app_icons/typing.svg',
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -219,7 +212,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             TextFieldFactory.phone(
                               controller: phoneController,
                               fontStyle: const TextStyle(
-                                fontSize: 19.58,
+                                fontSize: paragraphText,
                                 color: Colors.black,
                               ),
                               prefixText: Transform.translate(
@@ -253,16 +246,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                           hideMainText: true,
                                         ),
                                         Positioned(
-                                          top: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+                                          top: Responsive.height(context) *
                                               0.014,
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.11,
-                                          child: SvgPicture.asset(
-                                            'assets/app_icons/drop_down.svg',
+                                          left:
+                                              Responsive.width(context) * 0.11,
+                                          child: const AppIcon(
+                                            iconName: 'drop_down',
                                           ),
                                         ),
                                       ],
@@ -302,18 +291,18 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             buildTextField(
                               controller: licenseNumberController,
                               label: 'License Number',
-                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                              prefixIconUrl: 'assets/app_icons/numbers.svg',
                             ),
                             buildTextField(
                               controller: motorcycleNumberController,
                               label: 'Motorcycle Number',
-                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                              prefixIconUrl: 'assets/app_icons/numbers.svg',
                             ),
                             buildTextField(
                               controller: motorcycleYearController,
                               label: 'Motorcycle Year',
                               inputType: TextInputType.number,
-                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                              prefixIconUrl: 'assets/app_icons/numbers.svg',
                             ),
 
                             SelectState(
@@ -341,7 +330,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             buildTextField(
                               controller: postalCodeController,
                               label: 'Postal Code',
-                              prefixIconUrl: 'assets/app_icons/typing.svg',
+                              prefixIconUrl: 'assets/app_icons/numbers.svg',
                             ),
                             buildTextField(
                               controller: passwordController,
@@ -421,24 +410,17 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         ),
                       ),
                       const VSpace(whiteSpace),
-                      Center(
-                        child: ShaderMask(
-                          blendMode: BlendMode.srcIn,
-                          shaderCallback: (bounds) => gradient.createShader(
-                            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/login');
-                            },
-                            child: Text(
-                              'Already have an account?',
-                              style: GoogleFonts.poppins(
-                                fontSize: paragraphText,
-                                fontWeight: FontWeight.w500,
-                              ),
+                      SizedBox(
+                        width: Responsive.width(context),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Already have an account? '),
+                            GradientText(
+                              text: 'Login here',
+                              routeNameToMoveTo: LoginFormScreen.routeName,
                             ),
-                          ),
+                          ],
                         ),
                       ),
                       const VSpace(whiteSpace),

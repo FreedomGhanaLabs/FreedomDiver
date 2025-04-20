@@ -9,7 +9,6 @@ import 'package:freedom_driver/feature/rides/view/rides_screen.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
-
   static const routeName = '/main_activity';
 
   @override

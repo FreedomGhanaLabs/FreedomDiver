@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/helpers/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
@@ -46,12 +47,19 @@ class OnboardingCarouselOne extends StatelessWidget {
                       ),
                       onPressed: () {
                         addOnboardingToHive(true).then(
-                          (_) => Navigator.pushNamed(context, '/login'),
+                          (_) => Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            LoginFormScreen.routeName,
+                            (route) => false,
+                          ),
                         );
                       },
                       child: const Text(
                         'Skip',
-                        style: TextStyle(color: Colors.white, fontSize: 13.7),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: paragraphText,
+                        ),
                       ),
                     ),
                   ),

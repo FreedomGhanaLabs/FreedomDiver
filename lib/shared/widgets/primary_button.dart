@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
@@ -99,9 +99,10 @@ class FreedomButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (leadingIcon.isNotEmpty)
-                      SvgPicture.asset('assets/app_icons/$leadingIcon.svg'),
-                    if (leadingIcon.isNotEmpty) const SizedBox(width: 8),
+                    if (leadingIcon.isNotEmpty) ...[
+                      AppIcon(iconName: leadingIcon),
+                      const SizedBox(width: 8),
+                    ],
                     FittedBox(child: buttonTitle),
                   ],
                 ),

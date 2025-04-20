@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
+import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_one.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_two.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/hive/onboarding.dart';
@@ -37,7 +40,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   Future<void> checkFirstTimer() async {
     final x = await getOnboardingFromHive();
     if (x != null) {
-      await Navigator.pushReplacementNamed(context, '/login');
+      await Navigator.pushReplacementNamed(context, LoginFormScreen.routeName);
     }
   }
 
@@ -74,20 +77,22 @@ class _OnboardingViewState extends State<OnboardingView> {
                 width: 10,
                 height: 10,
                 color: carouselInactiveColor,
-                borderRadius: const BorderRadius.all(Radius.circular(28)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(roundedLg)),
               ),
               activeDotDecoration: DotDecoration(
                 width: 36,
                 color: carouselActiveColor,
-                borderRadius: const BorderRadius.all(Radius.circular(28)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(roundedLg)),
               ),
             ),
           ),
-          const VSpace(46),
+          const VSpace(whiteSpace),
           if (_currentPage == 0)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 35),
+              padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
               child: FreedomButton(
                 backGroundColor: Colors.black,
                 onPressed: () {
@@ -106,28 +111,26 @@ class _OnboardingViewState extends State<OnboardingView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
                   width: double.infinity,
                   child: FreedomButton(
                     backGroundColor: Colors.black,
                     height: 57.76.h,
+                    title: 'Get Started',
                     onPressed: () {
                       addOnboardingToHive(true).then(
-                        (_) => Navigator.pushNamed(context, '/register'),
+                        (_) => Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          RegisterFormScreen.routeName,
+                          (route) => false,
+                        ),
                       );
                     },
-                    buttonTitle: Text(
-                      'Get Started',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 17.41,
-                      ),
-                    ),
                   ),
                 ),
                 const VSpace(8.24),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -136,25 +139,23 @@ class _OnboardingViewState extends State<OnboardingView> {
                         useGradient: true,
                         gradient: greenGradient,
                         borderRadius: BorderRadius.circular(13),
+                        title: 'Continue',
                         onPressed: () {
                           addOnboardingToHive(true).then(
-                            (_) => Navigator.pushNamed(context, '/login'),
+                            (_) => Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              LoginFormScreen.routeName,
+                              (route) => false,
+                            ),
                           );
                         },
-                        buttonTitle: Text(
-                          'Continue',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 17.41,
-                          ),
-                        ),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-          const VSpace(16),
+          const VSpace(smallWhiteSpace),
         ],
       ),
     );

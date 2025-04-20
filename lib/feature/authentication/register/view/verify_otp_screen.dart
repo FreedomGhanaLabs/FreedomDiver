@@ -99,7 +99,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                   ),
                   const VSpace(5),
                   Text(
-                    'An SMS code was sent to',
+                    'A code was sent to',
                     style: GoogleFonts.poppins(
                       fontSize: paragraphText,
                       color: Colors.black.withAlpha(127),
@@ -272,9 +272,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             debugPrint(token);
             addTokenToHive(token).then(
               (onValue) => {
-                Navigator.pushReplacementNamed(
+                Navigator.pushNamedAndRemoveUntil(
                   context,
                   MainActivityScreen.routeName,
+                  (route) => false,
                 ),
               },
             );

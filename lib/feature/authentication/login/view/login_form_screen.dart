@@ -220,6 +220,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     ],
                   ),
                 ),
+                const VSpace(whiteSpace),
               ],
             ),
           );

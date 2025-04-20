@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/utility.dart';
@@ -31,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   const DecoratedBackButton(),
                   HSpace(size),
-                  const Center(child: Text('Profile'))
+                  const Center(child: Text('Profile')),
                 ],
               ),
             ),
@@ -58,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Navigator.of(context)
                     .pushNamed(AvailabilityDashboard.routeName);
               },
-            )
+            ),
           ],
         ),
       ),
