@@ -7,6 +7,8 @@ import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/feature/profile/widget/stacked_profile_card.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/helpers/show_dialog.dart';
+import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
@@ -76,26 +78,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.of(context)
                             .pushNamed(AvailabilityDashboard.routeName);
                       },
-                      onTapLogout: () async {
-                        final apiController = ApiController('auth');
+                      onTapLogout: () => showAlertDialog(
+                        context,
+                        'Logout',
+                        'Are you sure you want to logout?',
+                        buttonText: 'Continue',
+                        titleColor: gradient2,
+                        okButtonColor: gradient2,
+                        hasSecondaryButton: true,
+                        onPressed: () async {
+                          final apiController = ApiController('auth');
 
-                        await apiController.post(
-                          context,
-                          'logout',
-                          {},
-                          (success, responseData) {
-                            if (success) {
-                              deleteTokenToHive().then((onValue) {
-                                Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  LoginFormScreen.routeName,
-                                  (route) => false,
-                                );
-                              });
-                            }
-                          },
-                        );
-                      },
+                          await apiController.post(
+                            context,
+                            'logout',
+                            {},
+                            (success, responseData) {
+                              if (success) {
+                                deleteTokenToHive().then((onValue) {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    LoginFormScreen.routeName,
+                                    (route) => false,
+                                  );
+                                });
+                              }
+                            },
+                          );
+                        },
+                      ),
                     ),
                     const VSpace(whiteSpace),
                   ],
