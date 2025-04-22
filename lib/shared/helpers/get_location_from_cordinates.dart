@@ -8,16 +8,17 @@ Future<Map<String, String>> getLocationFromCoordinates(
   final longitude = coordinates[1];
 
   try {
-    final List<Placemark> placemarks =
+    final placemarks =
         await placemarkFromCoordinates(latitude, longitude);
 
     if (placemarks.isNotEmpty) {
       final place = placemarks.first;
       return {
-        'country': place.country,
+        'country': place.country ?? '',
         'city': place.locality ??
             place.subAdministrativeArea ??
-            place.administrativeArea,
+            place.administrativeArea ??
+            '',
       };
     } else {
       return {'country': '', 'city': ''};

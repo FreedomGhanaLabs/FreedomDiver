@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dio/dio.dart';
@@ -91,6 +92,8 @@ class ApiController {
           successMessage,
           toastType: ToastType.success,
         );
+      } else {
+        log('/$startUrl/$endpoint - ${successMessage != "null" ? successMessage : 'Fetched data successfully'}');
       }
       callback(true, response.data);
     } catch (e) {

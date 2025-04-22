@@ -110,9 +110,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         'motorcycleYear': motorcycleYearController.text.trim(),
         'address': {
           'street': streetController.text.trim(),
-          'city': countryValue.capitalize,
-          'state': stateValue.capitalize,
-          'country': cityValue.capitalize,
+          'city': cityValue.trim().capitalize,
+          'state': stateValue.trim().capitalize,
+          'country': countryValue.trim().capitalize,
           'postalCode': postalCodeController.text.trim(),
         },
         'password': passwordController.text,
@@ -444,6 +444,7 @@ Widget buildTextField({
   String? Function(String?)? validator,
   String? placeholder,
   String? prefixIconUrl,
+  bool hasBadge = false,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: smallWhiteSpace),

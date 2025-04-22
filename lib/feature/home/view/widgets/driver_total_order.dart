@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DriverTotalOrder extends StatelessWidget {
   const DriverTotalOrder({
@@ -10,7 +10,12 @@ class DriverTotalOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 17, top: 9, bottom: 13, right: 34),
+      padding: const EdgeInsets.only(
+        left: smallWhiteSpace,
+        top: 9,
+        bottom: 13,
+        right: whiteSpace,
+      ),
       width: double.infinity,
       decoration: ShapeDecoration(
         color: Colors.white,
@@ -21,27 +26,29 @@ class DriverTotalOrder extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         Text(
           'Total Order',
-          style: GoogleFonts.poppins(
-            color: Colors.black,
-            fontSize: 18.66,
+            style: TextStyle(
+              fontSize: normalText,
             fontWeight: FontWeight.w400,
           ),
         ),
-        const VSpace(5),
+          VSpace(extraSmallWhiteSpace),
         Text(
           '20',
-          style: GoogleFonts.poppins(
-            color: const Color(0xFFF59E0B),
-            fontSize: 16.82,
+            style: TextStyle(
+              color: Color(0xFFF59E0B),
+              fontSize: headingText,
             fontWeight: FontWeight.w600,
             height: 1.29,
             letterSpacing: -0.40,
           ),
-        )
-      ]),
+          ),
+        ],
+      ),
     );
   }
 }

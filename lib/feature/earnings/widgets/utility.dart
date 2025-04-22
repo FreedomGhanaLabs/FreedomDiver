@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class SectionFactory extends StatelessWidget {
@@ -62,12 +63,11 @@ abstract class SectionFactory extends StatelessWidget {
             ),
           const SizedBox(width: 22),
           if (item.showArrow)
-            Padding(
-              padding: const EdgeInsets.only(right: 22),
-              child: SvgPicture.asset(
-                'assets/images/arrow_right_icon.svg',
-                colorFilter:
-                    const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            const Padding(
+              padding: EdgeInsets.only(right: 22),
+              child: AppIcon(
+                iconName: 'arrow_right_icon',
+                colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
               ),
             ),
         ],
