@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
@@ -21,7 +20,6 @@ class _AvailabilityDashboardState extends State<AvailabilityDashboard> {
   final vehicleLicensePlate = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width * 0.35;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -36,13 +34,13 @@ class _AvailabilityDashboardState extends State<AvailabilityDashboard> {
                     // HSpace(size),
                     Expanded(
                       child: Center(
-                          child: Text(
-                        'Availability Dashboard',
-                        style: GoogleFonts.poppins(
-                          color: Colors.black,
-                          fontSize: 16.39,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        child: Text(
+                          'Availability Dashboard',
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 16.39,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -97,7 +95,6 @@ class _VehicleInformationContainer extends StatefulWidget {
     required this.vehicleColor,
     required this.vehicleLicensePlate,
     required this.vehicleMakeAndModel,
-    super.key,
   });
   final TextEditingController vehicleColor;
   final TextEditingController vehicleMakeAndModel;
@@ -137,39 +134,38 @@ class _VehicleInformationContainerState
           const VSpace(4),
           Container(
             decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: Colors.black.withValues(alpha: 0.209),
-                ),
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.209),
+              ),
               borderRadius: BorderRadius.circular(4),
             ),
             child: DropdownButton<String>(
-                value: dropDownValue,
-                hint: Text(
-                  'Offline',
-                  style: TextStyle(
+              value: dropDownValue,
+              hint: Text(
+                'Offline',
+                style: TextStyle(
                   color: Colors.black.withValues(alpha: 0.3799999952316284),
-                    fontSize: 10.51,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
+                  fontSize: 10.51,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
                 ),
-                dropdownColor: Colors.white,
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                isExpanded: true,
-                underline: const SizedBox.shrink(),
-                icon: const Icon(Icons.keyboard_arrow_down_sharp),
-                onChanged: (val) {
-                  setState(() {
+              ),
+              dropdownColor: Colors.white,
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              isExpanded: true,
+              underline: const SizedBox.shrink(),
+              icon: const Icon(Icons.keyboard_arrow_down_sharp),
+              onChanged: (val) {
+                setState(() {
                   dropDownValue = val;
-                  });
-                },
-                items:
-                    dropDownItem.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
+                });
+              },
+              items: dropDownItem.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
               }).toList(),
             ),
           ),
@@ -183,19 +179,20 @@ class _VehicleInformationContainerState
             ),
           ),
           Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.209),
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.209),
+              ),
               borderRadius: BorderRadius.circular(4),
             ),
-              child: TimeDropdown(onTimeSelected: (val) {}, hintText:Text(
+            child: TimeDropdown(
+              onTimeSelected: (val) {},
+              hintText: Text(
                 '6:00 AM',
                 style: GoogleFonts.poppins(
-                  color: Colors.black.withValues(alpha:0.379),
+                  color: Colors.black.withValues(alpha: 0.379),
                   fontSize: 10.51,
-
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -211,22 +208,25 @@ class _VehicleInformationContainerState
             ),
           ),
           Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.209),
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.209),
+              ),
               borderRadius: BorderRadius.circular(4),
             ),
-              child: TimeDropdown(onTimeSelected: (val) {}, hintText: Text(
+            child: TimeDropdown(
+              onTimeSelected: (val) {},
+              hintText: Text(
                 '6:00 PM',
                 style: GoogleFonts.poppins(
-                  color: Colors.black.withValues(alpha:0.379),
+                  color: Colors.black.withValues(alpha: 0.379),
                   fontSize: 10.51,
-
                   fontWeight: FontWeight.w400,
                 ),
-              ),),),
+              ),
+            ),
+          ),
           const VSpace(15),
           FreedomButton(
             onPressed: () {},
@@ -248,20 +248,19 @@ class _VehicleInformationContainerState
 }
 
 class TimeDropdown extends StatefulWidget {
-  const TimeDropdown(
-      {
+  const TimeDropdown({
     required this.onTimeSelected,
     required this.hintText,
     super.key,
   });
-  final Function(String) onTimeSelected;
+  final void Function(String) onTimeSelected;
   final Widget hintText;
 
   @override
-  _TimeDropdownState createState() => _TimeDropdownState();
+  TimeDropdownState createState() => TimeDropdownState();
 }
 
-class _TimeDropdownState extends State<TimeDropdown> {
+class TimeDropdownState extends State<TimeDropdown> {
   String? selectedTime;
 
   List<String> generateTimeSlots() {

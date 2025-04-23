@@ -1,3 +1,45 @@
+enum DriverDocumentType {
+  driverLicense,
+  ghanaCard,
+  profilePicture,
+  motorcycleImage,
+  addressProof,
+}
+
+extension DriverDocumentTypeExtension on DriverDocumentType {
+  String get name {
+    switch (this) {
+      case DriverDocumentType.driverLicense:
+        return 'driverLicense';
+      case DriverDocumentType.ghanaCard:
+        return 'ghanaCard';
+      case DriverDocumentType.profilePicture:
+        return 'profilePicture';
+      case DriverDocumentType.motorcycleImage:
+        return 'motorcycleImage';
+      case DriverDocumentType.addressProof:
+        return 'addressProof';
+    }
+  }
+
+  static DriverDocumentType fromString(String value) {
+    switch (value.toLowerCase()) {
+      case 'driverlicense':
+        return DriverDocumentType.driverLicense;
+      case 'ghanacard':
+        return DriverDocumentType.ghanaCard;
+      case 'profilepicture':
+        return DriverDocumentType.profilePicture;
+      case 'motorcycleimage':
+        return DriverDocumentType.motorcycleImage;
+      case 'addressproof':
+        return DriverDocumentType.addressProof;
+      default:
+        throw ArgumentError('Invalid DriverDocumentType: $value');
+    }
+  }
+}
+
 enum DriverStatus {
   available,
   unavailable,
@@ -60,7 +102,6 @@ class Driver {
     this.token,
     this.socketId,
   });
-
   factory Driver.fromJson(Map<String, dynamic> json) {
     return Driver(
       id: json['_id'] as String? ?? '',
@@ -115,14 +156,6 @@ class Driver {
     );
   }
 
-  String get fullName {
-    return [
-      firstName.trim(),
-      // if (otherName.isNotEmpty) otherName.trim(),
-      surname.trim(),
-    ].join(' ');
-  }
-
   final String id;
   final String firstName;
   final String surname;
@@ -155,8 +188,80 @@ class Driver {
   final String? role;
   final String? token;
   final String? socketId;
-}
 
+  String get fullName => [firstName.trim(), surname.trim()].join(' ');
+
+  Driver copyWith({
+    String? id,
+    String? firstName,
+    String? surname,
+    String? otherName,
+    String? email,
+    String? phone,
+    String? motorcycleType,
+    String? motorcycleColor,
+    String? licenseNumber,
+    String? motorcycleNumber,
+    String? motorcycleYear,
+    Address? address,
+    Insurance? insurance,
+    PendingNameUpdate? pendingNameUpdate,
+    NotificationPreferences? notificationPreferences,
+    String? ridePreference,
+    double? ratings,
+    int? numOfReviews,
+    List<KnownDevice>? knownDevices,
+    bool? suspended,
+    bool? twoFactorEnabled,
+    bool? isVerified,
+    String? documentStatus,
+    String? documentComments,
+    String? status,
+    DriverLocation? location,
+    DateTime? lastActiveAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? role,
+    String? token,
+    String? socketId,
+  }) {
+    return Driver(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      surname: surname ?? this.surname,
+      otherName: otherName ?? this.otherName,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      motorcycleType: motorcycleType ?? this.motorcycleType,
+      motorcycleColor: motorcycleColor ?? this.motorcycleColor,
+      licenseNumber: licenseNumber ?? this.licenseNumber,
+      motorcycleNumber: motorcycleNumber ?? this.motorcycleNumber,
+      motorcycleYear: motorcycleYear ?? this.motorcycleYear,
+      address: address ?? this.address,
+      insurance: insurance ?? this.insurance,
+      pendingNameUpdate: pendingNameUpdate ?? this.pendingNameUpdate,
+      notificationPreferences:
+          notificationPreferences ?? this.notificationPreferences,
+      ridePreference: ridePreference ?? this.ridePreference,
+      ratings: ratings ?? this.ratings,
+      numOfReviews: numOfReviews ?? this.numOfReviews,
+      knownDevices: knownDevices ?? this.knownDevices,
+      suspended: suspended ?? this.suspended,
+      twoFactorEnabled: twoFactorEnabled ?? this.twoFactorEnabled,
+      isVerified: isVerified ?? this.isVerified,
+      documentStatus: documentStatus ?? this.documentStatus,
+      documentComments: documentComments ?? this.documentComments,
+      status: status ?? this.status,
+      location: location ?? this.location,
+      lastActiveAt: lastActiveAt ?? this.lastActiveAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      role: role ?? this.role,
+      token: token ?? this.token,
+      socketId: socketId ?? this.socketId,
+    );
+  }
+}
 // Nested Models
 
 class Address {
@@ -196,16 +301,25 @@ class PendingNameUpdate {
   PendingNameUpdate({
     required this.status,
     required this.requestedAt,
+    required this.firstName,
+    required this.otherName,
+    required this.surname,
   });
 
   factory PendingNameUpdate.fromJson(Map<String, dynamic> json) =>
       PendingNameUpdate(
-        status: json['status'] as String? ?? '',
-        requestedAt: DateTime.tryParse(json['requestedAt'] as String? ?? ''),
+        status: json['status'].toString(),
+        requestedAt: DateTime.tryParse(json['requestedAt'].toString()),
+        firstName: json['firstName'].toString(),
+        otherName: json['otherName'].toString(),
+        surname: json['surname'].toString(),
       );
 
   final String status;
   final DateTime? requestedAt;
+  final String firstName;
+  final String surname;
+  final String otherName;
 }
 
 class NotificationPreferences {

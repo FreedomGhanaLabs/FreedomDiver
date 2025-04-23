@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
+import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_view.dart';
 import 'package:freedom_driver/utilities/hive/onboarding.dart';
@@ -41,25 +43,26 @@ class _SplashScreenState extends State<SplashScreen> {
     final getFirstTimer = await getOnboardingFromHive();
     final getToken = await getTokenFromHive();
     if (!isFirstTimer || getToken != null) {
+      await context.read<DriverCubit>().getDriverProfile(context);
       await Navigator.pushNamedAndRemoveUntil(
         context,
         MainActivityScreen.routeName,
         (route) => false,
       );
       return;
-    }
-    if (getFirstTimer != null) {
+    } else if (getFirstTimer != null) {
       await Navigator.pushNamedAndRemoveUntil(
         context,
         LoginFormScreen.routeName,
         (route) => false,
       );
       return;
+    } else {
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        OnboardingView.routeName,
+        (route) => false,
+      );
     }
-    await Navigator.pushNamedAndRemoveUntil(
-      context,
-      OnboardingView.routeName,
-      (route) => false,
-    );
   }
 }

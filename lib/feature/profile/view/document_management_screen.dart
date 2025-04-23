@@ -3,7 +3,6 @@ import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
-import 'package:freedom_driver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +22,6 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
   final vehicleLicensePlate = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width * 0.35;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -99,7 +97,6 @@ class _VehicleInformationContainer extends StatefulWidget {
     required this.vehicleColor,
     required this.vehicleLicensePlate,
     required this.vehicleMakeAndModel,
-    super.key,
   });
   final TextEditingController vehicleColor;
   final TextEditingController vehicleMakeAndModel;

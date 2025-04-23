@@ -27,7 +27,8 @@ class ApiController {
   }
 
   final String startUrl;
-  String get baseUrl => 'https://api-freedom.com/api/v2/driver/$startUrl/';
+  String get baseUrl =>
+      'https://api-freedom.com/api/v2/driver/${startUrl.isNotEmpty ? '$startUrl/' : ''}';
 
   late final Dio _dio = Dio(
     BaseOptions(
@@ -93,7 +94,7 @@ class ApiController {
           toastType: ToastType.success,
         );
       } else {
-        log('/$startUrl/$endpoint - ${successMessage != "null" ? successMessage : 'Fetched data successfully'}');
+        log('/$endpoint - ${successMessage != "null" ? successMessage : 'Fetched data successfully'}');
       }
       callback(true, response.data);
     } catch (e) {
@@ -115,7 +116,39 @@ class ApiController {
     try {
       final response = await _dio.put(endpoint, data: data);
       final successMessage = response.data['message'].toString();
-      if (shouldShowToast && successMessage.isNotEmpty) {
+      if (shouldShowToast &&
+          successMessage.isNotEmpty &&
+          successMessage != 'null') {
+        showToast(
+          context,
+          'Success',
+          successMessage,
+          toastType: ToastType.success,
+        );
+      }
+      callback(true, response.data);
+    } catch (e) {
+      final msg = _handleError(e).toString();
+      if (shouldShowToast && msg.isNotEmpty) {
+        showToast(context, 'Error', msg, toastType: ToastType.error);
+      }
+      callback(false, msg);
+    }
+  }
+
+  Future<void> patch(
+    BuildContext context,
+    String endpoint,
+    Map<String, dynamic> data,
+    Function(bool success, dynamic result) callback, {
+    bool shouldShowToast = true,
+  }) async {
+    try {
+      final response = await _dio.patch(endpoint, data: data);
+      final successMessage = response.data['message'].toString();
+      if (shouldShowToast &&
+          successMessage.isNotEmpty &&
+          successMessage != 'null') {
         showToast(
           context,
           'Success',
@@ -136,12 +169,11 @@ class ApiController {
   Future<void> destroy(
     BuildContext context,
     String endpoint,
-    Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
   }) async {
     try {
-      final response = await _dio.delete(endpoint, data: data);
+      final response = await _dio.delete(endpoint);
       final successMessage = response.data['message'].toString();
       if (shouldShowToast && successMessage.isNotEmpty) {
         showToast(
@@ -161,7 +193,6 @@ class ApiController {
     }
   }
 
-  // Multipart upload handler
   Future<void> uploadFile(
     BuildContext context,
     String endpoint,
@@ -202,14 +233,16 @@ class ApiController {
 
   dynamic _handleError(dynamic error) {
     if (error is DioException) {
-      debugPrint('error message: ${error.message}');
+      log('error message: ${error.message}');
       final errorData = error.response?.data;
       if (errorData != null) {
-        debugPrint('Error Data: $errorData');
+        log('Error Data: $errorData');
         return errorData['message'] ?? errorData['msg'];
       }
+
       return 'Network Error';
     }
+    log('Unexpected Error Message: ${error.message}');
     return 'An unexpected error occurred';
   }
 }

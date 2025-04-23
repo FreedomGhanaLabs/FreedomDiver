@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
+import 'package:freedom_driver/feature/driver/driver.model.dart';
 import 'package:freedom_driver/feature/earnings/widgets/earnings_background_widget.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/home/view/inappcall_map.dart';
@@ -401,8 +402,13 @@ class DriverStatusToggler extends StatelessWidget {
         if (state is DriverLoaded) {
           final driver = state.driver;
 
-          // Check the status of the driver
-          final isUnavailable = driver.status == 'unavailable';
+          // final available = DriverStatus.available.name;
+          final unavailable = DriverStatus.unavailable.name;
+
+          final isUnavailable = driver.status == unavailable;
+          // final isAvailable = driver.status == available;
+
+          final Color activeColor = isUnavailable ? Colors.green : Colors.red;
 
           return ClipRRect(
             child: BackdropFilter(
@@ -412,15 +418,15 @@ class DriverStatusToggler extends StatelessWidget {
                   context.read<DriverCubit>().toggleStatus(context);
                 },
                 child: Container(
-                  height: 45,
+                  height: 40,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4.78),
-                    color: Colors.red.withValues(alpha: 0.1),
-                    border: const Border.fromBorderSide(
+                    color: activeColor.withValues(alpha: 0.05),
+                    border: Border.fromBorderSide(
                       BorderSide(
-                        color: Colors.red,
-                        width: 1.56,
+                        color: activeColor,
+                        width: 1.25,
                       ),
                     ),
                   ),
@@ -430,8 +436,8 @@ class DriverStatusToggler extends StatelessWidget {
                       Text(
                         isUnavailable ? 'Go Online' : 'Go Offline',
                         style: TextStyle(
-                          color: isUnavailable ? Colors.green : Colors.red,
-                          fontSize: 16, // Adjusted to fit your design
+                          color: activeColor,
+                          fontSize: paragraphText,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -440,7 +446,7 @@ class DriverStatusToggler extends StatelessWidget {
                         isUnavailable
                             ? Icons.online_prediction
                             : Icons.offline_bolt,
-                        color: isUnavailable ? Colors.green : Colors.red,
+                        color: activeColor,
                       ),
                     ],
                   ),
@@ -450,8 +456,10 @@ class DriverStatusToggler extends StatelessWidget {
           );
         }
 
-        // Add a loading indicator or placeholder in case the state is not loaded
-        return const Center(child: CircularProgressIndicator());
+        // if (state is DriverLoading) {
+        //   return const Center(child: CircularProgressIndicator());
+        // }
+        return const SizedBox();
       },
     );
   }

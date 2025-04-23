@@ -98,9 +98,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       }
       final names = fullNameController.text.trim().split(' ');
       final data = {
-        'firstName': names[0].capitalize,
-        'surname': names[names.length - 1].capitalize,
-        'otherName': names[1],
+        'firstName': names[0].trim().capitalize,
+        'surname': names[names.length - 1].trim().capitalize,
+        'otherName': names[1].trim(),
         'email': emailController.text.trim(),
         'phone': getFullPhoneNumber(),
         'motorcycleType': motorcycleTypeController.text.trim(),
