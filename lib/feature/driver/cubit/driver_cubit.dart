@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
-import 'package:freedom_driver/feature/driver/cubit/methods.dart';
 import 'package:freedom_driver/feature/driver/driver.model.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/api/api_handler.dart';
@@ -16,6 +15,13 @@ class DriverCubit extends Cubit<DriverState> {
 
   Driver? get currentDriver => _cachedDriver;
   bool get hasDriver => _cachedDriver != null;
+
+  void _emitIfChanged(Driver updated) {
+    if (_cachedDriver != updated) {
+      _cachedDriver = updated;
+      emit(DriverLoaded(_cachedDriver!));
+    }
+  }
 
   void _updateDriver(Driver updated) {
     _cachedDriver = updated;
@@ -60,12 +66,7 @@ class DriverCubit extends Cubit<DriverState> {
         ? DriverStatus.available.name
         : DriverStatus.unavailable.name;
 
-    _updateDriverStatus(newStatus);
-    emitIfChanged(
-      _cachedDriver,
-      _cachedDriver!.copyWith(status: newStatus),
-      emit,
-    );
+    _emitIfChanged(_cachedDriver!.copyWith(status: newStatus));
 
     await handleApiCall(
       context: context,
@@ -77,29 +78,27 @@ class DriverCubit extends Cubit<DriverState> {
           if (success) {
             log('[DriverCubit] Status updated: $newStatus');
           } else {
-            emitIfChanged(
-              _cachedDriver,
-              _cachedDriver!.copyWith(status: current),
-              emit,
-            );
+            _emitIfChanged(_cachedDriver!.copyWith(status: current));
           }
         },
       ),
-      onFailure: () => emitIfChanged(
-        _cachedDriver,
-        _cachedDriver!.copyWith(status: current),
-        emit,
-      ),
+      onFailure: () => _emitIfChanged(_cachedDriver!.copyWith(status: current)),
     );
   }
 
-  Future<void> updateDriverLocation(BuildContext context) async {
+  Future<void> updateDriverLocation(
+    BuildContext context,
+    List<double> newLocation,
+  ) async {
     if (_cachedDriver == null) return;
 
-    final currentLocation = _cachedDriver!.location!.coordinates;
-    final newLocation = [3.3792057, 6.5243793];
+    final previous = _cachedDriver!.location!.coordinates;
 
-    _updateDriverLocation(newLocation);
+    _emitIfChanged(
+      _cachedDriver!.copyWith(
+        location: DriverLocation(type: 'Point', coordinates: newLocation),
+      ),
+    );
 
     try {
       await apiController.put(
@@ -109,15 +108,28 @@ class DriverCubit extends Cubit<DriverState> {
         (success, responseData) {
           if (success) {
             log('[DriverCubit] coordinates updated: $newLocation');
-            _updateDriverLocation(newLocation);
           } else {
-            _updateDriverLocation(currentLocation);
+            _emitIfChanged(
+              _cachedDriver!.copyWith(
+                location: DriverLocation(
+                  type: 'Point',
+                  coordinates: previous,
+                ),
+              ),
+            );
           }
         },
       );
     } catch (e) {
       log('[DriverCubit] location error: $e');
-      _updateDriverLocation(currentLocation);
+      _emitIfChanged(
+        _cachedDriver!.copyWith(
+          location: DriverLocation(
+            type: 'Point',
+            coordinates: previous,
+          ),
+        ),
+      );
     }
   }
 
@@ -155,11 +167,10 @@ class DriverCubit extends Cubit<DriverState> {
     BuildContext context,
     String newEmail,
   ) async {
-    if (_cachedDriver == null) return;
+    if (!hasDriver) return;
 
-    final email = _cachedDriver?.email ?? '';
-
-    _updateDriverEmail(newEmail);
+    final previous = _cachedDriver!.email;
+    _emitIfChanged(_cachedDriver!.copyWith(email: newEmail));
 
     try {
       await apiController.post(
@@ -169,15 +180,14 @@ class DriverCubit extends Cubit<DriverState> {
         (success, responseData) {
           if (success) {
             log('[DriverCubit] email updated: $newEmail');
-            _updateDriverEmail(newEmail);
           } else {
-            _updateDriverEmail(email);
+            _updateDriverEmail(previous);
           }
         },
       );
     } catch (e) {
       log('[DriverCubit] email error: $e');
-      _updateDriverEmail(email);
+      _updateDriverEmail(previous);
     }
   }
 
@@ -365,18 +375,6 @@ class DriverCubit extends Cubit<DriverState> {
   void resetDriverCache() => _cachedDriver = null;
 
   // Private helpers
-  void _updateDriverStatus(String status) {
-    _cachedDriver = _cachedDriver?.copyWith(status: status);
-    if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
-  }
-
-  void _updateDriverLocation(List<double> coordinates) {
-    _cachedDriver = _cachedDriver?.copyWith(
-      location: DriverLocation(type: 'Point', coordinates: coordinates),
-    );
-    if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
-  }
-
   void _updateDriverRidePreference(String ridePreference) {
     _cachedDriver = _cachedDriver?.copyWith(ridePreference: ridePreference);
     if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
