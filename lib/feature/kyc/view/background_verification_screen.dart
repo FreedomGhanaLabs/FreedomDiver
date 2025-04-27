@@ -81,7 +81,8 @@ class _BackgroundVerificationScreenState
             const VSpace(whiteSpace),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
-              child: BlocBuilder<DriverLicenseCubit, DriverLicenseState>(
+              child:
+                  BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
                 builder: (context, state) {
                   if (state is DriverLicenseImageLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -222,7 +223,8 @@ class _BackgroundVerificationScreenState
           } else {
             return GestureDetector(
               onTap: () {
-                final driverLicense = context.read<DriverLicenseCubit>();
+                final driverLicenseImage =
+                    context.read<DriverLicenseImageCubit>();
                 showCupertinoModalPopup(
                   useRootNavigator: false,
                   context: context,
@@ -235,7 +237,7 @@ class _BackgroundVerificationScreenState
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();
-                          driverLicense.pickImage(context);
+                          driverLicenseImage.pickImage(context);
                         },
                       ),
                       CupertinoActionSheetAction(
@@ -245,7 +247,7 @@ class _BackgroundVerificationScreenState
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();
-                          driverLicense.pickImage(
+                          driverLicenseImage.pickImage(
                             context,
                             gallery: true,
                           );

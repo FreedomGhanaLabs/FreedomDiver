@@ -10,7 +10,6 @@ import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedom_driver/l10n/l10n.dart';
 import 'package:freedom_driver/router/router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:loader_overlay/loader_overlay.dart';
 
 class App extends StatelessWidget {
@@ -29,9 +28,17 @@ class App extends StatelessWidget {
           BlocProvider(create: (_) => HomeCubit()),
           BlocProvider(create: (_) => DriverCubit()),
           BlocProvider(create: (_) => DriverLicenseCubit()),
+          BlocProvider(create: (_) => DriverLicenseCubit()),
+          BlocProvider(create: (_) => DriverLicenseDetailsCubit()),
+          BlocProvider(create: (_) => DriverLicenseImageCubit()),
           BlocProvider(create: (_) => KycCubit()),
         ],
         child: GlobalLoaderOverlay(
+          key: GlobalKey(debugLabel: 'Global key for overlay'),
+          switchInCurve: Curves.bounceIn,
+          transitionBuilder: (p0, p1) {
+            return FadeTransition(opacity: p1, child: p0);
+          },
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(fontFamily: GoogleFonts.poppins().fontFamily),

@@ -6,11 +6,11 @@ import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_lic
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
 import 'package:freedom_driver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:intl/intl.dart';
 
@@ -230,7 +230,7 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
 
   void submitForm() {
     if (_formKey.currentState!.validate()) {
-      context.read<DriverLicenseCubit>().setDriverLicenseDetails(
+      context.read<DriverLicenseDetailsCubit>().setDriverLicenseDetails(
             licenseNumber: licenseNumber.text.trim(),
             dob: dateOfBirth ?? '',
             licenseClass: classOfLicense.text.trim(),

@@ -1,11 +1,11 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_state.dart';
 import 'package:freedom_driver/feature/documents/driver_license/driver_license.model.dart';
+import 'package:freedom_driver/feature/documents/driver_license/extension.dart';
 import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
@@ -13,21 +13,12 @@ import 'package:freedom_driver/shared/api/api_handler.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/utilities/file_service.dart';
 
-class DriverLicenseCubit extends Cubit<DriverLicenseState> {
-  DriverLicenseCubit() : super(DriverLicenseInitial());
+class DriverLicenseImageCubit extends Cubit<DriverLicenseImageState> {
+  DriverLicenseImageCubit() : super(DriverLicenseImageInitial());
 
-  final ApiController apiController = ApiController('documents');
-
-  DriverLicenseImageState imageState = DriverLicenseImageInitial();
-  DriverLicenseDetailsState detailsState = DriverLicenseDetailsInitial();
-
-  File? documentFile;
-  DriverLicense? driverLicense;
-
-  // ------ Pick Image ------
   Future<void> pickImage(BuildContext context, {bool gallery = false}) async {
     try {
-      emit(DriverLicenseLoading());
+      emit(DriverLicenseImageLoading());
       final fileService = FileService();
 
       final pickedFile = gallery
@@ -35,13 +26,10 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
           : await fileService.captureFromCamera();
 
       if (pickedFile != null) {
-        documentFile = File(pickedFile.path);
-        imageState = DriverLicenseImageSelected(documentFile!);
+        emit(DriverLicenseImageSelected(pickedFile));
       } else {
-        imageState = DriverLicenseImageInitial();
+        emit(DriverLicenseImageInitial());
       }
-
-      emit(DriverLicenseInitial());
     } catch (e) {
       log('Error picking image: $e');
       showToast(
@@ -50,10 +38,14 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
         'An error occurred while choosing document',
         toastType: ToastType.error,
       );
-      imageState = DriverLicenseImageInitial();
-      emit(const DriverLicenseError('Failed to pick image'));
+      emit(DriverLicenseImageInitial());
+      emit(const DriverLicenseImageError('Failed to pick image'));
     }
   }
+}
+
+class DriverLicenseDetailsCubit extends Cubit<DriverLicenseDetailsState> {
+  DriverLicenseDetailsCubit() : super(DriverLicenseDetailsInitial());
 
   // ------ Set Driver License Details ------
   void setDriverLicenseDetails({
@@ -63,7 +55,7 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
     required String issueDate,
     required String expiryDate,
   }) {
-    driverLicense = DriverLicense(
+    final driverLicense = DriverLicense(
       licenseNumber: licenseNumber,
       dob: dob,
       licenseClass: licenseClass,
@@ -75,13 +67,20 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
       uploadedAt: DateTime.now(),
     );
 
-    detailsState = DriverLicenseDetailsLoaded(driverLicense!);
-    emit(DriverLicenseInitial());
+    emit(DriverLicenseDetailsLoaded(driverLicense));
   }
+}
+
+class DriverLicenseCubit extends Cubit<DriverLicenseState> {
+  DriverLicenseCubit() : super(DriverLicenseInitial());
+
+  final ApiController apiController = ApiController('documents');
 
   // ------ Upload Driver License ------
   Future<void> uploadDriverLicense(BuildContext context) async {
     final driver = context.driver;
+    final documentFile = context.document;
+    final driverLicense = context.driverLicense;
 
     if (documentFile == null) {
       showToast(
@@ -106,18 +105,17 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
       'issueDate': driverLicense?.issueDate,
       'expiryDate': driverLicense?.expiryDate,
       'document': await MultipartFile.fromFile(
-        documentFile!.path,
+        documentFile.path,
         filename: 'driverLicense-${driver?.fullName}-${driver?.id}.jpg',
       ),
     });
-
+    emit(DriverLicenseLoading());
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        emit(DriverLicenseLoading());
         await apiController.uploadFile(context, 'upload', formData,
             (success, data) {
-          if (success && data is Map<String, dynamic>) {
+          if (success) {
             emit(DriverLicenseSuccess());
             Navigator.pushNamedAndRemoveUntil(
               context,

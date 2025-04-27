@@ -6,18 +6,17 @@ import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_lic
 import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_state.dart';
 import 'package:freedom_driver/feature/documents/driver_license/driver_license.model.dart';
 
-
 extension DriverExtension on BuildContext {
   DriverLicense? get driverLicense {
-    final state = read<DriverLicenseCubit>().state;
-    if (state is DriverLicenseLoaded) {
-      return state.driverLicense ;
+    final state = read<DriverLicenseDetailsCubit>().state;
+    if (state is DriverLicenseDetailsLoaded) {
+      return state.driverLicense;
     }
     return null;
   }
-  
+
   File? get document {
-    final state = read<DriverLicenseCubit>().state;
+    final state = read<DriverLicenseImageCubit>().state;
     if (state is DriverLicenseImageSelected) {
       return state.image;
     }

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:genova/core/app_config.dart';
-import 'package:provider/provider.dart';
-
-import '../core/context/theme_context.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 
 class CustomLoader extends StatefulWidget {
-  final String text;
   const CustomLoader(
-      {super.key, this.text = "Please hold on, we are working on it"});
+      {
+    super.key,
+    this.text = 'Please hold on, we are working on it',
+  });
+  final String text;
 
   @override
-  State<CustomLoader> createState() => _CustomLoaderState();
+  State<CustomLoader> createState() => CustomLoaderState();
 }
 
-class _CustomLoaderState extends State<CustomLoader>
+class CustomLoaderState extends State<CustomLoader>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller = AnimationController(
     vsync: this,
@@ -22,7 +22,7 @@ class _CustomLoaderState extends State<CustomLoader>
 
   final Tween<double> defTurns = Tween<double>(begin: 0, end: 1);
 
-  String text = "";
+  String text = '';
 
   @override
   void initState() {
@@ -44,12 +44,10 @@ class _CustomLoaderState extends State<CustomLoader>
 
   @override
   Widget build(BuildContext context) {
-    final themeContext = Provider.of<ThemeContext>(context);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(whiteSpace),
@@ -66,19 +64,15 @@ class _CustomLoaderState extends State<CustomLoader>
               child: SizedBox(
                 height: 50,
                 width: 50,
-                child: Image.asset("assets/icons/spinner.png"),
+                child: Image.asset('assets/icons/spinner.png'),
               ),
             ),
           ),
           Text(
             text,
-            style: paragraphTextStyle.copyWith(
-              color: themeContext.themeMode == ThemeMode.dark
-                  ? Colors.white
-                  : darkPurple,
-            ),
+            style: paragraphTextStyle,
             textAlign: TextAlign.center,
-          )
+          ),
         ],
       ),
     );
