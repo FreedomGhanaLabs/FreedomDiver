@@ -50,10 +50,11 @@ class KycCubit extends Cubit<KycState> {
         ..fields['upload_preset'] = 'freedom_drivers'
         ..fields['timestamp'] =
             (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString()
-        ..files.add(await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType('image', imageFormat),
+        ..files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            file.path,
+            contentType: MediaType('image', imageFormat),
           ),
         );
 
@@ -67,7 +68,8 @@ class KycCubit extends Cubit<KycState> {
 
         emit(KycImageUploadSuccess(secureUrl, file));
       } else {
-        emit(KycImageUploadFailure(
+        emit(
+          KycImageUploadFailure(
             'Upload failed: ${response.statusCode} - $responseString',
             file,
           ),

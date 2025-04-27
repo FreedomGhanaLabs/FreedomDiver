@@ -7,6 +7,7 @@ import 'package:freedom_driver/feature/home/view/home_screen.dart';
 import 'package:freedom_driver/feature/main_activity/cubit/main_activity_cubit.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/feature/rides/view/rides_screen.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
@@ -49,13 +50,21 @@ class _MainActivityScreen extends StatelessWidget {
               ),
             ),
             child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
               currentIndex: currentIndex,
               onTap: (value) {
                 context.read<MainActivityCubit>().changeIndex(value);
               },
               backgroundColor: Colors.white,
               selectedItemColor: const Color(0xfffc7013),
-              selectedLabelStyle: const TextStyle(color: Color(0xfffc7013)),
+              selectedLabelStyle: const TextStyle(
+                color: Color(0xfffc7013),
+                fontSize: smallText,
+              ),
+              unselectedItemColor: Colors.grey.shade400,
+              unselectedLabelStyle: const TextStyle(
+                fontSize: smallText,
+              ),
               items: List.generate(
                 _itemDetailsActive.length,
                 (index) {
@@ -63,13 +72,17 @@ class _MainActivityScreen extends StatelessWidget {
                   final inActiveIconData = _itemDetailsInactive[index];
                   return BottomNavigationBarItem(
                     backgroundColor: Colors.white,
-                    icon: state.currentIndex == index
-                        ? SvgPicture.asset(
-                            'assets/nav/active_icon/${activeIconData['icon']}',
-                          )
-                        : SvgPicture.asset(
-                            'assets/nav/inactive_icon/${inActiveIconData['icon']}',
-                          ),
+                    icon: SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: state.currentIndex == index
+                          ? SvgPicture.asset(
+                              'assets/nav/active_icon/${activeIconData['icon']}',
+                            )
+                          : SvgPicture.asset(
+                              'assets/nav/inactive_icon/${inActiveIconData['icon']}',
+                            ),
+                    ),
                     label: state.currentIndex == index
                         ? activeIconData['label']
                         : inActiveIconData['label'],

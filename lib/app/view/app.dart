@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
+import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
+import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedom_driver/l10n/l10n.dart';
 import 'package:freedom_driver/router/router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +26,8 @@ class App extends StatelessWidget {
           BlocProvider(create: (_) => VerifyOtpCubit()),
           BlocProvider(create: (_) => HomeCubit()),
           BlocProvider(create: (_) => DriverCubit()),
+          BlocProvider(create: (_) => DriverLicenseCubit()),
+          BlocProvider(create: (_) => KycCubit()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

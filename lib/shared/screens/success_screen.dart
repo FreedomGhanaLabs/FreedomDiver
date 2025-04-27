@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freedom_driver/feature/authentication/forgot_password/view/forgot_password_form.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/shared/helpers/routes_params.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';

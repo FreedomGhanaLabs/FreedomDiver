@@ -2,6 +2,7 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
+import 'package:freedom_driver/shared/widgets/toaster.dart';
 
 void copyTextToClipboard(
   BuildContext context,
@@ -13,10 +14,9 @@ void copyTextToClipboard(
     if (callback != null) callback();
     showToast(
       context,
-      'Clipboard',
+      'Copied',
       '${copyText ?? text} copied to clipboard',
-      isSnackBar: true,
-      contentType: ContentType.success,
+      toastType: ToastType.success,
     );
   }).catchError((error) {
     debugPrint('$error');

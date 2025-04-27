@@ -40,7 +40,9 @@ class RegistrationFormCubit extends Cubit<RegistrationFormState> {
         motorcycleYear: motorcycleYear,
         address: address,
         password: password,
-        profilePicture: securedImageUrl));
+        profilePicture: securedImageUrl,
+      ),
+    );
   }
 
   Future<void> registerDrivers() async {
@@ -58,7 +60,8 @@ class RegistrationFormCubit extends Cubit<RegistrationFormState> {
         address: state.address,
         password: state.password,
         profilePicture: state.profilePicture,
-      ));
+        ),
+      );
       emit(state.copyWith(formStatus: FormStatus.success));
     } catch (e) {
       emit(state.copyWith(formStatus: FormStatus.failure));

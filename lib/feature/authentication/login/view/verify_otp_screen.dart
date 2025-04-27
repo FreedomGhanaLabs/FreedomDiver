@@ -245,8 +245,8 @@ class DecoratedBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
-        height: 38.09,
-        width: 38.09,
+        height: 37,
+        width: 37,
         decoration:
             const BoxDecoration(color: Colors.black, shape: BoxShape.circle),
         child: Padding(

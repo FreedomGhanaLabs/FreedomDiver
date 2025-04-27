@@ -10,7 +10,7 @@ import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/shared/helpers/routes_params.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';

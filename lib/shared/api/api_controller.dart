@@ -206,6 +206,7 @@ class ApiController {
         data: formData,
         options: Options(
           headers: {
+            // Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
         ),

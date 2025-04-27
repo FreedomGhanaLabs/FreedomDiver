@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
+import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/utilities/ui.dart';
 
 class CustomDropDown extends StatefulWidget {
   const CustomDropDown({
-    required this.items,
-    required this.initialValue,
-    required this.onChanged,
+    this.onChanged,
+    this.items,
+    this.initialValue,
+    this.value,
+    this.label,
     super.key,
+    this.onTap,
   });
-  final List<String> items;
-  final String initialValue;
-  final ValueChanged<String> onChanged;
+  final List<String>? items;
+  final String? initialValue;
+  final String? value;
+  final String? label;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onTap;
 
   @override
   State<CustomDropDown> createState() => _CustomDropDownState();
@@ -23,7 +31,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.initialValue;
+    selectedValue = widget.initialValue ?? '';
   }
 
   Future<void> _showDropdownMenu(BuildContext context) async {
@@ -38,14 +46,14 @@ class _CustomDropDownState extends State<CustomDropDown> {
         offset.dx + renderBox.size.width,
         0,
       ),
-      items: widget.items.map((item) {
+      items: (widget.items ?? []).map((item) {
         return PopupMenuItem<String>(
           value: item,
           child: Text(
             item,
-            style: GoogleFonts.poppins(
-              fontSize: 10.89,
-              fontWeight: FontWeight.w400,
+            style: const TextStyle(
+              fontSize: smallText,
+              fontWeight: FontWeight.w500,
             ),
           ),
         );
@@ -56,45 +64,63 @@ class _CustomDropDownState extends State<CustomDropDown> {
       setState(() {
         selectedValue = result;
       });
-      widget.onChanged(result);
+      widget.onChanged?.call(result);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showDropdownMenu(context),
-      child: Container(
-        height: 50,
-        width: 139,
-        decoration: ShapeDecoration(
-          color: Colors.black,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              strokeAlign: BorderSide.strokeAlignOutside,
-              color: Colors.black.withValues(alpha: 0.03),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.label != null)
+          Text(
+            widget.label!,
+            maxLines: 1,
+            overflow: TextOverflow.fade,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: paragraphText,
+              fontWeight: FontWeight.w600,
             ),
-            borderRadius: BorderRadius.circular(8),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              selectedValue,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 15.99,
-                fontWeight: FontWeight.w500,
+        const VSpace(extraSmallWhiteSpace + 2),
+        GestureDetector(
+          onTap: widget.onTap ?? () => _showDropdownMenu(context),
+          child: Container(
+            height: 50,
+            width: Responsive.width(context),
+            padding: const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
+            decoration: ShapeDecoration(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  strokeAlign: BorderSide.strokeAlignOutside,
+                  color: gradient1,
+                ),
+                borderRadius: BorderRadius.circular(roundedMd),
               ),
             ),
-            const Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.value ?? selectedValue,
+                  style: const TextStyle(
+                    fontSize: paragraphText,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Colors.black,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        const VSpace(smallWhiteSpace),
+      ],
     );
   }
 }

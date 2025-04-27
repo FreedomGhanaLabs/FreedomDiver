@@ -57,7 +57,7 @@ class RegistrationFormState extends Equatable {
     String? address,
     String? password,
     FormStatus? formStatus,
-    String? profilePicture
+    String? profilePicture,
   }) {
     return RegistrationFormState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -71,39 +71,39 @@ class RegistrationFormState extends Equatable {
       address: address ?? this.address,
       password: password ?? this.password,
       formStatus: formStatus ?? this.formStatus,
-      profilePicture: profilePicture ?? this.profilePicture
+      profilePicture: profilePicture ?? this.profilePicture,
     );
   }
 
   @override
   List<Object> get props => [
-    phoneNumber,
-    driversEmail,
-    driversName,
-    motorcycleType,
-    motorcycleColor,
-    licenseNumber,
-    motorcycleNumber,
-    motorcycleYear,
-    address,
-    password,
-    formStatus,
-    profilePicture
-  ];
+        phoneNumber,
+        driversEmail,
+        driversName,
+        motorcycleType,
+        motorcycleColor,
+        licenseNumber,
+        motorcycleNumber,
+        motorcycleYear,
+        address,
+        password,
+        formStatus,
+        profilePicture,
+      ];
 
   Map<String, dynamic> toJson() => {
-    'phone': phoneNumber,
-    'name': driversName,
-    'email': driversEmail,
-    'motorcycleType': motorcycleType,
-    'motorcycleColor': motorcycleColor,
-    'licenseNumber': licenseNumber,
-    'motorcycleNumber': motorcycleNumber,
-    'motorcycleYear': motorcycleYear,
-    'address': address,
-    'password': password,
-    'profilePicture': profilePicture
-  };
+        'phone': phoneNumber,
+        'name': driversName,
+        'email': driversEmail,
+        'motorcycleType': motorcycleType,
+        'motorcycleColor': motorcycleColor,
+        'licenseNumber': licenseNumber,
+        'motorcycleNumber': motorcycleNumber,
+        'motorcycleYear': motorcycleYear,
+        'address': address,
+        'password': password,
+        'profilePicture': profilePicture,
+      };
 }
 
 enum FormStatus { initial, submitting, success, failure }

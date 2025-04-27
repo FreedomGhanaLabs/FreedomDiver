@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
+import 'package:freedom_driver/feature/authentication/login/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/utility.dart';
 import 'package:freedom_driver/feature/profile/view/availability_dashboard.dart';
 import 'package:freedom_driver/feature/profile/view/document_management_screen.dart';
@@ -7,10 +8,12 @@ import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/feature/profile/widget/stacked_profile_card.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/shared/helpers/show_dialog.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
+import 'package:freedom_driver/utilities/show_dialog.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
 import 'package:freedom_driver/utilities/ui.dart';
+import 'package:get/get_utils/get_utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -28,29 +31,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // if (widget.hasBackButton)
-                  //   const DecoratedBackButton()
-                  // else
-                  SizedBox(),
-                  Text(
-                    'Profile',
-                    style: TextStyle(
-                      fontSize: paragraphText,
-                    ),
-                  ),
-                  SizedBox(),
-                ],
-              ),
-            ),
+            const CustomAppBar(title: 'profile', hasBackButton: false),
             const VSpace(whiteSpace),
             const ProfileCard(),
             const VSpace(smallWhiteSpace),
@@ -115,6 +99,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({
+    super.key,
+    this.title,
+    this.hasBackButton = true,
+    this.actions,
+  });
+
+  final String? title;
+  final bool hasBackButton;
+  final List<Widget>? actions;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: Responsive.width(context),
+      padding: const EdgeInsets.symmetric(
+        horizontal: smallWhiteSpace,
+        vertical: extraSmallWhiteSpace,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          if (hasBackButton)
+            const DecoratedBackButton()
+          else
+            const SizedBox(width: smallWhiteSpace),
+          Text(
+            title?.capitalize ?? '',
+            style: const TextStyle(fontSize: paragraphText),
+          ),
+          if (actions != null)
+            Row(children: actions!)
+          else
+            const SizedBox(width: smallWhiteSpace),
+        ],
       ),
     );
   }

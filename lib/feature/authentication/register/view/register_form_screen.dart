@@ -8,7 +8,7 @@ import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/shared/helpers/responsive.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/gradient_text.dart';

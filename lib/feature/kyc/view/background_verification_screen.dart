@@ -1,18 +1,20 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedom_driver/feature/kyc/view/criminal_background_check_screen.dart';
+import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class BackgroundVerificationScreen extends StatefulWidget {
   const BackgroundVerificationScreen({super.key});
@@ -54,40 +56,40 @@ class _BackgroundVerificationScreenState
                 ],
               ),
             ),
-            const VSpace(12),
+            const VSpace(smallWhiteSpace),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'We prioritize safety. Please upload your necessary documents for verification.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
+                    style: TextStyle(
+                      fontSize: smallText,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   const VSpace(27),
-                  Text(
+                  const Text(
                     'Upload ID',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 15.06,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    'Upload a photo of a valid ID (Driver’s License, Passport, or Ghana Card) to verify your identity.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 9.27,
+                  const Text(
+                    "Upload a photo of a valid ID (Driver's License, Passport, or Ghana Card) to verify your identity.",
+                    style: TextStyle(
+                      fontSize: extraSmallText,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const VSpace(10),
+                  const VSpace(smallWhiteSpace),
                   buildUploadDocsUI(),
                 ],
               ),
             ),
-            const VSpace(21),
+            const VSpace(whiteSpace),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: BlocConsumer<KycCubit, KycState>(
@@ -184,82 +186,81 @@ class _BackgroundVerificationScreenState
   }
 
   Widget buildUploadDocsUI() {
+    File? _selectedId;
     return DottedBorder(
       radius: const Radius.circular(7),
       borderType: BorderType.RRect,
-      strokeWidth: 2,
-      dashPattern: const [8, 4],
+      dashPattern: const [14, 4],
       color: yellowGold,
-      child: BlocBuilder<KycCubit, KycState>(builder: (context, state) {
-        if (state is KycImageSelected) {
-          return buildSelectedImage(state);
-        } else {
-          return GestureDetector(
-            onTap: () {
-              context.read<KycCubit>().pickImage();
-            },
-            child: Container(
-              width: 361,
-              height: 102,
-              decoration: ShapeDecoration(
-                color: const Color(0x0AFFBA40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
+      child: BlocBuilder<KycCubit, KycState>(
+        builder: (context, state) {
+          if (state is KycImageSelected) {
+            return buildSelectedImage(state);
+          } else {
+            return GestureDetector(
+              onTap: () {
+                context.read<KycCubit>().pickImage();
+              },
+              child: Container(
+                width: Responsive.isBigMobile(context)
+                    ? Responsive.width(context)
+                    : 361,
+                height: 102,
+                decoration: ShapeDecoration(
+                  color: const Color(0x0AFFBA40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(7),
+                  ),
                 ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 17,
-                    ),
-                    padding: const EdgeInsets.all(8.1),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
-                      color: Colors.transparent,
-                      border: Border.all(
-                        color: const Color(0xFFF59E0B),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 17,
+                      ),
+                      padding: const EdgeInsets.all(8.1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        color: Colors.transparent,
+                        border: Border.all(
+                          color: const Color(0xFFF59E0B),
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AppIcon(
+                            iconName: 'upload_item_icon',
+                            size: paragraphText,
+                          ),
+                          SizedBox(width: 8.01),
+                          Text(
+                            'Upload ID photo',
+                            style: TextStyle(
+                              color: Color(0xFFF59E0B),
+                              fontSize: smallText,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 11.22,
-                          height: 11.22,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(),
-                          child: SvgPicture.asset(
-                            'assets/app_icons/upload_item_icon.svg',
-                          ),
-                        ),
-                        const SizedBox(width: 8.01),
-                        Text(
-                          'Upload ID photo',
-                          style: GoogleFonts.poppins(
-                            color: const Color(0xFFF59E0B),
-                            fontSize: 11.61,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+                    const VSpace(8.8),
+                    Text(
+                      // 'Upload a photo of your face to verify your identity.',
+                      'Make sure your ID is clear and legible.',
+                      style: TextStyle(
+                        fontSize: smallText,
+                        fontWeight: FontWeight.w400,
+                        color: yellowGold,
+                      ),
                     ),
-                  ),
-                  const VSpace(8.8),
-                  Text(
-                    'Upload a photo of your face to verify your identity.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 9.27,
-                      fontWeight: FontWeight.w400,
-                      color: yellowGold,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
         },
       ),
     );
@@ -307,7 +308,7 @@ class SimpleButton extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: textStyle ??
-                GoogleFonts.poppins(
+                const TextStyle(
                   color: Colors.white,
                   fontSize: 17.92,
                   fontWeight: FontWeight.w600,
