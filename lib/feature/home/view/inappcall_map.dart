@@ -6,6 +6,7 @@ import 'package:freedom_driver/feature/kyc/view/background_verification_screen.d
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
 import 'package:freedom_driver/shared/widgets/custom_drop_down_button.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -335,6 +336,7 @@ class CustomBottomSheet extends StatelessWidget {
           padding: padding,
           curve: Curves.easeInOut,
           height: height,
+          width: Responsive.width(context),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.only(

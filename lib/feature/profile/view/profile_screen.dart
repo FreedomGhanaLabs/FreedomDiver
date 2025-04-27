@@ -8,10 +8,10 @@ import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/feature/profile/widget/stacked_profile_card.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/responsive.dart';
-import 'package:freedom_driver/utilities/show_dialog.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
+import 'package:freedom_driver/utilities/show_dialog.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:get/get_utils/get_utils.dart';
 

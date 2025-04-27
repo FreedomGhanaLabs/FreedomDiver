@@ -11,6 +11,8 @@ import 'package:freedom_driver/l10n/l10n.dart';
 import 'package:freedom_driver/router/router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:loader_overlay/loader_overlay.dart';
+
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -29,12 +31,14 @@ class App extends StatelessWidget {
           BlocProvider(create: (_) => DriverLicenseCubit()),
           BlocProvider(create: (_) => KycCubit()),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(fontFamily: GoogleFonts.poppins().fontFamily),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          onGenerateRoute: onGenerateRoute,
+        child: GlobalLoaderOverlay(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(fontFamily: GoogleFonts.poppins().fontFamily),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            onGenerateRoute: onGenerateRoute,
+          ),
         ),
       ),
     );

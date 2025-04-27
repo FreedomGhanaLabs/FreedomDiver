@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class FileService {
   final ImagePicker _imagePicker = ImagePicker();
 
@@ -35,12 +34,6 @@ class FileService {
     if (pickedFile != null) {
       return File(pickedFile.path);
     }
-    return null;
-  }
-
-  Future<File?> pickDocument() async {
-    // Show a bottom sheet or dialog for user to choose
-    // This is handled separately in UI
     return null;
   }
 }

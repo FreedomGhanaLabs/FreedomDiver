@@ -1,19 +1,21 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
-import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_cubit.dart';
+import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_state.dart';
 import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedom_driver/feature/kyc/view/criminal_background_check_screen.dart';
+import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
 class BackgroundVerificationScreen extends StatefulWidget {
@@ -42,20 +44,7 @@ class _BackgroundVerificationScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  DecoratedBackButton(),
-                  SizedBox(width: 13.91),
-                  Text(
-                    'Background Verification',
-                    style:
-                        TextStyle(fontSize: 18.05, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
+            const CustomAppBar(title: 'Upload Document'),
             const VSpace(smallWhiteSpace),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
@@ -69,11 +58,11 @@ class _BackgroundVerificationScreenState
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const VSpace(27),
+                  const VSpace(whiteSpace),
                   const Text(
                     'Upload ID',
                     style: TextStyle(
-                      fontSize: 15.06,
+                      fontSize: normalText,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -90,6 +79,41 @@ class _BackgroundVerificationScreenState
               ),
             ),
             const VSpace(whiteSpace),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 21),
+              child: BlocBuilder<DriverLicenseCubit, DriverLicenseState>(
+                builder: (context, state) {
+                  if (state is DriverLicenseImageLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is DriverLicenseImageSelected) {
+                    log('A file has been selected');
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Image.file(state.image, height: 200),
+                        const VSpace(whiteSpace),
+                        SimpleButton(
+                          title: 'Submit Document',
+                          // backgroundColor: darkGoldColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(7)),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              CriminalBackgroundCheckScreen.routeName,
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              ),
+            ),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: BlocConsumer<KycCubit, KycState>(
@@ -186,7 +210,6 @@ class _BackgroundVerificationScreenState
   }
 
   Widget buildUploadDocsUI() {
-    File? _selectedId;
     return DottedBorder(
       radius: const Radius.circular(7),
       borderType: BorderType.RRect,
@@ -199,13 +222,49 @@ class _BackgroundVerificationScreenState
           } else {
             return GestureDetector(
               onTap: () {
-                context.read<KycCubit>().pickImage();
+                final driverLicense = context.read<DriverLicenseCubit>();
+                showCupertinoModalPopup(
+                  useRootNavigator: false,
+                  context: context,
+                  builder: (context) => CupertinoActionSheet(
+                    actions: [
+                      CupertinoActionSheetAction(
+                        child: Text(
+                          'Snap Document',
+                          style: TextStyle(color: gradient1),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          driverLicense.pickImage(context);
+                        },
+                      ),
+                      CupertinoActionSheetAction(
+                        child: Text(
+                          'Choose from Gallery',
+                          style: TextStyle(color: gradient1),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          driverLicense.pickImage(
+                            context,
+                            gallery: true,
+                          );
+                        },
+                      ),
+                      CupertinoActionSheetAction(
+                        isDestructiveAction: true,
+                        child: const Text('Close'),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                );
               },
               child: Container(
                 width: Responsive.isBigMobile(context)
                     ? Responsive.width(context)
                     : 361,
-                height: 102,
+                height: 110,
                 decoration: ShapeDecoration(
                   color: const Color(0x0AFFBA40),
                   shape: RoundedRectangleBorder(
@@ -213,12 +272,11 @@ class _BackgroundVerificationScreenState
                   ),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(
-                        top: 17,
-                      ),
-                      padding: const EdgeInsets.all(8.1),
+                      margin: const EdgeInsets.only(top: smallWhiteSpace),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(7),
                         color: Colors.transparent,

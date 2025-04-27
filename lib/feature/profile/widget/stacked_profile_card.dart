@@ -3,16 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/copy_to_clipboard.dart';
-import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/utilities/copy_to_clipboard.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({
-    super.key,
-  });
+  const ProfileCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,9 @@ class ProfileCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(roundedMd),
               ),
               height: 200,
-              width: Responsive.width(context) - 45,
+              width: Responsive.isMobile(context)
+                  ? 350
+                  : Responsive.width(context) - 45,
               child: const Padding(
                 padding: EdgeInsets.only(left: 10, top: 6, right: 10),
                 child: Row(
