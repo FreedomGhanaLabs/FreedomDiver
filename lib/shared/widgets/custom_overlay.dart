@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -19,8 +20,8 @@ class CustomLoaderState extends State<CustomLoader>
   late final AnimationController controller = AnimationController(
     vsync: this,
     duration: Durations.extralong4,
-    lowerBound: 0.9,
-    upperBound: 1.1,
+    lowerBound: 0.95,
+    upperBound: 1.05,
   )..repeat(reverse: true);
 
   String text = '';
@@ -45,23 +46,24 @@ class CustomLoaderState extends State<CustomLoader>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ScaleTransition(
-            scale: controller,
-            child: const SizedBox(
-              child: AppIcon(iconName: 'location_duotone', height: 50),
+    return Padding(
+      padding: const EdgeInsets.all(whiteSpace),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ScaleTransition(
+              scale: controller,
+              child: AppIcon(iconName: 'location_duotone', height: 120.sp),
             ),
-          ),
-          const VSpace(smallWhiteSpace),
-          Text(
-            text,
-            style: paragraphTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const VSpace(smallWhiteSpace),
+            Text(
+              text,
+              style: paragraphTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

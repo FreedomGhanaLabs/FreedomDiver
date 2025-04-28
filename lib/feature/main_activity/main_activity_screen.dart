@@ -8,6 +8,7 @@ import 'package:freedom_driver/feature/main_activity/cubit/main_activity_cubit.d
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/feature/rides/view/rides_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/utilities/loading_overlay.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
@@ -28,6 +29,7 @@ class _MainActivityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<DriverCubit>().getDriverProfile(context);
+    showLoadingOverlay(context);
     return BlocBuilder<MainActivityCubit, MainActivityState>(
       builder: (context, state) {
         final currentIndex = state.currentIndex;

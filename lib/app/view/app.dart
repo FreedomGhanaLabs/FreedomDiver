@@ -29,6 +29,7 @@ class App extends StatelessWidget {
       child: GlobalLoaderOverlay(
         key: _loaderKey,
         switchInCurve: Curves.bounceIn,
+        overlayColor: Colors.white,
         transitionBuilder: (p0, p1) {
           return FadeTransition(opacity: p1, child: p0);
         },

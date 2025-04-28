@@ -4,12 +4,9 @@ import 'package:freedom_driver/shared/widgets/custom_overlay.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-void showLoadingOverlay(
-  BuildContext context, [
-  String message = ', while we complete your action',
-]) {
+void showLoadingOverlay(BuildContext context, [String? message]) {
   context.loaderOverlay.show(
-    widgetBuilder: (_) => CustomLoader(text: 'Please hold on$message'),
+    widgetBuilder: (_) => CustomLoader(text: message),
   );
 }
 

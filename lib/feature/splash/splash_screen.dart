@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/splash/driver_splash.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
@@ -23,12 +24,15 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 500),
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
 
     _controller.forward();
-    _goToDriverSplash();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _goToDriverSplash();
+    });
   }
 
   @override
@@ -46,10 +50,10 @@ class _SplashScreenState extends State<SplashScreen>
               const Expanded(
                 child: Center(child: AppIcon(iconName: 'freedom_logo')),
               ),
-              const Text(
+              Text(
                 'No delays, no traffic, just a bike and your destination.',
                 style: TextStyle(
-                  fontSize: paragraphText,
+                  fontSize: smallText.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
