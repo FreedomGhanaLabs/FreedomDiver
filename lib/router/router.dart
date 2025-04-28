@@ -19,9 +19,11 @@ import 'package:freedom_driver/feature/profile/view/availability_dashboard.dart'
 import 'package:freedom_driver/feature/profile/view/document_management_screen.dart';
 import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
+import 'package:freedom_driver/feature/splash/driver_splash.dart';
 import 'package:freedom_driver/feature/splash/splash_screen.dart';
 import 'package:freedom_driver/router/error_route_screen.dart';
 import 'package:freedom_driver/shared/screens/success_screen.dart';
+import 'package:freedom_driver/shared/widgets/verification_status_screen.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   log('Next Route: ${settings.name}');
@@ -29,6 +31,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case SplashScreen.routeName:
       return _pageBuilder(
         (_) => const SplashScreen(),
+        settings: settings,
+      );
+    case DriverSplashScreen.routeName:
+      return _pageBuilder(
+        (_) => const DriverSplashScreen(),
         settings: settings,
       );
     case OnboardingView.routeName:
@@ -84,6 +91,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case CriminalBackgroundCheckScreen.routeName:
       return _pageBuilder(
         (_) => const CriminalBackgroundCheckScreen(),
+        settings: settings,
+      );
+    case VerificationStatusScreen.routeName:
+      return _pageBuilder(
+        (_) => const VerificationStatusScreen(),
         settings: settings,
       );
     case InAppCallMap.routeName:

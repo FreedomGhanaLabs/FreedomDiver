@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_state.dart';
+import 'package:freedom_driver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedom_driver/feature/documents/driver_license/extension.dart';
 import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
@@ -11,8 +11,8 @@ import 'package:freedom_driver/shared/widgets/toaster.dart';
 
 
 
-class DriverLicenseCubit extends Cubit<DriverLicenseState> {
-  DriverLicenseCubit() : super(DriverLicenseInitial());
+class DocumentUploadCubit extends Cubit<DocumentUploadState> {
+  DocumentUploadCubit() : super(DocumentUploadInitial());
 
   final ApiController apiController = ApiController('documents');
 
@@ -29,7 +29,7 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
         'Please select a document',
         toastType: ToastType.info,
       );
-      emit(const DriverLicenseError('Please select a document'));
+      emit(const DocumentUploadError('Please select a document'));
       return;
     }
 
@@ -49,25 +49,25 @@ class DriverLicenseCubit extends Cubit<DriverLicenseState> {
         filename: 'driverLicense-${driver?.fullName}-${driver?.id}.jpg',
       ),
     });
-    emit(DriverLicenseLoading());
+    emit(DocumentUploadLoading());
     await handleApiCall(
       context: context,
       apiRequest: () async {
         await apiController.uploadFile(context, 'upload', formData,
             (success, data) {
           if (success) {
-            emit(DriverLicenseSuccess());
+            emit(DocumentUploadSuccess());
             Navigator.pushNamedAndRemoveUntil(
               context,
               MainActivityScreen.routeName,
               (route) => false,
             );
           } else {
-            emit(const DriverLicenseError('Failed to upload driver documents'));
+            emit(const DocumentUploadError('Failed to upload driver documents'));
           }
         });
       },
-      onError: (_) => emit(const DriverLicenseError('Something went wrong')),
+      onError: (_) => emit(const DocumentUploadError('Something went wrong')),
     );
   }
 }

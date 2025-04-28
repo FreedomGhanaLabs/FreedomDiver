@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
-import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_cubit.dart';
-import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_state.dart';
+import 'package:freedom_driver/feature/documents/cubit/driver_document_cubit.dart';
+import 'package:freedom_driver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -17,9 +17,9 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<DriverLicenseCubit, DriverLicenseState>(
+        child: BlocBuilder<DocumentUploadCubit, DocumentUploadState>(
           builder: (context, state) {
-            const uploading = DriverLicenseState is DriverLicenseLoading;
+            const uploading = DocumentUploadState is DocumentUploadLoading;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -81,7 +81,7 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
                     onPressed: () {
                       // context.read<RegistrationFormCubit>().registerDrivers();
                       context
-                          .read<DriverLicenseCubit>()
+                          .read<DocumentUploadCubit>()
                           .uploadDriverLicense(context);
                     },
                     backgroundColor: Colors.black,

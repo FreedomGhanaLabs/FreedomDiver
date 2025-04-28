@@ -91,9 +91,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                                   ),
                                   Row(
                                     children: [
-                                      const AppIcon(
-                                        iconName: 'location_icon',
-                                      ),
+                                      const AppIcon(iconName: 'location_icon'),
                                       const HSpace(1),
                                       Text(
                                         location,

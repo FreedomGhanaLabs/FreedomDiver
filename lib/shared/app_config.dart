@@ -27,7 +27,7 @@ TextStyle paragraphTextStyle = const TextStyle(
 
 String currentYear = DateTime.now().year.toString();
 
-const brandName = 'Freedom';
+const brandName = 'Freedom Driver';
 String copyrightText = '$brandName Mobile $currentYear';
 
 double pixelRatio = 3;

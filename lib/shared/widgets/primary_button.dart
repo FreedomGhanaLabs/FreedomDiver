@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 class FreedomButton extends StatelessWidget {
@@ -84,7 +83,8 @@ class FreedomButton extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.poppins(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
                       fontSize: fontSize ?? normalText,
                       color: effectiveTextColor,
                       fontWeight: FontWeight.w500,

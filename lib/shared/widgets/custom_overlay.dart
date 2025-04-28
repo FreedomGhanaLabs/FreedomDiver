@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/utilities/ui.dart';
 
 class CustomLoader extends StatefulWidget {
-  const CustomLoader(
-      {
+  const CustomLoader({
     super.key,
-    this.text = 'Please hold on, we are working on it',
+    this.text,
   });
-  final String text;
+  final String? text;
 
   @override
   State<CustomLoader> createState() => CustomLoaderState();
@@ -18,9 +19,9 @@ class CustomLoaderState extends State<CustomLoader>
   late final AnimationController controller = AnimationController(
     vsync: this,
     duration: Durations.extralong4,
-  )..repeat();
-
-  final Tween<double> defTurns = Tween<double>(begin: 0, end: 1);
+    lowerBound: 0.9,
+    upperBound: 1.1,
+  )..repeat(reverse: true);
 
   String text = '';
 
@@ -29,7 +30,7 @@ class CustomLoaderState extends State<CustomLoader>
     Future.delayed(Durations.long4, () {
       if (mounted) {
         setState(() {
-          text = widget.text;
+          text = widget.text ?? 'We are customizing your Experience';
         });
       }
     });
@@ -44,30 +45,17 @@ class CustomLoaderState extends State<CustomLoader>
 
   @override
   Widget build(BuildContext context) {
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(whiteSpace),
-            margin: const EdgeInsets.only(bottom: smallWhiteSpace),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(roundedLg),
-              border: Border.all(
-                color: primaryColor.withValues(alpha: shadowOpacity),
-              ),
-              color: Colors.white,
-            ),
-            child: RotationTransition(
-              turns: defTurns.animate(controller),
-              child: SizedBox(
-                height: 50,
-                width: 50,
-                child: Image.asset('assets/icons/spinner.png'),
-              ),
+          ScaleTransition(
+            scale: controller,
+            child: const SizedBox(
+              child: AppIcon(iconName: 'location_duotone', height: 50),
             ),
           ),
+          const VSpace(smallWhiteSpace),
           Text(
             text,
             style: paragraphTextStyle,

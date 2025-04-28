@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
-import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
-import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
-import 'package:freedom_driver/feature/onboarding/vew/onboarding_view.dart';
-import 'package:freedom_driver/utilities/hive/onboarding.dart';
-import 'package:freedom_driver/utilities/hive/token.dart';
-import 'package:hive/hive.dart';
+import 'package:freedom_driver/feature/splash/driver_splash.dart';
+import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
+import 'package:freedom_driver/utilities/ui.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,53 +13,67 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
   @override
   void initState() {
     super.initState();
-    _navigateUser();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+
+    _controller.forward();
+    _goToDriverSplash();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Image(
-        image: AssetImage('assets/app_images/splash_image_rider.png'),
-        height: double.infinity,
-        width: double.infinity,
-        fit: BoxFit.cover,
+    return Scaffold(
+      body: FadeTransition(
+        opacity: _animation,
+        child: Container(
+          height: Responsive.height(context),
+          width: Responsive.width(context),
+          padding: const EdgeInsets.all(whiteSpace),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Expanded(
+                child: Center(child: AppIcon(iconName: 'freedom_logo')),
+              ),
+              const Text(
+                'No delays, no traffic, just a bike and your destination.',
+                style: TextStyle(
+                  fontSize: paragraphText,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const VSpace(extraSmallWhiteSpace),
+              Text(
+                copyrightText,
+                style:
+                    TextStyle(fontSize: smallText, color: Colors.grey.shade500),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Future<void> _navigateUser() async {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    final box = Hive.box<bool>('firstTimerUser');
-    final isFirstTimer = box.get('isFirstTimer', defaultValue: true) ?? true;
-    final getFirstTimer = await getOnboardingFromHive();
-    final getToken = await getTokenFromHive();
-    if (!isFirstTimer || getToken != null) {
-      await context.read<DriverCubit>().getDriverProfile(context);
-      await Navigator.pushNamedAndRemoveUntil(
+  void _goToDriverSplash() {
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushNamedAndRemoveUntil(
         context,
-        MainActivityScreen.routeName,
+        DriverSplashScreen.routeName,
         (route) => false,
       );
-      return;
-    } else if (getFirstTimer != null) {
-      await Navigator.pushNamedAndRemoveUntil(
-        context,
-        LoginFormScreen.routeName,
-        (route) => false,
-      );
-      return;
-    } else {
-      await Navigator.pushNamedAndRemoveUntil(
-        context,
-        OnboardingView.routeName,
-        (route) => false,
-      );
-    }
+    });
   }
 }
