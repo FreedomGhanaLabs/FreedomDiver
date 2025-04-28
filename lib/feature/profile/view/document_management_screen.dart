@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/documents/driver_document.model.dart';
-import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_cubit.dart';
+import 'package:freedom_driver/feature/documents/driver_license/cubit/license_cubit.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';

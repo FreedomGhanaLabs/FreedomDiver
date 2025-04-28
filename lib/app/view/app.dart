@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
+import 'package:freedom_driver/feature/documents/cubit/document_image.dart';
 import 'package:freedom_driver/feature/documents/driver_license/cubit/driver_license_cubit.dart';
+import 'package:freedom_driver/feature/documents/driver_license/cubit/license_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
@@ -28,7 +30,6 @@ class App extends StatelessWidget {
           BlocProvider(create: (_) => HomeCubit()),
           BlocProvider(create: (_) => DriverCubit()),
           BlocProvider(create: (_) => DriverLicenseCubit()),
-          BlocProvider(create: (_) => DriverLicenseCubit()),
           BlocProvider(create: (_) => DriverLicenseDetailsCubit()),
           BlocProvider(create: (_) => DriverLicenseImageCubit()),
           BlocProvider(create: (_) => KycCubit()),
@@ -41,7 +42,10 @@ class App extends StatelessWidget {
           },
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(fontFamily: GoogleFonts.poppins().fontFamily),
+            theme: ThemeData(
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              scaffoldBackgroundColor: Colors.white,
+            ),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             onGenerateRoute: onGenerateRoute,
