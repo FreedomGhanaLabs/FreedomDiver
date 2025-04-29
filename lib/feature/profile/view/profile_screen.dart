@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/login/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/utility.dart';
@@ -31,74 +32,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const CustomAppBar(title: 'profile', hasBackButton: false),
-            const VSpace(whiteSpace),
-            const ProfileCard(),
-            const VSpace(smallWhiteSpace),
-            Container(
-              height: 8,
-              decoration: const BoxDecoration(color: Color(0xFFF1F1F1)),
-            ),
-            const VSpace(whiteSpace),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    PersonalDataSection(
-                      onProfileTap: () {
-                        Navigator.pushNamed(context, ProfileDetails.routeName);
-                      },
-                      onWalletTap: () {
-                        Navigator.of(context)
-                            .pushNamed(DocumentManagementScreen.routeName);
-                      },
-                    ),
-                    MoreSection(
-                      onTapAddress: () {},
-                      onTapSecurity: () {
-                        Navigator.of(context)
-                            .pushNamed(AvailabilityDashboard.routeName);
-                      },
-                      onTapLogout: () => showAlertDialog(
-                        context,
-                        'Logout',
-                        'Are you sure you want to logout?',
-                        buttonText: 'Continue',
-                        titleColor: gradient2,
-                        okButtonColor: gradient2,
-                        hasSecondaryButton: true,
-                        onPressed: () async {
-                          final apiController = ApiController('auth');
+      body: Column(
+        children: [
+          const CustomAppBar(title: 'profile', hasBackButton: false),
+          const VSpace(whiteSpace),
+          const ProfileCard(),
+          const VSpace(smallWhiteSpace),
+          Container(
+            height: 8,
+            decoration: const BoxDecoration(color: Color(0xFFF1F1F1)),
+          ),
+          const VSpace(whiteSpace),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  PersonalDataSection(
+                    onProfileTap: () {
+                      Navigator.pushNamed(context, ProfileDetails.routeName);
+                    },
+                    onWalletTap: () {
+                      Navigator.of(context)
+                          .pushNamed(DocumentManagementScreen.routeName);
+                    },
+                  ),
+                  MoreSection(
+                    onTapAddress: () {},
+                    onTapSecurity: () {
+                      Navigator.of(context)
+                          .pushNamed(AvailabilityDashboard.routeName);
+                    },
+                    onTapLogout: () => showAlertDialog(
+                      context,
+                      'Logout',
+                      'Are you sure you want to logout?',
+                      buttonText: 'Continue',
+                      titleColor: gradient2,
+                      okButtonColor: gradient2,
+                      hasSecondaryButton: true,
+                      onPressed: () async {
+                        final apiController = ApiController('auth');
 
-                          await apiController.post(
-                            context,
-                            'logout',
-                            {},
-                            (success, responseData) {
-                              if (success) {
-                                deleteTokenToHive().then((onValue) {
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    LoginFormScreen.routeName,
-                                    (route) => false,
-                                  );
-                                });
-                              }
-                            },
-                          );
-                        },
-                      ),
+                        await apiController.post(
+                          context,
+                          'logout',
+                          {},
+                          (success, responseData) {
+                            if (success) {
+                              deleteTokenToHive().then((onValue) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  LoginFormScreen.routeName,
+                                  (route) => false,
+                                );
+                              });
+                            }
+                          },
+                        );
+                      },
                     ),
-                    const VSpace(whiteSpace),
-                  ],
-                ),
+                  ),
+                  const VSpace(whiteSpace),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -120,9 +119,11 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: Responsive.width(context),
-      padding: const EdgeInsets.symmetric(
-        horizontal: smallWhiteSpace,
-        vertical: extraSmallWhiteSpace,
+      padding: const EdgeInsets.only(
+        left: smallWhiteSpace,
+        right: smallWhiteSpace,
+        top: normalWhiteSpace + 10,
+        bottom: extraSmallWhiteSpace,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +134,10 @@ class CustomAppBar extends StatelessWidget {
             const SizedBox(width: smallWhiteSpace),
           Text(
             title?.capitalize ?? '',
-            style: const TextStyle(fontSize: paragraphText),
+            style: TextStyle(
+              fontSize: paragraphText.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           if (actions != null)
             Row(children: actions!)

@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
+import 'package:freedom_driver/utilities/loading_overlay.dart';
 
 class ApiController {
   ApiController(this.startUrl) {
@@ -47,9 +48,11 @@ class ApiController {
     Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
+    bool showOverlay = false,
   }) async {
     // debugPrint(jsonEncode(data));
     // debugPrint('$baseUrl$endpoint');
+    if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.post(endpoint, data: jsonEncode(data));
       debugPrint('${response.requestOptions}');
@@ -74,6 +77,8 @@ class ApiController {
         );
       }
       callback(false, msg);
+    } finally {
+      hideLoadingOverlay(context);
     }
   }
 
@@ -82,7 +87,9 @@ class ApiController {
     String endpoint,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = false,
+    bool showOverlay = false,
   }) async {
+    if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.get(endpoint);
       final successMessage = response.data['message'].toString();
@@ -103,6 +110,8 @@ class ApiController {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
+    } finally {
+      hideLoadingOverlay(context);
     }
   }
 
@@ -112,7 +121,9 @@ class ApiController {
     Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
+    bool showOverlay = false,
   }) async {
+    if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.put(endpoint, data: data);
       final successMessage = response.data['message'].toString();
@@ -133,6 +144,8 @@ class ApiController {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
+    } finally {
+      hideLoadingOverlay(context);
     }
   }
 
@@ -142,7 +155,9 @@ class ApiController {
     Map<String, dynamic> data,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
+    bool showOverlay = false,
   }) async {
+    if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.patch(endpoint, data: data);
       final successMessage = response.data['message'].toString();
@@ -163,6 +178,8 @@ class ApiController {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
+    } finally {
+      hideLoadingOverlay(context);
     }
   }
 
@@ -171,7 +188,9 @@ class ApiController {
     String endpoint,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
+    bool showOverlay = false,
   }) async {
+    if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.delete(endpoint);
       final successMessage = response.data['message'].toString();
@@ -190,6 +209,8 @@ class ApiController {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
+    } finally {
+      hideLoadingOverlay(context);
     }
   }
 
@@ -199,7 +220,9 @@ class ApiController {
     FormData formData,
     Function(bool success, dynamic result) callback, {
     bool shouldShowToast = true,
+    bool showOverlay = false,
   }) async {
+    if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.post(
         endpoint,
@@ -229,6 +252,8 @@ class ApiController {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
+    } finally {
+      hideLoadingOverlay(context);
     }
   }
 

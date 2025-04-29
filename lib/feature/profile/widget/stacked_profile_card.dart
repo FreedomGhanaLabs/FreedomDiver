@@ -24,12 +24,12 @@ class ProfileCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 gradient: gradient,
-                borderRadius: BorderRadius.circular(roundedMd),
+                borderRadius: BorderRadius.circular(roundedLg),
               ),
               height: 200,
-              width: Responsive.isMobile(context)
+              width: Responsive.isBigMobile(context)
                   ? 350
-                  : Responsive.width(context) - 45,
+                  : Responsive.width(context) - 50,
               child: const Padding(
                 padding: EdgeInsets.only(left: 10, top: 6, right: 10),
                 child: Row(
@@ -64,14 +64,14 @@ class ProfileCard extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(roundedLg),
                   image: const DecorationImage(
                     image: AssetImage('assets/app_images/profile_hbg.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
                 height: 187,
-                width: Responsive.isMobile(context)
+                width: Responsive.isBigMobile(context)
                     ? 375
                     : Responsive.width(context) - 20,
                 child: Column(

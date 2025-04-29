@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
@@ -22,6 +23,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // const SystemUiOverlayStyle(
+    //   statusBarColor: Colors.black,
+    //   statusBarIconBrightness: Brightness.light,
+    //   systemNavigationBarColor: Colors.transparent,
+    // );
     return ScreenUtilInit(
       designSize: const Size(402, 874),
       splitScreenMode: true,

@@ -8,9 +8,9 @@ import 'package:freedom_driver/feature/documents/cubit/document_image.dart';
 import 'package:freedom_driver/feature/documents/cubit/document_image_state.dart';
 import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedom_driver/feature/kyc/view/criminal_background_check_screen.dart';
-import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
+import 'package:freedom_driver/shared/widgets/custom_screen.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/shared/widgets/upload_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -36,153 +36,133 @@ class _BackgroundVerificationScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const CustomAppBar(title: 'Upload Document'),
-            const VSpace(smallWhiteSpace),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 21),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'We prioritize safety. Please upload your necessary documents for verification.',
-                    style: TextStyle(
-                      fontSize: smallText,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  VSpace(whiteSpace),
-                  Text(
-                    'Upload ID',
-                    style: TextStyle(
-                      fontSize: normalText,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    "Upload a photo of a valid ID (Driver's License, Passport, or Ghana Card) to verify your identity.",
-                    style: TextStyle(
-                      fontSize: extraSmallText,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  VSpace(smallWhiteSpace),
-                  UploadButton(),
-                ],
-              ),
+    return CustomScreen(
+      title: 'Upload Document',
+      children: [
+        ...[
+          const Text(
+            'We prioritize safety. Please upload your necessary documents for verification.',
+            style: TextStyle(
+              fontSize: smallText,
+              fontWeight: FontWeight.w400,
             ),
-            const VSpace(whiteSpace),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              child:
-                  BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
-                builder: (context, state) {
-                  if (state is DriverLicenseImageLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is DriverLicenseImageSelected) {
-                    log('A file has been selected');
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Image.file(state.image, height: 200),
-                        const VSpace(whiteSpace),
-                        SimpleButton(
-                          title: 'Submit Document',
-                          // backgroundColor: darkGoldColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(7)),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              CriminalBackgroundCheckScreen.routeName,
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-              ),
+          ),
+          const VSpace(whiteSpace),
+          const Text(
+            'Upload ID',
+            style: TextStyle(
+              fontSize: normalText,
+              fontWeight: FontWeight.w500,
             ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 21),
-              child: BlocConsumer<KycCubit, KycState>(
-                listener: (context, state) {
-                  if (state is KycImageUploadSuccess) {
-                    context
-                        .read<RegistrationFormCubit>()
-                        .setUserDetails(securedImageUrl: state.imageUrl);
-                    Navigator.pushNamed(
-                      context,
-                      CriminalBackgroundCheckScreen.routeName,
-                    );
-                  }
-                  if (state is KycImageUploadFailure) {
-                    context.showToast(
-                      message: 'Failed to upload image',
-                      type: ToastType.error,
-                      position: ToastPosition.top,
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is KycImageUploadLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is KycImageSelected) {
-                    log('A value has been selected');
-                    return SimpleButton(
-                      title: 'Upload Selfie',
-                      backgroundColor: darkGoldColor,
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(7),
+          ),
+          const Text(
+            "Upload a photo of a valid ID (Driver's License, Passport, or Ghana Card) to verify your identity.",
+            style: TextStyle(
+              fontSize: extraSmallText,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const VSpace(smallWhiteSpace),
+          const UploadButton(),
+        ],
+        ...[
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 21),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+          const VSpace(whiteSpace),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 21),
+            child:
+                BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
+              builder: (context, state) {
+                if (state is DriverLicenseImageLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is DriverLicenseImageSelected) {
+                  log('A file has been selected');
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Image.file(state.image, height: 200),
+                      const VSpace(whiteSpace),
+                      SimpleButton(
+                        title: 'Submit Document',
+                        // backgroundColor: darkGoldColor,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(7)),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            CriminalBackgroundCheckScreen.routeName,
+                          );
+                        },
                       ),
-                      onPressed: () async {
-                        await context
-                            .read<KycCubit>()
-                            .uploadImageToCloudinary(state.image);
-                      },
-                    );
-                  } else {
-                    return SimpleButton(
-                      title: 'Upload Selfie',
-                      backgroundColor: const Color(0x0AFFBA40),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(7),
-                      ),
-                      onPressed: () {},
-                    );
-                  }
-                },
-              ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
             ),
-            // const VSpace(46),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 21),
-            //   child: SimpleButton(
-            //     title: 'Submit Document',
-            //     borderRadius: const BorderRadius.all(
-            //       Radius.circular(7),
-            //     ),
-            //     onPressed: () {
-            //       Navigator.pushNamed(
-            //         context,
-            //         CriminalBackgroundCheckScreen.routeName,
-            //       );
-            //     },
-            //   ),
-            // )
-          ],
-        ),
-      ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 21),
+            child: BlocConsumer<KycCubit, KycState>(
+              listener: (context, state) {
+                if (state is KycImageUploadSuccess) {
+                  context
+                      .read<RegistrationFormCubit>()
+                      .setUserDetails(securedImageUrl: state.imageUrl);
+                  Navigator.pushNamed(
+                    context,
+                    CriminalBackgroundCheckScreen.routeName,
+                  );
+                }
+                if (state is KycImageUploadFailure) {
+                  context.showToast(
+                    message: 'Failed to upload image',
+                    type: ToastType.error,
+                    position: ToastPosition.top,
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is KycImageUploadLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is KycImageSelected) {
+                  log('A value has been selected');
+                  return SimpleButton(
+                    title: 'Upload Selfie',
+                    backgroundColor: darkGoldColor,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(7),
+                    ),
+                    onPressed: () async {
+                      await context
+                          .read<KycCubit>()
+                          .uploadImageToCloudinary(state.image);
+                    },
+                  );
+                } else {
+                  return SimpleButton(
+                    title: 'Upload Selfie',
+                    backgroundColor: const Color(0x0AFFBA40),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(7),
+                    ),
+                    onPressed: () {},
+                  );
+                }
+              },
+            ),
+          ),
+          const VSpace(whiteSpace),
+        ],
+      ],
     );
   }
 }

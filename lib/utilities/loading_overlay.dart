@@ -1,27 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/widgets/custom_overlay.dart';
-import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-void showLoadingOverlay(BuildContext context, [String? message]) {
+void showLoadingOverlay(
+  BuildContext context, {
+  String? message,
+  bool? showOverlay,
+}) {
   context.loaderOverlay.show(
+    showOverlay: showOverlay ?? true,
     widgetBuilder: (_) => CustomLoader(text: message),
   );
 }
 
-void hideLoadingOverlay(
-  BuildContext context, {
-  String? message,
-  bool canPop = true,
-  bool hasToast = false,
-}) {
+void hideLoadingOverlay(BuildContext context) {
   context.loaderOverlay.hide();
-  if (canPop) {
-    Navigator.of(context).pop();
-  }
-
-  if (hasToast) {
-    showToast(context, 'Error', message ?? '', toastType: ToastType.error);
-  }
 }

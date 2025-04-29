@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 abstract class SectionFactory extends StatelessWidget {
   const SectionFactory({
@@ -46,8 +46,8 @@ abstract class SectionFactory extends StatelessWidget {
           Text(
             item.title,
             style: sectionTextStyle ??
-                GoogleFonts.poppins(
-                  fontSize: 13,
+                const TextStyle(
+                  fontSize: smallText,
                   fontWeight: FontWeight.w500,
                 ),
           ),
@@ -55,7 +55,7 @@ abstract class SectionFactory extends StatelessWidget {
           if (item.subtitle != null)
             Text(
               item.subtitle!,
-              style: GoogleFonts.poppins(
+              style: const TextStyle(
                 fontSize: 8.27,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w200,
@@ -88,7 +88,7 @@ abstract class SectionFactory extends StatelessWidget {
               sectionTitle,
               textAlign: TextAlign.center,
               style: titleStyle ??
-                  GoogleFonts.poppins(
+                  const TextStyle(
                     color: Colors.black,
                     fontSize: 10.94,
                     fontWeight: FontWeight.w500,
@@ -144,8 +144,6 @@ class SectionItem {
   final VoidCallback? onTap;
   final bool showArrow;
 }
-
-// utility to get Icon url
 
 String getIconUrl(String iconName) => 'assets/app_icons/$iconName.svg';
 
@@ -254,4 +252,39 @@ class ManagePayment extends SectionFactory {
 
   @override
   String get sectionTitle => '';
+}
+
+// Personal Data Section Implementation
+class ManageDocuments extends SectionFactory {
+  const ManageDocuments({
+    super.key,
+    super.onItemTap,
+    super.padding,
+    super.backgroundColor,
+    super.titleStyle,
+    super.sectionTextStyle,
+    super.paddingSection,
+    this.onAddressTap,
+    this.onLicenseTap,
+  });
+  final VoidCallback? onAddressTap;
+
+  final VoidCallback? onLicenseTap;
+
+  @override
+  String get sectionTitle => '';
+
+  @override
+  List<SectionItem> get sectionItems => [
+        SectionItem(
+          title: 'Verify Address',
+          iconPath: getIconUrl('gradient_document'),
+          onTap: () => onAddressTap?.call(),
+        ),
+        SectionItem(
+          title: 'Update Driver License',
+          iconPath: getIconUrl('gradient_document'),
+          onTap: () => onLicenseTap?.call(),
+        ),
+      ];
 }

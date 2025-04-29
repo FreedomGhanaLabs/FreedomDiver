@@ -6,6 +6,8 @@ import 'package:freedom_driver/feature/authentication/login/view/login_form_scre
 import 'package:freedom_driver/feature/authentication/register/view/personal_details.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/feature/documents/address_proof/view/address_proof_form.dart';
+import 'package:freedom_driver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedom_driver/feature/earnings/view/driver_score_details_screen.dart';
 import 'package:freedom_driver/feature/earnings/view/earnings_screen.dart';
 import 'package:freedom_driver/feature/earnings/view/wallet_screen.dart';
@@ -93,6 +95,16 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         (_) => const CriminalBackgroundCheckScreen(),
         settings: settings,
       );
+    case DriverLicenseForm.routeName:
+      return _pageBuilder(
+        (_) => const DriverLicenseForm(),
+        settings: settings,
+      );
+    case AddressProofForm.routeName:
+      return _pageBuilder(
+        (_) => const AddressProofForm(),
+        settings: settings,
+      );
     case VerificationStatusScreen.routeName:
       return _pageBuilder(
         (_) => const VerificationStatusScreen(),
@@ -110,32 +122,32 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       );
     case WalletScreen.routeName:
       return _pageBuilder(
-            (_) => const WalletScreen(),
+        (_) => const WalletScreen(),
         settings: settings,
       );
     case DriverScoreDetailsScreen.routeName:
       return _pageBuilder(
-            (_) => const DriverScoreDetailsScreen(),
+        (_) => const DriverScoreDetailsScreen(),
         settings: settings,
       );
     case ProfileScreen.routeName:
       return _pageBuilder(
-            (_) => const ProfileScreen(),
+        (_) => const ProfileScreen(),
         settings: settings,
       );
     case ProfileDetails.routeName:
       return _pageBuilder(
-            (_) => const ProfileDetails(),
+        (_) => const ProfileDetails(),
         settings: settings,
       );
     case DocumentManagementScreen.routeName:
       return _pageBuilder(
-            (_) => const DocumentManagementScreen(),
+        (_) => const DocumentManagementScreen(),
         settings: settings,
       );
     case AvailabilityDashboard.routeName:
       return _pageBuilder(
-            (_) => const AvailabilityDashboard(),
+        (_) => const AvailabilityDashboard(),
         settings: settings,
       );
     default:
