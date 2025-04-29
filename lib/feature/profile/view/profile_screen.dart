@@ -119,10 +119,10 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: Responsive.width(context),
-      padding: const EdgeInsets.only(
+      padding: EdgeInsets.only(
         left: smallWhiteSpace,
         right: smallWhiteSpace,
-        top: normalWhiteSpace + 10,
+        top: normalWhiteSpace.sp,
         bottom: extraSmallWhiteSpace,
       ),
       child: Row(

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedom_driver/feature/documents/cubit/document_image.dart';
 import 'package:freedom_driver/feature/documents/cubit/document_image_state.dart';
@@ -207,8 +208,8 @@ class SimpleButton extends StatelessWidget {
         ),
         padding: padding ??
             const EdgeInsets.only(
-              top: 18,
-              bottom: 17,
+              top: smallWhiteSpace,
+              bottom: smallWhiteSpace,
             ),
       ),
       child: child ??
@@ -216,10 +217,10 @@ class SimpleButton extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: textStyle ??
-                const TextStyle(
+                TextStyle(
                   color: Colors.white,
-                  fontSize: 17.92,
-                  fontWeight: FontWeight.w600,
+                  fontSize: normalText.sp,
+                  fontWeight: FontWeight.w500,
                 ),
           ),
     );

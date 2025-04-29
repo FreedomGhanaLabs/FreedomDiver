@@ -9,7 +9,7 @@ import 'package:freedom_driver/utilities/hive/token.dart';
 import 'package:freedom_driver/utilities/loading_overlay.dart';
 
 class ApiController {
-  ApiController(this.startUrl) {
+  ApiController(this.startUrl, {this.noVersion = false}) {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -28,8 +28,13 @@ class ApiController {
   }
 
   final String startUrl;
-  String get baseUrl =>
+  final bool noVersion;
+
+  String get apiUrl =>
       'https://api-freedom.com/api/v2/driver/${startUrl.isNotEmpty ? '$startUrl/' : ''}';
+
+  String get baseNoVersionUrl => baseUrl.replaceFirst('/v2', '');
+  String get baseUrl => noVersion ? baseNoVersionUrl : apiUrl;
 
   late final Dio _dio = Dio(
     BaseOptions(
@@ -223,6 +228,8 @@ class ApiController {
     bool showOverlay = false,
   }) async {
     if (showOverlay) showLoadingOverlay(context);
+
+    debugPrint('$baseUrl$endpoint');
     try {
       final response = await _dio.post(
         endpoint,
@@ -261,6 +268,11 @@ class ApiController {
     if (error is DioException) {
       log('error message: ${error.message}');
       final errorData = error.response?.data;
+
+      if (errorData is String) {
+        return errorData;
+      }
+
       if (errorData != null) {
         log('Error Data: $errorData');
         return errorData['message'] ?? errorData['msg'];

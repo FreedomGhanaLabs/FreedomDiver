@@ -443,4 +443,23 @@ class DriverCubit extends Cubit<DriverState> {
     );
     if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
   }
+
+  void updateDriverAddress({
+    required String street,
+    required String city,
+    required String state,
+    required String country,
+    required String postalCode,
+  }) {
+    _cachedDriver = _cachedDriver?.copyWith(
+      address: Address(
+        street: street,
+        city: city,
+        state: state,
+        country: country,
+        postalCode: postalCode,
+      ),
+    );
+    if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
+  }
 }
