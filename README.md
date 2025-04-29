@@ -18,6 +18,11 @@ This project contains 3 flavors:
 - staging
 - production
 
+```sh
+# production
+$ flutter build apk --flavor production --target lib/main_production.dart
+
+```
 To run the desired flavor either use the launch configuration in VSCode/Android Studio or use the following commands:
 
 ```sh

@@ -87,7 +87,10 @@ class _BackgroundVerificationScreenState
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Image.file(state.image, height: 200),
+                      SizedBox(
+                        height: 200,
+                        child: Image.file(state.image),
+                      ),
                       const VSpace(whiteSpace),
                       SimpleButton(
                         title: 'Submit Document',

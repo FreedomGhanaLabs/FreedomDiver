@@ -1,8 +1,10 @@
 flutter_launcher_icons:
-  image_path: "assets/app_images/splash_logo.png"
+  image_path: "assets/app_images/bold_bcg.png"
 
   android: true
   min_sdk_android: 21
   ios: true
   remove_alpha_ios: true
-  remove_alpha_channel_ios: true
+
+  adaptive_icon_background: "#de4a0a"
+  adaptive_icon_foreground: "assets/app_images/bold_bcg.png"
