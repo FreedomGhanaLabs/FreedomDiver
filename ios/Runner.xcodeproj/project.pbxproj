@@ -1080,7 +1080,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 125FD9E4A0EBDB2C8EF4E8FC /* Pods-Runner.debug-staging.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-stg";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-staging;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -1176,7 +1176,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 69C22049999B05C07F92F917 /* Pods-Runner.release-staging.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-stg";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-staging;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -1267,7 +1267,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 10F8525C84CD3E693F66C9D8 /* Pods-Runner.profile-staging.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-stg";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-staging;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -1356,4 +1356,6 @@
 /* End XCConfigurationList section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
+}
+7D /* Project object */;
 }
