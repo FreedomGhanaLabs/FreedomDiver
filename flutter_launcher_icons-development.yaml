@@ -1,5 +1,5 @@
 flutter_launcher_icons:
-  android: true
+  android: "launcher_icon"
   ios: true
   min_sdk_android: 21
   image_path: "assets/app_images/bold_bcg.png"
