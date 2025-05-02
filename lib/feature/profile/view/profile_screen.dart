@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
-import 'package:freedom_driver/feature/authentication/login/view/verify_otp_screen.dart';
+import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/utility.dart';
 import 'package:freedom_driver/feature/profile/view/availability_dashboard.dart';
 import 'package:freedom_driver/feature/profile/view/document_management_screen.dart';
@@ -88,6 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               });
                             }
                           },
+                          showOverlay: true,
                         );
                       },
                     ),

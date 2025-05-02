@@ -62,6 +62,7 @@ const extraSmallText = 10.0;
 const roundedSm = 6.0;
 const roundedMd = 8.0;
 const roundedLg = 16.0;
+const roundedXl = 24.0;
 const roundedFull = 100.0;
 
 const animationDuration = 500; // milliseconds

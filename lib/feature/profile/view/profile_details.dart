@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedom_driver/feature/authentication/login/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/shared/widgets/custom_screen.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
 class ProfileDetails extends StatefulWidget {
@@ -60,102 +59,60 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         if (state is DriverLoaded) {
           _setDriverFields(state);
         }
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        return CustomScreen(
+          children: [
+            buildTextField(
+              controller: nameController,
+              label: 'Full Name',
+              placeholder: 'Enter your full name',
+            ),
+            const VSpace(smallWhiteSpace),
+            Row(
               children: [
-                // Header
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 27),
-                      child: DecoratedBackButton(),
-                    ),
-                    HSpace(84.91),
-                    Center(
-                      child: Text(
-                        'Profile Details',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13.09,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const VSpace(smallWhiteSpace),
-                Container(height: 8, color: greyColor),
-                const VSpace(10),
-
-                // Form
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      buildTextField(
-                        controller: nameController,
-                        label: 'Full Name',
-                        placeholder: 'Enter your full name',
-                      ),
-                      const VSpace(smallWhiteSpace),
-                      Row(
-                        children: [
-                          const Text(
-                            'Email',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: paragraphText,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const HSpace(10),
-                          _verifiedBadge(),
-                        ],
-                      ),
-                      TextFieldFactory.email(
-                        controller: emailController,
-                        fillColor: Colors.white,
-                        hintText: 'youremail@email.com',
-                        focusedBorderColor: Colors.black,
-                        enabledColorBorder: const Color(0xFFE1E1E1),
-                        hintTextStyle: const TextStyle(),
-                      ),
-                      const VSpace(smallWhiteSpace),
-                      Row(
-                        children: [
-                          const Text(
-                            'Phone Number',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 13.09,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const HSpace(10),
-                          _verifiedBadge(),
-                        ],
-                      ),
-                      TextFieldFactory.phone(
-                        controller: phoneController,
-                        fillColor: Colors.white,
-                        hintText: '+244-902-345-909',
-                        fontStyle: const TextStyle(),
-                        focusedBorderColor: Colors.black,
-                        enabledColorBorder: const Color(0xFFE1E1E1),
-                        suffixIcon: _editPhoneButton(),
-                        prefixText: _phonePrefix(),
-                        hintTextStyle: const TextStyle(),
-                      ),
-                    ],
+                const Text(
+                  'Email',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: paragraphText,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
+                const HSpace(10),
+                _verifiedBadge(),
               ],
             ),
-          ),
+            TextFieldFactory(
+              controller: emailController,
+              fillColor: Colors.white,
+              hintText: 'email@freedomgh.com',
+            ),
+            const VSpace(smallWhiteSpace),
+            Row(
+              children: [
+                const Text(
+                  'Phone Number',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13.09,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const HSpace(10),
+                _verifiedBadge(),
+              ],
+            ),
+            TextFieldFactory.phone(
+              controller: phoneController,
+              fillColor: Colors.white,
+              hintText: '+244-902-345-909',
+              fontStyle: const TextStyle(),
+              focusedBorderColor: Colors.black,
+              enabledColorBorder: const Color(0xFFE1E1E1),
+              suffixIcon: _editPhoneButton(),
+              prefixText: _phonePrefix(),
+              hintTextStyle: const TextStyle(),
+            ),
+          ],
         );
       },
     );

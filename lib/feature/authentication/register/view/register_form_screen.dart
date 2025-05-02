@@ -2,17 +2,18 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/register.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/gradient_text.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:get/get.dart';
 
@@ -119,18 +120,20 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         'confirmPassword': confirmPasswordController.text,
       };
 
-      setState(() {
-        loading = true;
-      });
-      apiController.post(context, 'register', data, (success, result) {
-        setState(() {
-          loading = false;
-        });
-        if (success) {
-          context.read<RegistrationFormCubit>().setEmail(emailController.text);
-          Navigator.pushNamed(context, VerifyOtpScreen.routeName);
-        }
-      });
+      apiController.post(
+        context,
+        'register',
+        data,
+        (success, result) {
+          if (success) {
+            context
+                .read<RegistrationFormCubit>()
+                .setEmail(emailController.text);
+            Navigator.pushNamed(context, VerifyOtpScreen.routeName);
+          }
+        },
+        showOverlay: true,
+      );
     }
   }
 
@@ -143,7 +146,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const VSpace(normalWhiteSpace),
+              VSpace(normalWhiteSpace.sp),
               const Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: smallWhiteSpace,
@@ -394,10 +397,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         ),
                         child: FreedomButton(
                           backGroundColor: Colors.black,
-                          borderRadius: BorderRadius.circular(roundedMd),
-                          width: double.infinity,
                           useLoader: loading,
-                          disabled: !hasReadTermsAndCondition,
+                          disabled: !hasReadTermsAndCondition || loading,
                           title: 'Complete Registration',
                           buttonTitle: const Text(
                             'Registering...',

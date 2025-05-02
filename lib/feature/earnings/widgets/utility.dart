@@ -42,7 +42,7 @@ abstract class SectionFactory extends StatelessWidget {
             ),
             child: SvgPicture.asset(item.iconPath ?? ''),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: smallWhiteSpace),
           Text(
             item.title,
             style: sectionTextStyle ??

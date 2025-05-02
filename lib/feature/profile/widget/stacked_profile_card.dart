@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
+import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
@@ -16,7 +17,6 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DriverCubit, DriverState>(
       builder: (context, state) {
-        final driver = state is DriverLoaded ? state.driver : null;
         return Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
@@ -87,11 +87,15 @@ class ProfileCard extends StatelessWidget {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          const Image(
-                            image: AssetImage(
-                              'assets/app_images/user_profile.png',
+                          const SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: Image(
+                              image: AssetImage(
+                                'assets/app_images/user_profile.png',
+                              ),
+                              fit: BoxFit.fill,
                             ),
-                            fit: BoxFit.fill,
                           ),
                           Positioned(
                             bottom: -2,
@@ -112,7 +116,7 @@ class ProfileCard extends StatelessWidget {
                     ),
                     const VSpace(2),
                     Text(
-                      driver?.fullName ?? '',
+                      context.driver?.fullName ?? '',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
@@ -132,18 +136,22 @@ class ProfileCard extends StatelessWidget {
                         ),
                       ),
                       child: GestureDetector(
-                        onTap: () =>
-                            copyTextToClipboard(context, driver?.phone ?? ''),
+                        onTap: () => copyTextToClipboard(
+                          context,
+                          context.driver?.phone ?? '',
+                        ),
                         child: Row(
                           children: [
                             const AppIcon(iconName: 'copy_button_icon'),
                             const HSpace(7),
                             Text(
-                              driver?.phone ?? driver?.email ?? '',
+                              context.driver?.phone ??
+                                  context.driver?.email ??
+                                  '',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 10,
+                                fontSize: extraSmallText,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

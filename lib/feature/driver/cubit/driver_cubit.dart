@@ -156,6 +156,7 @@ class DriverCubit extends Cubit<DriverState> {
             _updateDriverRidePreference(currentRidePreference);
           }
         },
+        // showOverlay: true,
       );
     } catch (e) {
       log('[DriverCubit] newRidePreference error: $e');

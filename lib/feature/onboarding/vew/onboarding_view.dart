@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_carousel_one.dart';
@@ -115,7 +114,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   width: double.infinity,
                   child: FreedomButton(
                     backGroundColor: Colors.black,
-                    height: 57.76.h,
+                    // height: 57.76.h,
                     title: 'Get Started',
                     onPressed: () {
                       addOnboardingToHive(true).then(
@@ -135,7 +134,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       FreedomButton(
-                        height: 57.76.h,
                         useGradient: true,
                         gradient: greenGradient,
                         borderRadius: BorderRadius.circular(13),

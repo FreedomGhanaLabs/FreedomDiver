@@ -6,11 +6,11 @@ import 'package:freedom_driver/feature/authentication/register/view/register_for
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/gradient_text.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -71,7 +71,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     fontSize: paragraphText,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey.shade700,
-                    // fontStyle: GoogleFonts.poppins.fontFamily,
                   ),
                 ),
                 const VSpace(whiteSpace),
@@ -98,15 +97,20 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   ),
                 ),
                 const VSpace(whiteSpace),
-                const GradientText(
-                  text: 'Forgot Password?',
-                  routeNameToMoveTo: ForgotPasswordFormScreen.routeName,
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text('Forgot Password? '),
+                    GradientText(
+                      text: 'Reset it',
+                      routeNameToMoveTo: ForgotPasswordFormScreen.routeName,
+                    ),
+                  ],
                 ),
                 const VSpace(extraSmallText),
                 FreedomButton(
                   backGroundColor: Colors.black,
-                  borderRadius: BorderRadius.circular(7),
-                  width: double.infinity,
+                  disabled: isLoading,
                   title: isLoading ? 'Logging in...' : 'Login',
                   onPressed: () {
                     if (fromKey.currentState!.validate()) {
@@ -122,7 +126,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       apiController.post(
                         context,
                         'email',
-                        {'email': email, 'password': getPassword()},
+                        {
+                          'email': email,
+                          'password': getPassword(),
+                        },
                         (success, res) {
                           setState(() {
                             isLoading = false;
@@ -135,6 +142,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                             );
                           }
                         },
+                        showOverlay: true,
                       );
                     }
                   },
@@ -187,7 +195,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   onPressed: () {},
                 ),
                 const VSpace(whiteSpace),
-               
                 FreedomButton(
                   backGroundColor: socialLoginColor,
                   leadingIcon: 'google_icon',

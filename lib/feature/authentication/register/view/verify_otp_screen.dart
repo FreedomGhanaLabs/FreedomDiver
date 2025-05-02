@@ -10,13 +10,12 @@ import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
-import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
@@ -87,41 +86,40 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+                children: [
                   const DecoratedBackButton(),
-                  const VSpace(35.45),
-                  Text(
+                  const VSpace(normalWhiteSpace),
+                  const Text(
                     'Enter Code',
-                    style: GoogleFonts.poppins(
-                      fontSize: 29.02,
+                    style: TextStyle(
+                      fontSize: emphasisText,
                       color: Colors.black,
-                    ),
-                  ),
-                  const VSpace(5),
-                  Text(
-                    'A code was sent to',
-                    style: GoogleFonts.poppins(
-                      fontSize: paragraphText,
-                      color: Colors.black.withAlpha(127),
                     ),
                   ),
                   const VSpace(extraSmallWhiteSpace),
                   Text(
+                    'A verification code was sent to',
+                    style: TextStyle(
+                      fontSize: paragraphText,
+                      color: Colors.black.withAlpha(127),
+                    ),
+                  ),
+                  Text(
                     '${formCubit.state.email}',
-                    style: GoogleFonts.poppins(
-                      fontSize: normalText,
+                    style: TextStyle(
+                      fontSize: normalText.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
-                  const VSpace(17),
+                  const VSpace(whiteSpace),
                   Form(
                     key: _otpFormKey,
                     child: PinCodeTextField(
                       focusNode: _otpFocusNode,
                       appContext: context,
-                      textStyle: GoogleFonts.poppins(
-                        fontSize: 19.5,
+                      textStyle: const TextStyle(
+                        fontSize: normalText,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
@@ -130,11 +128,12 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                       onCompleted: (val) {
-                        if (mounted) {}
+                        if (mounted) {
+                          _onVerifyPressed(context, formCubit, type);
+                        }
                       },
                       length: 6,
                       obscureText: true,
-                      obscuringCharacter: '*',
                       blinkWhenObscuring: true,
                       animationType: AnimationType.fade,
                       pinTheme: PinTheme(
@@ -169,13 +168,11 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(
-                    height: 21,
-                  ),
+                  const SizedBox(height: smallWhiteSpace),
                   if (_start != 0)
                     Text(
                       'Resend code in 0:$_start',
-                      style: GoogleFonts.poppins(
+                      style: const TextStyle(
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -207,10 +204,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                           },
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'Resend Code',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
+                        style: TextStyle(
+                          fontSize: paragraphText,
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                         ),
@@ -248,14 +245,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   ) {
     final isLoginType = type == 'login';
     if (_otpFormKey.currentState!.validate()) {
-      // context.read<VerifyOtpCubit>().verifyOtp(_otpController.text);
-
       if (_otpController.text.trim().isEmpty) {
         return;
       }
-      setState(() {
-        isLoading = true;
-      });
+
       apiController.post(
         context,
         isLoginType ? 'login/email/verify' : 'verify-registration',
@@ -272,6 +265,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             debugPrint(token);
             addTokenToHive(token).then(
               (onValue) => {
+                // context.read<DriverCubit>().getDriverProfile(context);
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   MainActivityScreen.routeName,
@@ -281,6 +275,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             );
           }
         },
+        showOverlay: true,
       );
     }
   }
