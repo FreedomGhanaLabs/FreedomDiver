@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
-import 'package:freedom_driver/shared/widgets/custom_divider.dart';
+import 'package:freedom_driver/shared/widgets/custom_screen.dart';
+import 'package:freedom_driver/shared/widgets/decorated_container.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,72 +21,23 @@ class _AvailabilityDashboardState extends State<AvailabilityDashboard> {
   final vehicleLicensePlate = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    const DecoratedBackButton(),
-                    // HSpace(size),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'Availability Dashboard',
-                          style: GoogleFonts.poppins(
-                            color: Colors.black,
-                            fontSize: 16.39,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const VSpace(14),
-              const CustomDivider(
-                height: 8,
-              ),
-              const VSpace(15),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Set Your Availability',
-                      style: GoogleFonts.poppins(
-                        color: Colors.black,
-                        fontSize: 16.39,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "Control when you're ready to drive",
-                      style: GoogleFonts.poppins(
-                        color: Colors.black.withValues(alpha: 0.439),
-                        fontSize: 10.19,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    const VSpace(26),
-                    _VehicleInformationContainer(
-                      vehicleColor: vehicleColor,
-                      vehicleLicensePlate: vehicleLicensePlate,
-                      vehicleMakeAndModel: vehicleMakeAndModel,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+    return CustomScreen(
+      title: 'Availability Dashboard',
+      bodyHeader: 'Set Your Availability',
+      bodyDescription: "Control when you're ready to drive",
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const VSpace(whiteSpace),
+            _VehicleInformationContainer(
+              vehicleColor: vehicleColor,
+              vehicleLicensePlate: vehicleLicensePlate,
+              vehicleMakeAndModel: vehicleMakeAndModel,
+            ),
+          ],
         ),
-      ),
+      ],
     );
   }
 }
@@ -113,13 +65,7 @@ class _VehicleInformationContainerState
   DateTime timeDropDownValue = DateTime.now();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-      decoration: ShapeDecoration(
-        color: const Color(0x14777777),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-      ),
+    return DecoratedContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -145,9 +91,8 @@ class _VehicleInformationContainerState
               hint: Text(
                 'Offline',
                 style: TextStyle(
-                  color: Colors.black.withValues(alpha: 0.3799999952316284),
+                  color: Colors.black.withValues(alpha: 0.38),
                   fontSize: 10.51,
-                  fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
                 ),
               ),

@@ -1,9 +1,11 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
 import 'package:freedom_driver/feature/driver/driver.model.dart';
+import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/api/api_handler.dart';
 
@@ -142,6 +144,8 @@ class DriverCubit extends Cubit<DriverState> {
 
     final currentRidePreference = _cachedDriver?.ridePreference ?? '';
 
+    if (currentRidePreference.trim() == newRidePreference.trim()) return;
+
     _updateDriverRidePreference(newRidePreference);
 
     try {
@@ -184,6 +188,12 @@ class DriverCubit extends Cubit<DriverState> {
         (success, responseData) {
           if (success) {
             log('[DriverCubit] email updated: $newEmail');
+            // context.read<RegistrationFormCubit>().setEmail(newEmail);
+            Navigator.pushNamed(
+              context,
+              VerifyOtpScreen.routeName,
+              arguments: {'type': 'emailUpdate'},
+            );
           } else {
             _updateDriverEmail(previous);
           }
@@ -206,14 +216,18 @@ class DriverCubit extends Cubit<DriverState> {
 
     emit(DriverLoading());
     try {
+      log('[DriverCubit] email verification: $verificationCode');
       await apiController.post(
         context,
         'verify-email-update',
         {'verificationCode': verificationCode},
         (success, responseData) {
           if (success) {
-            log('[DriverCubit] email verification: $verificationCode');
             _updateDriverEmail(email);
+            Navigator.pushReplacementNamed(
+              context,
+              ProfileDetails.routeName,
+            );
           } else {
             _updateDriverEmail(email);
           }
@@ -245,6 +259,11 @@ class DriverCubit extends Cubit<DriverState> {
           if (success) {
             log('[DriverCubit] phone updated: $newPhone');
             _updateDriverPhone(newPhone);
+            Navigator.pushNamed(
+              context,
+              VerifyOtpScreen.routeName,
+              arguments: {'type': 'phoneUpdate'},
+            );
           } else {
             _updateDriverPhone(phone);
           }
@@ -273,8 +292,12 @@ class DriverCubit extends Cubit<DriverState> {
         {'verificationCode': verificationCode},
         (success, responseData) {
           if (success) {
-            log('[DriverCubit] email verification: $verificationCode');
+            log('[DriverCubit] phone verification: $verificationCode');
             _updateDriverEmail(email);
+            Navigator.pushReplacementNamed(
+              context,
+              ProfileDetails.routeName,
+            );
           } else {
             _updateDriverEmail(email);
           }

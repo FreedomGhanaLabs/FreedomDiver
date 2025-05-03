@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:freedom_driver/shared/theme/text_style.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 
 List<Widget> buildCustomerDetail(BuildContext context) {
   return List.generate(4, (index) {
-    final width = MediaQuery.of(context).size.width;
+    final width = Responsive.width(context);
     return Container(
       width: width,
       margin: const EdgeInsets.only(bottom: 15),

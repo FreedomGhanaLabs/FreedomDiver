@@ -7,6 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/registeration_cubit.dart';
 import 'package:freedom_driver/feature/authentication/register/cubit/verify_otp_cubit.dart';
+import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
+import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
@@ -69,6 +71,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     final formCubit = BlocProvider.of<RegistrationFormCubit>(context);
     final args = getRouteParams(context);
     final type = args['type'] as String?;
+
+    final isPhoneUpdate = type == 'phoneUpdate';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocConsumer<VerifyOtpCubit, VerifyOtpState>(
@@ -105,7 +110,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     ),
                   ),
                   Text(
-                    '${formCubit.state.email}',
+                    '${isPhoneUpdate ? context.driver?.phone : (formCubit.state.email ?? context.driver?.email)}',
                     style: TextStyle(
                       fontSize: normalText.sp,
                       fontWeight: FontWeight.w600,
@@ -243,9 +248,27 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     RegistrationFormCubit formCubit,
     String? type,
   ) {
+    debugPrint('$type');
+    final verificationCode = _otpController.text.trim();
     final isLoginType = type == 'login';
+    final isEmailUpdateType = type == 'emailUpdate';
+    final isPhoneUpdateType = type == 'phoneUpdate';
     if (_otpFormKey.currentState!.validate()) {
-      if (_otpController.text.trim().isEmpty) {
+      if (verificationCode.isEmpty) {
+        return;
+      }
+
+      if (isEmailUpdateType) {
+        context
+            .read<DriverCubit>()
+            .verifyEmailUpdate(context, verificationCode);
+        return;
+      }
+
+      if (isPhoneUpdateType) {
+        context
+            .read<DriverCubit>()
+            .verifyPhoneUpdate(context, verificationCode);
         return;
       }
 
@@ -254,7 +277,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         isLoginType ? 'login/email/verify' : 'verify-registration',
         {
           'email': formCubit.state.email,
-          'verificationCode': _otpController.text.trim(),
+          'verificationCode': verificationCode,
         },
         (success, data) {
           setState(() {
@@ -264,13 +287,13 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             final token = data['data']['token'].toString();
             debugPrint(token);
             addTokenToHive(token).then(
-              (onValue) => {
-                // context.read<DriverCubit>().getDriverProfile(context);
+              (onValue) {
+                context.read<RegistrationFormCubit>().setEmail(null);
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   MainActivityScreen.routeName,
                   (route) => false,
-                ),
+                );
               },
             );
           }

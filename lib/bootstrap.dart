@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freedom_driver/core/di/locator.dart';
-import 'package:freedom_driver/shared/screens/error_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -36,15 +35,14 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   Bloc.observer = const AppBlocObserver();
 
-  FlutterError.onError = (details) {
-    log(
-      'FlutterError: ${details.exceptionAsString()}',
-      stackTrace: details.stack,
-    );
-    FlutterError.presentError(details);
-    runApp(CustomErrorScreen(errorDetails: details));
-  };
-
+  // FlutterError.onError = (details) {
+  //   log(
+  //     'FlutterError: ${details.exceptionAsString()}',
+  //     stackTrace: details.stack,
+  //   );
+  //   FlutterError.presentError(details);
+  //   runApp(CustomErrorScreen(errorDetails: details));
+  // };
 
   runApp(await builder());
 }

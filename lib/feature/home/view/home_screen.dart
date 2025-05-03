@@ -19,6 +19,7 @@ import 'package:freedom_driver/feature/home/view/widgets/estimated_reach_time.da
 import 'package:freedom_driver/feature/home/view/widgets/rider_time_line.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -47,10 +48,10 @@ class _HomeScreenState extends State<_HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {},
+      body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           return RefreshIndicator(
+            color: gradient1,
             onRefresh: () async {
               await context
                   .read<DriverCubit>()
@@ -60,177 +61,130 @@ class _HomeScreenState extends State<_HomeScreen> {
               children: [
                 const EarningsBackgroundWidget(),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: smallWhiteSpace,
-                    vertical: extraSmallWhiteSpace,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
                   child: Column(
                     children: [
-                      VSpace(normalWhiteSpace.sp),
+                      VSpace(
+                        MediaQuery.of(context).padding.top + smallWhiteSpace,
+                      ),
                       const HomeHeader(),
                       const VSpace(smallWhiteSpace),
                       const DriverStatusToggler(),
                       const VSpace(smallWhiteSpace),
                       Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const Row(
-                                children: [
-                                  Expanded(child: DriverTotalEarnings()),
-                                  HSpace(smallWhiteSpace),
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        DriverTotalScore(),
-                                        VSpace(extraSmallWhiteSpace),
-                                        DriverTotalOrder(),
-                                      ],
-                                    ),
+                        child: ListView(
+                          padding: EdgeInsets.zero,
+                          children: [
+                            const Row(
+                              children: [
+                                Expanded(child: DriverTotalEarnings()),
+                                HSpace(smallWhiteSpace),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      DriverTotalScore(),
+                                      VSpace(extraSmallWhiteSpace),
+                                      DriverTotalOrder(),
+                                    ],
                                   ),
-                                ],
+                                ),
+                              ],
+                            ),
+                            const VSpace(smallWhiteSpace),
+                            Container(
+                              padding: const EdgeInsets.only(
+                                left: smallWhiteSpace,
+                                top: 7.9,
+                                right: 14,
+                                bottom: 12.75,
                               ),
-                              const VSpace(smallWhiteSpace),
-                              Container(
-                                padding: const EdgeInsets.only(
-                                  left: smallWhiteSpace,
-                                  top: 7.9,
-                                  right: 14,
-                                  bottom: 12.75,
-                                ),
-                                decoration: ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 0.99,
-                                      color: Colors.black
-                                          .withValues(alpha: 0.0500),
-                                    ),
-                                    borderRadius: BorderRadius.circular(4.95),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 0.99,
+                                    color:
+                                        Colors.black.withValues(alpha: 0.0500),
                                   ),
+                                  borderRadius: BorderRadius.circular(4.95),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Find ride',
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Find ride',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: smallText,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const VSpace(extraSmallWhiteSpace),
+                                  Image.asset(
+                                    'assets/app_images/driver_image.png',
+                                  ),
+                                  const VSpace(smallWhiteSpace),
+                                  if (state.rideStatus == RideStatus.searching)
+                                    Text(
+                                      'Searching for ride requests near you…',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
+                                        color: Colors.grey.shade500,
                                         fontSize: smallText,
                                         fontWeight: FontWeight.w500,
                                       ),
-                                    ),
-                                    const VSpace(4),
-                                    const Image(
-                                      image: AssetImage(
-                                        'assets/app_images/driver_image.png',
-                                      ),
-                                    ),
-                                    const VSpace(16),
-                                    if (state.rideStatus ==
-                                        RideStatus.searching)
-                                      Text(
-                                        'Searching for ride requests near you…',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.grey.shade500,
-                                          fontSize: smallText,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      )
-                                    else if (state.rideStatus ==
-                                        RideStatus.accepted)
-                                      const EstimatedReachTime(),
-                                    const VSpace(16),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: MultiBlocListener(
-                                            listeners: [
-                                              BlocListener<HomeCubit,
-                                                  HomeState>(
-                                                listener: (context, state) {
-                                                  if (state.rideStatus ==
-                                                      RideStatus.found) {
-                                                    buildRideFoundDialog(
-                                                      context,
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                            child: BlocBuilder<HomeCubit,
-                                                HomeState>(
-                                              key: ValueKey(
-                                                state.rideStatus,
-                                              ),
-                                              builder: (context, state) {
-                                                log('Current state 2: ${state.rideStatus}');
-
-                                                final isRideActive =
-                                                    state.rideStatus ==
-                                                        RideStatus.accepted;
-                                                return SimpleButton(
-                                                  title: isRideActive
-                                                      ? 'End Ride'
-                                                      : 'Find Nearby Rides',
-                                                  onPressed: () {
-                                                    if (isRideActive == true) {
-                                                      context
-                                                          .read<HomeCubit>()
-                                                          .endRide();
-                                                    } else {
-                                                      context
-                                                          .read<HomeCubit>()
-                                                          .toggleNearByRides();
-                                                    }
-                                                  },
-                                                  backgroundColor: isRideActive
-                                                      ? Colors.red
-                                                      : const Color(
-                                                          0xff29CC6A,
-                                                        ),
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    top: 6.93,
-                                                    bottom: 6.93,
-                                                    left: 22,
-                                                    right: 22,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    4.95,
-                                                  ),
-                                                  textStyle: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    color: Colors.white,
-                                                  ),
-                                                );
+                                    )
+                                  else if (state.rideStatus ==
+                                      RideStatus.accepted)
+                                    const EstimatedReachTime(),
+                                  const VSpace(smallWhiteSpace),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: MultiBlocListener(
+                                          listeners: [
+                                            BlocListener<HomeCubit, HomeState>(
+                                              listener: (context, state) {
+                                                if (state.rideStatus ==
+                                                    RideStatus.found) {
+                                                  buildRideFoundDialog(
+                                                    context,
+                                                  );
+                                                }
                                               },
                                             ),
-                                          ),
-                                        ),
-                                        const HSpace(28),
-                                        BlocBuilder<HomeCubit, HomeState>(
-                                          builder: (context, state) {
-                                            return Expanded(
-                                              child: SimpleButton(
-                                                title: state.rideStatus ==
-                                                        RideStatus.accepted
-                                                    ? 'Navigate'
-                                                    : 'Search Another Area',
+                                          ],
+                                          child:
+                                              BlocBuilder<HomeCubit, HomeState>(
+                                            key: ValueKey(
+                                              state.rideStatus,
+                                            ),
+                                            builder: (context, state) {
+                                              log('Current state 2: ${state.rideStatus}');
+
+                                              final isRideActive =
+                                                  state.rideStatus ==
+                                                      RideStatus.accepted;
+                                              return SimpleButton(
+                                                title: isRideActive
+                                                    ? 'End Ride'
+                                                    : 'Find Nearby Rides',
                                                 onPressed: () {
-                                                  if (state.rideStatus ==
-                                                      RideStatus.accepted) {
-                                                    Navigator.of(context)
-                                                        .pushNamed(
-                                                      InAppCallMap.routeName,
-                                                    );
+                                                  if (isRideActive == true) {
+                                                    context
+                                                        .read<HomeCubit>()
+                                                        .endRide();
+                                                  } else {
+                                                    context
+                                                        .read<HomeCubit>()
+                                                        .toggleNearByRides();
                                                   }
                                                 },
-                                                backgroundColor: const Color(
-                                                  0xEDABABB1,
-                                                ),
+                                                backgroundColor: isRideActive
+                                                    ? redColor
+                                                    : greenColor,
                                                 padding: const EdgeInsets.only(
                                                   top: 6.93,
                                                   bottom: 6.93,
@@ -241,65 +195,102 @@ class _HomeScreenState extends State<_HomeScreen> {
                                                     BorderRadius.circular(
                                                   4.95,
                                                 ),
-                                                textStyle: const TextStyle(
-                                                  fontSize: 15,
+                                                textStyle: TextStyle(
+                                                  fontSize: paragraphText.sp,
                                                   color: Colors.white,
                                                 ),
-                                              ),
-                                            );
-                                          },
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const VSpace(10.69),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 16,
-                                  right: 16,
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Text(
-                                      'Your Activity',
-                                      style: TextStyle(
-                                        fontSize: 14.53,
-                                        fontWeight: FontWeight.w600,
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      'See All',
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.inter(
-                                        color: const Color(0xFFF59E0B),
-                                        fontSize: 14.53,
-                                        fontWeight: FontWeight.w600,
+                                      const HSpace(whiteSpace),
+                                      BlocBuilder<HomeCubit, HomeState>(
+                                        builder: (context, state) {
+                                          return Expanded(
+                                            child: SimpleButton(
+                                              title: state.rideStatus ==
+                                                      RideStatus.accepted
+                                                  ? 'Navigate'
+                                                  : 'Search Another Area',
+                                              onPressed: () {
+                                                if (state.rideStatus ==
+                                                    RideStatus.accepted) {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                    InAppCallMap.routeName,
+                                                  );
+                                                }
+                                              },
+                                              backgroundColor: greyColor,
+                                              padding: const EdgeInsets.only(
+                                                top: 6.93,
+                                                bottom: 6.93,
+                                                left: 22,
+                                                right: 22,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                4.95,
+                                              ),
+                                              textStyle: TextStyle(
+                                                fontSize: paragraphText.sp,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ),
-                                    GestureDetector(
-                                      child: const AppIcon(
-                                        iconName: 'right-arrow',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Column(
-                                children: [
-                                  VSpace(smallWhiteSpace),
-                                  RiderTimeLine(
-                                    activityType: ActivityType.delivery,
-                                    destinationDetails: 'Ghana,Kumasi',
-                                    pickUpDetails: 'Chale, Kumasi',
+                                    ],
                                   ),
                                 ],
                               ),
-                              const VSpace(whiteSpace),
-                            ],
-                          ),
+                            ),
+                            const VSpace(10.69),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: smallWhiteSpace,
+                                right: smallWhiteSpace,
+                              ),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Your Activity',
+                                    style: TextStyle(
+                                      fontSize: 14.53,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    'See All',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                      color: const Color(0xFFF59E0B),
+                                      fontSize: 14.53,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    child: const AppIcon(
+                                      iconName: 'right-arrow',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Column(
+                              children: [
+                                VSpace(smallWhiteSpace),
+                                RiderTimeLine(
+                                  activityType: ActivityType.delivery,
+                                  destinationDetails: 'Ghana,Kumasi',
+                                  pickUpDetails: 'Chale, Kumasi',
+                                ),
+                              ],
+                            ),
+                            const VSpace(whiteSpace),
+                          ],
                         ),
                       ),
                     ],
@@ -401,7 +392,7 @@ class DriverStatusToggler extends StatelessWidget {
                   height: 40,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.78),
+                    borderRadius: BorderRadius.circular(roundedMd),
                     color: activeColor.withValues(alpha: 0.05),
                     border: Border.fromBorderSide(
                       BorderSide(
@@ -436,9 +427,6 @@ class DriverStatusToggler extends StatelessWidget {
           );
         }
 
-        // if (state is DriverLoading) {
-        //   return const Center(child: CircularProgressIndicator());
-        // }
         return const SizedBox();
       },
     );

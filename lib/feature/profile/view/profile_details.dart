@@ -107,7 +107,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           ),
           prefixSvgUrl: getIconUrl('numbers'),
           validator: (val) =>
-              val == null || val.trim().isEmpty ? 'Email is required' : null,
+              val == null || val.trim().isEmpty
+              ? 'Phone number is required'
+              : null,
         ),
       ],
     );

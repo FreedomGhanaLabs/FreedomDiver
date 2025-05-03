@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/earnings/widgets/utility.dart';
+import 'package:freedom_driver/feature/kyc/view/vehicle_details_screen.dart';
 import 'package:freedom_driver/feature/profile/view/availability_dashboard.dart';
 import 'package:freedom_driver/feature/profile/view/document_management_screen.dart';
 import 'package:freedom_driver/feature/profile/view/profile_details.dart';
@@ -57,7 +58,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                   MoreSection(
-                    onTapAddress: () {},
+                    onTapAddress: () {
+                      Navigator.of(context)
+                          .pushNamed(VehicleDetailsScreen.routeName);
+                    },
                     onTapSecurity: () {
                       Navigator.of(context)
                           .pushNamed(AvailabilityDashboard.routeName);
