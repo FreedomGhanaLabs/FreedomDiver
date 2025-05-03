@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 
 abstract class SectionFactory extends StatelessWidget {
   const SectionFactory({
@@ -63,11 +64,12 @@ abstract class SectionFactory extends StatelessWidget {
             ),
           const SizedBox(width: 22),
           if (item.showArrow)
-            const Padding(
-              padding: EdgeInsets.only(right: 22),
+            Padding(
+              padding: const EdgeInsets.only(right: 22),
               child: AppIcon(
                 iconName: 'arrow_right_icon',
-                colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                colorFilter:
+                    ColorFilter.mode(Colors.grey.shade700, BlendMode.srcIn),
               ),
             ),
         ],
@@ -113,7 +115,7 @@ abstract class SectionFactory extends StatelessWidget {
                       Container(
                         height: 1,
                         color: greyColor,
-                        width: double.infinity,
+                        width: Responsive.width(context),
                       ),
                       const SizedBox(height: 19),
                     ] else

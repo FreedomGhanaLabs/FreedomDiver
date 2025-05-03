@@ -183,7 +183,7 @@ class SimpleButton extends StatelessWidget {
   const SimpleButton({
     required this.title,
     super.key,
-    this.borderRadius = BorderRadius.zero,
+    this.borderRadius,
     this.backgroundColor,
     this.onPressed,
     this.padding,
@@ -193,7 +193,7 @@ class SimpleButton extends StatelessWidget {
   });
   final String title;
   final Color? backgroundColor;
-  final BorderRadiusGeometry borderRadius;
+  final BorderRadiusGeometry? borderRadius;
   final void Function()? onPressed;
   final EdgeInsetsGeometry? padding;
   final TextStyle? textStyle;
@@ -207,7 +207,7 @@ class SimpleButton extends StatelessWidget {
         backgroundColor: backgroundColor ?? Colors.black,
         tapTargetSize: materialTapTargetSize,
         shape: RoundedRectangleBorder(
-          borderRadius: borderRadius,
+          borderRadius: borderRadius ?? BorderRadius.circular(roundedLg),
         ),
         padding: padding ??
             const EdgeInsets.only(

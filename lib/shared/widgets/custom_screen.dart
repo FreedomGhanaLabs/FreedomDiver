@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
@@ -12,12 +13,16 @@ class CustomScreen extends StatelessWidget {
     this.title,
     this.hasBackButton = true,
     this.actions,
+    this.bodyHeader,
+    this.bodyDescription,
   });
 
   final List<Widget> children;
   final String? title;
   final bool hasBackButton;
   final List<Widget>? actions;
+  final String? bodyHeader;
+  final String? bodyDescription;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,30 @@ class CustomScreen extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [const VSpace(smallWhiteSpace), ...children],
+                children: [
+                  if (bodyHeader != null) ...[
+                    const VSpace(smallWhiteSpace),
+                    Text(
+                      bodyHeader ?? '',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: normalText.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                  if (bodyDescription != null)
+                    Text(
+                      bodyDescription ?? '',
+                      style: TextStyle(
+                        color: Colors.black.withValues(alpha: 0.439),
+                        fontSize: smallText.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  const VSpace(smallWhiteSpace),
+                  ...children,
+                ],
               ),
             ),
           ),

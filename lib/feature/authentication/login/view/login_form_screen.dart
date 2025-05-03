@@ -8,6 +8,7 @@ import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/shared/widgets/custom_divider.dart';
 import 'package:freedom_driver/shared/widgets/gradient_text.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
 import 'package:freedom_driver/utilities/responsive.dart';
@@ -149,28 +150,18 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 ),
                 const VSpace(whiteSpace),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: 7,
-                      width: 167,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: colorGrey,
-                      ),
+                    CustomDivider(
+                      height: 6,
+                      width: Responsive.width(context) * 0.3,
                     ),
-                    const Spacer(),
-                    Text(
-                      'Or',
-                      style: GoogleFonts.poppins(fontSize: 15.36),
-                    ),
-                    const Spacer(),
-                    Container(
-                      height: 7,
-                      width: 167,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: colorGrey,
-                      ),
+                    const HSpace(smallWhiteSpace),
+                    const Text('Or', style: TextStyle(fontSize: normalText)),
+                    const HSpace(smallWhiteSpace),
+                    CustomDivider(
+                      height: 6,
+                      width: Responsive.width(context) * 0.3,
                     ),
                   ],
                 ),

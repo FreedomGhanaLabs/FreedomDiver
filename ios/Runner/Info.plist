@@ -60,5 +60,13 @@
 		<true />
 		<key>DART_DEFINES</key>
 		<string>$(DART_DEFINES)</string>
+
+		<key>NSUserNotificationAlertStyle</key>
+		<string>Alert</string>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
 	</dict>
 </plist>

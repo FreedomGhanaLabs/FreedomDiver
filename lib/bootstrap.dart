@@ -3,6 +3,10 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:freedom_driver/core/di/locator.dart';
+import 'package:freedom_driver/shared/screens/error_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -21,13 +25,26 @@ class AppBlocObserver extends BlocObserver {
 }
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
-  FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
-  };
+  WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  // await Firebase.initializeApp();
+  // await NotificationService.initializeNotifications();
+
+  await locator();
+  await Hive.initFlutter();
+  await Hive.openBox<bool>('firstTimerUser');
 
   Bloc.observer = const AppBlocObserver();
 
-  // Add cross-flavor configuration here
+  FlutterError.onError = (details) {
+    log(
+      'FlutterError: ${details.exceptionAsString()}',
+      stackTrace: details.stack,
+    );
+    FlutterError.presentError(details);
+    runApp(CustomErrorScreen(errorDetails: details));
+  };
+
 
   runApp(await builder());
 }

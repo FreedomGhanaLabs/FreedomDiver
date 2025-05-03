@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TextFieldFactory extends StatefulWidget {
   const TextFieldFactory({
     required this.controller,
     super.key,
+    this.labelWidget,
     this.suffixIcon,
     this.onChanged,
     this.hintText,
@@ -313,6 +313,7 @@ class TextFieldFactory extends StatefulWidget {
   final BorderRadius? borderRadius;
   final BorderRadius? enabledBorderRadius;
   final BorderRadius? focusedBorderRadius;
+  final Widget? labelWidget;
 
   @override
   State<TextFieldFactory> createState() => _TextFieldFactoryState();
@@ -325,16 +326,29 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.label != null)
-          Text(
-            widget.label ?? '',
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: paragraphText,
-            ),
-          ),
+        Row(
+          children: [
+            if (widget.label != null)
+              Text(
+                widget.label ?? '',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: paragraphText,
+                ),
+              ),
+            const HSpace(10),
+            widget.labelWidget ?? const SizedBox(),
+          ],
+        ),
         const VSpace(extraSmallWhiteSpace),
         TextFormField(
+          onTapOutside: (event) {
+            FocusScope.of(context).unfocus();
+          },
+          onTapUpOutside: (event) {
+            FocusScope.of(context).unfocus();
+          },
+          
           keyboardAppearance: Brightness.light,
           inputFormatters: const [],
           controller: widget.controller,
@@ -342,17 +356,18 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
           textAlign: widget.textAlign ?? TextAlign.start,
           textAlignVertical: widget.textAlignVertical,
           validator: widget.validator,
-          autovalidateMode: widget.autovalidateMode,
+          autovalidateMode:
+              widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
           maxLines: widget.maxLines ?? 1,
           cursorColor: Colors.black,
           obscureText: widget.obscure != null ? !canSee : false,
           obscuringCharacter: '*',
           onChanged: widget.onChanged,
           style: widget.fontStyle ??
-              GoogleFonts.poppins(
-                fontSize: 12.sp,
+              TextStyle(
+                fontSize: smallText.sp,
                 color: Colors.black,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
           decoration: InputDecoration(
             fillColor: widget.fillColor ?? fillColor,
@@ -360,9 +375,9 @@ class _TextFieldFactoryState extends State<TextFieldFactory> {
             labelText: widget.hintText,
             suffixIcon: widget.suffixIcon,
             labelStyle: widget.hintTextStyle ??
-                GoogleFonts.poppins(
+                const TextStyle(
                   fontSize: paragraphText,
-                  color: const Color(0xffE0E0E0),
+                  color: Color(0xffE0E0E0),
                 ),
             prefixIcon: widget.prefixSvgUrl != null
                 ? SizedBox(

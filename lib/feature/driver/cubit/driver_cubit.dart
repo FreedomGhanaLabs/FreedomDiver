@@ -16,16 +16,17 @@ class DriverCubit extends Cubit<DriverState> {
   Driver? get currentDriver => _cachedDriver;
   bool get hasDriver => _cachedDriver != null;
 
-  void _emitIfChanged(Driver updated) {
-    if (_cachedDriver != updated) {
-      _cachedDriver = updated;
-      emit(DriverLoaded(_cachedDriver!));
-    }
-  }
-
   void _updateDriver(Driver updated) {
     _cachedDriver = updated;
     emit(DriverLoaded(_cachedDriver!));
+  }
+
+  void _emitIfChanged(Driver updated) {
+    if (_cachedDriver != updated) {
+      _updateDriver(updated);
+    } else {
+      log('[DriverCubit] No changes detected, not emitting new state');
+    }
   }
 
   Future<void> getDriverProfile(
@@ -170,7 +171,9 @@ class DriverCubit extends Cubit<DriverState> {
   ) async {
     if (!hasDriver) return;
 
-    final previous = _cachedDriver!.email;
+    final previous = _cachedDriver?.email ?? '';
+    if (previous.trim() == newEmail.trim()) return;
+
     _emitIfChanged(_cachedDriver!.copyWith(email: newEmail));
 
     try {
@@ -185,6 +188,7 @@ class DriverCubit extends Cubit<DriverState> {
             _updateDriverEmail(previous);
           }
         },
+        showOverlay: true,
       );
     } catch (e) {
       log('[DriverCubit] email error: $e');
@@ -214,6 +218,7 @@ class DriverCubit extends Cubit<DriverState> {
             _updateDriverEmail(email);
           }
         },
+        showOverlay: true,
       );
     } catch (e) {
       log('[DriverCubit] email verification error: $e');
@@ -244,6 +249,7 @@ class DriverCubit extends Cubit<DriverState> {
             _updateDriverPhone(phone);
           }
         },
+        showOverlay: true,
       );
     } catch (e) {
       log('[DriverCubit] phone error: $e');
@@ -282,15 +288,21 @@ class DriverCubit extends Cubit<DriverState> {
 
   Future<void> requestNameUpdate(
     BuildContext context, {
-    required String newFirstName,
-    required String newOtherName,
-    required String newSurname,
+    required String newFullName,
   }) async {
     if (_cachedDriver == null) return;
 
     final firstName = _cachedDriver?.firstName ?? '';
     final otherName = _cachedDriver?.otherName ?? '';
     final surname = _cachedDriver?.surname ?? '';
+
+    if (_cachedDriver?.fullName.trim() == newFullName.trim()) return;
+
+    final newNameSplit = newFullName.split(' ');
+
+    final newFirstName = newNameSplit[0];
+    final newOtherName = newNameSplit[1];
+    final newSurname = newNameSplit[newNameSplit.length - 1];
 
     _updatePendingDriverName(newFirstName, newOtherName, newSurname);
 
@@ -305,7 +317,7 @@ class DriverCubit extends Cubit<DriverState> {
         },
         (success, responseData) {
           if (success) {
-            log('[DriverCubit] name update sent: $firstName');
+            log('[DriverCubit] name update sent: $newFullName');
             _updatePendingDriverName(firstName, otherName, surname);
           } else {
             _updatePendingDriverName(firstName, otherName, surname);

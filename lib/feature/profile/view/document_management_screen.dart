@@ -27,47 +27,28 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
   Widget build(BuildContext context) {
     return CustomScreen(
       title: 'Manage Documents',
+      bodyHeader: 'Keep your details accurate',
+      bodyDescription:
+          'If you change your Motorcycle or any relevant details, update the information here to maintain accuracy and transparency.',
       children: [
-        const VSpace(smallWhiteSpace),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Keep your details accurate',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: normalText,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              'If you change your Motorcycle or any relevant details, update the information here to maintain accuracy and transparency.',
-              style: TextStyle(
-                color: Colors.black.withValues(alpha: 0.439),
-                fontSize: smallText,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-            ManageDocuments(
-              padding: EdgeInsets.zero,
-              onLicenseTap: () => Navigator.pushNamed(
-                context,
-                DriverLicenseForm.routeName,
-              ),
-              onAddressTap: () => Navigator.pushNamed(
-                context,
-                AddressProofForm.routeName,
-              ),
-            ),
-            // VehicleInformationContainer(
-            //   vehicleColor: vehicleColor,
-            //   vehicleLicensePlate: vehicleLicensePlate,
-            //   vehicleMakeAndModel: vehicleMakeAndModel,
-            // ),
-
-            const VSpace(whiteSpace),
-          ],
+        ManageDocuments(
+          padding: EdgeInsets.zero,
+          onLicenseTap: () => Navigator.pushNamed(
+            context,
+            DriverLicenseForm.routeName,
+          ),
+          onAddressTap: () => Navigator.pushNamed(
+            context,
+            AddressProofForm.routeName,
+          ),
         ),
+        // VehicleInformationContainer(
+        //   vehicleColor: vehicleColor,
+        //   vehicleLicensePlate: vehicleLicensePlate,
+        //   vehicleMakeAndModel: vehicleMakeAndModel,
+        // ),
+
+        const VSpace(whiteSpace),
       ],
     );
   }

@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Crush_Clever\\flutter\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Crush_Clever\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\Crush_Clever\\software_development\\MD\\flutter_apps\\freedom-driver-app\\android\\app\\.cxx\\Debug\\b6o556h5\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Crush_Clever\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\Crush_Clever\\software_development\\MD\\flutter_apps\\freedom-driver-app\\android\\app\\.cxx\\Debug\\b6o556h5\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

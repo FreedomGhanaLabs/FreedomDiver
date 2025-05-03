@@ -23,11 +23,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // const SystemUiOverlayStyle(
-    //   statusBarColor: Colors.black,
-    //   statusBarIconBrightness: Brightness.light,
-    //   systemNavigationBarColor: Colors.transparent,
-    // );
+
     return ScreenUtilInit(
       designSize: const Size(402, 874),
       splitScreenMode: true,

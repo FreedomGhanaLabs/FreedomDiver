@@ -123,7 +123,7 @@ class CustomAppBar extends StatelessWidget {
       padding: EdgeInsets.only(
         left: smallWhiteSpace,
         right: smallWhiteSpace,
-        top: normalWhiteSpace.sp,
+        top: MediaQuery.of(context).padding.top + smallWhiteSpace,
         bottom: extraSmallWhiteSpace,
       ),
       child: Row(
