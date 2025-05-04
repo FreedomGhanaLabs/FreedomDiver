@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
@@ -9,6 +14,7 @@ import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
 import 'package:freedom_driver/shared/widgets/custom_drop_down_button.dart';
+import 'package:freedom_driver/utilities/driver_location_service.dart';
 import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -32,6 +38,10 @@ class _InAppCallMapState extends State<InAppCallMap> {
   LatLng? _driverLocation;
   LatLng? _pickupLocation;
   LatLng? _destinationLocation;
+  String averageTime = '0 mins';
+  String distance = '0 KM';
+
+  late final DriverLocationService _locationService;
 
   @override
   void initState() {
@@ -40,16 +50,38 @@ class _InAppCallMapState extends State<InAppCallMap> {
     _pickupLocation = const LatLng(37.779026, -122.419906);
     _destinationLocation = const LatLng(37.784056, -122.407499);
     _setMapPins();
-    _setPolylines();
+    _setPolylines().then((_) {
+      _animateDriver();
+      _getETA().then((eta) {
+        debugPrint('ETA: $eta');
+        setState(() {
+          averageTime = eta['duration'] ?? '0 mins';
+          distance = eta['distance'] ?? '0 KM';
+        });
+      });
+    });
+    _locationService = DriverLocationService();
+    _locationService.sendCurrentLocationOnce(context);
   }
 
-  void _setMapPins() {
+  @override
+  void dispose() {
+    _locationService.stopLiveLocationUpdates();
+    super.dispose();
+  }
+
+  Future<void> _setMapPins() async {
+    final motorbikeIcon =
+        await _createCustomMarker('assets/app_images/user_profile.png');
+    final userIcon = await _createCustomMarker('assets/icons/user.png');
+    final shopIcon = await _createCustomMarker('assets/icons/shop.png');
+
     _markers
       ..add(
         Marker(
           markerId: const MarkerId('driver'),
           position: _driverLocation!,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          icon: motorbikeIcon,
           infoWindow: const InfoWindow(title: 'Your Location'),
         ),
       )
@@ -57,8 +89,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
         Marker(
           markerId: const MarkerId('pickup'),
           position: _pickupLocation!,
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          icon: userIcon,
           infoWindow: const InfoWindow(title: 'Pickup Location'),
         ),
       )
@@ -66,10 +97,16 @@ class _InAppCallMapState extends State<InAppCallMap> {
         Marker(
           markerId: const MarkerId('destination'),
           position: _destinationLocation!,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          icon: shopIcon,
           infoWindow: const InfoWindow(title: 'Destination'),
         ),
       );
+  }
+
+  Future<BitmapDescriptor> _createCustomMarker(String assetPath) async {
+    final data = await rootBundle.load(assetPath);
+    final bytes = data.buffer.asUint8List();
+    return BitmapDescriptor.bytes(bytes);
   }
 
   Future<void> _setPolylines() async {
@@ -109,7 +146,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   Future<void> _animateDriver() async {
     for (var i = 0; i < _polylineCoordinates.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 500), () {
+      await Future.delayed(const Duration(milliseconds: 2000), () {
         setState(() {
           _driverLocation = _polylineCoordinates[i];
           _markers
@@ -131,8 +168,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   final Dio dio = Dio();
 
-  Future<String> _getETA() async {
-    const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+  Future<Map<String, String>> _getETA() async {
+    const apiKey = mapsAPIKey;
     final originLat = _driverLocation!.latitude;
     final originLng = _driverLocation!.longitude;
     final destLat = _pickupLocation!.latitude;
@@ -146,9 +183,15 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
       if (response.statusCode == 200 &&
           response.data['routes'].isNotEmpty as bool) {
+        debugPrint('${response.data['routes'][0]}');
         final duration =
             response.data['routes'][0]['legs'][0]['duration']['text'];
-        return duration as String;
+        final distance =
+            response.data['routes'][0]['legs'][0]['distance']['text'];
+        return {
+          'duration': duration as String,
+          'distance': distance.toString(),
+        };
       } else {
         throw Exception('No routes found or bad response.');
       }
@@ -171,25 +214,30 @@ class _InAppCallMapState extends State<InAppCallMap> {
             polylines: _polylines,
             onMapCreated: (GoogleMapController controller) {
               _mapController = controller;
+
+              _mapController?.animateCamera(
+                CameraUpdate.newLatLng(_driverLocation!),
+              );
             },
           ),
           Positioned(
-            top: MediaQuery.of(context).padding.top,
-            left: 25,
+            top: MediaQuery.of(context).padding.top + smallWhiteSpace,
+            left: whiteSpace,
             child: const DecoratedBackButton(),
           ),
           CustomBottomSheet(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const VSpace(41),
+                const VSpace(whiteSpace),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
                   child: Row(
                     children: [
                       Container(
-                        width: 41,
-                        height: 41,
+                        width: 40,
+                        height: 40,
                         decoration: const ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage(
@@ -200,12 +248,14 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           shape: OvalBorder(),
                         ),
                       ),
-                      const HSpace(18),
+                      const HSpace(smallWhiteSpace),
                       const Text(
                         'Dr Ben Larry Cage',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: normalText,
+                          fontSize: paragraphText,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -216,17 +266,17 @@ class _InAppCallMapState extends State<InAppCallMap> {
                 ),
                 const VSpace(whiteSpace),
                 Container(
-                  width: 424,
+                  width: Responsive.width(context),
                   height: 2,
                   decoration: const BoxDecoration(color: Color(0x72D9D9D9)),
                 ),
-                const VSpace(14),
+                const VSpace(smallWhiteSpace),
                 Padding(
                   padding: const EdgeInsets.only(left: 14),
                   child: Text(
                     'A passenger is waiting for you',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.black54,
                       fontSize: smallText.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -258,16 +308,16 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           style: TextStyle(
                             color: Colors.black
                                 .withValues(alpha: 0.5600000023841858),
-                            fontSize: extraSmallText,
+                            fontSize: extraSmallText.sp,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                         const VSpace(10),
-                        const Text(
+                        Text(
                           r'$20.5',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: paragraphText,
+                            fontSize: paragraphText.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -276,19 +326,19 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     Column(
                       children: [
                         Text(
-                          'Expected Distance  Covered',
+                          'Expected Distance Covered',
                           style: TextStyle(
                             color: Colors.black.withValues(alpha: 0.56),
-                            fontSize: 9.15,
+                            fontSize: extraSmallText.sp,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                         const VSpace(10),
-                        const Text(
-                          '40.5KM',
+                        Text(
+                          distance,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: paragraphText,
+                            fontSize: paragraphText.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -301,17 +351,16 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           style: TextStyle(
                             color: Colors.black
                                 .withValues(alpha: 0.5600000023841858),
-                            fontSize: smallText,
-                            fontFamily: 'Poppins',
+                            fontSize: extraSmallText.sp,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                         const VSpace(10),
-                        const Text(
-                          '30:00PM',
+                        Text(
+                          averageTime,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 13.72,
+                            fontSize: paragraphText.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -449,34 +498,28 @@ class CustomBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: GestureDetector(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: padding,
-          curve: Curves.easeInOut,
-          height: height,
-          width: Responsive.width(context),
-          decoration: BoxDecoration(
+    return DraggableScrollableSheet(
+      initialChildSize: 0.1,
+      minChildSize: 0.1,
+      maxChildSize: 0.9,
+      builder: (context, scrollController) {
+        return Container(
+          height: height ?? 200,
+          padding: padding ?? EdgeInsets.zero,
+          decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(roundedLg),
+              topRight: Radius.circular(roundedLg),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                spreadRadius: 5,
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 30)],
           ),
-          child: SingleChildScrollView(child: child),
-        ),
-      ),
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: child,
+          ),
+        );
+      },
     );
   }
 }

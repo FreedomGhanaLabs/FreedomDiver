@@ -1,12 +1,17 @@
 import 'package:freedom_driver/core/API/clients/base_api_clients.dart';
 import 'package:freedom_driver/core/config/environment_config.dart';
+import 'package:freedom_driver/utilities/driver_location_service.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 
- Future<void>locator()async{
-   final freedomClient = BaseApiClients(
-       baseUrl: EnvironmentConfig.instance.baseUrl);
-   getIt.registerSingleton<BaseApiClients>(freedomClient);
- }
-
+Future<void> locator() async {
+  final freedomClient = BaseApiClients(
+    baseUrl: EnvironmentConfig.instance.baseUrl,
+  );
+  getIt
+    ..registerSingleton<BaseApiClients>(freedomClient)
+    ..registerSingleton<DriverLocationService>(
+      DriverLocationService(),
+    );
+}

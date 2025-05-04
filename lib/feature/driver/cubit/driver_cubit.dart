@@ -95,7 +95,9 @@ class DriverCubit extends Cubit<DriverState> {
   ) async {
     if (_cachedDriver == null) return;
 
-    final previous = _cachedDriver!.location!.coordinates;
+    final previous = _cachedDriver?.location?.coordinates ?? [];
+
+    if (newLocation == previous) return;
 
     _emitIfChanged(
       _cachedDriver!.copyWith(
