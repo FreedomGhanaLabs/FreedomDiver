@@ -30,6 +30,8 @@ String currentYear = DateTime.now().year.toString();
 const brandName = 'Freedom Driver';
 String copyrightText = '$brandName Mobile $currentYear';
 
+const String mapsAPIKey = String.fromEnvironment('MAPS_API_KEY');
+
 double pixelRatio = 3;
 
 const smallMobileWidth = 360.0;

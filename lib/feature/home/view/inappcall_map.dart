@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
@@ -21,11 +23,138 @@ class InAppCallMap extends StatefulWidget {
 }
 
 class _InAppCallMapState extends State<InAppCallMap> {
-  static LatLng sanFrancisco = const LatLng(37.774546, -122.433523);
+  // static LatLng sanFrancisco = const LatLng(37.774546, -122.433523);
+  GoogleMapController? _mapController;
+  final Set<Marker> _markers = {};
+  final Set<Polyline> _polylines = {};
+  final List<LatLng> _polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
+  LatLng? _driverLocation;
+  LatLng? _pickupLocation;
+  LatLng? _destinationLocation;
 
   @override
   void initState() {
     super.initState();
+    _driverLocation = const LatLng(37.774546, -122.433523);
+    _pickupLocation = const LatLng(37.779026, -122.419906);
+    _destinationLocation = const LatLng(37.784056, -122.407499);
+    _setMapPins();
+    _setPolylines();
+  }
+
+  void _setMapPins() {
+    _markers
+      ..add(
+        Marker(
+          markerId: const MarkerId('driver'),
+          position: _driverLocation!,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: const InfoWindow(title: 'Your Location'),
+        ),
+      )
+      ..add(
+        Marker(
+          markerId: const MarkerId('pickup'),
+          position: _pickupLocation!,
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          infoWindow: const InfoWindow(title: 'Pickup Location'),
+        ),
+      )
+      ..add(
+        Marker(
+          markerId: const MarkerId('destination'),
+          position: _destinationLocation!,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          infoWindow: const InfoWindow(title: 'Destination'),
+        ),
+      );
+  }
+
+  Future<void> _setPolylines() async {
+    final result = await polylinePoints.getRouteBetweenCoordinates(
+      googleApiKey: mapsAPIKey,
+      request: PolylineRequest(
+        origin: PointLatLng(
+          _driverLocation!.latitude,
+          _driverLocation!.longitude,
+        ),
+        destination: PointLatLng(
+          _pickupLocation!.latitude,
+          _pickupLocation!.longitude,
+        ),
+        mode: TravelMode.driving,
+      ),
+    );
+
+    if (result.points.isNotEmpty) {
+      _polylineCoordinates.clear();
+      for (final point in result.points) {
+        _polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      }
+
+      setState(() {
+        _polylines.add(
+          Polyline(
+            polylineId: const PolylineId('route'),
+            width: 5,
+            color: Colors.blue,
+            points: _polylineCoordinates,
+          ),
+        );
+      });
+    }
+  }
+
+  Future<void> _animateDriver() async {
+    for (var i = 0; i < _polylineCoordinates.length; i++) {
+      await Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          _driverLocation = _polylineCoordinates[i];
+          _markers
+            ..removeWhere((m) => m.markerId.value == 'driver')
+            ..add(
+              Marker(
+                markerId: const MarkerId('driver'),
+                position: _driverLocation!,
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueBlue,
+                ),
+                infoWindow: const InfoWindow(title: 'Your Location'),
+              ),
+            );
+        });
+      });
+    }
+  }
+
+  final Dio dio = Dio();
+
+  Future<String> _getETA() async {
+    const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+    final originLat = _driverLocation!.latitude;
+    final originLng = _driverLocation!.longitude;
+    final destLat = _pickupLocation!.latitude;
+    final destLng = _pickupLocation!.longitude;
+
+    final url =
+        'https://maps.googleapis.com/maps/api/directions/json?origin=$originLat,$originLng&destination=$destLat,$destLng&key=$apiKey';
+
+    try {
+      final response = await dio.get(url);
+
+      if (response.statusCode == 200 &&
+          response.data['routes'].isNotEmpty as bool) {
+        final duration =
+            response.data['routes'][0]['legs'][0]['duration']['text'];
+        return duration as String;
+      } else {
+        throw Exception('No routes found or bad response.');
+      }
+    } catch (e) {
+      throw Exception('Failed to load ETA: $e');
+    }
   }
 
   @override
@@ -35,9 +164,14 @@ class _InAppCallMapState extends State<InAppCallMap> {
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: sanFrancisco,
+              target: _driverLocation!,
               zoom: 13,
             ),
+            markers: _markers,
+            polylines: _polylines,
+            onMapCreated: (GoogleMapController controller) {
+              _mapController = controller;
+            },
           ),
           Positioned(
             top: MediaQuery.of(context).padding.top,
@@ -71,7 +205,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                         'Dr Ben Larry Cage',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15.99,
+                          fontSize: normalText,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -80,7 +214,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     ],
                   ),
                 ),
-                const VSpace(21),
+                const VSpace(whiteSpace),
                 Container(
                   width: 424,
                   height: 2,
@@ -94,7 +228,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: smallText.sp,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -124,8 +258,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           style: TextStyle(
                             color: Colors.black
                                 .withValues(alpha: 0.5600000023841858),
-                            fontSize: 9.15,
-                            fontFamily: 'Poppins',
+                            fontSize: extraSmallText,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -134,8 +267,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           r'$20.5',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 13.72,
-                            fontFamily: 'Poppins',
+                            fontSize: paragraphText,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -144,12 +276,10 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     Column(
                       children: [
                         Text(
-                          'EXpected Distance  Covered',
+                          'Expected Distance  Covered',
                           style: TextStyle(
-                            color: Colors.black
-                                .withValues(alpha: 0.5600000023841858),
+                            color: Colors.black.withValues(alpha: 0.56),
                             fontSize: 9.15,
-                            fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -158,8 +288,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           '40.5KM',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 13.72,
-                            fontFamily: 'Poppins',
+                            fontSize: paragraphText,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -172,7 +301,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           style: TextStyle(
                             color: Colors.black
                                 .withValues(alpha: 0.5600000023841858),
-                            fontSize: 9.15,
+                            fontSize: smallText,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
                           ),
@@ -183,7 +312,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 13.72,
-                            fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                           ),
                         ),
