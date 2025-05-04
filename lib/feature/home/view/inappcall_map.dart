@@ -1,13 +1,13 @@
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/core/di/locator.dart';
 import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
@@ -46,9 +46,21 @@ class _InAppCallMapState extends State<InAppCallMap> {
   @override
   void initState() {
     super.initState();
-    _driverLocation = const LatLng(37.774546, -122.433523);
-    _pickupLocation = const LatLng(37.779026, -122.419906);
-    _destinationLocation = const LatLng(37.784056, -122.407499);
+    _locationService = getIt<DriverLocationService>();
+    _locationService.startLiveLocationUpdates(context);
+    _driverLocation = LatLng(
+      context.driver?.location?.coordinates[0] ?? 37.774546,
+      context.driver?.location?.coordinates[1] ?? -122.433523,
+    );
+
+    _pickupLocation = _locationService.generateRandomCoordinates(
+      _driverLocation!,
+      radius: 1000,
+    );
+    _destinationLocation = _locationService.generateRandomCoordinates(
+      _driverLocation!,
+      radius: 1000,
+    );
     _setMapPins();
     _setPolylines().then((_) {
       _animateDriver();
@@ -60,21 +72,21 @@ class _InAppCallMapState extends State<InAppCallMap> {
         });
       });
     });
-    _locationService = DriverLocationService();
-    _locationService.sendCurrentLocationOnce(context);
   }
 
   @override
   void dispose() {
-    _locationService.stopLiveLocationUpdates();
     super.dispose();
+    _locationService.stopLiveLocationUpdates();
   }
 
   Future<void> _setMapPins() async {
     final motorbikeIcon =
         await _createCustomMarker('assets/app_images/user_profile.png');
-    final userIcon = await _createCustomMarker('assets/icons/user.png');
-    final shopIcon = await _createCustomMarker('assets/icons/shop.png');
+    final userIcon =
+        await _createCustomMarker('assets/app_images/client_holder_image.png');
+    // final shopIcon =
+    //     await _createCustomMarker('/assets/app_images/');
 
     _markers
       ..add(
@@ -90,16 +102,17 @@ class _InAppCallMapState extends State<InAppCallMap> {
           markerId: const MarkerId('pickup'),
           position: _pickupLocation!,
           icon: userIcon,
-          infoWindow: const InfoWindow(title: 'Pickup Location'),
+          infoWindow: const InfoWindow(title: 'User Location'),
         ),
       )
       ..add(
         Marker(
           markerId: const MarkerId('destination'),
           position: _destinationLocation!,
-          icon: shopIcon,
-          infoWindow: const InfoWindow(title: 'Destination'),
-        ),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          infoWindow: const InfoWindow(title: 'User Destination'),
+        ), 
       );
   }
 
