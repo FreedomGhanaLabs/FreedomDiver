@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   awesome_dialog: ^3.2.1
+  awesome_notifications: ^0.10.1
   awesome_snackbar_content: ^0.1.5
   bloc: ^9.0.0
   cloudinary_flutter: ^1.3.0
