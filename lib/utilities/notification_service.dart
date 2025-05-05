@@ -68,9 +68,7 @@ class NotificationService {
   static Future<void> _requestPermissions() async {
     final messaging = FirebaseMessaging.instance;
 
-    final settings = await messaging.requestPermission(
-      
-    );
+    final settings = await messaging.requestPermission();
 
     log('User granted permission: ${settings.authorizationStatus}');
   }
@@ -99,29 +97,29 @@ class NotificationService {
     );
   }
 
-static Future<void> scheduleNotification({
-  required String title,
-  required String body,
-  required DateTime scheduleTime,
-  Map<String, dynamic>? payload,
-}) async {
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    DateTime.now().millisecondsSinceEpoch.remainder(100000),
-    title,
-    body,
-    tz.TZDateTime.from(scheduleTime, tz.local),
-    NotificationDetails(
-      android: AndroidNotificationDetails(
-        _channel.id,
-        _channel.name,
-        channelDescription: _channel.description,
-        importance: Importance.max,
-        priority: Priority.high,
+  static Future<void> scheduleNotification({
+    required String title,
+    required String body,
+    required DateTime scheduleTime,
+    Map<String, dynamic>? payload,
+  }) async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      title,
+      body,
+      tz.TZDateTime.from(scheduleTime, tz.local),
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channel.id,
+          _channel.name,
+          channelDescription: _channel.description,
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(),
       ),
-      iOS: const DarwinNotificationDetails(),
-    ),
-    payload: payload?.toString(),
-    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  );
-}
+      payload: payload?.toString(),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+  }
 }
