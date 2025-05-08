@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Applications/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/apple/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/apple/Documents/software_development/mobile/FreedomDriver/android/app/.cxx/Debug/64173jt1/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/apple/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/apple/Documents/software_development/mobile/FreedomDriver/android/app/.cxx/Debug/64173jt1/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
