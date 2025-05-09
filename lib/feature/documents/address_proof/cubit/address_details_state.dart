@@ -1,0 +1,21 @@
+import 'package:equatable/equatable.dart';
+import 'package:freedom_driver/feature/documents/driver_license/driver_license.model.dart';
+
+abstract class DriverLicenseDetailsState extends Equatable {
+  const DriverLicenseDetailsState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class DriverLicenseDetailsInitial extends DriverLicenseDetailsState {}
+
+class DriverLicenseDetailsLoading extends DriverLicenseDetailsState {}
+
+class DriverLicenseDetailsLoaded extends DriverLicenseDetailsState {
+  const DriverLicenseDetailsLoaded(this.driverLicense);
+  final DriverLicense driverLicense;
+
+  @override
+  List<Object?> get props => [driverLicense];
+}

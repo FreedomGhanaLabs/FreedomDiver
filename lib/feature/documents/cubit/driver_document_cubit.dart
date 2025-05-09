@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedom_driver/feature/documents/driver_license/extension.dart';
 import 'package:freedom_driver/feature/driver/extension.dart';
+import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/api/api_handler.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
@@ -14,10 +15,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
 
   // ------ Upload Driver License ------
   Future<void> uploadDriverLicense(BuildContext context) async {
-    final apiController = ApiController(
-      'documents',
-      noVersion: true,
-    );
+    final apiController = ApiController('document');
 
     final driver = context.driver;
     final documentFile = context.document;
@@ -47,10 +45,10 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       'expiryDate': driverLicense?.expiryDate,
       'document': await MultipartFile.fromFile(
         documentFile.path,
-        filename: 'driverLicense-${driver?.fullName}-${driver?.id}.jpg',
+        filename: 'driverLicense-${driver?.fullName}-${driver?.id}.jpeg',
       ),
     });
-    debugPrint('${formData.fields}');
+    
     emit(DocumentUploadLoading());
     await handleApiCall(
       context: context,
@@ -64,7 +62,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
               emit(DocumentUploadSuccess());
               Navigator.pushReplacementNamed(
                 context,
-                VerificationStatusScreen.routeName,
+                MainActivityScreen.routeName,
               );
             } else {
               emit(
@@ -106,10 +104,10 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       'documentType': 'addressProof',
       'document': await MultipartFile.fromFile(
         documentFile.path,
-        filename: 'addressProof-${driver?.fullName}-${driver?.id}.jpg',
+        filename: 'addressProof-${driver?.fullName}-${driver?.id}.jpeg',
       ),
     });
-    debugPrint('${formData.fields}');
+    
     emit(DocumentUploadLoading());
     await handleApiCall(
       context: context,

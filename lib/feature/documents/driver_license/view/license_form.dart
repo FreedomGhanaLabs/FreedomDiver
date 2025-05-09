@@ -32,17 +32,6 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
   String? issueDate;
   String? expiryDate;
 
-  // final driverLicense = DriverDocumentType.driverLicense.name;
-  // List<String> documentTypeDropDownItem = <String>[
-  //   DriverDocumentType.driverLicense.name,
-  //   DriverDocumentType.addressProof.name,
-  //   DriverDocumentType.ghanaCard.name,
-  //   DriverDocumentType.motorcycleImage.name,
-  //   DriverDocumentType.profilePicture.name,
-  // ];
-
-  // String documentTypeDropDownValue = 'driverLicense';
-
   Widget buildField(String label, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,24 +86,10 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
   Widget build(BuildContext context) {
     return CustomScreen(
       title: 'Driver License',
-      children: [
-        const Text(
-          'Keep your Driver License details accurate',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: normalText,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Text(
+      bodyHeader: 'Keep your Driver License details accurate',
+      bodyDescription:
           'If you change your Driver License or any relevant details, update the information here to maintain accuracy and transparency.',
-          style: TextStyle(
-            color: Colors.black.withValues(alpha: 0.439),
-            fontSize: smallText,
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-        const VSpace(smallWhiteSpace),
+      children: [
         DecoratedContainer(
           child: Form(
             key: _formKey,

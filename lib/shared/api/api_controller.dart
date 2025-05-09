@@ -33,7 +33,7 @@ class ApiController {
   String get apiUrl =>
       'https://api-freedom.com/api/v2/driver/${startUrl.isNotEmpty ? '$startUrl/' : ''}';
 
-  String get baseNoVersionUrl => baseUrl.replaceFirst('/v2', '');
+  String get baseNoVersionUrl => apiUrl.replaceFirst('/v2', '');
   String get baseUrl => noVersion ? baseNoVersionUrl : apiUrl;
 
   late final Dio _dio = Dio(

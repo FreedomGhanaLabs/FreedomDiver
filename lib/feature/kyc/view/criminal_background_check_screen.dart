@@ -49,9 +49,9 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
             const VSpace(34),
             SimpleButton(
               title: uploading ? 'Submitting' : 'Submit for Background Check',
-              onPressed: () {
+              onPressed: () async {
                 // context.read<RegistrationFormCubit>().registerDrivers();
-                context
+                await context
                     .read<DocumentUploadCubit>()
                     .uploadDriverLicense(context);
               },
