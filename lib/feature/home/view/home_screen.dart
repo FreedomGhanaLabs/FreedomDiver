@@ -62,11 +62,14 @@ class _HomeScreenState extends State<_HomeScreen> {
                 const EarningsBackgroundWidget(),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
+                      const EdgeInsets.symmetric(
+                    horizontal: smallWhiteSpace,
+                  ),
                   child: Column(
                     children: [
                       VSpace(
-                        MediaQuery.of(context).padding.top + smallWhiteSpace,
+                        MediaQuery.of(context).padding.top +
+                            extraSmallWhiteSpace,
                       ),
                       const HomeHeader(),
                       const VSpace(smallWhiteSpace),
