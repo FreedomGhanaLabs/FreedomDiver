@@ -364,7 +364,8 @@ class HomeHeader extends StatelessWidget {
                 letterSpacing: -0.31.sp,
               ),
             ),
-            GestureDetector(
+            InkWell(
+              onTap: () {},
               child: Row(
                 children: [
                   Text(
