@@ -22,6 +22,7 @@ import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/utilities/ui.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -319,7 +320,7 @@ class HomeHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '  Current Location',
+              ' Current Location',
               style: TextStyle(
                 fontSize: extraSmallText.sp,
                 fontWeight: FontWeight.w500,
@@ -345,21 +346,44 @@ class HomeHeader extends StatelessWidget {
                   ),
                 ),
                 const HSpace(1),
-                const AppIcon(iconName: 'down_arrow'),
+                // const AppIcon(iconName: 'down_arrow'),
               ],
             ),
           ],
         ),
         const Spacer(),
-        const Text(
-          'Logistic',
-          style: TextStyle(
-            fontSize: smallText,
-            fontWeight: FontWeight.w600,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              'Ride preference',
+              style: TextStyle(
+                fontSize: extraSmallText.sp,
+                fontWeight: FontWeight.w500,
+                height: 1.29,
+                letterSpacing: -0.31.sp,
+              ),
+            ),
+            GestureDetector(
+              child: Row(
+                children: [
+                  Text(
+                    (context.driver?.ridePreference ?? 'select preference')
+                            .capitalize ??
+                        '',
+                    style: const TextStyle(
+                      fontSize: smallText,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const HSpace(3),
+                  const AppIcon(iconName: 'down_arrow'),
+                ],
+              ),
+            ),
+          ],
         ),
-        const HSpace(1),
-        const AppIcon(iconName: 'down_arrow'),
+       
       ],
     );
   }

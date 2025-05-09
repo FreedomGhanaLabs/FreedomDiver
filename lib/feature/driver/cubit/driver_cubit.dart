@@ -54,7 +54,6 @@ class DriverCubit extends Cubit<DriverState> {
 
             _updateDriver(driver);
             driverSocketService.connect();
-            toggleStatus(context, setAvailable: true);
           } else {
             emit(const DriverError('Failed to fetch driver data'));
           }
@@ -67,11 +66,12 @@ class DriverCubit extends Cubit<DriverState> {
   Future<void> toggleStatus(
     BuildContext context, {
     bool setAvailable = false,
+    bool toggleOnlyApi = false,
   }) async {
     if (!hasDriver) return;
 
     final current = setAvailable
-        ? DriverStatus.available.name
+        ? DriverStatus.unavailable.name
         : (_cachedDriver!.status ?? DriverStatus.unavailable.name);
     final isUnavailable = current == DriverStatus.unavailable.name;
     final newStatus = isUnavailable
@@ -89,6 +89,7 @@ class DriverCubit extends Cubit<DriverState> {
         (success, _) {
           if (success) {
             log('[DriverCubit] Status updated: $newStatus');
+            if (toggleOnlyApi) return;
             driverSocketService.setDriverStatus(available: isUnavailable);
           } else {
             _emitIfChanged(_cachedDriver!.copyWith(status: current));
@@ -150,7 +151,7 @@ class DriverCubit extends Cubit<DriverState> {
 
   Future<void> updateDriverRidePreference(
     BuildContext context, {
-    String newRidePreference = 'longDistance',
+    String newRidePreference = 'both',
   }) async {
     if (_cachedDriver == null) return;
 

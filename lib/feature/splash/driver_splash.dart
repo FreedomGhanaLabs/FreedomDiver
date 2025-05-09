@@ -43,7 +43,13 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
     final getFirstTimer = await getOnboardingFromHive();
     final getToken = await getTokenFromHive();
     if (!isFirstTimer || getToken != null) {
-      await context.read<DriverCubit>().getDriverProfile(context);
+      final driverCubit = context.read<DriverCubit>();
+      await driverCubit.getDriverProfile(context);
+      await driverCubit.toggleStatus(
+        context,
+        setAvailable: true,
+        toggleOnlyApi: true,
+      );
       await Navigator.pushNamedAndRemoveUntil(
         context,
         MainActivityScreen.routeName,
