@@ -1,6 +1,7 @@
 analyzer:
   errors:
     avoid_dynamic_calls: ignore
+    avoid_positional_boolean_parameters: ignore
     inference_failure_on_function_invocation: ignore
     inference_failure_on_function_return_type: ignore
     lines_longer_than_80_chars: ignore

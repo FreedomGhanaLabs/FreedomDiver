@@ -168,7 +168,7 @@ class DriverCubit extends Cubit<DriverState> {
         {'ridePreference': newRidePreference},
         (success, responseData) {
           if (success) {
-            log('[DriverCubit] newRidePreference updated: $newRidePreference');
+            log('[DriverCubit] new Ride Preference updated: $newRidePreference');
             _updateDriverRidePreference(newRidePreference);
           } else {
             _updateDriverRidePreference(currentRidePreference);
@@ -424,8 +424,9 @@ class DriverCubit extends Cubit<DriverState> {
   void resetDriverCache() => _cachedDriver = null;
 
   // Private helpers
-  void _updateDriverRidePreference(String ridePreference) {
-    _cachedDriver = _cachedDriver?.copyWith(ridePreference: ridePreference);
+  void _updateDriverRidePreference(String newRidePreference) {
+    log(newRidePreference);
+    _cachedDriver = _cachedDriver?.copyWith(ridePreference: newRidePreference);
     if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
   }
 

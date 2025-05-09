@@ -1,13 +1,13 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
 import 'package:freedom_driver/feature/driver/driver.model.dart';
-import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/earnings/widgets/earnings_background_widget.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/home/view/inappcall_map.dart';
@@ -62,8 +62,7 @@ class _HomeScreenState extends State<_HomeScreen> {
               children: [
                 const EarningsBackgroundWidget(),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: smallWhiteSpace,
                   ),
                   child: Column(
@@ -314,78 +313,144 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocBuilder<DriverCubit, DriverState>(
+      builder: (context, state) {
+        final driver = state is DriverLoaded ? state.driver : null;
+        return Row(
           children: [
-            Text(
-              ' Current Location',
-              style: TextStyle(
-                fontSize: extraSmallText.sp,
-                fontWeight: FontWeight.w500,
-                height: 1.29,
-                letterSpacing: -0.31.sp,
-              ),
-            ),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppIcon(iconName: 'location_icon'),
-                const HSpace(1),
                 Text(
-                  context.driver != null
-                      ? '${context.driver?.address.country ?? ''}, ${context.driver?.address.state ?? ''} '
-                      : '',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  ' Current Location',
                   style: TextStyle(
-                    fontSize: smallText.sp,
-                    fontWeight: FontWeight.w600,
+                    fontSize: extraSmallText.sp,
+                    fontWeight: FontWeight.w500,
                     height: 1.29,
                     letterSpacing: -0.31.sp,
                   ),
                 ),
-                const HSpace(1),
-                // const AppIcon(iconName: 'down_arrow'),
+                Row(
+                  children: [
+                    const AppIcon(iconName: 'location_icon'),
+                    const HSpace(1),
+                    Text(
+                      driver != null
+                          ? '${driver.address.country}, ${driver.address.state} '
+                          : '',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: smallText.sp,
+                        fontWeight: FontWeight.w600,
+                        height: 1.29,
+                        letterSpacing: -0.31.sp,
+                      ),
+                    ),
+                    const HSpace(1),
+                    // const AppIcon(iconName: 'down_arrow'),
+                  ],
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Ride preference',
+                  style: TextStyle(
+                    fontSize: extraSmallText.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.29,
+                    letterSpacing: -0.31.sp,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    final driverCubit = context.read<DriverCubit>();
+                    showCupertinoModalPopup(
+                      useRootNavigator: false,
+                      context: context,
+                      builder: (context) => CupertinoActionSheet(
+                        actions: [
+                          CupertinoActionSheetAction(
+                            child: Text(
+                              'Rides only',
+                              style: TextStyle(
+                                color: gradient1,
+                                fontSize: normalText.sp,
+                              ),
+                            ),
+                            onPressed: () async {
+                              await driverCubit.updateDriverRidePreference(
+                                context,
+                                newRidePreference: 'normal',
+                              );
+
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          CupertinoActionSheetAction(
+                            child: Text(
+                              'Deliveries only',
+                              style: TextStyle(
+                                color: gradient1,
+                                fontSize: normalText.sp,
+                              ),
+                            ),
+                            onPressed: () async {
+                              await driverCubit.updateDriverRidePreference(
+                                context,
+                                newRidePreference: 'delivery',
+                              );
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          CupertinoActionSheetAction(
+                            child: Text(
+                              'Rides and Deliveries ',
+                              style: TextStyle(
+                                color: gradient1,
+                                fontSize: normalText.sp,
+                              ),
+                            ),
+                            onPressed: () async {
+                              await driverCubit
+                                  .updateDriverRidePreference(context);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          CupertinoActionSheetAction(
+                            isDestructiveAction: true,
+                            child: const Text('Close'),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        (driver?.ridePreference ?? 'select preference')
+                                .capitalize ??
+                            '',
+                        style: const TextStyle(
+                          fontSize: smallText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const HSpace(3),
+                      const AppIcon(iconName: 'down_arrow'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],
-        ),
-        const Spacer(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              'Ride preference',
-              style: TextStyle(
-                fontSize: extraSmallText.sp,
-                fontWeight: FontWeight.w500,
-                height: 1.29,
-                letterSpacing: -0.31.sp,
-              ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: Row(
-                children: [
-                  Text(
-                    (context.driver?.ridePreference ?? 'select preference')
-                            .capitalize ??
-                        '',
-                    style: const TextStyle(
-                      fontSize: smallText,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const HSpace(3),
-                  const AppIcon(iconName: 'down_arrow'),
-                ],
-              ),
-            ),
-          ],
-        ),
-       
-      ],
+        );
+      },
     );
   }
 }
