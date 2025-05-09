@@ -53,11 +53,8 @@ class DriverCubit extends Cubit<DriverState> {
                 Driver.fromJson(data['data'] as Map<String, dynamic>);
 
             _updateDriver(driver);
-            driverSocketService
-              ..connect()
-              ..setDriverStatus(
-                available: _cachedDriver?.status == DriverStatus.available.name,
-              );
+            driverSocketService.connect();
+            toggleStatus(context, setAvailable: true);
           } else {
             emit(const DriverError('Failed to fetch driver data'));
           }
@@ -67,10 +64,15 @@ class DriverCubit extends Cubit<DriverState> {
     );
   }
 
-  Future<void> toggleStatus(BuildContext context) async {
+  Future<void> toggleStatus(
+    BuildContext context, {
+    bool setAvailable = false,
+  }) async {
     if (!hasDriver) return;
 
-    final current = _cachedDriver!.status ?? DriverStatus.unavailable.name;
+    final current = setAvailable
+        ? DriverStatus.available.name
+        : (_cachedDriver!.status ?? DriverStatus.unavailable.name);
     final isUnavailable = current == DriverStatus.unavailable.name;
     final newStatus = isUnavailable
         ? DriverStatus.available.name
@@ -87,9 +89,7 @@ class DriverCubit extends Cubit<DriverState> {
         (success, _) {
           if (success) {
             log('[DriverCubit] Status updated: $newStatus');
-            driverSocketService.setDriverStatus(
-              available: !isUnavailable,
-            );
+            driverSocketService.setDriverStatus(available: isUnavailable);
           } else {
             _emitIfChanged(_cachedDriver!.copyWith(status: current));
           }

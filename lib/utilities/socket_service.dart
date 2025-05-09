@@ -5,6 +5,36 @@ import 'package:freedom_driver/core/config/api_constants.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
+class DriverSocketConstants {
+  static const String transportWebSocket = 'websocket';
+  static const String authKey = 'auth';
+  static const String tokenKey = 'token';
+  static const String transportsKey = 'transports';
+  static const String autoConnectKey = 'autoConnect';
+
+  static const String newRideRequest = 'new_ride_request';
+  static const String rideAccepted = 'ride_accepted';
+  static const String rideStatusUpdated = 'ride_status_updated';
+
+  static const String updateLocation = 'update_location';
+  static const String acceptRideRequest = 'accept_ride_request';
+  static const String rejectRideRequest = 'reject_ride_request';
+  static const String setDriverStatus = 'set_driver_status';
+
+  static const String status = 'status';
+  static const String available = 'available';
+  static const String unavailable = 'unavailable';
+
+  static const String socketConnected = '[Socket] Connected';
+  static const String socketDisconnected = '[Socket] Disconnected';
+  static const String socketConnectionError = '[Socket] Connection error: ';
+  static const String newRideRequestLog = '[Socket] New ride request: ';
+  static const String rideAcceptedLog =
+      '[Socket] Confirmation of ride acceptance ';
+  static const String rideStatusUpdatedLog = '[Socket] Ride status updated: ';
+  static const String driverStatusLog = '[Socket Driver status] available ';
+}
+
 class DriverSocketService {
   io.Socket? _socket;
 
@@ -20,41 +50,45 @@ class DriverSocketService {
     _socket = io.io(
       ApiConstants.baseUrl,
       {
-        'auth': {'token': token},
-        'transports': ['websocket'],
-        'autoConnect': false,
+        DriverSocketConstants.authKey: {
+          DriverSocketConstants.tokenKey: token,
+        },
+        DriverSocketConstants.transportsKey: [
+          DriverSocketConstants.transportWebSocket,
+        ],
+        DriverSocketConstants.autoConnectKey: false,
       },
     );
 
     _socket!.onConnect((_) {
-      log('[Socket] Connected');
-      onConnect?.call();
+      log(DriverSocketConstants.socketConnected);
       setDriverStatus(available: true);
+      onConnect?.call();
     });
 
     _socket!.onDisconnect((_) {
-      log('[Socket] Disconnected');
+      log(DriverSocketConstants.socketDisconnected);
       onDisconnect?.call();
     });
 
     _socket!.onConnectError((err) {
-      log('[Socket] Connection error: $err');
+      log('${DriverSocketConstants.socketConnectionError}$err');
     });
 
-    _socket!.on('new_ride_request', (data) {
-      log('[Socket] New ride request: $data');
+    _socket!.on(DriverSocketConstants.newRideRequest, (data) {
+      log('${DriverSocketConstants.newRideRequestLog}$data');
       onNewRideRequest
           ?.call(Map<String, dynamic>.from(data as Map<dynamic, dynamic>));
     });
 
-    _socket!.on('ride_accepted', (data) {
-      log('[Socket] Confirmation of ride acceptance ${data['status']}');
-      onNewRideAccepted?.call(data['status'] as String);
+    _socket!.on(DriverSocketConstants.rideAccepted, (data) {
+      log('${DriverSocketConstants.rideAcceptedLog}${data[DriverSocketConstants.status]}');
+      onNewRideAccepted?.call(data[DriverSocketConstants.status] as String);
     });
 
-    _socket!.on('ride_status_updated', (data) {
-      log('[Socket] Ride status updated: ${data['status']}');
-      onRideStatusUpdate?.call(data['status'] as String);
+    _socket!.on(DriverSocketConstants.rideStatusUpdated, (data) {
+      log('${DriverSocketConstants.rideStatusUpdatedLog}${data[DriverSocketConstants.status]}');
+      onRideStatusUpdate?.call(data[DriverSocketConstants.status] as String);
     });
 
     _socket!.connect();
@@ -66,22 +100,35 @@ class DriverSocketService {
   }
 
   void updateDriverLocation(String rideId) {
-    _socket?.emit('update_location', {'rideId': rideId});
+    _socket?.emit(
+      DriverSocketConstants.updateLocation,
+      {'rideId': rideId},
+    );
   }
 
   void acceptRideRequest(String rideId) {
-    _socket?.emit('accept_ride_request', {'rideId': rideId});
+    _socket?.emit(
+      DriverSocketConstants.acceptRideRequest,
+      {'rideId': rideId},
+    );
   }
 
   void rejectRideRequest(String rideId) {
-    _socket?.emit('reject_ride_request', {'rideId': rideId});
+    _socket?.emit(
+      DriverSocketConstants.rejectRideRequest,
+      {'rideId': rideId},
+    );
   }
 
   void setDriverStatus({bool available = false}) {
-    log('[Socket Driver status] available $available');
+    log('${DriverSocketConstants.driverStatusLog}$available');
     _socket?.emit(
-      'set_driver_status',
-      {'status': available ? 'available' : 'unavailable'},
+      DriverSocketConstants.setDriverStatus,
+      {
+        DriverSocketConstants.status: available
+            ? DriverSocketConstants.available
+            : DriverSocketConstants.unavailable,
+      },
     );
   }
 }
