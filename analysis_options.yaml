@@ -2,6 +2,7 @@ analyzer:
   errors:
     avoid_dynamic_calls: ignore
     inference_failure_on_function_invocation: ignore
+    inference_failure_on_function_return_type: ignore
     lines_longer_than_80_chars: ignore
     use_build_context_synchronously: ignore
 include: package:very_good_analysis/analysis_options.6.0.0.yaml

@@ -8,11 +8,13 @@ import 'package:freedom_driver/feature/driver/driver.model.dart';
 import 'package:freedom_driver/feature/profile/view/profile_details.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/api/api_handler.dart';
+import 'package:freedom_driver/utilities/socket_service.dart';
 
 class DriverCubit extends Cubit<DriverState> {
   DriverCubit() : super(DriverInitial());
 
   final ApiController apiController = ApiController('');
+  final DriverSocketService driverSocketService = DriverSocketService();
   Driver? _cachedDriver;
 
   Driver? get currentDriver => _cachedDriver;
@@ -51,6 +53,11 @@ class DriverCubit extends Cubit<DriverState> {
                 Driver.fromJson(data['data'] as Map<String, dynamic>);
 
             _updateDriver(driver);
+            driverSocketService
+              ..connect()
+              ..setDriverStatus(
+                available: _cachedDriver?.status == DriverStatus.available.name,
+              );
           } else {
             emit(const DriverError('Failed to fetch driver data'));
           }
@@ -80,6 +87,9 @@ class DriverCubit extends Cubit<DriverState> {
         (success, _) {
           if (success) {
             log('[DriverCubit] Status updated: $newStatus');
+            driverSocketService.setDriverStatus(
+              available: !isUnavailable,
+            );
           } else {
             _emitIfChanged(_cachedDriver!.copyWith(status: current));
           }
