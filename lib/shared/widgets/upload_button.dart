@@ -4,8 +4,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/documents/cubit/document_image.dart';
 import 'package:freedom_driver/feature/documents/cubit/document_image_state.dart';
+import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
@@ -132,6 +134,7 @@ class UploadButton extends StatelessWidget {
                 ),
               ),
             ),
+            if (state is DriverLicenseImageLoading) showProgressIndicator(),
             if (state is DriverLicenseImageSelected) ...[
               const VSpace(smallWhiteSpace),
               buildSelectedImage(context, state.image),
@@ -144,16 +147,15 @@ class UploadButton extends StatelessWidget {
 }
 
 Widget buildSelectedImage(BuildContext context, File image) {
-  return Expanded(
-    child: Container(
-      // height: Responsive.height(context),
-      decoration: ShapeDecoration(
-        color: const Color(0x0AFFBA40),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7),
-        ),
+  return Container(
+    height: 200,
+    width: Responsive.isBigMobile(context) ? 375.sp : Responsive.width(context),
+    decoration: ShapeDecoration(
+      color: const Color(0x0AFFBA40),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(7),
       ),
-      child: Image.file(image),
     ),
+    child: Image.file(image),
   );
 }

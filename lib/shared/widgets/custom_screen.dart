@@ -40,6 +40,7 @@ class CustomScreen extends StatelessWidget {
                     : smallWhiteSpace,
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (bodyHeader != null) ...[
