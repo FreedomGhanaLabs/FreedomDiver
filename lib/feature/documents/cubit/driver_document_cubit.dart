@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,10 +13,10 @@ import 'package:freedom_driver/shared/widgets/verification_status_screen.dart';
 class DocumentUploadCubit extends Cubit<DocumentUploadState> {
   DocumentUploadCubit() : super(DocumentUploadInitial());
 
+  final apiController = ApiController('document');
+
   // ------ Upload Driver License ------
   Future<void> uploadDriverLicense(BuildContext context) async {
-    final apiController = ApiController('document');
-
     final driver = context.driver;
     final documentFile = context.document;
     final driverLicense = context.driverLicense;
@@ -81,14 +79,8 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
 
   // ------ Upload Address Proof ------
   Future<void> uploadAddressProof(BuildContext context) async {
-    final apiController = ApiController('');
     final driver = context.driver;
     final documentFile = context.document;
-
-    if (driver != null) {
-      log('${driver.address.city} ${driver.address.state} ');
-      return;
-    }
 
     if (documentFile == null) {
       showToast(
@@ -101,21 +93,36 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       return;
     }
 
+    if (driver == null) {
+      showToast(
+        context,
+        'Error',
+        'Network Error. Please ensure you have a good internet connection',
+        toastType: ToastType.info,
+      );
+      return;
+    }
+
+    final pathStrip = documentFile.path.split('.');
+    final ext = pathStrip[pathStrip.length - 1];
+
     final formData = FormData.fromMap({
       'addressType': 'utility_bill',
-      'street': driver?.address.street,
-      'city': driver?.address.city,
-      'state': driver?.address.state,
-      'country': driver?.address.country,
-      'postalCode': driver?.address.postalCode,
+      'street': driver.address.street,
+      'city': driver.address.city,
+      'state': driver.address.state,
+      'country': driver.address.country,
+      'postalCode': driver.address.postalCode,
       'documentType': 'addressProof',
       'document': await MultipartFile.fromFile(
         documentFile.path,
-        filename: 'addressProof-${driver?.fullName}-${driver?.id}.jpeg',
+        filename: 'addressProof-${driver.fullName}-${driver.id}.PNG',
       ),
     });
 
+
     emit(DocumentUploadLoading());
+    // log('${formData.fields} $pathStrip');
     await handleApiCall(
       context: context,
       apiRequest: () async {

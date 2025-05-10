@@ -24,7 +24,7 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
       builder: (context, state) {
         const uploading = DocumentUploadState is DocumentUploadLoading;
         return CustomScreen(
-          title: 'Criminal Background Check',
+          title: 'Document Verification',
           children: [
             Text(
               'We prioritize safety. Please upload your necessary documents for verification.',
