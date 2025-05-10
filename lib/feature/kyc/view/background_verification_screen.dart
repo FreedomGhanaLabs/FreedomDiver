@@ -1,17 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:freedom_driver/feature/authentication/register/cubit/registration_cubit.dart';
-import 'package:freedom_driver/feature/documents/cubit/document_image.dart';
-import 'package:freedom_driver/feature/documents/cubit/document_image_state.dart';
-import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
-import 'package:freedom_driver/feature/kyc/view/criminal_background_check_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/custom_screen.dart';
-import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/shared/widgets/upload_button.dart';
 import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/utilities/ui.dart';
@@ -27,7 +18,6 @@ class BackgroundVerificationScreen extends StatefulWidget {
 
 class _BackgroundVerificationScreenState
     extends State<BackgroundVerificationScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -68,104 +58,75 @@ class _BackgroundVerificationScreenState
           const VSpace(smallWhiteSpace),
           const UploadButton(),
         ],
-        ...[
-          const VSpace(whiteSpace),
-          BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
-            builder: (context, state) {
-              if (state is DriverLicenseImageLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (state is DriverLicenseImageSelected) {
-                log('A file has been selected');
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      child: Image.file(state.image),
-                    ),
-                    const VSpace(whiteSpace),
-                    SimpleButton(
-                      title: 'Submit Document',
-                      // backgroundColor: darkGoldColor,
-                      borderRadius: const BorderRadius.all(Radius.circular(7)),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          CriminalBackgroundCheckScreen.routeName,
-                        );
-                      },
-                    ),
-                  ],
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 21),
-            child: BlocConsumer<KycCubit, KycState>(
-              listener: (context, state) {
-                if (state is KycImageUploadSuccess) {
-                  context
-                      .read<RegistrationFormCubit>()
-                      .setUserDetails(securedImageUrl: state.imageUrl);
-                  Navigator.pushNamed(
-                    context,
-                    CriminalBackgroundCheckScreen.routeName,
-                  );
-                }
-                if (state is KycImageUploadFailure) {
-                  context.showToast(
-                    message: 'Failed to upload image',
-                    type: ToastType.error,
-                    position: ToastPosition.top,
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is KycImageUploadLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state is KycImageSelected) {
-                  log('A value has been selected');
-                  return SimpleButton(
-                    title: 'Upload Selfie',
-                    backgroundColor: darkGoldColor,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(7),
-                    ),
-                    onPressed: () async {
-                      await context
-                          .read<KycCubit>()
-                          .uploadImageToCloudinary(state.image);
-                    },
-                  );
-                } else {
-                  return SimpleButton(
-                    title: 'Upload Selfie',
-                    backgroundColor: const Color(0x0AFFBA40),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(7),
-                    ),
-                    onPressed: () {},
-                  );
-                }
-              },
-            ),
-          ),
-          const VSpace(whiteSpace),
-        ],
+        // ...[
+        //   Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: 21),
+        //     child: BlocConsumer<KycCubit, KycState>(
+        //       listener: (context, state) {
+        //         if (state is KycImageUploadSuccess) {
+        //           context
+        //               .read<RegistrationFormCubit>()
+        //               .setUserDetails(securedImageUrl: state.imageUrl);
+        //           Navigator.pushNamed(
+        //             context,
+        //             CriminalBackgroundCheckScreen.routeName,
+        //           );
+        //         }
+        //         if (state is KycImageUploadFailure) {
+        //           context.showToast(
+        //             message: 'Failed to upload image',
+        //             type: ToastType.error,
+        //             position: ToastPosition.top,
+        //           );
+        //         }
+        //       },
+        //       builder: (context, state) {
+        //         if (state is KycImageUploadLoading) {
+        //           return const Center(child: CircularProgressIndicator());
+        //         }
+        //         if (state is KycImageSelected) {
+        //           log('A value has been selected');
+        //           return SimpleButton(
+        //             title: 'Upload Selfie',
+        //             backgroundColor: darkGoldColor,
+        //             borderRadius: const BorderRadius.all(
+        //               Radius.circular(7),
+        //             ),
+        //             onPressed: () async {
+        //               await context
+        //                   .read<KycCubit>()
+        //                   .uploadImageToCloudinary(state.image);
+        //             },
+        //           );
+        //         } else {
+        //           return SimpleButton(
+        //             title: 'Upload Selfie',
+        //             backgroundColor: const Color(0x0AFFBA40),
+        //             borderRadius: const BorderRadius.all(
+        //               Radius.circular(7),
+        //             ),
+        //             onPressed: () {},
+        //           );
+        //         }
+        //       },
+        //     ),
+        //   ),
+        //   const VSpace(whiteSpace),
+        // ],
       ],
     );
   }
 }
 
-Widget showProgressIndicator() {
-  return Center(
-    child: CircularProgressIndicator(
-      color: darkGoldColor,
+Widget showProgressIndicator({double size = 25}) {
+  return SizedBox(
+    height: size,
+    width: size,
+    child: Center(
+      child: CircularProgressIndicator(
+        strokeWidth: 3,
+        color: darkGoldColor,
+      ),
     ),
   );
 }
@@ -201,9 +162,9 @@ class SimpleButton extends StatelessWidget {
           borderRadius: borderRadius ?? BorderRadius.circular(roundedLg),
         ),
         padding: padding ??
-            const EdgeInsets.only(
-              top: smallWhiteSpace,
-              bottom: smallWhiteSpace,
+            const EdgeInsets.symmetric(
+              horizontal: whiteSpace,
+              vertical: smallWhiteSpace,
             ),
       ),
       child: child ??

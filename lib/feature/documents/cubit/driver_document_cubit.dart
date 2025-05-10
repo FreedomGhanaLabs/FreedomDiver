@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +50,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
         filename: 'driverLicense-${driver?.fullName}-${driver?.id}.jpeg',
       ),
     });
-    
+
     emit(DocumentUploadLoading());
     await handleApiCall(
       context: context,
@@ -83,6 +85,11 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
     final driver = context.driver;
     final documentFile = context.document;
 
+    if (driver != null) {
+      log('${driver.address.city} ${driver.address.state} ');
+      return;
+    }
+
     if (documentFile == null) {
       showToast(
         context,
@@ -107,7 +114,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
         filename: 'addressProof-${driver?.fullName}-${driver?.id}.jpeg',
       ),
     });
-    
+
     emit(DocumentUploadLoading());
     await handleApiCall(
       context: context,

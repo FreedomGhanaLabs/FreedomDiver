@@ -33,15 +33,17 @@ class _AddressProofFormState extends State<AddressProofForm> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final driverCubit = context.read<DriverCubit>();
       final address = context.driver?.address;
 
       if (driverCubit.state is! DriverLoaded && address == null) {
-        driverCubit.getDriverProfile(context);
-        return;
+        await driverCubit.getDriverProfile(context);
       }
 
+      countryValue = address?.country ?? '';
+      stateValue = address?.state ?? '';
+      cityValue = address?.city ?? '';
       postalCodeController.text = address?.postalCode ?? '';
     });
 
@@ -140,7 +142,7 @@ class _AddressProofFormState extends State<AddressProofForm> {
             street: context.driver!.address.street,
             postalCode: postalCodeController.text.trim(),
           );
-          
+
       Navigator.pushNamed(
         context,
         BackgroundVerificationScreen.routeName,

@@ -6,6 +6,7 @@ import 'package:freedom_driver/feature/documents/cubit/driver_document_state.dar
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/custom_screen.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:lottie/lottie.dart';
 
@@ -15,6 +16,10 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = getRouteParams(context);
+    final type = args['type'].toString();
+
+    final isAddress = type == 'address';
     return BlocBuilder<DocumentUploadCubit, DocumentUploadState>(
       builder: (context, state) {
         const uploading = DocumentUploadState is DocumentUploadLoading;
@@ -46,14 +51,18 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const VSpace(34),
+            VSpace(normalWhiteSpace.sp),
             SimpleButton(
-              title: uploading ? 'Submitting' : 'Submit for Background Check',
+              title: uploading ? 'Submitting' : 'Submit for Verification',
               onPressed: () async {
                 // context.read<RegistrationFormCubit>().registerDrivers();
-                await context
-                    .read<DocumentUploadCubit>()
-                    .uploadDriverLicense(context);
+                final documentUploadCubit = context.read<DocumentUploadCubit>();
+                if (isAddress) {
+                  await documentUploadCubit.uploadAddressProof(context);
+                  return;
+                }
+
+                await documentUploadCubit.uploadDriverLicense(context);
               },
               backgroundColor: Colors.black,
               borderRadius: BorderRadius.circular(7),
