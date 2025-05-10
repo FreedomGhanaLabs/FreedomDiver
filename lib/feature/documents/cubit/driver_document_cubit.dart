@@ -104,7 +104,6 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
     }
 
     final pathStrip = documentFile.path.split('.');
-    final ext = pathStrip[pathStrip.length - 1];
 
     final formData = FormData.fromMap({
       'addressType': 'utility_bill',
@@ -116,7 +115,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       'documentType': 'addressProof',
       'document': await MultipartFile.fromFile(
         documentFile.path,
-        filename: 'addressProof-${driver.fullName}-${driver.id}.PNG',
+        filename: 'addressProof-${driver.fullName}-${driver.id}',
       ),
     });
 
@@ -141,6 +140,10 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
               emit(
                 const DocumentUploadError('Failed to upload driver documents'),
               );
+              Navigator.pushReplacementNamed(
+                context,
+                VerificationStatusScreen.routeName,
+              );
             }
           },
           showOverlay: true,
@@ -149,4 +152,6 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       onError: (_) => emit(const DocumentUploadError('Something went wrong')),
     );
   }
+
+
 }

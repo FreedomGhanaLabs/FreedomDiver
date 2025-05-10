@@ -15,10 +15,12 @@ class CustomScreen extends StatelessWidget {
     this.actions,
     this.bodyHeader,
     this.bodyDescription,
+    this.showDivider = true,
   });
 
   final List<Widget> children;
   final String? title;
+  final bool showDivider;
   final bool hasBackButton;
   final List<Widget>? actions;
   final String? bodyHeader;
@@ -29,9 +31,9 @@ class CustomScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(title: title),
+          CustomAppBar(title: title, hasBackButton: hasBackButton),
           const VSpace(smallWhiteSpace),
-          const CustomDivider(height: 6),
+          if (showDivider) const CustomDivider(height: 6),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
