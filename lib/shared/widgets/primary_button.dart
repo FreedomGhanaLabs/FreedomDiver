@@ -48,7 +48,9 @@ class FreedomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderRadius = this.borderRadius ?? BorderRadius.circular(roundedLg);
-    final effectiveTextColor =
+    final effectiveTextColor = useOnlBorderGradient
+        ? titleColor
+        :
         useGradient ? Colors.white : (titleColor ?? Colors.white);
 
     return Container(

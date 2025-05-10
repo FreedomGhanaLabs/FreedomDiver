@@ -140,10 +140,10 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
               emit(
                 const DocumentUploadError('Failed to upload driver documents'),
               );
-              Navigator.pushReplacementNamed(
-                context,
-                VerificationStatusScreen.routeName,
-              );
+              // Navigator.pushReplacementNamed(
+              //   context,
+              //   VerificationStatusScreen.routeName,
+              // );
             }
           },
           showOverlay: true,

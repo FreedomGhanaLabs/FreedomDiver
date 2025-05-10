@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedom_driver/feature/profile/view/profile_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/custom_divider.dart';
@@ -49,21 +48,13 @@ class CustomScreen extends StatelessWidget {
                     const VSpace(smallWhiteSpace),
                     Text(
                       bodyHeader ?? '',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: normalText.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: normalTextStyle,
                     ),
                   ],
                   if (bodyDescription != null)
                     Text(
                       bodyDescription ?? '',
-                      style: TextStyle(
-                        color: Colors.black.withValues(alpha: 0.439),
-                        fontSize: smallText.sp,
-                        fontWeight: FontWeight.w300,
-                      ),
+                      style: descriptionTextStyle,
                     ),
                   const VSpace(smallWhiteSpace),
                   ...children,

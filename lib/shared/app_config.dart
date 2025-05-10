@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Color greenColor = const Color.fromRGBO(22, 163, 74, 1);
 Color greenBgColor = const Color.fromRGBO(240, 253, 244, 1);
@@ -20,9 +21,20 @@ TextStyle headingTextStyle = TextStyle(
   color: primaryColor,
 );
 
+TextStyle normalTextStyle = TextStyle(
+  // color: Colors.black,
+  fontSize: normalText.sp,
+  fontWeight: FontWeight.w600,
+);
+
 TextStyle paragraphTextStyle = const TextStyle(
   fontSize: paragraphText,
   // color: primaryColor,
+);
+TextStyle descriptionTextStyle = TextStyle(
+  color: Colors.grey.shade500,
+  fontSize: smallText.sp,
+  fontWeight: FontWeight.w400,
 );
 
 String currentYear = DateTime.now().year.toString();
