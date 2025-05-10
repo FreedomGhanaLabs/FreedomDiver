@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/widgets/custom_screen.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:lottie/lottie.dart';
 
@@ -11,6 +12,11 @@ class VerificationStatusScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = getRouteParams(context);
+    final status = args['status'].toString();
+
+    final isVerified = status == 'verified';
+    final isRejected = status == 'rejected';
     return CustomScreen(
       hasBackButton: false,
       showDivider: false,
