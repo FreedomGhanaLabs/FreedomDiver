@@ -85,6 +85,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       motorcycleYearController,
       streetController,
       passwordController,
+      postalCodeController,
       confirmPasswordController,
     ]) {
       controller.dispose();

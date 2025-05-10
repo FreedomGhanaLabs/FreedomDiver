@@ -1,11 +1,16 @@
+import 'dart:developer';
+
+import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedom_driver/feature/authentication/register/register.dart';
-import 'package:freedom_driver/feature/documents/driver_license/cubit/license_cubit.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedom_driver/feature/authentication/register/view/register_form_screen.dart';
+import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
+import 'package:freedom_driver/feature/driver/cubit/driver_state.dart';
+import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
-import 'package:freedom_driver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedom_driver/shared/widgets/custom_screen.dart';
 import 'package:freedom_driver/shared/widgets/decorated_container.dart';
 import 'package:freedom_driver/shared/widgets/primary_button.dart';
@@ -21,64 +26,89 @@ class AddressProofForm extends StatefulWidget {
 
 class _AddressProofFormState extends State<AddressProofForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController documentType = TextEditingController();
-  final TextEditingController licenseNumber = TextEditingController();
-  final TextEditingController classOfLicense = TextEditingController();
 
-  Widget buildField(String label, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: paragraphText,
-          ),
-        ),
-        const VSpace(extraSmallWhiteSpace),
-        TextFieldFactory.itemField(
-          controller: controller,
-          fillColor: Colors.white,
-          enabledBorderColor: Colors.black.withValues(alpha: 0.2),
-          validator: (val) {
-            return val == null || val.trim().isEmpty
-                ? '$label is required'
-                : null;
-          },
-        ),
-        const VSpace(smallWhiteSpace),
-      ],
-    );
+  final postalCodeController = TextEditingController();
+
+  String countryValue = '';
+  String stateValue = '';
+  String cityValue = '';
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final driverCubit = context.read<DriverCubit>();
+      final address = context.driver?.address;
+
+      if (driverCubit.state is! DriverLoaded && address == null) {
+        driverCubit.getDriverProfile(context);
+        return;
+      }
+
+      postalCodeController.text = address?.postalCode ?? '';
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    postalCodeController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScreen(
-      title: 'Proof of Address',
+      title: 'Address Information',
       bodyHeader: 'Keep your Address information up-to-date',
       bodyDescription:
-          'If you change home address or any relevant details, update the information here to maintain accuracy and transparency.',
+          'If you change home address or any relevant details, update the information here to maintain accuracy and transparency. If your current address provided during registration, please click the Next button',
       children: [
         DecoratedContainer(
           child: Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                buildField('License Number', licenseNumber),
-                const CustomDropDown(
-                  label: 'Date of Birth',
-                  value: 'Choose date',
+                Text(
+                  'Your Current Address',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: normalText.sp,
+                  ),
                 ),
-                buildField('Class of License', classOfLicense),
-                const CustomDropDown(
-                  label: 'Issue Date',
-                  value: 'Choose date',
+                Text(
+                  '${context.driver?.address.street}, ${context.driver?.address.city} ${context.driver?.address.state} ${context.driver?.address.country}.'
+                      .trim(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: smallText.sp,
+                    color: Colors.black54,
+                  ),
                 ),
-                const CustomDropDown(
-                  label: 'Expiry Date',
-                  value: 'Choose date',
+                SelectState(
+                  dropdownColor: Colors.white,
+                  onCountryChanged: (value) {
+                    setState(() {
+                      countryValue = value;
+                    });
+                  },
+                  onStateChanged: (value) {
+                    setState(() {
+                      stateValue = value;
+                    });
+                  },
+                  onCityChanged: (value) {
+                    setState(() {
+                      cityValue = value;
+                    });
+                  },
+                ),
+                buildTextField(
+                  controller: postalCodeController,
+                  label: 'Postal Code',
+                  prefixIconUrl: 'assets/app_icons/numbers.svg',
                 ),
                 const VSpace(smallWhiteSpace),
                 FreedomButton(
@@ -105,8 +135,14 @@ class _AddressProofFormState extends State<AddressProofForm> {
 
   void submitForm() {
     if (_formKey.currentState!.validate()) {
-      context.read<DriverLicenseDetailsCubit>();
-
+      context.read<DriverCubit>().updateDriverAddress(
+            city: cityValue,
+            country: countryValue,
+            state: stateValue,
+            street: context.driver!.address.street,
+            postalCode: postalCodeController.text.trim(),
+          );
+      log('$cityValue $stateValue $countryValue');
       Navigator.pushNamed(context, BackgroundVerificationScreen.routeName);
     }
   }
