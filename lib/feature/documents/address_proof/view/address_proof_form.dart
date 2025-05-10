@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -142,8 +140,12 @@ class _AddressProofFormState extends State<AddressProofForm> {
             street: context.driver!.address.street,
             postalCode: postalCodeController.text.trim(),
           );
-      log('$cityValue $stateValue $countryValue');
-      Navigator.pushNamed(context, BackgroundVerificationScreen.routeName);
+          
+      Navigator.pushNamed(
+        context,
+        BackgroundVerificationScreen.routeName,
+        arguments: {'type': 'address'},
+      );
     }
   }
 }

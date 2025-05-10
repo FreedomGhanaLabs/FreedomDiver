@@ -10,6 +10,7 @@ import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/app_icon.dart';
 import 'package:freedom_driver/utilities/responsive.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
 class UploadButton extends StatelessWidget {
@@ -17,7 +18,12 @@ class UploadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = getRouteParams(context);
+    final type = args['type'] as String?;
+
+    final isAddress = type == 'address';
     return BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
+      
       builder: (context, state) {
         return Column(
           children: [
@@ -91,18 +97,18 @@ class UploadButton extends StatelessWidget {
                             color: const Color(0xFFF59E0B),
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            AppIcon(
+                            const AppIcon(
                               iconName: 'upload_item_icon',
                               size: paragraphText,
                             ),
-                            SizedBox(width: 8.01),
+                            const SizedBox(width: 8.01),
                             Text(
-                              'Upload ID photo',
-                              style: TextStyle(
+                              'Upload ${isAddress ? 'Utility Bill' : 'ID'}',
+                              style: const TextStyle(
                                 color: Color(0xFFF59E0B),
                                 fontSize: smallText,
                                 fontWeight: FontWeight.w400,

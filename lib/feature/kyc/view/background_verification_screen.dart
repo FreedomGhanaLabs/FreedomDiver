@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +13,7 @@ import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/shared/widgets/custom_screen.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
 import 'package:freedom_driver/shared/widgets/upload_button.dart';
+import 'package:freedom_driver/utilities/routes_params.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 
 class BackgroundVerificationScreen extends StatefulWidget {
@@ -27,16 +27,18 @@ class BackgroundVerificationScreen extends StatefulWidget {
 
 class _BackgroundVerificationScreenState
     extends State<BackgroundVerificationScreen> {
-  late final CloudinaryObject cloudinaryObject;
 
   @override
   void initState() {
     super.initState();
-    cloudinaryObject = CloudinaryObject.fromCloudName(cloudName: 'freedom');
   }
 
   @override
   Widget build(BuildContext context) {
+    final args = getRouteParams(context);
+    final type = args['type'] as String?;
+
+    final isAddress = type == 'address';
     return CustomScreen(
       title: 'Upload Document',
       children: [
@@ -49,9 +51,9 @@ class _BackgroundVerificationScreenState
             ),
           ),
           const VSpace(whiteSpace),
-          const Text(
-            'Upload ID',
-            style: TextStyle(
+          Text(
+            'Upload ${isAddress ? 'Utility Bill' : 'ID'}',
+            style: const TextStyle(
               fontSize: normalText,
               fontWeight: FontWeight.w500,
             ),
@@ -67,50 +69,39 @@ class _BackgroundVerificationScreenState
           const UploadButton(),
         ],
         ...[
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 21),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ),
-          ),
           const VSpace(whiteSpace),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 21),
-            child:
-                BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
-              builder: (context, state) {
-                if (state is DriverLicenseImageLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state is DriverLicenseImageSelected) {
-                  log('A file has been selected');
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(
-                        height: 200,
-                        child: Image.file(state.image),
-                      ),
-                      const VSpace(whiteSpace),
-                      SimpleButton(
-                        title: 'Submit Document',
-                        // backgroundColor: darkGoldColor,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(7)),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            CriminalBackgroundCheckScreen.routeName,
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
-            ),
+          BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
+            builder: (context, state) {
+              if (state is DriverLicenseImageLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is DriverLicenseImageSelected) {
+                log('A file has been selected');
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 200,
+                      child: Image.file(state.image),
+                    ),
+                    const VSpace(whiteSpace),
+                    SimpleButton(
+                      title: 'Submit Document',
+                      // backgroundColor: darkGoldColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(7)),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          CriminalBackgroundCheckScreen.routeName,
+                        );
+                      },
+                    ),
+                  ],
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 21),
