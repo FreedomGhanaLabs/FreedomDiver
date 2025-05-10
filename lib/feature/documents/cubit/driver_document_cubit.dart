@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedom_driver/feature/documents/driver_license/extension.dart';
 import 'package:freedom_driver/feature/driver/extension.dart';
-import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 import 'package:freedom_driver/shared/api/api_handler.dart';
 import 'package:freedom_driver/shared/widgets/toaster.dart';
@@ -62,7 +61,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
               emit(DocumentUploadSuccess());
               Navigator.pushReplacementNamed(
                 context,
-                MainActivityScreen.routeName,
+                VerificationStatusScreen.routeName,
               );
             } else {
               emit(
@@ -103,7 +102,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       return;
     }
 
-    final pathStrip = documentFile.path.split('.');
+    // final pathStrip = documentFile.path.split('.');
 
     final formData = FormData.fromMap({
       'addressType': 'utility_bill',
