@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1031858876721",
+    "project_id": "freedom-aafff",
+    "storage_bucket": "freedom-aafff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031858876721:android:373cafc22dee0f54cbc010",
+        "android_client_info": {
+          "package_name": "com.freedom_driver.app.freedom_driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoCjaN6K49Mi-G2dHXUE1kqb50Mhqm-Cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031858876721:android:bb4380703550ecd0cbc010",
+        "android_client_info": {
+          "package_name": "com.freedom_driver.app.freedom_driver.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoCjaN6K49Mi-G2dHXUE1kqb50Mhqm-Cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

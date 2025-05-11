@@ -13,24 +13,24 @@ class RideInitial extends RideState {}
 class RideLoading extends RideState {}
 
 class RideUpdating extends RideState {
-  final AcceptRide ride;
   RideUpdating(this.ride);
+  final AcceptRide ride;
 
   @override
   List<Object?> get props => [ride];
 }
 
 class RideLoaded extends RideState {
-  final AcceptRide ride;
   RideLoaded(this.ride);
+  final AcceptRide ride;
 
   @override
   List<Object?> get props => [ride];
 }
 
 class RideError extends RideState {
-  final String message;
   RideError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
