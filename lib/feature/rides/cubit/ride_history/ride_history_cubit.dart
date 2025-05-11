@@ -6,11 +6,16 @@ import 'package:freedom_driver/feature/driver/extension.dart';
 import 'package:freedom_driver/feature/rides/cubit/ride_history/ride_history_state.dart';
 import 'package:freedom_driver/feature/rides/models/ride.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
+import 'package:get/get.dart';
 
 class RideHistoryCubit extends Cubit<RideHistoryState> {
   RideHistoryCubit() : super(RideHistoryInitial());
 
   final ApiController apiController = ApiController('ride');
+
+  static String errorMessage(String firstName) {
+    return 'Sorry ${firstName.capitalize}! We could not retrieve your ride history at the moment. Please ensure that you have good internet connection or restart the app. If this difficulty persist please contact our support';
+  }
 
   Ride? _cachedRide;
   DateTime? _cacheTimestamp;
@@ -25,6 +30,8 @@ class RideHistoryCubit extends Cubit<RideHistoryState> {
     String status = 'completed',
     int page = 1,
     int limit = 10,
+    bool showOverlay = true,
+
   }) async {
     // If cache is valid, use it
     if (_isCacheValid) {
@@ -44,14 +51,24 @@ class RideHistoryCubit extends Cubit<RideHistoryState> {
             _cachedRide = ride;
             _cacheTimestamp = DateTime.now();
             emit(RideHistoryLoaded(ride));
+            log('[Ride History Cubit] loaded ride history from api $data');
+            
           } else {
-            emit(RideHistoryError('Sorry ${context.driver?.firstName}! We could not retrieve your ride history at the moment. Please ensure that you have good internet connection or restart the app. If this difficulty persist please contact our support'));
+            emit(
+              RideHistoryError(
+                errorMessage(context.driver?.firstName ?? 'Driver'),
+              ),
+            );
           }
         },
-        showOverlay: true,
+        showOverlay: showOverlay,
       );
     } catch (e) {
-      emit(RideHistoryError('Sorry ${context.driver?.firstName}! We could not retrieve your ride history at the moment. Please ensure that you have good internet connection or restart the app. If this difficulty persist please contact our support'));
+      emit(
+        RideHistoryError(
+          errorMessage(context.driver?.firstName ?? 'Driver'),
+        ),
+      );
     }
   }
 

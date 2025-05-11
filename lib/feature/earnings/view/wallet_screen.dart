@@ -15,10 +15,8 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Material(
-      child: Container(
-        color: Colors.white,
-        child: Padding(
+      child: Scaffold(
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,13 +35,12 @@ class WalletScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
               const VSpace(43),
               EarningsBanner(
-                  title: 'Account balance',
-                  child: SizedBox.shrink(),
+                title: 'Account balance',
                   subtitle: 'c 500.00',
                   child2: SimpleButton(
                     title: '',
@@ -51,7 +48,9 @@ class WalletScreen extends StatelessWidget {
                       Navigator.of(context).pushNamed(WalletScreen.routeName);
                     },
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 19, vertical: 12),
+                    horizontal: 19,
+                    vertical: 12,
+                  ),
                     borderRadius: BorderRadius.circular(6),
                     child: Row(
                       children: [
@@ -64,10 +63,12 @@ class WalletScreen extends StatelessWidget {
                             fontSize: 17,
                             fontWeight: FontWeight.w400,
                           ),
-                        )
+                      ),
                       ],
                     ),
-                  )),
+                ),
+                child: const SizedBox.shrink(),
+              ),
               const VSpace(32),
               Text(
                 'Manage Payment Method',
@@ -78,14 +79,14 @@ class WalletScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              ManagePayment(
-                padding: EdgeInsets.symmetric(horizontal: 0),
-
-              )
+              const ManagePayment(
+                padding: EdgeInsets.symmetric(),
+        
+              ),
             ],
           ),
         ),
       ),
-    ));
+    );
   }
 }

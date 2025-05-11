@@ -280,7 +280,7 @@ class ApiController {
 
       return 'Network Error';
     }
-    log('Unexpected Error Message: ${error.message}');
+    log('Unexpected Error Message: $error');
     return 'An unexpected error occurred';
   }
 }

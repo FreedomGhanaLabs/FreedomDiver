@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/authentication/login/view/login_form_screen.dart';
-import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_view.dart';
+import 'package:freedom_driver/shared/api/load_dasboard.dart';
 import 'package:freedom_driver/utilities/hive/onboarding.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
 
@@ -40,13 +39,8 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
     final isFirstTimer = await getOnboardingFromHive();
     final getToken = await getTokenFromHive();
     if (getToken != null) {
-      final driverCubit = context.read<DriverCubit>();
-      await driverCubit.getDriverProfile(context);
-      await driverCubit.toggleStatus(
-        context,
-        setAvailable: true,
-        toggleOnlyApi: true,
-      );
+      await loadDashboard(context);
+
       await Navigator.pushNamedAndRemoveUntil(
         context,
         MainActivityScreen.routeName,

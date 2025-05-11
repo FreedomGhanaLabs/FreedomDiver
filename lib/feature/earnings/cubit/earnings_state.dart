@@ -1,25 +1,30 @@
-part of 'earnings_cubit.dart';
 
-sealed class EarningsState extends Equatable {
-  const EarningsState();
+import 'package:equatable/equatable.dart';
+import 'package:freedom_driver/feature/earnings/models/earning.dart';
+
+abstract class EarningState extends Equatable {
+  const EarningState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-final class EarningsLoading extends EarningsState {}
+class EarningInitial extends EarningState {}
 
-final class EarningsLoaded extends EarningsState {
-  const EarningsLoaded({this.rideCount = 0});
-  final int rideCount;
+class EarningLoading extends EarningState {}
+
+class EarningLoaded extends EarningState {
+  const EarningLoaded(this.earning);
+  final Earning earning;
+
   @override
-  List<Object> get props => [rideCount];
+  List<Object?> get props => [earning];
+}
 
-  EarningsLoaded copyWith({
-    int? rideCount,
-  }) {
-    return EarningsLoaded(
-      rideCount: rideCount ?? this.rideCount,
-    );
-  }
+class EarningError extends EarningState {
+  const EarningError(this.message);
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
 }

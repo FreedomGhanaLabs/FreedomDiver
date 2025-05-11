@@ -7,6 +7,7 @@ import 'package:freedom_driver/feature/documents/cubit/document_image.dart';
 import 'package:freedom_driver/feature/documents/cubit/driver_document_cubit.dart';
 import 'package:freedom_driver/feature/documents/driver_license/cubit/license_cubit.dart';
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
+import 'package:freedom_driver/feature/earnings/cubit/earnings_cubit.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedom_driver/feature/rides/cubit/ride/rides_cubit.dart';
@@ -48,6 +49,7 @@ class App extends StatelessWidget {
             BlocProvider(create: (_) => KycCubit()),
             BlocProvider(create: (_) => RideCubit()),
             BlocProvider(create: (_) => RideHistoryCubit()),
+            BlocProvider(create: (_) => EarningCubit()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
