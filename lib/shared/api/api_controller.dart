@@ -274,7 +274,8 @@ class ApiController {
 
       if (errorData != null) {
         log('Error Data: $errorData');
-        return (errorData['message'] ?? errorData['msg']).toString();
+        return (errorData['message'] ?? errorData['msg'] ?? 'An error occurred')
+            .toString();
       }
 
       return 'Network Error';
