@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/home/view/widgets/build_ride_request.dart';
 import 'package:freedom_driver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedom_driver/feature/rides/cubit/ride/rides_cubit.dart';
 import 'package:freedom_driver/shared/app_config.dart';
 import 'package:freedom_driver/shared/theme/app_colors.dart';
 import 'package:freedom_driver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<void> buildRideFoundDialog(BuildContext context) {
   return showDialog<dynamic>(
@@ -27,11 +27,11 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'New Ride Request!',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         fontSize: normalText,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Container(
@@ -52,7 +52,7 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                       child: Center(
                         child: Text(
                           'Rider',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontSize: normalText,
                             fontWeight: FontWeight.w500,
                             color: darkGoldColor,
@@ -72,11 +72,14 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                     child: SimpleButton(
                       title: 'Decline',
                       onPressed: () {
+                        context
+                            .read<RideCubit>()
+                            .rejectRide(context, rideId: 'xyz-abcd');
                         Navigator.of(context).pop();
                       },
                       borderRadius: BorderRadius.circular(6.90),
                       backgroundColor: colorBlack,
-                      textStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
                         color: Colors.white,
                         fontSize: 16.51,
                       ),
@@ -90,7 +93,7 @@ Future<void> buildRideFoundDialog(BuildContext context) {
                   Expanded(
                     child: SimpleButton(
                       title: 'Accept',
-                      textStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                       ),

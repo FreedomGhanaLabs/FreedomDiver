@@ -55,8 +55,6 @@ class ApiController {
     bool shouldShowToast = true,
     bool showOverlay = false,
   }) async {
-    // debugPrint(jsonEncode(data));
-    // debugPrint('$baseUrl$endpoint');
     if (showOverlay) showLoadingOverlay(context);
     try {
       final response = await _dio.post(endpoint, data: jsonEncode(data));
@@ -72,8 +70,9 @@ class ApiController {
       }
       callback(true, response.data);
     } catch (e) {
-      final msg = _handleError(e).toString();
-      if (shouldShowToast && msg.isNotEmpty) {
+      final msg = _handleError(e);
+
+      if (msg.isNotEmpty) {
         showToast(
           context,
           'Error',
@@ -110,7 +109,7 @@ class ApiController {
       }
       callback(true, response.data);
     } catch (e) {
-      final msg = _handleError(e).toString();
+      final msg = _handleError(e);
       if (shouldShowToast && msg.isNotEmpty) {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
@@ -144,7 +143,7 @@ class ApiController {
       }
       callback(true, response.data);
     } catch (e) {
-      final msg = _handleError(e).toString();
+      final msg = _handleError(e);
       if (shouldShowToast && msg.isNotEmpty) {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
@@ -178,7 +177,7 @@ class ApiController {
       }
       callback(true, response.data);
     } catch (e) {
-      final msg = _handleError(e).toString();
+      final msg = _handleError(e);
       if (shouldShowToast && msg.isNotEmpty) {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
@@ -209,7 +208,7 @@ class ApiController {
       }
       callback(true, response.data);
     } catch (e) {
-      final msg = _handleError(e).toString();
+      final msg = _handleError(e);
       if (shouldShowToast && msg.isNotEmpty) {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
@@ -254,7 +253,7 @@ class ApiController {
 
       callback(true, response.data);
     } catch (e) {
-      final msg = _handleError(e).toString();
+      final msg = _handleError(e);
       if (shouldShowToast && msg.isNotEmpty) {
         showToast(context, 'Error', msg, toastType: ToastType.error);
       }
@@ -264,7 +263,7 @@ class ApiController {
     }
   }
 
-  dynamic _handleError(dynamic error) {
+  String _handleError(dynamic error) {
     if (error is DioException) {
       log('error message: ${error.message}');
       final errorData = error.response?.data;
@@ -275,7 +274,7 @@ class ApiController {
 
       if (errorData != null) {
         log('Error Data: $errorData');
-        return errorData['message'] ?? errorData['msg'];
+        return (errorData['message'] ?? errorData['msg']).toString();
       }
 
       return 'Network Error';

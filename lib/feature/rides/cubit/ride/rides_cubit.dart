@@ -6,6 +6,7 @@ import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/rides/cubit/ride/rides_state.dart';
 import 'package:freedom_driver/feature/rides/models/accept_ride.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
+import 'package:freedom_driver/utilities/socket_service.dart';
 
 class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
@@ -70,14 +71,19 @@ class RideCubit extends Cubit<RideState> {
     required String rideId,
     String reason = 'Too far from my current location',
   }) async {
+    DriverSocketService().rejectRideRequest('xyz-abc');
     try {
-      await apiController.post(context, '$rideId/reject', {'reason': reason},
-          (success, data) {
-        if (success) {
-          log('[RideCubit] ride rejected');
-          updateStatus(context, RideStatus.declined);
-        }
-      });
+      await apiController.post(
+        context,
+        '$rideId/reject',
+        {'reason': reason},
+        (success, data) {
+          if (success) {
+            log('[RideCubit] ride rejected');
+            updateStatus(context, RideStatus.declined);
+          }
+        },
+      );
     } catch (e) {
       emit(RideError('Failed to reject ride'));
     }
@@ -91,10 +97,11 @@ class RideCubit extends Cubit<RideState> {
     double longitude = 3.375206,
   }) async {
     try {
-      await apiController.post(context, '$rideId/cancel', {'reason': reason, 'latitude': latitude,
+      await apiController.post(context, '$rideId/cancel', {
+        'reason': reason,
+        'latitude': latitude,
         'longitude': longitude,
-      },
-          (success, data) {
+      }, (success, data) {
         if (success) {
           log('[RideCubit] ride cancel');
           updateStatus(context, RideStatus.initial);
@@ -105,7 +112,6 @@ class RideCubit extends Cubit<RideState> {
     }
   }
 
-  
   Future<void> arrivedRide(
     BuildContext context, {
     required String rideId,

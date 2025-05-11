@@ -216,9 +216,7 @@ class HomeRide extends StatelessWidget {
                         BlocListener<HomeCubit, HomeState>(
                           listener: (context, state) {
                             if (state.rideStatus == RideStatus.found) {
-                              buildRideFoundDialog(
-                                context,
-                              );
+                              buildRideFoundDialog(context);
                             }
                           },
                         ),
