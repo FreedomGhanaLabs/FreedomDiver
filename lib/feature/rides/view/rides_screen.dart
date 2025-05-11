@@ -30,7 +30,7 @@ class _RidesScreenState extends State<RidesScreen> {
     return BlocBuilder<RideHistoryCubit, RideHistoryState>(
       builder: (context, state) {
         return CustomScreen(
-          title: 'Rides',
+          title: 'Ride History',
           hasBackButton: false,
           actions: [
             IconButton(
