@@ -65,7 +65,7 @@ const buttonOpacity = 0.5;
 
 const bigText = 35.0;
 const emphasisText = 28.0;
-const headingText = 20.0;
+const headingText = 22.0;
 const normalText = 16.0;
 const paragraphText = 14.0;
 const smallText = 12.0;
