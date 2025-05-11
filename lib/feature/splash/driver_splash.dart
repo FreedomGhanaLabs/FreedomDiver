@@ -6,7 +6,6 @@ import 'package:freedom_driver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedom_driver/feature/onboarding/vew/onboarding_view.dart';
 import 'package:freedom_driver/utilities/hive/onboarding.dart';
 import 'package:freedom_driver/utilities/hive/token.dart';
-import 'package:hive/hive.dart';
 
 class DriverSplashScreen extends StatefulWidget {
   const DriverSplashScreen({super.key});
@@ -37,12 +36,10 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
   }
 
   Future<void> _navigateUser() async {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    final box = Hive.box<bool>('firstTimerUser');
-    final isFirstTimer = box.get('isFirstTimer', defaultValue: true) ?? true;
-    final getFirstTimer = await getOnboardingFromHive();
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    final isFirstTimer = await getOnboardingFromHive();
     final getToken = await getTokenFromHive();
-    if (!isFirstTimer || getToken != null) {
+    if (getToken != null) {
       final driverCubit = context.read<DriverCubit>();
       await driverCubit.getDriverProfile(context);
       await driverCubit.toggleStatus(
@@ -56,7 +53,7 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
         (route) => false,
       );
       return;
-    } else if (getFirstTimer != null) {
+    } else if (isFirstTimer != null) {
       await Navigator.pushNamedAndRemoveUntil(
         context,
         LoginFormScreen.routeName,
