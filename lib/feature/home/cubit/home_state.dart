@@ -4,7 +4,15 @@ enum ActivityType { ride, delivery }
 
 enum ActivityStatus { pending, completed }
 
-enum RideStatus { initial, searching, found, accepted, declined }
+enum RideStatus {
+  initial,
+  searching,
+  found,
+  accepted,
+  declined,
+  started,
+  completed
+}
 
 class HomeState extends Equatable {
   const HomeState({

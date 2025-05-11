@@ -43,7 +43,7 @@ class DriverSocketService {
   Future<void> connect({
     VoidCallback? onConnect,
     VoidCallback? onDisconnect,
-    Function(Map<String, dynamic>)? onNewRideRequest,
+    Function(AcceptRide)? onNewRideRequest,
     Function(String status)? onNewRideAccepted,
     Function(String status)? onRideStatusUpdate,
   }) async {
@@ -85,18 +85,19 @@ class DriverSocketService {
         body: 'New ride from ${ride.pickupLocation.address}',
       );
 
-      onNewRideRequest
-          ?.call(Map<String, dynamic>.from(data as Map<dynamic, dynamic>));
+      onNewRideRequest?.call(ride);
     });
 
     _socket!.on(DriverSocketConstants.rideAccepted, (data) {
-      log('${DriverSocketConstants.rideAcceptedLog}${data[DriverSocketConstants.status]}');
-      onNewRideAccepted?.call(data[DriverSocketConstants.status] as String);
+      final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
+      log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
+      onNewRideAccepted?.call(ride.status);
     });
 
     _socket!.on(DriverSocketConstants.rideStatusUpdated, (data) {
-      log('${DriverSocketConstants.rideStatusUpdatedLog}${data[DriverSocketConstants.status]}');
-      onRideStatusUpdate?.call(data[DriverSocketConstants.status] as String);
+      final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
+      log('${DriverSocketConstants.rideStatusUpdatedLog}${ride.status}');
+      onRideStatusUpdate?.call(ride.status);
     });
 
     _socket!.connect();

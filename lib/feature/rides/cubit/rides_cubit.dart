@@ -13,7 +13,7 @@ class RideCubit extends Cubit<RideState> {
   AcceptRide? _cachedAcceptRide;
 
   AcceptRide? get currentDriver => _cachedAcceptRide;
-  bool get hasDriver => _cachedAcceptRide != null;
+  bool get hasAcceptedRide => _cachedAcceptRide != null;
 
   void _updateAcceptRide(AcceptRide updated) {
     _cachedAcceptRide = updated;
@@ -57,6 +57,7 @@ class RideCubit extends Cubit<RideState> {
         if (success) {
           final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
           _updateAcceptRide(ride);
+          updateStatus(context, RideStatus.accepted);
         }
       });
     } catch (e) {
@@ -74,6 +75,7 @@ class RideCubit extends Cubit<RideState> {
           (success, data) {
         if (success) {
           log('[RideCubit] ride rejected');
+          updateStatus(context, RideStatus.declined);
         }
       });
     } catch (e) {
@@ -95,7 +97,7 @@ class RideCubit extends Cubit<RideState> {
         }
       });
     } catch (e) {
-      emit(RideError('Failed to cancel ride'));
+      emit(RideError('Failed to arrive ride'));
     }
   }
 
@@ -110,7 +112,7 @@ class RideCubit extends Cubit<RideState> {
           {'latitude': latitude, 'longitude': longitude}, (success, data) {
         if (success) {
           log('[RideCubit] ride started');
-          // updateStatus(context, )
+          // updateStatus(context, RideStatus.started);
         }
       });
     } catch (e) {
@@ -118,25 +120,68 @@ class RideCubit extends Cubit<RideState> {
     }
   }
 
+  Future<void> completeRide(
+    BuildContext context, {
+    required String rideId,
+    double latitude = 6.520379,
+    double longitude = 3.375206,
+  }) async {
+    try {
+      await apiController.post(
+        context,
+        '$rideId/complete',
+        {'latitude': latitude, 'longitude': longitude},
+        (success, data) {
+          if (success) {
+            log('[RideCubit] ride completed');
+            updateStatus(context, RideStatus.completed);
+          }
+        },
+        showOverlay: true,
+      );
+    } catch (e) {
+      emit(RideError('Failed to end ride'));
+    }
+  }
+
   Future<void> updateStatus(BuildContext context, RideStatus newStatus) async {
-    if (state is! RideLoaded) return;
-    final currentRide = (state as RideLoaded).ride;
-    emit(RideUpdating(currentRide));
+    if (!hasAcceptedRide) return;
+
+    final previousStatusName = _cachedAcceptRide!.status;
+
+    emit(RideUpdating(_cachedAcceptRide!.copyWith(status: newStatus.name)));
+    emit(
+      RideLoaded(
+        _cachedAcceptRide!.copyWith(status: newStatus.name),
+      ),
+    );
 
     try {
       await apiController.patch(
         context,
-        currentRide.rideId,
+        _cachedAcceptRide!.rideId,
         {
           'status': newStatus.name,
         },
-        (success, data) {},
+        (success, data) {
+          if (success) {
+            log('[ride cubit] status has been updated');
+          } else {
+            emit(
+              RideLoaded(
+                _cachedAcceptRide!.copyWith(status: previousStatusName),
+              ),
+            );
+          }
+        },
       );
-      final updatedRide = currentRide.copyWith(status: newStatus.name);
-      emit(RideLoaded(updatedRide));
     } catch (_) {
       emit(RideError('Failed to update status'));
-      emit(RideLoaded(currentRide)); // restore
+      emit(
+        RideLoaded(
+          _cachedAcceptRide!.copyWith(status: previousStatusName),
+        ),
+      ); // restore
     }
   }
 }
