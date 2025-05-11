@@ -30,8 +30,12 @@ class CustomScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(title: title, hasBackButton: hasBackButton),
-          const VSpace(smallWhiteSpace),
+          CustomAppBar(
+            title: title,
+            hasBackButton: hasBackButton,
+            actions: actions,
+          ),
+          const VSpace(extraSmallWhiteSpace),
           if (showDivider) const CustomDivider(height: 6),
           Expanded(
             child: SingleChildScrollView(
@@ -58,6 +62,7 @@ class CustomScreen extends StatelessWidget {
                     ),
                   const VSpace(smallWhiteSpace),
                   ...children,
+                  const VSpace(whiteSpace),
                 ],
               ),
             ),

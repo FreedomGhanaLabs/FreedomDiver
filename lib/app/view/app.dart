@@ -9,6 +9,8 @@ import 'package:freedom_driver/feature/documents/driver_license/cubit/license_cu
 import 'package:freedom_driver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
 import 'package:freedom_driver/feature/kyc/cubit/kyc_cubit.dart';
+import 'package:freedom_driver/feature/rides/cubit/ride/rides_cubit.dart';
+import 'package:freedom_driver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
 import 'package:freedom_driver/feature/splash/splash_screen.dart';
 import 'package:freedom_driver/l10n/l10n.dart';
 import 'package:freedom_driver/router/router.dart';
@@ -44,12 +46,16 @@ class App extends StatelessWidget {
             BlocProvider(create: (_) => DriverLicenseDetailsCubit()),
             BlocProvider(create: (_) => DriverLicenseImageCubit()),
             BlocProvider(create: (_) => KycCubit()),
+            BlocProvider(create: (_) => RideCubit()),
+            BlocProvider(create: (_) => RideHistoryCubit()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               fontFamily: GoogleFonts.poppins().fontFamily,
               scaffoldBackgroundColor: Colors.white,
+              splashColor: Colors.white,
+              colorSchemeSeed: Colors.white,
             ),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

@@ -11,7 +11,8 @@ enum RideStatus {
   accepted,
   declined,
   started,
-  completed
+  completed,
+  cancelled
 }
 
 class HomeState extends Equatable {

@@ -16,13 +16,11 @@ ButtonStyle elevatedButtonStyle = ButtonStyle(
 );
 
 TextStyle headingTextStyle = TextStyle(
-  fontSize: emphasisText,
+  fontSize: headingText.sp,
   fontWeight: FontWeight.bold,
-  color: primaryColor,
 );
 
 TextStyle normalTextStyle = TextStyle(
-  // color: Colors.black,
   fontSize: normalText.sp,
   fontWeight: FontWeight.w600,
 );

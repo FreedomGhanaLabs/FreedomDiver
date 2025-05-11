@@ -137,11 +137,14 @@ class CustomAppBar extends StatelessWidget {
             const DecoratedBackButton()
           else
             const SizedBox(width: smallWhiteSpace),
-          Text(
-            title?.capitalize ?? '',
-            style: TextStyle(
-              fontSize: paragraphText.sp,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              title?.capitalize ?? '',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: normalText.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           if (actions != null)

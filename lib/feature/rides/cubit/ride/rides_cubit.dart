@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/home/cubit/home_cubit.dart';
-import 'package:freedom_driver/feature/rides/cubit/rides_state.dart';
-import 'package:freedom_driver/feature/rides/models/rides.model.dart';
+import 'package:freedom_driver/feature/rides/cubit/ride/rides_state.dart';
+import 'package:freedom_driver/feature/rides/models/accept_ride.dart';
 import 'package:freedom_driver/shared/api/api_controller.dart';
 
 class RideCubit extends Cubit<RideState> {
@@ -79,10 +79,33 @@ class RideCubit extends Cubit<RideState> {
         }
       });
     } catch (e) {
+      emit(RideError('Failed to reject ride'));
+    }
+  }
+
+  Future<void> cancelRide(
+    BuildContext context, {
+    required String rideId,
+    String reason = 'Too far from my current location',
+    double latitude = 6.520379,
+    double longitude = 3.375206,
+  }) async {
+    try {
+      await apiController.post(context, '$rideId/cancel', {'reason': reason, 'latitude': latitude,
+        'longitude': longitude,
+      },
+          (success, data) {
+        if (success) {
+          log('[RideCubit] ride cancel');
+          updateStatus(context, RideStatus.initial);
+        }
+      });
+    } catch (e) {
       emit(RideError('Failed to cancel ride'));
     }
   }
 
+  
   Future<void> arrivedRide(
     BuildContext context, {
     required String rideId,
@@ -135,6 +158,50 @@ class RideCubit extends Cubit<RideState> {
           if (success) {
             log('[RideCubit] ride completed');
             updateStatus(context, RideStatus.completed);
+          }
+        },
+        showOverlay: true,
+      );
+    } catch (e) {
+      emit(RideError('Failed to end ride'));
+    }
+  }
+
+  Future<void> confirmRidePayment(
+    BuildContext context, {
+    required String rideId,
+  }) async {
+    try {
+      await apiController.post(
+        context,
+        '$rideId/confirm-payment',
+        {},
+        (success, data) {
+          if (success) {
+            log('[RideCubit] ride confirm payment');
+          }
+        },
+        showOverlay: true,
+      );
+    } catch (e) {
+      emit(RideError('Failed to end ride'));
+    }
+  }
+
+  Future<void> rateRideUser(
+    BuildContext context, {
+    required String rideId,
+    double rating = 5,
+    String comment = 'Very polite and punctual',
+  }) async {
+    try {
+      await apiController.post(
+        context,
+        '$rideId/rate',
+        {'rating': rating, 'comment': comment},
+        (success, data) {
+          if (success) {
+            log('[RideCubit] ride user rated $rating');
           }
         },
         showOverlay: true,

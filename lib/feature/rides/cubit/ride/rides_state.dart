@@ -1,7 +1,7 @@
 
 
 import 'package:equatable/equatable.dart';
-import 'package:freedom_driver/feature/rides/models/rides.model.dart';
+import 'package:freedom_driver/feature/rides/models/accept_ride.dart';
 
 abstract class RideState extends Equatable {
   @override

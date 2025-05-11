@@ -1,11 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:freedom_driver/feature/authentication/register/view/verify_otp_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedom_driver/feature/home/view/widgets/rider_time_line.dart';
+import 'package:freedom_driver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
+import 'package:freedom_driver/feature/rides/cubit/ride_history/ride_history_state.dart';
 import 'package:freedom_driver/feature/rides/enum.dart';
-import 'package:freedom_driver/shared/widgets/custom_divider.dart';
+import 'package:freedom_driver/shared/app_config.dart';
+import 'package:freedom_driver/shared/widgets/app_icon.dart';
+import 'package:freedom_driver/shared/widgets/custom_screen.dart';
+import 'package:freedom_driver/utilities/responsive.dart';
 import 'package:freedom_driver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,70 +22,94 @@ class RidesScreen extends StatefulWidget {
 
 class _RidesScreenState extends State<RidesScreen> {
   RideTabEnum rideTabEnum = RideTabEnum.scheduled;
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width * 0.15;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.white,
-      ),
-      child: SafeArea(
-          child: Material(
-        child: ColoredBox(
-          color: Colors.white,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Row(
+    final rideHistory = context.read<RideHistoryCubit>()
+      ..getAllRideHistories(context);
+    return BlocBuilder<RideHistoryCubit, RideHistoryState>(
+      builder: (context, state) {
+        return CustomScreen(
+          title: 'Rides',
+          hasBackButton: false,
+          actions: [
+            IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => rideHistory.refreshRideHistory(context),
+              icon: const Icon(Icons.refresh),
+            ),
+          ],
+          children: [
+            if (state is RideHistoryError)
+              SizedBox(
+                height: Responsive.height(context) * 0.75,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const DecoratedBackButton(),
-                     HSpace(size),
-                    Center(
-                      child: Text(
-                        'Completed Rides',
-                        style: GoogleFonts.poppins(
-                          color: Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    Text(
+                      'Ride History',
+                      style: normalTextStyle.copyWith(color: redColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      state.message,
+                      style: descriptionTextStyle,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
-              ),
-              const VSpace(21.91),
-              const CustomDivider(),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: 396,
-                      margin:
-                          const EdgeInsets.only(top: 17, left: 16, right: 16),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 11, vertical: 4),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFFCFCFC),
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                            width: 1.08,
-                            strokeAlign: BorderSide.strokeAlignOutside,
-                            color: Color(0xFFF5F5F5),
-                          ),
-                          borderRadius: BorderRadius.circular(15.50),
-                        ),
-                      ),
-                      child: const RiderTimeLine(),
-                    );
-                  },
-                ),
               )
+            else if (state is RideHistoryLoaded) ...[
+              if (state.ride.count <= 0)
+                SizedBox(
+                  height: Responsive.height(context) * 0.75,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const AppIcon(iconName: 'no_ride_history'),
+                      const VSpace(extraSmallWhiteSpace),
+                      Text(
+                        'You have no scheduled Ride ',
+                        textAlign: TextAlign.center,
+                        style: headingTextStyle,
+                      ),
+                  ],
+                ),
+                )
+              else
+                ...List.generate(
+                  state.ride.count,
+                  (index) {
+                    return const RidesTile();
+                  },
+              ),
             ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class RidesTile extends StatelessWidget {
+  const RidesTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: smallWhiteSpace),
+      decoration: ShapeDecoration(
+        color: const Color(0xFFFCFCFC),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            width: 1.08,
+            strokeAlign: BorderSide.strokeAlignOutside,
+            color: Color(0xFFF5F5F5),
           ),
+          borderRadius: BorderRadius.circular(15.50),
         ),
-      )),
+      ),
+      child: const RiderTimeLine(),
     );
   }
 }
@@ -168,7 +196,7 @@ class RideTab extends StatelessWidget {
                           fontSize: 16.33,
                           fontWeight: FontWeight.w500,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -222,10 +250,11 @@ class _CompletedRidesState extends State<CompletedRides> {
 }
 
 class CompletedRidesModel {
-  CompletedRidesModel(
-      {required this.pickUpLocation,
-      required this.destination,
-      required this.rideType});
+  CompletedRidesModel({
+    required this.pickUpLocation,
+    required this.destination,
+    required this.rideType,
+  });
   final String pickUpLocation;
   final String destination;
   final RideType rideType;
