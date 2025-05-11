@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freedom_driver/core/di/locator.dart';
 import 'package:freedom_driver/utilities/notification_service.dart';
+import 'package:freedom_driver/utilities/socket_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -27,12 +28,13 @@ class AppBlocObserver extends BlocObserver {
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
-  
+
+  await Hive.initFlutter();
   await NotificationService.initializeNotifications();
 
   await locator();
-  await Hive.initFlutter();
-  await Hive.openBox<bool>('firstTimerUser');
+
+  await DriverSocketService().connect();
 
   Bloc.observer = const AppBlocObserver();
 

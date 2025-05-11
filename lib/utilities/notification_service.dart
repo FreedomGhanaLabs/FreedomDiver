@@ -15,9 +15,9 @@ class NotificationService {
     'basic_channel', // channel ID
     'Basic Notifications', // channel name
     description: 'Notification channel for basic tests',
-    importance: Importance.max,
+    importance: Importance.high,
     enableLights: true,
-    ledColor: darkRed,
+    ledColor: gradient1,
   );
 
   static Future<void> initializeNotifications() async {
@@ -65,7 +65,7 @@ class NotificationService {
     final token = await FirebaseMessaging.instance.getToken() ?? '';
     log('[FCM TOKEN] $token');
     await addFCMTokenToHive(token);
-    log('[FCM TOKEN] $token added to hive');
+    log('[FCM TOKEN] token added to hive');
   }
 
   static Future<void> _requestPermissions() async {
@@ -97,6 +97,18 @@ class NotificationService {
         iOS: const DarwinNotificationDetails(),
       ),
       payload: payload?.toString(),
+    );
+  }
+
+static Future<void> sendNotification({
+    required String title,
+    required String body,
+    Map<String, dynamic>? payload,
+  }) async {
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      payload: payload,
     );
   }
 
