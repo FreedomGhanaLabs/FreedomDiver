@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "820864153755",
+    "project_id": "freedomdrivers-504e1",
+    "storage_bucket": "freedomdrivers-504e1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820864153755:android:ec17ea1428ede5f90eae3e",
+        "android_client_info": {
+          "package_name": "com.freedom_driver.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsOrrexmcNbx9JDGVfxyz7oR-w79NIND4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

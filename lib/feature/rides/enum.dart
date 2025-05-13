@@ -1,0 +1,1 @@
+enum RideType { ride, delivery}
