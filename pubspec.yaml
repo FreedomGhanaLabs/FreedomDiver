@@ -67,33 +67,9 @@ flutter:
     - assets/nav/inactive_icon/
     - assets/lottie/
 
-  
-  
-  
-  
 
-  
-  
-
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21
