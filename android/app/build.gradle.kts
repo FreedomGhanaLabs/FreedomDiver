@@ -15,12 +15,12 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_2_1
-        targetCompatibility = JavaVersion.VERSION_2_1
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_2_1.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     defaultConfig {
