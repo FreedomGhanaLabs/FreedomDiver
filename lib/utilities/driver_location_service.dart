@@ -86,8 +86,9 @@ class DriverLocationService {
     await context.read<DriverCubit>().updateDriverLocation(context, [
       // position.latitude,
       // position.longitude,
-      -122.084,
-      37.4219983,
+      // -122.084,
+      // 37.4219983,
+      6.9074977, 4.8917135,
     ]);
   }
 }
