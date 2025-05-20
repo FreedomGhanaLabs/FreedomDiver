@@ -69,5 +69,4 @@ class RegistrationFormCubit extends Cubit<RegistrationFormState> {
   }
 
   void setEmail(String? email) {}
-
 }

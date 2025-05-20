@@ -73,6 +73,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     final type = args['type'] as String?;
 
     final isPhoneUpdate = type == 'phoneUpdate';
+    final isEmailUpdate = type == 'emailUpdate';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -110,7 +111,11 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     ),
                   ),
                   Text(
-                    '${isPhoneUpdate ? context.driver?.phone : (formCubit.state.driversEmail ?? context.driver?.email)}',
+                    '${isPhoneUpdate
+                        ? context.driver?.phone
+                        : isEmailUpdate
+                        ? context.driver?.email
+                        : formCubit.state.driversEmail}',
                     style: TextStyle(
                       fontSize: normalText.sp,
                       fontWeight: FontWeight.w600,
@@ -248,7 +253,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     RegistrationFormCubit formCubit,
     String? type,
   ) {
-    debugPrint('$type');
+    debugPrint('$type ${formCubit.state.driversEmail}');
     final verificationCode = _otpController.text.trim();
     final isLoginType = type == 'login';
     final isEmailUpdateType = type == 'emailUpdate';
