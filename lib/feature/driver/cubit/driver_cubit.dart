@@ -8,6 +8,7 @@ import 'package:freedomdriver/feature/driver/driver.model.dart';
 import 'package:freedomdriver/feature/profile/view/profile_details.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
+import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 
 
@@ -79,6 +80,7 @@ class DriverCubit extends Cubit<DriverState> {
         : DriverStatus.unavailable.name;
 
     _emitIfChanged(_cachedDriver!.copyWith(status: newStatus));
+    DriverLocationService().sendCurrentLocationOnce(context);
 
     await handleApiCall(
       context: context,

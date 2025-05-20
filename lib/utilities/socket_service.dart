@@ -60,6 +60,7 @@ class DriverSocketService {
     _socket!.onConnect((_) {
       log(DriverSocketConstants.socketConnected);
       setDriverStatus(available: true);
+      
       onConnect?.call();
     });
 

@@ -84,8 +84,10 @@ class DriverLocationService {
 
   Future<void> _sendToBackend(BuildContext context, Position position) async {
     await context.read<DriverCubit>().updateDriverLocation(context, [
-      position.latitude,
-      position.longitude,
+      // position.latitude,
+      // position.longitude,
+      -122.084,
+      37.4219983,
     ]);
   }
 }
