@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:freedomdriver/feature/authentication/login/cubit/login_cubit.dart';
 import 'package:freedomdriver/feature/authentication/login/view/login_form_screen.dart';
-import 'package:freedomdriver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedomdriver/feature/authentication/register/cubit/verify_otp_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
@@ -68,11 +68,13 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final formCubit = BlocProvider.of<RegistrationFormCubit>(context);
+
+    final loginFormCubit = BlocProvider.of<LoginFormCubit>(context);
     final args = getRouteParams(context);
     final type = args['type'] as String?;
 
     final isPhoneUpdate = type == 'phoneUpdate';
+    final isLogin = type == 'login';
     final isEmailUpdate = type == 'emailUpdate';
 
     return Scaffold(
@@ -115,7 +117,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         ? context.driver?.phone
                         : isEmailUpdate
                         ? context.driver?.email
-                        : formCubit.state.driversEmail}',
+                        : loginFormCubit.state.email}',
                     style: TextStyle(
                       fontSize: normalText.sp,
                       fontWeight: FontWeight.w600,
@@ -139,7 +141,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       ),
                       onCompleted: (val) {
                         if (mounted) {
-                          _onVerifyPressed(context, formCubit, type);
+                          _onVerifyPressed(context, loginFormCubit, type);
                         }
                       },
                       length: 6,
@@ -198,9 +200,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                           context,
                           'resend-verification',
                           {
-                            'identifier': formCubit.state.driversEmail,
+                            'identifier': loginFormCubit.state.email,
                             'type': 'email',
-                            'purpose': 'registration',
+                            'purpose': isLogin ? 'login' : 'registration',
                           },
                           (success, data) {
                             if (success) {
@@ -229,7 +231,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     borderRadius: BorderRadius.circular(10),
                     width: double.infinity,
                     title: isLoading ? 'Verifying' : 'Verify',
-                    onPressed: () => _onVerifyPressed(context, formCubit, type),
+                    onPressed:
+                        () => _onVerifyPressed(context, loginFormCubit, type),
                   ),
                 ],
               ),
@@ -250,10 +253,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
   void _onVerifyPressed(
     BuildContext context,
-    RegistrationFormCubit formCubit,
+    LoginFormCubit loginFormCubit,
     String? type,
   ) {
-    debugPrint('$type ${formCubit.state.driversEmail}');
+    debugPrint('$type ${loginFormCubit.state.email}');
     final verificationCode = _otpController.text.trim();
     final isLoginType = type == 'login';
     final isEmailUpdateType = type == 'emailUpdate';
@@ -281,7 +284,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         context,
         isLoginType ? 'login/email/verify' : 'verify-registration',
         {
-          'email': formCubit.state.driversEmail,
+          'email': loginFormCubit.state.email,
           'verificationCode': verificationCode,
         },
         (success, data) {
@@ -293,7 +296,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             debugPrint(token);
             addTokenToHive(token).then(
               (onValue) {
-                context.read<RegistrationFormCubit>().setEmail(null);
+              context.read<LoginFormCubit>().setEmail('');
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   MainActivityScreen.routeName,

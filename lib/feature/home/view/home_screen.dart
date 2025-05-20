@@ -24,7 +24,6 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -394,14 +393,19 @@ class HomeHeader extends StatelessWidget {
                       useRootNavigator: false,
                       context: context,
                       builder: (context) => CupertinoActionSheet(
+                            title: Text(
+                              'Select Ride Preference - Ride, Deliver, or Both',
+                              style: normalTextStyle,
+                            ),
+                            message: Text(
+                              'Choose your service type: offer rides, make deliveries, or do both. Customize your experience to match your goals.',
+                              style: paragraphTextStyle,
+                            ),
                         actions: [
                           CupertinoActionSheetAction(
                             child: Text(
                               'Rides only',
-                              style: TextStyle(
-                                color: gradient1,
-                                fontSize: normalText.sp,
-                              ),
+                                  style: TextStyle(color: gradient1),
                             ),
                             onPressed: () async {
                               await driverCubit.updateDriverRidePreference(
@@ -415,10 +419,7 @@ class HomeHeader extends StatelessWidget {
                           CupertinoActionSheetAction(
                             child: Text(
                               'Deliveries only',
-                              style: TextStyle(
-                                color: gradient1,
-                                fontSize: normalText.sp,
-                              ),
+                                  style: TextStyle(color: gradient1),
                             ),
                             onPressed: () async {
                               await driverCubit.updateDriverRidePreference(
@@ -431,10 +432,7 @@ class HomeHeader extends StatelessWidget {
                           CupertinoActionSheetAction(
                             child: Text(
                               'Rides and Deliveries ',
-                              style: TextStyle(
-                                color: gradient1,
-                                fontSize: normalText.sp,
-                              ),
+                                  style: TextStyle(color: gradient1),
                             ),
                             onPressed: () async {
                               await driverCubit

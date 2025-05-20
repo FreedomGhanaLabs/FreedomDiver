@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/authentication/forgot_password/view/forgot_password_form.dart';
+import 'package:freedomdriver/feature/authentication/login/cubit/login_cubit.dart';
 import 'package:freedomdriver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedomdriver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedomdriver/feature/authentication/register/view/verify_otp_screen.dart';
@@ -117,7 +118,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       }
                       final apiController = ApiController('auth/login');
                       final email = getEmailAddress();
-                      context.read<RegistrationFormCubit>().setEmail(email);
+                      context.read<LoginFormCubit>().setEmail(email);
                       setState(() {
                         isLoading = true;
                       });
