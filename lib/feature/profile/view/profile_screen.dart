@@ -12,6 +12,11 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get_utils/get_utils.dart';
 
+import '../../../shared/api/api_controller.dart';
+import '../../../shared/theme/app_colors.dart';
+import '../../../utilities/hive/token.dart';
+import '../../authentication/login/view/login_form_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.hasBackButton = false});
   static const routeName = '/profileScreen';
@@ -61,38 +66,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context,
                       ).pushNamed(AvailabilityDashboard.routeName);
                     },
-                    // onTapLogout: () => showAlert.switch (expression) {
+                    onTapLogout:
+                        () =>
+                        // showAlert.switch (expression) {
                     //   pattern => value,
-                    // }(
-                    //   context,
-                    //   'Logout',
-                    //   'Are you sure you want to logout?',
-                    //   buttonText: 'Continue',
-                    //   titleColor: gradient2,
-                    //   okButtonColor: gradient2,
-                    //   hasSecondaryButton: true,
-                    //   onPressed: () async {
-                    //     final apiController = ApiController('auth');
+                        // }
+                        (
+                          context,
+                          'Logout',
+                          'Are you sure you want to logout?',
+                          buttonText: 'Continue',
+                          titleColor: gradient2,
+                          okButtonColor: gradient2,
+                          hasSecondaryButton: true,
+                          onPressed: () async {
+                            final apiController = ApiController('auth');
 
-                    //     await apiController.post(
-                    //       context,
-                    //       'logout',
-                    //       {},
-                    //       (success, responseData) {
-                    //         if (success) {
-                    //           deleteTokenToHive().then((onValue) {
-                    //             Navigator.pushNamedAndRemoveUntil(
-                    //               context,
-                    //               LoginFormScreen.routeName,
-                    //               (route) => false,
-                    //             );
-                    //           });
-                    //         }
-                    //       },
-                    //       showOverlay: true,
-                    //     );
-                    //   },
-                    // ),
+                            await apiController.post(context, 'logout', {}, (
+                              success,
+                              responseData,
+                            ) {
+                              if (success) {
+                                deleteTokenToHive().then((onValue) {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    LoginFormScreen.routeName,
+                                    (route) => false,
+                                  );
+                                });
+                              }
+                            }, showOverlay: true);
+                          },
+                        ),
                   ),
                   const VSpace(whiteSpace),
                 ],

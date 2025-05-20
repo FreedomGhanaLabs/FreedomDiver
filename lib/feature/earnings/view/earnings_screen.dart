@@ -117,7 +117,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                     ),
                                     TextSpan(
                                       text:
-                                          '${earning?.totalRideEarnings ?? '0.00'}',
+                                          '${earning?.pendingPayments ?? '0.00'}',
                                       style: const TextStyle(
                                         fontSize: 27.17,
                                         fontWeight: FontWeight.w600,
