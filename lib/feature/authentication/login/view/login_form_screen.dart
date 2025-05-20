@@ -6,15 +6,11 @@ import 'package:freedomdriver/feature/authentication/register/view/register_form
 import 'package:freedomdriver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/app_config.dart';
-import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
-import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/shared/widgets/gradient_text.dart';
 import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-
-import 'package:google_fonts/google_fonts.dart';
 
 class LoginFormScreen extends StatefulWidget {
   const LoginFormScreen({super.key});
@@ -104,7 +100,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   children: [
                     Text('Forgot Password? '),
                     GradientText(
-                      text: 'Reset it',
+                      text: 'Reset it    ',
                       routeNameToMoveTo: ForgotPasswordFormScreen.routeName,
                     ),
                   ],
@@ -150,62 +146,62 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   },
                 ),
                 const VSpace(whiteSpace),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomDivider(
-                      height: 6,
-                      width: Responsive.width(context) * 0.3,
-                    ),
-                    const HSpace(smallWhiteSpace),
-                    const Text('Or', style: TextStyle(fontSize: normalText)),
-                    const HSpace(smallWhiteSpace),
-                    CustomDivider(
-                      height: 6,
-                      width: Responsive.width(context) * 0.3,
-                    ),
-                  ],
-                ),
-                const VSpace(whiteSpace),
-                FreedomButton(
-                  backGroundColor: socialLoginColor,
-                  leadingIcon: 'apple_icon',
-                  borderRadius: BorderRadius.circular(7),
-                  title: 'Login with Apple',
-                  useLoader: true,
-                  buttonTitle: Text(
-                    'Login with Apple',
-                    style: GoogleFonts.poppins(
-                      fontSize: normalText,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                  titleColor: Colors.black,
-                  width: double.infinity,
-                  fontSize: normalText,
-                  onPressed: () {},
-                ),
-                const VSpace(whiteSpace),
-                FreedomButton(
-                  backGroundColor: socialLoginColor,
-                  leadingIcon: 'google_icon',
-                  useLoader: true,
-                  borderRadius: BorderRadius.circular(7),
-                  buttonTitle: Text(
-                    'Login with Google',
-                    style: GoogleFonts.poppins(
-                      fontSize: normalText,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                  titleColor: Colors.black,
-                  fontSize: normalText,
-                  width: double.infinity,
-                  onPressed: () {},
-                ),
-                const VSpace(whiteSpace),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     CustomDivider(
+                //       height: 6,
+                //       width: Responsive.width(context) * 0.3,
+                //     ),
+                //     const HSpace(smallWhiteSpace),
+                //     const Text('Or', style: TextStyle(fontSize: normalText)),
+                //     const HSpace(smallWhiteSpace),
+                //     CustomDivider(
+                //       height: 6,
+                //       width: Responsive.width(context) * 0.3,
+                //     ),
+                //   ],
+                // ),
+                // const VSpace(whiteSpace),
+                // FreedomButton(
+                //   backGroundColor: socialLoginColor,
+                //   leadingIcon: 'apple_icon',
+                //   borderRadius: BorderRadius.circular(7),
+                //   title: 'Login with Apple',
+                //   useLoader: true,
+                //   buttonTitle: Text(
+                //     'Login with Apple',
+                //     style: GoogleFonts.poppins(
+                //       fontSize: normalText,
+                //       fontWeight: FontWeight.w500,
+                //       color: Colors.black,
+                //     ),
+                //   ),
+                //   titleColor: Colors.black,
+                //   width: double.infinity,
+                //   fontSize: normalText,
+                //   onPressed: () {},
+                // ),
+                // const VSpace(whiteSpace),
+                // FreedomButton(
+                //   backGroundColor: socialLoginColor,
+                //   leadingIcon: 'google_icon',
+                //   useLoader: true,
+                //   borderRadius: BorderRadius.circular(7),
+                //   buttonTitle: Text(
+                //     'Login with Google',
+                //     style: GoogleFonts.poppins(
+                //       fontSize: normalText,
+                //       fontWeight: FontWeight.w500,
+                //       color: Colors.black,
+                //     ),
+                //   ),
+                //   titleColor: Colors.black,
+                //   fontSize: normalText,
+                //   width: double.infinity,
+                //   onPressed: () {},
+                // ),
+                // const VSpace(whiteSpace),
                 SizedBox(
                   width: Responsive.width(context),
                   child: const Row(
@@ -213,7 +209,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     children: [
                       Text("Don't have an account? "),
                       GradientText(
-                        text: 'Sign up here',
+                        text: 'Sign up',
                         routeNameToMoveTo: RegisterFormScreen.routeName,
                       ),
                     ],

@@ -419,7 +419,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                           children: [
                             Text('Already have an account? '),
                             GradientText(
-                              text: 'Login here',
+                              text: 'Login',
                               routeNameToMoveTo: LoginFormScreen.routeName,
                             ),
                           ],
