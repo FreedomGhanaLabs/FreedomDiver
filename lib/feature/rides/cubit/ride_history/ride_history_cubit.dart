@@ -73,10 +73,13 @@ class RideHistoryCubit extends Cubit<RideHistoryState> {
   }
 
   /// Forces cache invalidation and reloads ride history
-  Future<void> refreshRideHistory(BuildContext context) async {
+  Future<void> refreshRideHistory(
+    BuildContext context, [
+    bool showOverlay = true,
+  ]) async {
     _cachedRide = null;
     _cacheTimestamp = null;
-    await getAllRideHistories(context);
+    await getAllRideHistories(context, showOverlay: showOverlay);
   }
 
   void invalidateCache() {

@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/driver.model.dart';
-import 'package:freedomdriver/feature/earnings/cubit/earnings_cubit.dart';
 import 'package:freedomdriver/feature/earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
@@ -19,12 +18,14 @@ import 'package:freedomdriver/feature/home/view/widgets/driver_total_score.dart'
 import 'package:freedomdriver/feature/home/view/widgets/estimated_reach_time.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_time_line.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
+
+import '../../../shared/api/load_dashboard.dart';
+import '../../main_activity/cubit/main_activity_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -52,22 +53,15 @@ class _HomeScreenState extends State<_HomeScreen> {
       backgroundColor: Colors.white,
       body: RefreshIndicator(
         color: gradient1,
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
         onRefresh: () async {
-          await Future.wait([
-            context
-                .read<DriverCubit>()
-                .getDriverProfile(context, forceRefresh: true),
-            context.read<EarningCubit>().refreshEarnings(context),
-            context.read<RideHistoryCubit>().refreshRideHistory(context),
-          ]);
+          await loadDashboard(context);
         },
         child: Stack(
           children: [
             const EarningsBackgroundWidget(),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: smallWhiteSpace,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
               child: Column(
                 children: [
                   VSpace(
@@ -111,16 +105,12 @@ class _HomeScreenState extends State<_HomeScreen> {
 }
 
 class HomeActivity extends StatelessWidget {
-  const HomeActivity({
-    super.key,
-  });
+  const HomeActivity({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: smallWhiteSpace,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
       child: Row(
         children: [
           const Text(
@@ -132,7 +122,7 @@ class HomeActivity extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: () {},
+            onTap: () => context.read<MainActivityCubit>().changeIndex(2),
             child: const Text(
               'See All',
               textAlign: TextAlign.center,
@@ -143,10 +133,7 @@ class HomeActivity extends StatelessWidget {
               ),
             ),
           ),
-          const AppIcon(
-            iconName: 'right-arrow',
-            size: smallText,
-          ),
+          const AppIcon(iconName: 'right-arrow', size: smallText),
         ],
       ),
     );
@@ -154,9 +141,7 @@ class HomeActivity extends StatelessWidget {
 }
 
 class HomeRide extends StatelessWidget {
-  const HomeRide({
-    super.key,
-  });
+  const HomeRide({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -191,9 +176,7 @@ class HomeRide extends StatelessWidget {
                 ),
               ),
               const VSpace(extraSmallWhiteSpace),
-              Image.asset(
-                'assets/app_images/driver_image.png',
-              ),
+              Image.asset('assets/app_images/driver_image.png'),
               const VSpace(smallWhiteSpace),
               if (state.rideStatus == RideStatus.searching)
                 Text(
@@ -222,9 +205,7 @@ class HomeRide extends StatelessWidget {
                         ),
                       ],
                       child: BlocBuilder<HomeCubit, HomeState>(
-                        key: ValueKey(
-                          state.rideStatus,
-                        ),
+                        key: ValueKey(state.rideStatus),
                         builder: (context, state) {
                           log('Current state 2: ${state.rideStatus}');
 
@@ -248,9 +229,7 @@ class HomeRide extends StatelessWidget {
                               left: 22,
                               right: 22,
                             ),
-                            borderRadius: BorderRadius.circular(
-                              4.95,
-                            ),
+                            borderRadius: BorderRadius.circular(4.95),
                             textStyle: TextStyle(
                               fontSize: paragraphText.sp,
                               color: Colors.white,
@@ -265,14 +244,15 @@ class HomeRide extends StatelessWidget {
                     builder: (context, state) {
                       return Expanded(
                         child: SimpleButton(
-                          title: state.rideStatus == RideStatus.accepted
-                              ? 'Navigate'
-                              : 'Search Another Area',
+                          title:
+                              state.rideStatus == RideStatus.accepted
+                                  ? 'Navigate'
+                                  : 'Search Another Area',
                           onPressed: () {
                             if (state.rideStatus == RideStatus.accepted) {
-                              Navigator.of(context).pushNamed(
-                                InAppCallMap.routeName,
-                              );
+                              Navigator.of(
+                                context,
+                              ).pushNamed(InAppCallMap.routeName);
                             }
                           },
                           backgroundColor: greyColor,
@@ -282,9 +262,7 @@ class HomeRide extends StatelessWidget {
                             left: 22,
                             right: 22,
                           ),
-                          borderRadius: BorderRadius.circular(
-                            4.95,
-                          ),
+                          borderRadius: BorderRadius.circular(4.95),
                           textStyle: TextStyle(
                             fontSize: paragraphText.sp,
                             color: Colors.black,
@@ -304,9 +282,7 @@ class HomeRide extends StatelessWidget {
 }
 
 class HomeEarnings extends StatelessWidget {
-  const HomeEarnings({
-    super.key,
-  });
+  const HomeEarnings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +368,8 @@ class HomeHeader extends StatelessWidget {
                     showCupertinoModalPopup(
                       useRootNavigator: false,
                       context: context,
-                      builder: (context) => CupertinoActionSheet(
+                      builder:
+                          (context) => CupertinoActionSheet(
                             title: Text(
                               'Select Ride Preference - Ride, Deliver, or Both',
                               style: normalTextStyle,
@@ -401,52 +378,53 @@ class HomeHeader extends StatelessWidget {
                               'Choose your service type: offer rides, make deliveries, or do both. Customize your experience to match your goals.',
                               style: paragraphTextStyle,
                             ),
-                        actions: [
-                          CupertinoActionSheetAction(
-                            child: Text(
-                              'Rides only',
+                            actions: [
+                              CupertinoActionSheetAction(
+                                child: Text(
+                                  'Rides only',
                                   style: TextStyle(color: gradient1),
-                            ),
-                            onPressed: () async {
-                              await driverCubit.updateDriverRidePreference(
-                                context,
-                                newRidePreference: 'normal',
-                              );
+                                ),
+                                onPressed: () async {
+                                  await driverCubit.updateDriverRidePreference(
+                                    context,
+                                    newRidePreference: 'normal',
+                                  );
 
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          CupertinoActionSheetAction(
-                            child: Text(
-                              'Deliveries only',
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              CupertinoActionSheetAction(
+                                child: Text(
+                                  'Deliveries only',
                                   style: TextStyle(color: gradient1),
-                            ),
-                            onPressed: () async {
-                              await driverCubit.updateDriverRidePreference(
-                                context,
-                                newRidePreference: 'delivery',
-                              );
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          CupertinoActionSheetAction(
-                            child: Text(
-                              'Rides and Deliveries ',
+                                ),
+                                onPressed: () async {
+                                  await driverCubit.updateDriverRidePreference(
+                                    context,
+                                    newRidePreference: 'delivery',
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              CupertinoActionSheetAction(
+                                child: Text(
+                                  'Rides and Deliveries ',
                                   style: TextStyle(color: gradient1),
-                            ),
-                            onPressed: () async {
-                              await driverCubit
-                                  .updateDriverRidePreference(context);
-                              Navigator.of(context).pop();
-                            },
+                                ),
+                                onPressed: () async {
+                                  await driverCubit.updateDriverRidePreference(
+                                    context,
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              CupertinoActionSheetAction(
+                                isDestructiveAction: true,
+                                child: const Text('Close'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ],
                           ),
-                          CupertinoActionSheetAction(
-                            isDestructiveAction: true,
-                            child: const Text('Close'),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                        ],
-                      ),
                     );
                   },
                   child: Row(
@@ -507,10 +485,7 @@ class DriverStatusToggler extends StatelessWidget {
                     borderRadius: BorderRadius.circular(roundedMd),
                     color: activeColor.withValues(alpha: 0.05),
                     border: Border.fromBorderSide(
-                      BorderSide(
-                        color: activeColor,
-                        width: 1.25,
-                      ),
+                      BorderSide(color: activeColor, width: 1.25),
                     ),
                   ),
                   child: Row(

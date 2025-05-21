@@ -6,7 +6,7 @@ import 'package:freedomdriver/feature/home/view/home_screen.dart';
 import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
 import 'package:freedomdriver/feature/profile/view/profile_screen.dart';
 import 'package:freedomdriver/feature/rides/view/rides_screen.dart';
-import 'package:freedomdriver/shared/api/load_dasboard.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 
 

@@ -43,7 +43,7 @@ class App extends StatelessWidget {
             BlocProvider(create: (_) => VerifyOtpCubit()),
             BlocProvider(create: (_) => HomeCubit()),
             BlocProvider(create: (_) => DriverCubit()),
-            BlocProvider(create: (_) => DocumentUploadCubit()),
+            BlocProvider(create: (_) => DocumentCubit()),
             BlocProvider(create: (_) => DriverLicenseDetailsCubit()),
             BlocProvider(create: (_) => DriverLicenseImageCubit()),
             BlocProvider(create: (_) => KycCubit()),

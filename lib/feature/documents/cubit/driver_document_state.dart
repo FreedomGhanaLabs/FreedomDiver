@@ -9,12 +9,12 @@ abstract class DocumentUploadState extends Equatable {
 
 class DocumentUploadInitial extends DocumentUploadState {}
 
-class DocumentUploadLoading extends DocumentUploadState {}
+class DocumentLoading extends DocumentUploadState {}
 
-class DocumentUploadSuccess extends DocumentUploadState {}
+class DocumentSuccess extends DocumentUploadState {}
 
-class DocumentUploadError extends DocumentUploadState {
-  const DocumentUploadError(this.message);
+class DocumentError extends DocumentUploadState {
+  const DocumentError(this.message);
   final String message;
 
   @override

@@ -20,9 +20,9 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
     final type = args['type'].toString();
 
     final isAddress = type == 'address';
-    return BlocBuilder<DocumentUploadCubit, DocumentUploadState>(
+    return BlocBuilder<DocumentCubit, DocumentUploadState>(
       builder: (context, state) {
-        const uploading = DocumentUploadState is DocumentUploadLoading;
+        const uploading = DocumentUploadState is DocumentLoading;
         return CustomScreen(
           title: 'Document Verification',
           children: [
@@ -56,7 +56,7 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
               title: uploading ? 'Submitting' : 'Submit for Verification',
               onPressed: () async {
                 // context.read<RegistrationFormCubit>().registerDrivers();
-                final documentUploadCubit = context.read<DocumentUploadCubit>();
+                final documentUploadCubit = context.read<DocumentCubit>();
                 if (isAddress) {
                   await documentUploadCubit.uploadAddressProof(context);
                   return;

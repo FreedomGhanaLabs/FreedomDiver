@@ -13,12 +13,43 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 
-class DocumentUploadCubit extends Cubit<DocumentUploadState> {
-  DocumentUploadCubit() : super(DocumentUploadInitial());
+class DocumentCubit extends Cubit<DocumentUploadState> {
+  DocumentCubit() : super(DocumentUploadInitial());
 
   final apiController = ApiController('document');
+  // Driver? _cachedDriver;
+  // bool get hasDriver => _cachedDriver != null;
 
-  
+  Future<void> getDriverDocument(
+    BuildContext context, {
+    bool forceRefresh = false,
+  }) async {
+    // if (hasDriver && !forceRefresh) {
+    //   log('[DriverCubit] Using cached driver data');
+    //   _updateDriver(_cachedDriver!);
+    //   return;
+    // }
+    emit(DocumentLoading());
+
+    await handleApiCall(
+      context: context,
+      apiRequest: () async {
+        await apiController.getData(context, '', (success, data) {
+          if (success && data is Map<String, dynamic>) {
+            // final driver = Driver.fromJson(
+            //   data['data'] as Map<String, dynamic>,
+            // );
+
+            // _updateDriver(driver);
+          } else {
+            emit(const DocumentError('Failed to fetch driver documents'));
+          }
+        });
+      },
+      onError: (_) => emit(const DocumentError('Something went wrong')),
+    );
+  }
+
 
   // ------ Upload Driver License ------
   Future<void> uploadDriverLicense(BuildContext context) async {
@@ -33,7 +64,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
         'Please select a document',
         toastType: ToastType.info,
       );
-      emit(const DocumentUploadError('Please select a document'));
+      emit(const DocumentError('Please select a document'));
       return;
     }
 
@@ -59,7 +90,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       ),
     });
 
-    emit(DocumentUploadLoading());
+    emit(DocumentLoading());
     await handleApiCall(
       context: context,
       apiRequest: () async {
@@ -68,7 +99,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
           data,
         ) {
           if (success) {
-            emit(DocumentUploadSuccess());
+            emit(DocumentSuccess());
             context.read<DriverLicenseImageCubit>().resetImage();
             Navigator.pushReplacementNamed(
               context,
@@ -76,12 +107,12 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
             );
           } else {
             emit(
-              const DocumentUploadError('Failed to upload driver documents'),
+              const DocumentError('Failed to upload driver documents'),
             );
           }
         }, showOverlay: true);
       },
-      onError: (_) => emit(const DocumentUploadError('Something went wrong')),
+      onError: (_) => emit(const DocumentError('Something went wrong')),
     );
   }
 
@@ -97,7 +128,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
         'Please select a document',
         toastType: ToastType.info,
       );
-      emit(const DocumentUploadError('Please select a document'));
+      emit(const DocumentError('Please select a document'));
       return;
     }
 
@@ -130,7 +161,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       ),
     });
 
-    emit(DocumentUploadLoading());
+    emit(DocumentLoading());
 
     await handleApiCall(
       context: context,
@@ -140,7 +171,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
           data,
         ) {
           if (success) {
-            emit(DocumentUploadSuccess());
+            emit(DocumentSuccess());
             context.read<DriverLicenseImageCubit>().resetImage();
             Navigator.pushReplacementNamed(
               context,
@@ -148,7 +179,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
             );
           } else {
             emit(
-              const DocumentUploadError('Failed to upload driver documents'),
+              const DocumentError('Failed to upload driver documents'),
             );
             // Navigator.pushReplacementNamed(
             //   context,
@@ -157,7 +188,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
           }
         }, showOverlay: true);
       },
-      onError: (_) => emit(const DocumentUploadError('Something went wrong')),
+      onError: (_) => emit(const DocumentError('Something went wrong')),
     );
   }
 }

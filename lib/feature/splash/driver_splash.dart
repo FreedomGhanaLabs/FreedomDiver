@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freedomdriver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedomdriver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedomdriver/feature/onboarding/vew/onboarding_view.dart';
-import 'package:freedomdriver/shared/api/load_dasboard.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/utilities/hive/onboarding.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 
