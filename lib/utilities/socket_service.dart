@@ -49,6 +49,7 @@ class DriverSocketService {
   }) async {
     final token = await getTokenFromHive();
     _socket?.disconnect();
+    
     _socket = io.io(ApiConstants.baseUrl, {
       DriverSocketConstants.authKey: {DriverSocketConstants.tokenKey: token},
       DriverSocketConstants.transportsKey: [
@@ -58,9 +59,9 @@ class DriverSocketService {
     });
 
     _socket!.onConnect((_) {
-      log(DriverSocketConstants.socketConnected);
+      log("${DriverSocketConstants.socketConnected} ${_socket!.id}");
       setDriverStatus(available: true);
-      
+
       onConnect?.call();
     });
 
@@ -73,7 +74,8 @@ class DriverSocketService {
       log('${DriverSocketConstants.socketConnectionError}$err');
     });
 
-    _socket!.on(DriverSocketConstants.newRideRequest, (data) {
+    _socket!.on('new_ride_request', (data) {
+      //DriverSocketConstants.newRideRequest
       log('${DriverSocketConstants.newRideRequestLog}$data');
       final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
       NotificationService.sendNotification(

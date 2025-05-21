@@ -11,7 +11,6 @@ import 'package:freedomdriver/shared/api/api_handler.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 
-
 class DriverCubit extends Cubit<DriverState> {
   DriverCubit() : super(DriverInitial());
 
@@ -51,8 +50,9 @@ class DriverCubit extends Cubit<DriverState> {
       apiRequest: () async {
         await apiController.getData(context, 'profile', (success, data) {
           if (success && data is Map<String, dynamic>) {
-            final driver =
-                Driver.fromJson(data['data'] as Map<String, dynamic>);
+            final driver = Driver.fromJson(
+              data['data'] as Map<String, dynamic>,
+            );
 
             _updateDriver(driver);
           } else {
@@ -71,33 +71,34 @@ class DriverCubit extends Cubit<DriverState> {
   }) async {
     if (!hasDriver) return;
 
-    final current = setAvailable
-        ? DriverStatus.unavailable.name
-        : (_cachedDriver!.status ?? DriverStatus.unavailable.name);
+    final current =
+        setAvailable
+            ? DriverStatus.unavailable.name
+            : (_cachedDriver!.status ?? DriverStatus.unavailable.name);
     final isUnavailable = current == DriverStatus.unavailable.name;
-    final newStatus = isUnavailable
-        ? DriverStatus.available.name
-        : DriverStatus.unavailable.name;
+    final newStatus =
+        isUnavailable
+            ? DriverStatus.available.name
+            : DriverStatus.unavailable.name;
 
     _emitIfChanged(_cachedDriver!.copyWith(status: newStatus));
     DriverLocationService().sendCurrentLocationOnce(context);
 
     await handleApiCall(
       context: context,
-      apiRequest: () => apiController.put(
-        context,
-        'status',
-        {'status': newStatus},
-        (success, _) {
-          if (success) {
-            log('[DriverCubit] Status updated: $newStatus');
-            if (toggleOnlyApi) return;
-            driverSocketService.setDriverStatus(available: isUnavailable);
-          } else {
-            _emitIfChanged(_cachedDriver!.copyWith(status: current));
-          }
-        },
-      ),
+      apiRequest:
+          () => apiController.put(context, 'status', {'status': newStatus}, (
+            success,
+            _,
+          ) {
+            if (success) {
+              log('[DriverCubit] Status updated: $newStatus');
+              if (toggleOnlyApi) return;
+              driverSocketService.setDriverStatus(available: isUnavailable);
+            } else {
+              _emitIfChanged(_cachedDriver!.copyWith(status: current));
+            }
+          }),
       onFailure: () => _emitIfChanged(_cachedDriver!.copyWith(status: current)),
     );
   }
@@ -126,13 +127,11 @@ class DriverCubit extends Cubit<DriverState> {
         (success, responseData) {
           if (success) {
             log('[DriverCubit] coordinates updated: $newLocation');
+            // log(responseData.toString());
           } else {
             _emitIfChanged(
               _cachedDriver!.copyWith(
-                location: DriverLocation(
-                  type: 'Point',
-                  coordinates: previous,
-                ),
+                location: DriverLocation(type: 'Point', coordinates: previous),
               ),
             );
           }
@@ -142,10 +141,7 @@ class DriverCubit extends Cubit<DriverState> {
       log('[DriverCubit] location error: $e');
       _emitIfChanged(
         _cachedDriver!.copyWith(
-          location: DriverLocation(
-            type: 'Point',
-            coordinates: previous,
-          ),
+          location: DriverLocation(type: 'Point', coordinates: previous),
         ),
       );
     }
@@ -170,7 +166,9 @@ class DriverCubit extends Cubit<DriverState> {
         {'ridePreference': newRidePreference},
         (success, responseData) {
           if (success) {
-            log('[DriverCubit] new Ride Preference updated: $newRidePreference');
+            log(
+              '[DriverCubit] new Ride Preference updated: $newRidePreference',
+            );
             _updateDriverRidePreference(newRidePreference);
           } else {
             _updateDriverRidePreference(currentRidePreference);
@@ -184,10 +182,7 @@ class DriverCubit extends Cubit<DriverState> {
     }
   }
 
-  Future<void> requestEmailUpdate(
-    BuildContext context,
-    String newEmail,
-  ) async {
+  Future<void> requestEmailUpdate(BuildContext context, String newEmail) async {
     if (!hasDriver) return;
 
     final previous = _cachedDriver?.email ?? '';
@@ -239,10 +234,7 @@ class DriverCubit extends Cubit<DriverState> {
         (success, responseData) {
           if (success) {
             _updateDriverEmail(email);
-            Navigator.pushReplacementNamed(
-              context,
-              ProfileDetails.routeName,
-            );
+            Navigator.pushReplacementNamed(context, ProfileDetails.routeName);
           } else {
             _updateDriverEmail(email);
           }
@@ -255,10 +247,7 @@ class DriverCubit extends Cubit<DriverState> {
     }
   }
 
-  Future<void> requestPhoneUpdate(
-    BuildContext context,
-    String newPhone,
-  ) async {
+  Future<void> requestPhoneUpdate(BuildContext context, String newPhone) async {
     if (_cachedDriver == null) return;
 
     final phone = _cachedDriver?.phone ?? '';
@@ -309,10 +298,7 @@ class DriverCubit extends Cubit<DriverState> {
           if (success) {
             log('[DriverCubit] phone verification: $verificationCode');
             _updateDriverEmail(email);
-            Navigator.pushReplacementNamed(
-              context,
-              ProfileDetails.routeName,
-            );
+            Navigator.pushReplacementNamed(context, ProfileDetails.routeName);
           } else {
             _updateDriverEmail(email);
           }
@@ -376,25 +362,24 @@ class DriverCubit extends Cubit<DriverState> {
     final surname = _cachedDriver?.surname ?? '';
 
     try {
-      await apiController.getData(
-        context,
-        'name-update-status',
-        (success, responseData) {
-          if (success) {
-            final pendingNameUpdate = responseData['pendingNameUpdate'];
-            log('[DriverCubit] cancelNameUpdate update sent: $firstName');
-            _updateDriverName(
-              pendingNameUpdate['firstName'].toString(),
-              pendingNameUpdate['otherName'].toString(),
-              pendingNameUpdate['surname'].toString(),
-              pendingNameUpdate['status'].toString(),
-              DateTime.tryParse(pendingNameUpdate['requestedAt'].toString()),
-            );
-          } else {
-            _updateDriverName(firstName, otherName, surname, 'pending', null);
-          }
-        },
-      );
+      await apiController.getData(context, 'name-update-status', (
+        success,
+        responseData,
+      ) {
+        if (success) {
+          final pendingNameUpdate = responseData['pendingNameUpdate'];
+          log('[DriverCubit] cancelNameUpdate update sent: $firstName');
+          _updateDriverName(
+            pendingNameUpdate['firstName'].toString(),
+            pendingNameUpdate['otherName'].toString(),
+            pendingNameUpdate['surname'].toString(),
+            pendingNameUpdate['status'].toString(),
+            DateTime.tryParse(pendingNameUpdate['requestedAt'].toString()),
+          );
+        } else {
+          _updateDriverName(firstName, otherName, surname, 'pending', null);
+        }
+      });
     } catch (e) {
       log('[DriverCubit] pendingNameUpdate error: $e');
       _updateDriverName(firstName, otherName, surname, 'pending', null);
@@ -405,18 +390,17 @@ class DriverCubit extends Cubit<DriverState> {
     if (_cachedDriver == null) return;
 
     try {
-      await apiController.destroy(
-        context,
-        'cancel-update-update',
-        (success, responseData) {
-          if (success) {
-            log('[DriverCubit] Canceled pendingNameUpdate');
-            _cancelPendingDriverNameRequest();
-          } else {
-            _cancelPendingDriverNameRequest();
-          }
-        },
-      );
+      await apiController.destroy(context, 'cancel-update-update', (
+        success,
+        responseData,
+      ) {
+        if (success) {
+          log('[DriverCubit] Canceled pendingNameUpdate');
+          _cancelPendingDriverNameRequest();
+        } else {
+          _cancelPendingDriverNameRequest();
+        }
+      });
     } catch (e) {
       log('[DriverCubit] Cancel pendingNameUpdate error: $e');
       _cancelPendingDriverNameRequest();

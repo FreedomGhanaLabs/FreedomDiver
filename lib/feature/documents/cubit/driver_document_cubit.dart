@@ -18,6 +18,8 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
 
   final apiController = ApiController('document');
 
+  
+
   // ------ Upload Driver License ------
   Future<void> uploadDriverLicense(BuildContext context) async {
     final driver = context.driver;
