@@ -13,7 +13,7 @@ class EarningCubit extends Cubit<EarningState> {
   final _apiController = ApiController('ride');
 
   static String errorMessage(String firstName) {
-    return 'Sorry $firstName! We could not retrieve your earnings at the moment. Please ensure that you have good internet connection or restart the app. If this difficulty persist please contact our support team';
+    return 'Sorry $firstName! We could not retrieve your earnings at the moment. Please ensure that you have a good internet connection or restart the app. If this difficulty persist please contact our support team';
   }
 
   Earning? _cachedEarning;
@@ -40,7 +40,6 @@ class EarningCubit extends Cubit<EarningState> {
       await _apiController.getData(context, 'earnings?period=$period',
           (success, data) {
         if (success) {
-          log('${data['data']} data from earning api');
           final earning =
               Earning.fromJson(data['data'] as Map<String, dynamic>);
           _cachedEarning = earning;

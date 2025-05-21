@@ -26,17 +26,17 @@ class UploadButton extends StatelessWidget {
     final type = args['type'] as String?;
 
     final isAddress = type == 'address';
-    return BlocBuilder<DriverLicenseImageCubit, DriverLicenseImageState>(
+    return BlocBuilder<DriverLicenseImageCubit, DriverImageState>(
       
       builder: (context, state) {
         return Column(
           children: [
             CustomDottedBorder(isAddress: isAddress),
-            if (state is DriverLicenseImageLoading) ...[
+            if (state is DriverImageLoading) ...[
               const VSpace(smallWhiteSpace),
               showProgressIndicator(),
             ],
-            if (state is DriverLicenseImageSelected) ...[
+            if (state is DriverImageSelected) ...[
               const VSpace(smallWhiteSpace),
               buildSelectedImage(context, state.image),
               const VSpace(whiteSpace),

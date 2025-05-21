@@ -7,22 +7,23 @@ import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/file_service.dart';
 
-class DriverLicenseImageCubit extends Cubit<DriverLicenseImageState> {
-  DriverLicenseImageCubit() : super(DriverLicenseImageInitial());
+class DriverLicenseImageCubit extends Cubit<DriverImageState> {
+  DriverLicenseImageCubit() : super(DriverImageInitial());
 
   Future<void> pickImage(BuildContext context, {bool gallery = false}) async {
     try {
-      emit(DriverLicenseImageLoading());
+      emit(DriverImageLoading());
       final fileService = FileService();
 
-      final pickedFile = gallery
-          ? await fileService.pickFromGallery()
-          : await fileService.captureFromCamera();
+      final pickedFile =
+          gallery
+              ? await fileService.pickFromGallery()
+              : await fileService.captureFromCamera();
 
       if (pickedFile != null) {
-        emit(DriverLicenseImageSelected(pickedFile));
+        emit(DriverImageSelected(pickedFile));
       } else {
-        emit(DriverLicenseImageInitial());
+        emit(DriverImageInitial());
       }
     } catch (e) {
       log('Error picking image: $e');
@@ -32,8 +33,12 @@ class DriverLicenseImageCubit extends Cubit<DriverLicenseImageState> {
         'An error occurred while choosing document',
         toastType: ToastType.error,
       );
-      emit(DriverLicenseImageInitial());
-      emit(const DriverLicenseImageError('Failed to pick image'));
+      emit(DriverImageInitial());
+      emit(const DriverImageError('Failed to pick image'));
     }
+  }
+
+  void resetImage() {
+    emit(DriverImageInitial());
   }
 }

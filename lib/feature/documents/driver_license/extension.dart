@@ -20,7 +20,7 @@ extension DriverExtension on BuildContext {
 
   File? get document {
     final state = read<DriverLicenseImageCubit>().state;
-    if (state is DriverLicenseImageSelected) {
+    if (state is DriverImageSelected) {
       return state.image;
     }
     return null;

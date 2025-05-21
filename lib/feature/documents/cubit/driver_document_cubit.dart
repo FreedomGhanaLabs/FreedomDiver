@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
 import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedomdriver/feature/documents/driver_license/extension.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
@@ -66,6 +67,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
         ) {
           if (success) {
             emit(DocumentUploadSuccess());
+            context.read<DriverLicenseImageCubit>().resetImage();
             Navigator.pushReplacementNamed(
               context,
               VerificationStatusScreen.routeName,
@@ -137,6 +139,7 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
         ) {
           if (success) {
             emit(DocumentUploadSuccess());
+            context.read<DriverLicenseImageCubit>().resetImage();
             Navigator.pushReplacementNamed(
               context,
               VerificationStatusScreen.routeName,

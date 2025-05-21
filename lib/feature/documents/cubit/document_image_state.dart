@@ -1,29 +1,28 @@
-// ---------- DRIVER LICENSE IMAGE STATE ----------
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 
-abstract class DriverLicenseImageState extends Equatable {
-  const DriverLicenseImageState();
+abstract class DriverImageState extends Equatable {
+  const DriverImageState();
 
   @override
   List<Object?> get props => [];
 }
 
-class DriverLicenseImageInitial extends DriverLicenseImageState {}
+class DriverImageInitial extends DriverImageState {}
 
-class DriverLicenseImageLoading extends DriverLicenseImageState {}
+class DriverImageLoading extends DriverImageState {}
 
-class DriverLicenseImageSelected extends DriverLicenseImageState {
-  const DriverLicenseImageSelected(this.image);
+class DriverImageSelected extends DriverImageState {
+  const DriverImageSelected(this.image);
   final File image;
 
   @override
   List<Object?> get props => [image];
 }
 
-class DriverLicenseImageError extends DriverLicenseImageState {
-  const DriverLicenseImageError(this.message);
+class DriverImageError extends DriverImageState {
+  const DriverImageError(this.message);
   final String message;
 
   @override
