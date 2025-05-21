@@ -65,7 +65,6 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
                 await documentUploadCubit.uploadDriverLicense(context);
               },
               backgroundColor: Colors.black,
-              borderRadius: BorderRadius.circular(7),
             ),
           ],
         );

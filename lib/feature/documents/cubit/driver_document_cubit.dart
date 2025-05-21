@@ -8,6 +8,9 @@ import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/shared/widgets/verification_status_screen.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart' as p;
 
 class DocumentUploadCubit extends Cubit<DocumentUploadState> {
   DocumentUploadCubit() : super(DocumentUploadInitial());
@@ -31,6 +34,10 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       return;
     }
 
+    final fileExt = p.extension(documentFile.path);
+    final mimeType = lookupMimeType(documentFile.path);
+    final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
+
     final formData = FormData.fromMap({
       'documentType': 'driverLicense',
       'licenseNumber': driverLicense?.licenseNumber,
@@ -44,7 +51,8 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       'expiryDate': driverLicense?.expiryDate,
       'document': await MultipartFile.fromFile(
         documentFile.path,
-        filename: 'driverLicense-${driver?.fullName}-${driver?.id}.jpeg',
+        filename: 'driverLicense-${driver?.fullName}-${driver?.id}$fileExt',
+        contentType: mediaType,
       ),
     });
 
@@ -52,25 +60,22 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        await apiController.uploadFile(
-          context,
-          'upload',
-          formData,
-          (success, data) {
-            if (success) {
-              emit(DocumentUploadSuccess());
-              Navigator.pushReplacementNamed(
-                context,
-                VerificationStatusScreen.routeName,
-              );
-            } else {
-              emit(
-                const DocumentUploadError('Failed to upload driver documents'),
-              );
-            }
-          },
-          showOverlay: true,
-        );
+        await apiController.uploadFile(context, 'upload', formData, (
+          success,
+          data,
+        ) {
+          if (success) {
+            emit(DocumentUploadSuccess());
+            Navigator.pushReplacementNamed(
+              context,
+              VerificationStatusScreen.routeName,
+            );
+          } else {
+            emit(
+              const DocumentUploadError('Failed to upload driver documents'),
+            );
+          }
+        }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentUploadError('Something went wrong')),
     );
@@ -102,7 +107,9 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       return;
     }
 
-    // final pathStrip = documentFile.path.split('.');
+    final fileExt = p.extension(documentFile.path);
+    final mimeType = lookupMimeType(documentFile.path);
+    final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
 
     final formData = FormData.fromMap({
       'addressType': 'utility_bill',
@@ -114,43 +121,38 @@ class DocumentUploadCubit extends Cubit<DocumentUploadState> {
       'documentType': 'addressProof',
       'document': await MultipartFile.fromFile(
         documentFile.path,
-        filename: 'addressProof-${driver.fullName}-${driver.id}',
+        filename: 'addressProof-${driver.fullName}-${driver.id}$fileExt',
+        contentType: mediaType,
       ),
     });
 
-
     emit(DocumentUploadLoading());
-    // log('${formData.fields} $pathStrip');
+
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        await apiController.uploadFile(
-          context,
-          'address',
-          formData,
-          (success, data) {
-            if (success) {
-              emit(DocumentUploadSuccess());
-              Navigator.pushReplacementNamed(
-                context,
-                VerificationStatusScreen.routeName,
-              );
-            } else {
-              emit(
-                const DocumentUploadError('Failed to upload driver documents'),
-              );
-              // Navigator.pushReplacementNamed(
-              //   context,
-              //   VerificationStatusScreen.routeName,
-              // );
-            }
-          },
-          showOverlay: true,
-        );
+        await apiController.uploadFile(context, 'address', formData, (
+          success,
+          data,
+        ) {
+          if (success) {
+            emit(DocumentUploadSuccess());
+            Navigator.pushReplacementNamed(
+              context,
+              VerificationStatusScreen.routeName,
+            );
+          } else {
+            emit(
+              const DocumentUploadError('Failed to upload driver documents'),
+            );
+            // Navigator.pushReplacementNamed(
+            //   context,
+            //   VerificationStatusScreen.routeName,
+            // );
+          }
+        }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentUploadError('Something went wrong')),
     );
   }
-
-
 }
