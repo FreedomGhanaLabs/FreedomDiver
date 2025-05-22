@@ -12,7 +12,7 @@ dependencies:
   country_code_picker: ^3.1.0
   country_state_city_picker: ^1.2.8
   dio: ^5.8.0+1
-  dotted_border: ^2.1.0
+  dotted_border: ^3.0.1
   equatable: ^2.0.7
   file_picker: ^10.1.2
   firebase_core: ^3.13.0
@@ -55,7 +55,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4
-  very_good_analysis: ^6.0.0
+  very_good_analysis: ^7.0.0
   change_app_package_name: ^1.5.0
 
   flutter_lints: ^5.0.0

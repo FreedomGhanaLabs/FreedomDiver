@@ -1,7 +1,7 @@
 import 'dart:io';
 
-void main(List<String>? params) async {
-  List<String> args = ['run', 'android'];
+void main(List<String> args) async {
+  // List<String> args = ['run', 'android'];
 
   if (args.length < 2) {
     print('Usage: dart app_runner.dart [run|build] [android|ios|apk]');

@@ -42,6 +42,7 @@ android {
         versionName = flutter.versionName
 
         resValue("string", "google_maps_api_key", googleMapsApiKey)
+        println("✅ GOOGLE_MAPS_API_KEY: ${googleMapsApiKey ?: "NOT SET"}")
     }
 
     signingConfigs {
