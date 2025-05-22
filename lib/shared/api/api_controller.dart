@@ -95,6 +95,7 @@ class ApiController {
     bool showOverlay = false,
   }) async {
     if (showOverlay) showLoadingOverlay(context);
+    debugPrint('$baseUrl$endpoint');
     try {
       final response = await _dio.get(endpoint);
       final successMessage = response.data['message'].toString();

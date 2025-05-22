@@ -34,7 +34,7 @@ class DocumentCubit extends Cubit<DocumentUploadState> {
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        await apiController.getData(context, '', (success, data) {
+        await ApiController('').getData(context, 'documents', (success, data) {
           if (success && data is Map<String, dynamic>) {
             // final driver = Driver.fromJson(
             //   data['data'] as Map<String, dynamic>,
