@@ -1,16 +1,10 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "fredomdriver",
             "request": "launch",
             "type": "dart",
-            "args": [
-                "--dart-define=MAPS_API_KEY=AIzaSyAG5ZidnV3a-wuHwUg8bd_hLrEVbTvWAno"
-            ]
         },
         {
             "name": "fredomdriver (profile mode)",
@@ -23,6 +17,46 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+        },
+        {
+            "name": "Flutter Run with .env (Android)",
+            "type": "dart",
+            "request": "launch",
+            "program": "app_runner.dart",
+            "args": [
+                "run",
+                "android"
+            ]
+        },
+        {
+            "name": "Flutter Run with .env (iOS)",
+            "type": "dart",
+            "request": "launch",
+            "program": "app_runner.dart",
+            "args": [
+                "run",
+                "ios"
+            ]
+        },
+        {
+            "name": "Flutter Build APK with .env",
+            "type": "dart",
+            "request": "launch",
+            "program": "app_runner.dart",
+            "args": [
+                "build",
+                "apk"
+            ]
+        },
+        {
+            "name": "Flutter Build iOS with .env",
+            "type": "dart",
+            "request": "launch",
+            "program": "app_runner.dart",
+            "args": [
+                "build",
+                "ios"
+            ]
         }
     ]
 }
