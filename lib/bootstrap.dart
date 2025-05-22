@@ -31,6 +31,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await Hive.initFlutter();
   await NotificationService.initializeNotifications();
+  // await DriverLocationService().requestPermission();
 
   await locator();
 

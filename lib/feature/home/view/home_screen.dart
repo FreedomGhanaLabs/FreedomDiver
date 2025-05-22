@@ -25,6 +25,7 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 
 import '../../../shared/api/load_dashboard.dart';
+import '../../../utilities/driver_location_service.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -45,6 +46,12 @@ class _HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<_HomeScreen> {
   void navigateToInAppCallAndMap() {
     Navigator.of(context).pushNamed(InAppCallMap.routeName);
+  }
+
+  @override
+  void initState() {
+    DriverLocationService().requestPermission();
+    super.initState();
   }
 
   @override

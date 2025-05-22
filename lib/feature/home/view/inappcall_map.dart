@@ -20,6 +20,8 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
+import '../../../utilities/map/eta.dart';
+
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});
   static const String routeName = '/inAppCallMap';
@@ -64,7 +66,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
     _setMapPins();
     _setPolylines().then((_) {
       _animateDriver();
-      _getETA().then((eta) {
+      getETA(_driverLocation, _pickupLocation).then((eta) {
         debugPrint('ETA: $eta');
         setState(() {
           averageTime = eta['duration'] ?? '0 mins';
@@ -149,7 +151,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
           Polyline(
             polylineId: const PolylineId('route'),
             width: 5,
-            color: Colors.blue,
+            color: gradient1,
             points: _polylineCoordinates,
           ),
         );
@@ -181,37 +183,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   final Dio dio = Dio();
 
-  Future<Map<String, String>> _getETA() async {
-    const apiKey = mapsAPIKey;
-    final originLat = _driverLocation!.latitude;
-    final originLng = _driverLocation!.longitude;
-    final destLat = _pickupLocation!.latitude;
-    final destLng = _pickupLocation!.longitude;
-
-    final url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=$originLat,$originLng&destination=$destLat,$destLng&key=$apiKey';
-
-    try {
-      final response = await dio.get(url);
-
-      if (response.statusCode == 200 &&
-          response.data['routes'].isNotEmpty as bool) {
-        // debugPrint('${response.data['routes'][0]}');
-        final duration =
-            response.data['routes'][0]['legs'][0]['duration']['text'];
-        final distance =
-            response.data['routes'][0]['legs'][0]['distance']['text'];
-        return {
-          'duration': duration as String,
-          'distance': distance.toString(),
-        };
-      } else {
-        throw Exception('No routes found or bad response.');
-      }
-    } catch (e) {
-      throw Exception('Failed to load ETA: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

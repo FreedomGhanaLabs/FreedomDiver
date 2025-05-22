@@ -13,7 +13,7 @@ class DriverLocationService {
 
   StreamSubscription<Position>? _positionStream;
 
-  Future<bool> _requestPermission() async {
+  Future<bool> requestPermission() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return false;
@@ -33,14 +33,14 @@ class DriverLocationService {
   Future<void> sendCurrentLocationOnce(BuildContext context) async {
     final position = await getCurrentLocation(context);
 
-    await _sendToBackend(context, position);
+    await sendToBackend(context, position);
   }
 
   Future<void> startLiveLocationUpdates(
     BuildContext context, {
     int distanceFilterMeters = 10,
   }) async {
-    if (!await _requestPermission()) return;
+    if (!await requestPermission()) return;
 
     const locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
@@ -49,7 +49,7 @@ class DriverLocationService {
 
     _positionStream = Geolocator.getPositionStream(
       locationSettings: locationSettings,
-    ).listen((position) => _sendToBackend(context, position));
+    ).listen((position) => sendToBackend(context, position));
   }
 
   void stopLiveLocationUpdates() {
@@ -82,14 +82,14 @@ class DriverLocationService {
     return LatLng(newLat, newLon);
   }
 
-  Future<void> _sendToBackend(BuildContext context, Position position) async {
+  Future<void> sendToBackend(BuildContext context, Position position) async {
     await context.read<DriverCubit>().updateDriverLocation(context, [
-      // 6.9074977,
-      // 4.8917135,
-      -73.9650, 40.7900,
-    ]); 
       // position.latitude,
       // position.longitude,
+      -73.9650, 40.7900,
+    ]);
+    // 6.9074977,
+    // 4.8917135,
       // -122.084,
     // 37.4219983,
   }
