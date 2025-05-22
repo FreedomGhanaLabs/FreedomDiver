@@ -196,7 +196,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
       if (response.statusCode == 200 &&
           response.data['routes'].isNotEmpty as bool) {
-        debugPrint('${response.data['routes'][0]}');
+        // debugPrint('${response.data['routes'][0]}');
         final duration =
             response.data['routes'][0]['legs'][0]['duration']['text'];
         final distance =

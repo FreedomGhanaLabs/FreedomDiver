@@ -6,6 +6,8 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
 
+val googleMapsApiKey = keystoreProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -38,10 +40,11 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        resValue("string", "google_maps_api_key", googleMapsApiKey)
     }
 
-    buildTypes {
-        signingConfigs {
+    signingConfigs {
         create("release") {
             if (keystoreProperties.containsKey("storeFile")) {
                 storeFile = file(keystoreProperties["storeFile"] as String)
@@ -59,13 +62,11 @@ android {
             isShrinkResources = true
         }
     }
-    }
 }
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
-
 
 flutter {
     source = "../.."

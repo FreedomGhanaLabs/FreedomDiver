@@ -1,6 +1,8 @@
 import 'dart:io';
 
-void main(List<String> args) async {
+void main(List<String>? params) async {
+  List<String> args = ['run', 'android'];
+
   if (args.length < 2) {
     print('Usage: dart app_runner.dart [run|build] [android|ios|apk]');
     exit(1);
@@ -9,7 +11,12 @@ void main(List<String> args) async {
   final mode = args[0];
   final platform = args[1];
 
-  final envFile = File('.env');
+var envFile = File('.env');
+  print('Current working directory: ${Directory.current.path}');
+  if (!envFile.existsSync()) {
+    // fallback
+    envFile = File('${Directory.current.path}/.env');
+  }
   if (!envFile.existsSync()) {
     print('[ERROR] .env file not found.');
     exit(1);
@@ -35,16 +42,30 @@ void main(List<String> args) async {
   List<String> command;
   switch ('$mode:$platform') {
     case 'run:android':
-      command = ['flutter', 'run', '-d', 'android', ...dartDefines];
+      command = ['flutter', 'run', ...dartDefines];
       break;
     case 'run:ios':
       command = ['flutter', 'run', '-d', 'ios', ...dartDefines];
       break;
     case 'build:apk':
-      command = ['flutter', 'build', 'apk', ...dartDefines];
+      command = [
+        'flutter',
+        'build',
+        'apk',
+        ...dartDefines,
+        '--obfuscate',
+        '--split-debug-info=build/debug-info',
+      ];
       break;
     case 'build:ios':
-      command = ['flutter', 'build', 'ios', ...dartDefines];
+      command = [
+        'flutter',
+        'build',
+        'ios',
+        ...dartDefines,
+        '--obfuscate',
+        '--split-debug-info=build/debug-info',
+      ];
       break;
     default:
       print('[ERROR] Unsupported mode/platform combination.');
