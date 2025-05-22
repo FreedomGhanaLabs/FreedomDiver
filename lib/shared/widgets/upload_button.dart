@@ -16,7 +16,6 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-
 class UploadButton extends StatelessWidget {
   const UploadButton({super.key});
 
@@ -27,7 +26,6 @@ class UploadButton extends StatelessWidget {
 
     final isAddress = type == 'address';
     return BlocBuilder<DriverLicenseImageCubit, DriverImageState>(
-      
       builder: (context, state) {
         return Column(
           children: [
@@ -59,58 +57,58 @@ class UploadButton extends StatelessWidget {
 }
 
 class CustomDottedBorder extends StatelessWidget {
-  const CustomDottedBorder({
-    required this.isAddress,
-    super.key,
-  });
+  const CustomDottedBorder({required this.isAddress, super.key});
 
   final bool isAddress;
 
   @override
   Widget build(BuildContext context) {
     return DottedBorder(
-      radius: const Radius.circular(roundedMd),
-      borderType: BorderType.RRect,
-      dashPattern: const [14, 4],
-      color: yellowGold,
+
+      options: RoundedRectDottedBorderOptions(
+        dashPattern: [10, 5],
+        strokeWidth: 2,
+        padding: EdgeInsets.all(smallWhiteSpace),
+        radius: const Radius.circular(roundedMd),
+        color: yellowGold,
+
+      ),
       child: GestureDetector(
         onTap: () {
           final driverLicenseImage = context.read<DriverLicenseImageCubit>();
           showCupertinoModalPopup(
             useRootNavigator: false,
             context: context,
-            builder: (context) => CupertinoActionSheet(
-              actions: [
-                CupertinoActionSheetAction(
-                  child: Text(
-                    'Snap Document',
-                    style: TextStyle(color: gradient1),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    driverLicenseImage.pickImage(context);
-                  },
+            builder:
+                (context) => CupertinoActionSheet(
+                  actions: [
+                    CupertinoActionSheetAction(
+                      child: Text(
+                        'Snap Document',
+                        style: TextStyle(color: gradient1),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        driverLicenseImage.pickImage(context);
+                      },
+                    ),
+                    CupertinoActionSheetAction(
+                      child: Text(
+                        'Choose from Gallery',
+                        style: TextStyle(color: gradient1),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        driverLicenseImage.pickImage(context, gallery: true);
+                      },
+                    ),
+                    CupertinoActionSheetAction(
+                      isDestructiveAction: true,
+                      child: const Text('Close'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
                 ),
-                CupertinoActionSheetAction(
-                  child: Text(
-                    'Choose from Gallery',
-                    style: TextStyle(color: gradient1),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    driverLicenseImage.pickImage(
-                      context,
-                      gallery: true,
-                    );
-                  },
-                ),
-                CupertinoActionSheetAction(
-                  isDestructiveAction: true,
-                  child: const Text('Close'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
           );
         },
         child: Container(
@@ -132,9 +130,7 @@ class CustomDottedBorder extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
                   color: Colors.transparent,
-                  border: Border.all(
-                    color: const Color(0xFFF59E0B),
-                  ),
+                  border: Border.all(color: const Color(0xFFF59E0B)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -180,9 +176,7 @@ Widget buildSelectedImage(BuildContext context, File image) {
     width: Responsive.isBigMobile(context) ? 375.sp : Responsive.width(context),
     decoration: ShapeDecoration(
       color: const Color(0x0AFFBA40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(7),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
     ),
     child: Image.file(image),
   );
