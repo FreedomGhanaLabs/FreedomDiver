@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
 import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart';
-import 'package:freedomdriver/feature/documents/driver_license/extension.dart';
+import 'package:freedomdriver/feature/documents/extension.dart';
 import 'package:freedomdriver/feature/documents/models/driver_documents.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
@@ -29,7 +29,11 @@ class DocumentCubit extends Cubit<DocumentState> {
     _cachedDriverDocument = updated;
     emit(DocumentLoaded(_cachedDriverDocument!));
   }
-
+  
+  void resetDocument() {
+    _cachedDriverDocument = null;
+    emit(DocumentInitial());
+  }
 
   Future<void> getDriverDocument(
     BuildContext context, {
@@ -59,6 +63,64 @@ class DocumentCubit extends Cubit<DocumentState> {
     );
   }
 
+//  ------ Upload Ghana Card ------
+  Future<void> uploadGhanaCard(BuildContext context) async {
+    final driver = context.driver;
+    final documentFile = context.document;
+    final ghanaCard = context.ghanaCard;
+
+    if (documentFile == null) {
+      showToast(
+        context,
+        'Error',
+        'Please select a document',
+        toastType: ToastType.info,
+      );
+      emit(const DocumentError('Please select a document'));
+      return;
+    }
+
+    final fileExt = p.extension(documentFile.path);
+    final mimeType = lookupMimeType(documentFile.path);
+    final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
+
+    final formData = FormData.fromMap({
+      'documentType': 'ghanaCard',
+      'personalIdNumber': ghanaCard?.personalIdNumber,
+      'surname': ghanaCard?.surname,
+      'firstName': ghanaCard?.firstName,
+      'otherName': ghanaCard?.otherName,
+      'sex': ghanaCard?.sex,
+      'dateOfBirth': ghanaCard?.dateOfBirth,
+      'height': ghanaCard?.height,
+      'expiryDate': ghanaCard?.expiryDate,
+      'document': await MultipartFile.fromFile(
+        documentFile.path,
+        filename: 'ghanaCard-${driver?.fullName}-${driver?.id}$fileExt',
+        contentType: mediaType,
+      ),
+    });
+
+    await handleApiCall(
+      context: context,
+      apiRequest: () async {
+        await apiController.uploadFile(context, 'upload', formData, (
+          success,
+          data,
+        ) {
+          if (success) {
+            emit(DocumentSuccess());
+            context.read<DriverImageCubit>().resetImage();
+            Navigator.pushReplacementNamed(
+              context,
+              VerificationStatusScreen.routeName,
+            );
+          }
+        }, showOverlay: true);
+      },
+      onError: (_) => emit(const DocumentError('Something went wrong')),
+    );
+  }
 
   // ------ Upload Driver License ------
   Future<void> uploadDriverLicense(BuildContext context) async {
@@ -109,7 +171,7 @@ class DocumentCubit extends Cubit<DocumentState> {
         ) {
           if (success) {
             emit(DocumentSuccess());
-            context.read<DriverLicenseImageCubit>().resetImage();
+            context.read<DriverImageCubit>().resetImage();
             Navigator.pushReplacementNamed(
               context,
               VerificationStatusScreen.routeName,
@@ -177,7 +239,7 @@ class DocumentCubit extends Cubit<DocumentState> {
         ) {
           if (success) {
             emit(DocumentSuccess());
-            context.read<DriverLicenseImageCubit>().resetImage();
+            context.read<DriverImageCubit>().resetImage();
             Navigator.pushReplacementNamed(
               context,
               VerificationStatusScreen.routeName,

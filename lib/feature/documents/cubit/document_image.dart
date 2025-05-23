@@ -7,8 +7,8 @@ import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/file_service.dart';
 
-class DriverLicenseImageCubit extends Cubit<DriverImageState> {
-  DriverLicenseImageCubit() : super(DriverImageInitial());
+class DriverImageCubit extends Cubit<DriverImageState> {
+  DriverImageCubit() : super(DriverImageInitial());
 
   Future<void> pickImage(BuildContext context, {bool gallery = false}) async {
     try {

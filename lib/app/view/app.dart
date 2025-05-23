@@ -7,6 +7,7 @@ import 'package:freedomdriver/feature/authentication/register/cubit/verify_otp_c
 import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
 import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
 import 'package:freedomdriver/feature/documents/driver_license/cubit/license_cubit.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/earnings/cubit/earnings_cubit.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
@@ -45,11 +46,12 @@ class App extends StatelessWidget {
             BlocProvider(create: (_) => DriverCubit()),
             BlocProvider(create: (_) => DocumentCubit()),
             BlocProvider(create: (_) => DriverLicenseDetailsCubit()),
-            BlocProvider(create: (_) => DriverLicenseImageCubit()),
+            BlocProvider(create: (_) => DriverImageCubit()),
             BlocProvider(create: (_) => KycCubit()),
             BlocProvider(create: (_) => RideCubit()),
             BlocProvider(create: (_) => RideHistoryCubit()),
             BlocProvider(create: (_) => EarningCubit()),
+            BlocProvider(create: (_) => GhanaCardCubit()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

@@ -25,7 +25,7 @@ class UploadButton extends StatelessWidget {
     final type = args['type'] as String?;
 
     final isAddress = type == 'address';
-    return BlocBuilder<DriverLicenseImageCubit, DriverImageState>(
+    return BlocBuilder<DriverImageCubit, DriverImageState>(
       builder: (context, state) {
         return Column(
           children: [
@@ -75,7 +75,7 @@ class CustomDottedBorder extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          final driverLicenseImage = context.read<DriverLicenseImageCubit>();
+          final driverLicenseImage = context.read<DriverImageCubit>();
           showCupertinoModalPopup(
             useRootNavigator: false,
             context: context,
