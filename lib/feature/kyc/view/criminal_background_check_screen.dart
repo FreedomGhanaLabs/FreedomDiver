@@ -10,6 +10,8 @@ import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../core/constants/documents.dart';
+
 class CriminalBackgroundCheckScreen extends StatelessWidget {
   const CriminalBackgroundCheckScreen({super.key});
   static const routeName = '/criminal-background-check-screen';
@@ -19,7 +21,9 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
     final args = getRouteParams(context);
     final type = args['type'].toString();
 
-    final isAddress = type == 'address';
+    final isAddress = type == address;
+    final isGhanaCard = type == ghanaCard;
+
     return BlocBuilder<DocumentCubit, DocumentState>(
       builder: (context, state) {
         const uploading = DocumentState is DocumentLoading;
@@ -55,16 +59,20 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
             SimpleButton(
               title: uploading ? 'Submitting' : 'Submit for Verification',
               onPressed: () async {
-                // context.read<RegistrationFormCubit>().registerDrivers();
                 final documentUploadCubit = context.read<DocumentCubit>();
+
                 if (isAddress) {
                   await documentUploadCubit.uploadAddressProof(context);
                   return;
                 }
 
+                if (isGhanaCard) {
+                  await documentUploadCubit.uploadGhanaCard(context);
+                  return;
+                }
+
                 await documentUploadCubit.uploadDriverLicense(context);
               },
-              backgroundColor: Colors.black,
             ),
           ],
         );

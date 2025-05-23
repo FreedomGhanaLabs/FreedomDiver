@@ -25,6 +25,6 @@ class DriverLicenseDetailsCubit extends Cubit<DriverLicenseDetailsState> {
       uploadedAt: DateTime.now(),
     );
 
-    emit(DriverLicenseDetailsLoaded(driverLicense));
+    emit(DriverLicenseLoaded(driverLicense));
   }
 }

@@ -27,6 +27,8 @@ import 'package:freedomdriver/router/error_route_screen.dart';
 import 'package:freedomdriver/shared/screens/success_screen.dart';
 import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 
+import '../feature/documents/ghana_card/view/ghana_card_form.dart';
+
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   log('Next Route: ${settings.name}');
   switch (settings.name) {
@@ -95,6 +97,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         (_) => const CriminalBackgroundCheckScreen(),
         settings: settings,
       );
+    case GhanaCardForm.routeName:
+      return _pageBuilder((_) => const GhanaCardForm(), settings: settings);
     case DriverLicenseForm.routeName:
       return _pageBuilder(
         (_) => const DriverLicenseForm(),

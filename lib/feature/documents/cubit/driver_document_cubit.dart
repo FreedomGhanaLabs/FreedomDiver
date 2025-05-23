@@ -8,6 +8,7 @@ import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart
 import 'package:freedomdriver/feature/documents/extension.dart';
 import 'package:freedomdriver/feature/documents/models/driver_documents.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
+import 'package:freedomdriver/feature/profile/view/profile_details.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
 import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
@@ -19,8 +20,7 @@ import 'package:path/path.dart' as p;
 class DocumentCubit extends Cubit<DocumentState> {
   DocumentCubit() : super(DocumentInitial());
 
-  final apiController = ApiController('documents');
-  final documentController = ApiController('document');
+  final apiController = ApiController('document');
 
   DriverDocument? _cachedDriverDocument;
   bool get hasDocument => _cachedDriverDocument != null;
@@ -49,7 +49,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        await documentController.getData(context, 'documents', (success, data) {
+        await apiController.getData(context, 'documents', (success, data) {
           if (success && data is Map<String, dynamic>) {
             final document = DriverDocument.fromJson(data['data']);
             _updateDocument(document);
@@ -58,6 +58,103 @@ class DocumentCubit extends Cubit<DocumentState> {
             log('[DocumentCubit] Failed to fetch driver documents: $data');
           }
         });
+      },
+      onError: (_) => emit(const DocumentError('Something went wrong')),
+    );
+  }
+
+//  ------ Upload Motorcycle Image ------
+  Future<void> uploadProfileImage(BuildContext context) async {
+    final driver = context.driver;
+    final documentFile = context.document;
+
+    if (documentFile == null) {
+      showToast(
+        context,
+        'Error',
+        'Please select an image',
+        toastType: ToastType.info,
+      );
+      emit(const DocumentError('Please select an image'));
+      return;
+    }
+
+    final fileExt = p.extension(documentFile.path);
+    final mimeType = lookupMimeType(documentFile.path);
+    final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
+
+    final formData = FormData.fromMap({
+      'documentType': DriverDocumentType.profilePicture.name,
+      'document': await MultipartFile.fromFile(
+        documentFile.path,
+        filename: 'profileImage-${driver?.fullName}-${driver?.id}$fileExt',
+        contentType: mediaType,
+      ),
+    });
+
+    await handleApiCall(
+      context: context,
+      apiRequest: () async {
+        await apiController.uploadFile(context, 'upload', formData, (
+          success,
+          data,
+        ) {
+          if (success) {
+            emit(DocumentSuccess());
+            context.read<DriverImageCubit>().resetImage();
+            Navigator.pushReplacementNamed(context, ProfileDetails.routeName);
+          }
+        }, showOverlay: true);
+      },
+      onError: (_) => emit(const DocumentError('Something went wrong')),
+    );
+  }
+
+  //  ------ Upload Motorcycle Image ------
+  Future<void> uploadMotorCycleImage(BuildContext context) async {
+    final driver = context.driver;
+    final documentFile = context.document;
+
+    if (documentFile == null) {
+      showToast(
+        context,
+        'Error',
+        'Please select a document',
+        toastType: ToastType.info,
+      );
+      emit(const DocumentError('Please select a document'));
+      return;
+    }
+
+    final fileExt = p.extension(documentFile.path);
+    final mimeType = lookupMimeType(documentFile.path);
+    final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
+
+    final formData = FormData.fromMap({
+      'documentType': DriverDocumentType.motorcycleImage.name,
+      'document': await MultipartFile.fromFile(
+        documentFile.path,
+        filename: 'motorcycleImage-${driver?.fullName}-${driver?.id}$fileExt',
+        contentType: mediaType,
+      ),
+    });
+
+    await handleApiCall(
+      context: context,
+      apiRequest: () async {
+        await apiController.uploadFile(context, 'upload', formData, (
+          success,
+          data,
+        ) {
+          if (success) {
+            emit(DocumentSuccess());
+            context.read<DriverImageCubit>().resetImage();
+            Navigator.pushReplacementNamed(
+              context,
+              VerificationStatusScreen.routeName,
+            );
+          }
+        }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentError('Something went wrong')),
     );
@@ -85,7 +182,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
 
     final formData = FormData.fromMap({
-      'documentType': 'ghanaCard',
+      'documentType': DriverDocumentType.ghanaCard.name,
       'personalIdNumber': ghanaCard?.personalIdNumber,
       'surname': ghanaCard?.surname,
       'firstName': ghanaCard?.firstName,
@@ -144,7 +241,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     final mediaType = mimeType != null ? MediaType.parse(mimeType) : null;
 
     final formData = FormData.fromMap({
-      'documentType': 'driverLicense',
+      'documentType': DriverDocumentType.driverLicense.name,
       'licenseNumber': driverLicense?.licenseNumber,
       'firstName': driver?.firstName,
       'surname': driver?.surname,
@@ -220,7 +317,7 @@ class DocumentCubit extends Cubit<DocumentState> {
       'state': driver.address.state,
       'country': driver.address.country,
       'postalCode': driver.address.postalCode,
-      'documentType': 'addressProof',
+      'documentType': DriverDocumentType.addressProof.name,
       'document': await MultipartFile.fromFile(
         documentFile.path,
         filename: 'addressProof-${driver.fullName}-${driver.id}$fileExt',

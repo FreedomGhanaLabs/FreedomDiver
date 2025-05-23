@@ -2,6 +2,7 @@ import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
@@ -146,7 +147,7 @@ class _AddressProofFormState extends State<AddressProofForm> {
       Navigator.pushNamed(
         context,
         BackgroundVerificationScreen.routeName,
-        arguments: {'type': 'address'},
+        arguments: {'type': address},
       );
     }
   }

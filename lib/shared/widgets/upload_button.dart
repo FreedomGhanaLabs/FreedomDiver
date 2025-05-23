@@ -16,26 +16,26 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
+import '../../core/constants/documents.dart';
+
 class UploadButton extends StatelessWidget {
   const UploadButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     final args = getRouteParams(context);
-    final type = args['type'] as String?;
-
-    final isAddress = type == 'address';
+    
     return BlocBuilder<DriverImageCubit, DriverImageState>(
       builder: (context, state) {
         return Column(
           children: [
-            CustomDottedBorder(isAddress: isAddress),
+            CustomDottedBorder(),
             if (state is DriverImageLoading) ...[
               const VSpace(smallWhiteSpace),
               showProgressIndicator(),
             ],
             if (state is DriverImageSelected) ...[
-              const VSpace(smallWhiteSpace),
+              const VSpace(whiteSpace),
               buildSelectedImage(context, state.image),
               const VSpace(whiteSpace),
               SimpleButton(
@@ -57,14 +57,18 @@ class UploadButton extends StatelessWidget {
 }
 
 class CustomDottedBorder extends StatelessWidget {
-  const CustomDottedBorder({required this.isAddress, super.key});
+  const CustomDottedBorder({super.key});
 
-  final bool isAddress;
 
   @override
   Widget build(BuildContext context) {
-    return DottedBorder(
+    final args = getRouteParams(context);
+    final type = args['type'] as String?;
 
+    final isAddress = type == address;
+    final isGhanaCard = type == ghanaCard;
+
+    return DottedBorder(
       options: RoundedRectDottedBorderOptions(
         dashPattern: [10, 5],
         strokeWidth: 2,
@@ -142,7 +146,11 @@ class CustomDottedBorder extends StatelessWidget {
                     ),
                     const SizedBox(width: 8.01),
                     Text(
-                      'Upload ${isAddress ? 'Utility Bill' : 'ID'}',
+                      'Upload ${isAddress
+                          ? 'Utility Bill'
+                          : isGhanaCard
+                          ? 'Card'
+                          : 'ID'}',
                       style: const TextStyle(
                         color: Color(0xFFF59E0B),
                         fontSize: smallText,
@@ -155,7 +163,7 @@ class CustomDottedBorder extends StatelessWidget {
               const VSpace(8.8),
               Text(
                 // 'Upload a photo of your face to verify your identity.',
-                'Make sure your document is clear and legible.',
+                'Ensure your document is clear and legible.',
                 style: TextStyle(
                   fontSize: smallText,
                   fontWeight: FontWeight.w400,
@@ -171,12 +179,18 @@ class CustomDottedBorder extends StatelessWidget {
 }
 
 Widget buildSelectedImage(BuildContext context, File image) {
+  
   return Container(
     height: 200,
-    width: Responsive.isBigMobile(context) ? 375.sp : Responsive.width(context),
+    width:
+        Responsive.isBigMobile(context)
+            ? (mobileWidth - 20).sp
+            : Responsive.width(context),
     decoration: ShapeDecoration(
       color: const Color(0x0AFFBA40),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(roundedLg),
+      ),
     ),
     child: Image.file(image),
   );

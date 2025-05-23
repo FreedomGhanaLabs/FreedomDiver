@@ -51,6 +51,7 @@ const tabletWidth = 800.0;
 const laptopWidth = 1200.0;
 
 const extraSmallWhiteSpace = 5.0;
+const medWhiteSpace = 10.0;
 const smallWhiteSpace = 15.0;
 const whiteSpace = 25.0;
 const normalWhiteSpace = 45.0;

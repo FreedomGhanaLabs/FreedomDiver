@@ -15,7 +15,7 @@ import 'ghana_card/cubit/ghana_card_state.dart';
 extension DriverExtension on BuildContext {
   DriverLicense? get driverLicense {
     final state = read<DriverLicenseDetailsCubit>().state;
-    if (state is DriverLicenseDetailsLoaded) {
+    if (state is DriverLicenseLoaded) {
       return state.driverLicense;
     }
     return null;

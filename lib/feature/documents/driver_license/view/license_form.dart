@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/feature/authentication/register/register.dart';
 import 'package:freedomdriver/feature/documents/driver_license/cubit/license_cubit.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
@@ -32,32 +33,6 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
   String? issueDate;
   String? expiryDate;
 
-  Widget buildField(String label, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: paragraphText,
-          ),
-        ),
-        const VSpace(extraSmallWhiteSpace),
-        TextFieldFactory.itemField(
-          controller: controller,
-          fillColor: Colors.white,
-          enabledBorderColor: Colors.black.withValues(alpha: 0.2),
-          validator: (val) {
-            return val == null || val.trim().isEmpty
-                ? '$label is required'
-                : null;
-          },
-        ),
-        const VSpace(smallWhiteSpace),
-      ],
-    );
-  }
 
   Future<void> _pickDate({
     bool? birth,
@@ -146,7 +121,38 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
             expiryDate: expiryDate ?? '',
           );
 
-      Navigator.pushNamed(context, BackgroundVerificationScreen.routeName);
+      Navigator.pushNamed(
+        context,
+        BackgroundVerificationScreen.routeName,
+        arguments: {'type': driverLicense},
+      );
     }
   }
+}
+
+Widget buildField(String label, TextEditingController controller) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: paragraphText,
+        ),
+      ),
+      const VSpace(extraSmallWhiteSpace),
+      TextFieldFactory.itemField(
+        controller: controller,
+        fillColor: Colors.white,
+        enabledBorderColor: Colors.black.withValues(alpha: 0.2),
+        validator: (val) {
+          return val == null || val.trim().isEmpty
+              ? '$label is required'
+              : null;
+        },
+      ),
+      const VSpace(smallWhiteSpace),
+    ],
+  );
 }

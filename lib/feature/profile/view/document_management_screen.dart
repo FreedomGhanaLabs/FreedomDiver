@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freedomdriver/feature/authentication/register/register.dart';
 import 'package:freedomdriver/feature/documents/address_proof/view/address_proof_form.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/view/ghana_card_form.dart';
 import 'package:freedomdriver/feature/earnings/widgets/utility.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
@@ -42,12 +43,9 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
             context,
             AddressProofForm.routeName,
           ),
+          onGhanaCardTap:
+              () => Navigator.pushNamed(context, GhanaCardForm.routeName),
         ),
-        // VehicleInformationContainer(
-        //   vehicleColor: vehicleColor,
-        //   vehicleLicensePlate: vehicleLicensePlate,
-        //   vehicleMakeAndModel: vehicleMakeAndModel,
-        // ),
 
         const VSpace(whiteSpace),
       ],
@@ -141,9 +139,9 @@ class VehicleInformationContainerState
             enabledBorderColor:
                 Colors.black.withValues(alpha: 0.20999999344348907),
           ),
-          const VSpace(9),
+          const VSpace(smallWhiteSpace),
           const Text(
-            'Motorcycle  Make and Model',
+            'Motorcycle Make and Model',
             style: TextStyle(
               color: Colors.black,
               fontSize: 10.51,

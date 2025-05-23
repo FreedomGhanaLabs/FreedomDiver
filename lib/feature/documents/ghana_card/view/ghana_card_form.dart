@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/authentication/register/register.dart';
-import 'package:freedomdriver/feature/documents/driver_license/cubit/license_cubit.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/ghana_card.model.dart';
+import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
+import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
@@ -12,83 +15,98 @@ import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:intl/intl.dart';
 
-class DriverLicenseForm extends StatefulWidget {
-  const DriverLicenseForm({
-    super.key,
-  });
-  static const routeName = '/license-form';
+import '../../driver_license/view/license_form.dart';
+
+class GhanaCardForm extends StatefulWidget {
+  const GhanaCardForm({super.key});
+  static const routeName = '/ghana-card-form';
 
   @override
-  State<DriverLicenseForm> createState() => _DriverLicenseFormState();
+  State<GhanaCardForm> createState() => _GhanaCardFormState();
 }
 
-class _DriverLicenseFormState extends State<DriverLicenseForm> {
+class _GhanaCardFormState extends State<GhanaCardForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController documentType = TextEditingController();
-  final TextEditingController licenseNumber = TextEditingController();
-  final TextEditingController classOfLicense = TextEditingController();
+
+  final TextEditingController personalIdNumber = TextEditingController();
+  final TextEditingController surname = TextEditingController();
+  final TextEditingController firstName = TextEditingController();
+  final TextEditingController otherName = TextEditingController();
+  final TextEditingController height = TextEditingController();
 
   String? dateOfBirth;
-  String? issueDate;
   String? expiryDate;
+  String sex = 'male';
 
-  Widget buildField(String label, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: paragraphText,
-          ),
-        ),
-        const VSpace(extraSmallWhiteSpace),
-        TextFieldFactory.itemField(
-          controller: controller,
-          fillColor: Colors.white,
-          enabledBorderColor: Colors.black.withValues(alpha: 0.2),
-          validator: (val) {
-            return val == null || val.trim().isEmpty
-                ? '$label is required'
-                : null;
-          },
-        ),
-        const VSpace(smallWhiteSpace),
-      ],
-    );
+  @override
+  @override
+  void initState() {
+    loadCardDetails();
+    super.initState();
   }
 
-  Future<void> _pickDate({
-    bool? birth,
-    bool? issue,
-    bool? expiry,
-  }) async {
-    final now = DateTime.now();
-    final pickedDate = await showDatePicker(
+  void loadCardDetails() {
+    final driverCubit = context.read<DriverCubit>().state;
+    if (driverCubit is DriverLoaded) {
+      final driver = driverCubit.driver;
+      surname.text = driver.surname;
+      firstName.text = driver.firstName;
+      otherName.text = driver.otherName;
+    }
+  }
+
+  Future<void> _pickDate({required bool isDob}) async {
+    final picked = await showDatePicker(
       context: context,
-      initialDate: now,
-      firstDate: DateTime(2000),
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1950),
       lastDate: DateTime(2100),
     );
-
-    if (pickedDate != null) {
-      final formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+    if (picked != null) {
+      final formatted = DateFormat('yyyy-MM-dd').format(picked);
       setState(() {
-        if (birth != null) dateOfBirth = formattedDate;
-        if (issue != null) issueDate = formattedDate;
-        if (expiry != null) expiryDate = formattedDate;
+        if (isDob) {
+          dateOfBirth = formatted;
+        } else {
+          expiryDate = formatted;
+        }
       });
+    }
+  }
+
+  void submitForm() {
+    if (_formKey.currentState!.validate()) {
+      context.read<GhanaCardCubit>().loadGhanaCard(
+        GhanaCard(
+          personalIdNumber: personalIdNumber.text.trim(),
+          surname: surname.text.trim(),
+          firstName: firstName.text.trim(),
+          otherName: otherName.text.trim(),
+          sex: sex,
+          dateOfBirth: dateOfBirth ?? '',
+          height: height.text.trim(),
+          expiryDate: expiryDate ?? '',
+          verificationStatus: 'pending',
+          adminComments: '',
+          uploadedAt: DateTime.now(),
+        ),
+      );
+
+      Navigator.pushNamed(
+        context,
+        BackgroundVerificationScreen.routeName,
+        arguments: {'type': ghanaCard},
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScreen(
-      title: 'Driver License',
-      bodyHeader: 'Keep your Driver License details accurate',
+      title: 'Ghana Card',
+      bodyHeader: 'Enter your Ghana Card details',
       bodyDescription:
-          'If you change your Driver License or any relevant details, update the information here to maintain accuracy and transparency.',
+          'Ensure all fields are filled correctly to verify your identity.',
       children: [
         DecoratedContainer(
           child: Form(
@@ -96,20 +114,29 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               children: [
-                buildField('License Number', licenseNumber),
+                buildField('Ghana Card Number', personalIdNumber),
+                buildField('Surname', surname),
+                buildField('First Name', firstName),
+                buildField('Other Name', otherName),
                 CustomDropDown(
-                  onTap: () => _pickDate(birth: true),
+                  label: 'Gender',
+                  value: sex,
+                  items: ['male', 'female', 'other'],
+                  onChanged: (value) {
+                    setState(() {
+                      sex = value;
+                    });
+                  },
+                ),
+                buildField('Height (cm)', height),
+                CustomDropDown(
+                  onTap: () => _pickDate(isDob: true),
                   label: 'Date of Birth',
                   value: dateOfBirth ?? 'Choose date',
                 ),
-                buildField('Class of License', classOfLicense),
+
                 CustomDropDown(
-                  onTap: () => _pickDate(issue: true),
-                  label: 'Issue Date',
-                  value: issueDate ?? 'Choose date',
-                ),
-                CustomDropDown(
-                  onTap: () => _pickDate(expiry: true),
+                  onTap: () => _pickDate(isDob: false),
                   label: 'Expiry Date',
                   value: expiryDate ?? 'Choose date',
                 ),
@@ -124,7 +151,6 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: paragraphText,
-                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
@@ -134,19 +160,5 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
         ),
       ],
     );
-  }
-
-  void submitForm() {
-    if (_formKey.currentState!.validate()) {
-      context.read<DriverLicenseDetailsCubit>().setDriverLicenseDetails(
-            licenseNumber: licenseNumber.text.trim(),
-            dob: dateOfBirth ?? '',
-            licenseClass: classOfLicense.text.trim(),
-            issueDate: issueDate ?? '',
-            expiryDate: expiryDate ?? '',
-          );
-
-      Navigator.pushNamed(context, BackgroundVerificationScreen.routeName);
-    }
   }
 }

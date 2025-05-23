@@ -5,7 +5,6 @@ import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 
-
 abstract class SectionFactory extends StatelessWidget {
   const SectionFactory({
     super.key,
@@ -47,7 +46,8 @@ abstract class SectionFactory extends StatelessWidget {
           const SizedBox(width: smallWhiteSpace),
           Text(
             item.title,
-            style: sectionTextStyle ??
+            style:
+                sectionTextStyle ??
                 const TextStyle(
                   fontSize: smallText,
                   fontWeight: FontWeight.w500,
@@ -69,8 +69,10 @@ abstract class SectionFactory extends StatelessWidget {
               padding: const EdgeInsets.only(right: 22),
               child: AppIcon(
                 iconName: 'arrow_right_icon',
-                colorFilter:
-                    ColorFilter.mode(Colors.grey.shade700, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(
+                  Colors.grey.shade700,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
         ],
@@ -90,7 +92,8 @@ abstract class SectionFactory extends StatelessWidget {
             Text(
               sectionTitle,
               textAlign: TextAlign.center,
-              style: titleStyle ??
+              style:
+                  titleStyle ??
                   const TextStyle(
                     color: Colors.black,
                     fontSize: 10.94,
@@ -172,17 +175,17 @@ class PersonalDataSection extends SectionFactory {
 
   @override
   List<SectionItem> get sectionItems => [
-        SectionItem(
-          title: 'Profile Details',
-          iconPath: getIconUrl('hamburg_icon'),
-          onTap: () => onProfileTap!(),
-        ),
-        SectionItem(
-          title: 'Manage Your Documents',
-          iconPath: getIconUrl('gradient_document'),
-          onTap: () => onWalletTap!(),
-        ),
-      ];
+    SectionItem(
+      title: 'Profile Details',
+      iconPath: getIconUrl('hamburg_icon'),
+      onTap: () => onProfileTap!(),
+    ),
+    SectionItem(
+      title: 'Manage Your Documents',
+      iconPath: getIconUrl('gradient_document'),
+      onTap: () => onWalletTap!(),
+    ),
+  ];
 }
 
 // More Section Implementation
@@ -207,22 +210,22 @@ class MoreSection extends SectionFactory {
 
   @override
   List<SectionItem> get sectionItems => [
-        SectionItem(
-          title: 'Vehicle Information',
-          iconPath: getIconUrl('gradient_bike'),
-          onTap: onTapAddress,
-        ),
-        SectionItem(
-          title: 'Security and Privacy',
-          iconPath: getIconUrl('availability_icon'),
-          onTap: onTapSecurity,
-        ),
-        SectionItem(
-          title: 'Logout',
-          iconPath: getIconUrl('logout'),
-          onTap: onTapLogout,
-        ),
-      ];
+    SectionItem(
+      title: 'Vehicle Information',
+      iconPath: getIconUrl('gradient_bike'),
+      onTap: onTapAddress,
+    ),
+    SectionItem(
+      title: 'Security and Privacy',
+      iconPath: getIconUrl('availability_icon'),
+      onTap: onTapSecurity,
+    ),
+    SectionItem(
+      title: 'Logout',
+      iconPath: getIconUrl('logout'),
+      onTap: onTapLogout,
+    ),
+  ];
 }
 
 class ManagePayment extends SectionFactory {
@@ -241,17 +244,17 @@ class ManagePayment extends SectionFactory {
   final VoidCallback? onVisaCardTap;
   @override
   List<SectionItem> get sectionItems => [
-        SectionItem(
-          title: '*** **** 1234',
-          iconPath: 'assets/app_icons/mastercard.svg',
-          onTap: onMasterCardTap,
-        ),
-        SectionItem(
-          title: '*** **** 1234',
-          iconPath: 'assets/app_icons/visa_electron.svg',
-          onTap: () => onVisaCardTap,
-        ),
-      ];
+    SectionItem(
+      title: '*** **** 1234',
+      iconPath: 'assets/app_icons/mastercard.svg',
+      onTap: onMasterCardTap,
+    ),
+    SectionItem(
+      title: '*** **** 1234',
+      iconPath: 'assets/app_icons/visa_electron.svg',
+      onTap: () => onVisaCardTap,
+    ),
+  ];
 
   @override
   String get sectionTitle => '';
@@ -269,25 +272,38 @@ class ManageDocuments extends SectionFactory {
     super.paddingSection,
     this.onAddressTap,
     this.onLicenseTap,
+    this.onGhanaCardTap,
+    this.onMotorcycleImageTap,
   });
   final VoidCallback? onAddressTap;
-
   final VoidCallback? onLicenseTap;
+  final VoidCallback? onMotorcycleImageTap;
+  final VoidCallback? onGhanaCardTap;
 
   @override
   String get sectionTitle => '';
 
   @override
   List<SectionItem> get sectionItems => [
-        SectionItem(
-          title: 'Verify Address',
-          iconPath: getIconUrl('gradient_document'),
-          onTap: () => onAddressTap?.call(),
-        ),
-        SectionItem(
-          title: 'Update Driver License',
-          iconPath: getIconUrl('gradient_document'),
-          onTap: () => onLicenseTap?.call(),
-        ),
-      ];
+    SectionItem(
+      title: 'Ghana Card Details',
+      iconPath: getIconUrl('gradient_document'),
+      onTap: () => onGhanaCardTap?.call(),
+    ),
+    SectionItem(
+      title: 'Verify Address',
+      iconPath: getIconUrl('gradient_document'),
+      onTap: () => onAddressTap?.call(),
+    ),
+    SectionItem(
+      title: 'Update Driver License',
+      iconPath: getIconUrl('gradient_document'),
+      onTap: () => onLicenseTap?.call(),
+    ),
+    SectionItem(
+      title: 'Update Motorcycle Image',
+      iconPath: getIconUrl('gradient_document'),
+      onTap: () => onLicenseTap?.call(),
+    ),
+  ];
 }

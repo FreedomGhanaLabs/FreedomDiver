@@ -12,8 +12,8 @@ class DriverLicenseDetailsInitial extends DriverLicenseDetailsState {}
 
 class DriverLicenseDetailsLoading extends DriverLicenseDetailsState {}
 
-class DriverLicenseDetailsLoaded extends DriverLicenseDetailsState {
-  const DriverLicenseDetailsLoaded(this.driverLicense);
+class DriverLicenseLoaded extends DriverLicenseDetailsState {
+  const DriverLicenseLoaded(this.driverLicense);
   final DriverLicense driverLicense;
 
   @override
