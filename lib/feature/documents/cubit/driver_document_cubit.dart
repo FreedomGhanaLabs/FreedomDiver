@@ -1,48 +1,57 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
 import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedomdriver/feature/documents/driver_license/extension.dart';
+import 'package:freedomdriver/feature/documents/models/driver_documents.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
+import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
-import 'package:freedomdriver/shared/widgets/verification_status_screen.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 
-class DocumentCubit extends Cubit<DocumentUploadState> {
-  DocumentCubit() : super(DocumentUploadInitial());
+class DocumentCubit extends Cubit<DocumentState> {
+  DocumentCubit() : super(DocumentInitial());
 
-  final apiController = ApiController('document');
-  // Driver? _cachedDriver;
-  // bool get hasDriver => _cachedDriver != null;
+  final apiController = ApiController('documents');
+  final documentController = ApiController('document');
+
+  DriverDocument? _cachedDriverDocument;
+  bool get hasDocument => _cachedDriverDocument != null;
+
+  void _updateDocument(DriverDocument updated) {
+    _cachedDriverDocument = updated;
+    emit(DocumentLoaded(_cachedDriverDocument!));
+  }
+
 
   Future<void> getDriverDocument(
     BuildContext context, {
     bool forceRefresh = false,
   }) async {
-    // if (hasDriver && !forceRefresh) {
-    //   log('[DriverCubit] Using cached driver data');
-    //   _updateDriver(_cachedDriver!);
-    //   return;
-    // }
+    if (hasDocument && !forceRefresh) {
+      log('[DriverCubit] Using cached driver data');
+      _updateDocument(_cachedDriverDocument!);
+      return;
+    }
     emit(DocumentLoading());
 
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        await ApiController('').getData(context, 'documents', (success, data) {
+        await documentController.getData(context, 'documents', (success, data) {
           if (success && data is Map<String, dynamic>) {
-            // final driver = Driver.fromJson(
-            //   data['data'] as Map<String, dynamic>,
-            // );
-
-            // _updateDriver(driver);
+            final document = DriverDocument.fromJson(data['data']);
+            _updateDocument(document);
           } else {
             emit(const DocumentError('Failed to fetch driver documents'));
+            log('[DocumentCubit] Failed to fetch driver documents: $data');
           }
         });
       },
@@ -90,7 +99,7 @@ class DocumentCubit extends Cubit<DocumentUploadState> {
       ),
     });
 
-    emit(DocumentLoading());
+    // emit(DocumentLoading());
     await handleApiCall(
       context: context,
       apiRequest: () async {
@@ -105,11 +114,7 @@ class DocumentCubit extends Cubit<DocumentUploadState> {
               context,
               VerificationStatusScreen.routeName,
             );
-          } else {
-            emit(
-              const DocumentError('Failed to upload driver documents'),
-            );
-          }
+          } 
         }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentError('Something went wrong')),
@@ -177,15 +182,7 @@ class DocumentCubit extends Cubit<DocumentUploadState> {
               context,
               VerificationStatusScreen.routeName,
             );
-          } else {
-            emit(
-              const DocumentError('Failed to upload driver documents'),
-            );
-            // Navigator.pushReplacementNamed(
-            //   context,
-            //   VerificationStatusScreen.routeName,
-            // );
-          }
+          } 
         }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentError('Something went wrong')),

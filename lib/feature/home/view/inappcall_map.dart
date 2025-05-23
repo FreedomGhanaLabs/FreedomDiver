@@ -14,11 +14,11 @@ import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
+import 'package:freedomdriver/shared/widgets/gradient_text.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 import '../../../utilities/map/eta.dart';
 
@@ -256,7 +256,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                 ),
                 const VSpace(smallWhiteSpace),
                 Padding(
-                  padding: const EdgeInsets.only(left: 14),
+                  padding: const EdgeInsets.only(left: smallWhiteSpace),
                   child: Text(
                     'A passenger is waiting for you',
                     style: TextStyle(
@@ -266,7 +266,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     ),
                   ),
                 ),
-                const VSpace(19),
+                const VSpace(whiteSpace),
                 // EqualSignCrossContainer(),
                 const Stack(
                   alignment: Alignment.center,
@@ -352,41 +352,22 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     ),
                   ],
                 ),
-                const VSpace(37),
+                const VSpace(smallWhiteSpace),
                 Padding(
-                  padding: const EdgeInsets.only(left: 23),
+                  padding: const EdgeInsets.all(whiteSpace),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomDropDown(
-                        items: const <String>['In-App Call', 'Video Call'],
-                        initialValue: 'In-App Call',
-                        onChanged: (i) {},
-                      ),
-                      const HSpace(30),
-                      Container(
-                        margin: const EdgeInsets.only(right: 25),
-                        alignment: Alignment.center,
-                        width: 139,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: GradientBoxBorder(gradient: gradient),
-                        ),
-                        child: ShaderMask(
-                          shaderCallback: (bounds) => gradient.createShader(
-                            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                          ),
-                          child: const Text(
-                            'Message',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.99,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                      Expanded(
+                        flex: 1,
+                        child: CustomDropDown(
+                          items: <String>['In-App Call', 'Video Call'],
+                          initialValue: 'In-App Call',
+                          onChanged: (i) {},
                         ),
                       ),
+                      HSpace(30),
+                      Expanded(child: GradientText(text: 'Message')),
                     ],
                   ),
                 ),
@@ -394,7 +375,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                 const CustomDivider(),
                 const VSpace(20),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 23),
+                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
                   child: SizedBox(
                     width: double.infinity,
                     child: SimpleButton(

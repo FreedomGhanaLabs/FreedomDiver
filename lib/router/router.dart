@@ -25,7 +25,7 @@ import 'package:freedomdriver/feature/splash/driver_splash.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
 import 'package:freedomdriver/router/error_route_screen.dart';
 import 'package:freedomdriver/shared/screens/success_screen.dart';
-import 'package:freedomdriver/shared/widgets/verification_status_screen.dart';
+import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   log('Next Route: ${settings.name}');

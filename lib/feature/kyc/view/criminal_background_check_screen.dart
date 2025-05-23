@@ -20,9 +20,9 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
     final type = args['type'].toString();
 
     final isAddress = type == 'address';
-    return BlocBuilder<DocumentCubit, DocumentUploadState>(
+    return BlocBuilder<DocumentCubit, DocumentState>(
       builder: (context, state) {
-        const uploading = DocumentUploadState is DocumentLoading;
+        const uploading = DocumentState is DocumentLoading;
         return CustomScreen(
           title: 'Document Verification',
           children: [
