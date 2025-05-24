@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
+import 'package:freedomdriver/feature/documents/cubit/document_image_state.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/earnings/cubit/earnings_cubit.dart';
 import 'package:freedomdriver/feature/earnings/cubit/earnings_state.dart';
+import 'package:freedomdriver/feature/profile/view/profile_image_cropper.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
@@ -14,7 +15,7 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
 import '../../../utilities/pick_file.dart';
-import '../../documents/cubit/driver_document_state.dart';
+import '../../documents/cubit/document_image.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -22,6 +23,14 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageCubit = context.watch<DriverImageCubit>();
+
+    if (imageCubit.state is DriverImageSelected) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamed(context, ProfileImageCropper.routeName);
+      });
+    }
+
     return BlocBuilder<EarningCubit, EarningState>(
       builder: (context, earningState) {
         final earning =
@@ -30,11 +39,11 @@ class ProfileCard extends StatelessWidget {
         final completedRides = earning?.completedRides ?? 0;
         return BlocBuilder<DriverCubit, DriverState>(
           builder: (context, state) {
-            final documentCubit = context.watch<DocumentCubit>();
-            final document =
-                documentCubit.state is DocumentLoaded
-                    ? documentCubit.state
-                    : null; 
+            // final documentCubit = context.read<DocumentCubit>();
+            // final document =
+            //     documentCubit.state is DocumentLoaded
+            //         ? documentCubit.state
+            //         : null;
             return Stack(
               alignment: Alignment.center,
               clipBehavior: Clip.none,
@@ -90,7 +99,6 @@ class ProfileCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                      
                       ],
                     ),
                   ),

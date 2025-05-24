@@ -140,19 +140,27 @@ class CustomDottedBorder extends StatelessWidget {
   }
 }
 
-Widget buildSelectedImage(BuildContext context, File image) {
+Widget buildSelectedImage(
+  BuildContext context,
+  File image, {
+  double? width,
+  double? height,
+  double? radius,
+  BoxFit? fit,
+}) {
   return Container(
-    height: 200,
+    height: height ?? 200,
     width:
-        Responsive.isBigMobile(context)
+        width ??
+        (Responsive.isBigMobile(context)
             ? (mobileWidth - 20).sp
-            : Responsive.width(context),
+            : Responsive.width(context)),
     decoration: ShapeDecoration(
       color: const Color(0x0AFFBA40),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(roundedLg),
+        borderRadius: BorderRadius.circular(radius ?? roundedLg),
       ),
     ),
-    child: Image.file(image),
+    child: Image.file(image, fit: fit),
   );
 }

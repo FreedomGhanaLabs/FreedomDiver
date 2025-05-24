@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +39,10 @@ class DriverImageCubit extends Cubit<DriverImageState> {
     }
   }
 
+void addImage(File image) {
+    emit(DriverImageSelected(image));
+  }
+  
   void resetImage() {
     emit(DriverImageInitial());
   }
