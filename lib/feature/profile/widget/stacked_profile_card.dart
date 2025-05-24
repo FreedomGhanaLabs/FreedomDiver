@@ -40,7 +40,7 @@ class ProfileCard extends StatelessWidget {
       builder: (context, earningState) {
         final completedRides =
             (earningState is EarningLoaded)
-                ? earningState.earning.completedRides ?? 0
+                ? earningState.earning.completedRides
                 : 0;
 
         return BlocBuilder<DriverCubit, DriverState>(
@@ -122,7 +122,7 @@ class ProfileCard extends StatelessWidget {
       child: Column(
         children: [
           const VSpace(smallWhiteSpace),
-          ProfileAvatar(imageUrl: driver?.profilePicture),
+          ProfileAvatar(),
           const VSpace(medWhiteSpace),
           ProfileTitleText(name),
           const VSpace(medWhiteSpace),
@@ -182,58 +182,61 @@ class ProfileStatLink extends StatelessWidget {
 }
 
 class ProfileAvatar extends StatelessWidget {
-  final String? imageUrl;
-
-  const ProfileAvatar({super.key, this.imageUrl});
+  const ProfileAvatar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          height: 50,
-          width: 50,
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(13),
-            ),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(roundedLg),
-            child:
-                imageUrl != null
-                    ? CachedNetworkImage(
-                      imageUrl: imageUrl!,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) => DefaultAvatar(),
-                    )
-                    : DefaultAvatar(),
-          ),
-        ),
-        Positioned(
-          bottom: -4,
-          right: -4,
-          child: InkWell(
-            onTap:
-                () => pickFile(
-                  context,
-                  title: 'Update Profile Picture',
-                  description:
-                      'Select a new photo to refresh your profile image',
+    return BlocBuilder<DriverCubit, DriverState>(
+      builder: (context, state) {
+        final driver = (state is DriverLoaded) ? state.driver : null;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(13),
                 ),
-            child: Container(
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                border: Border.all(width: 2),
               ),
-              child: const AppIcon(iconName: 'edit_profile'),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(roundedLg),
+                child:
+                    driver?.profilePicture != null
+                        ? CachedNetworkImage(
+                          imageUrl: driver?.profilePicture ?? '',
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => DefaultAvatar(),
+                        )
+                        : DefaultAvatar(),
+              ),
             ),
-          ),
-        ),
-      ],
+            Positioned(
+              bottom: -4,
+              right: -4,
+              child: InkWell(
+                onTap:
+                    () => pickFile(
+                      context,
+                      title: 'Update Profile Picture',
+                      description:
+                          'Select a new photo to refresh your profile image',
+                    ),
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(width: 2),
+                  ),
+                  child: const AppIcon(iconName: 'edit_profile'),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -257,10 +260,12 @@ class DriverContactInfo extends StatelessWidget {
     return Container(
       width: 135,
       height: 24,
-      padding: const EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: medWhiteSpace),
       decoration: ShapeDecoration(
-        color: Colors.white.withAlpha(34),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(34)),
+        color: Colors.white.withAlpha(40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(roundedXl),
+        ),
       ),
       child: GestureDetector(
         onTap: () => copyTextToClipboard(context, phoneOrEmail),
