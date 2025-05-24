@@ -8,15 +8,15 @@ import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart
 import 'package:freedomdriver/feature/documents/extension.dart';
 import 'package:freedomdriver/feature/documents/models/driver_documents.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/profile/view/profile_details.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
-import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
+
+import '../../driver/cubit/driver_cubit.dart';
 
 class DocumentCubit extends Cubit<DocumentState> {
   DocumentCubit() : super(DocumentInitial());
@@ -101,9 +101,10 @@ class DocumentCubit extends Cubit<DocumentState> {
         ) {
           if (success) {
             emit(DocumentSuccess());
-            loadDashboard(context);
+            context.read<DriverCubit>().updateDriverProfileImage(
+              data['data']['documentUrl'],
+            );
             context.read<DriverImageCubit>().resetImage();
-            Navigator.pushReplacementNamed(context, ProfileDetails.routeName);
           }
         }, showOverlay: true);
       },

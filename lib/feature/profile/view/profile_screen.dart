@@ -76,10 +76,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           titleColor: gradient2,
                           okButtonColor: gradient2,
                           hasSecondaryButton: true,
-                          onPressed: () async {
+                          onPressed: () {
                             final apiController = ApiController('auth');
 
-                            await apiController.post(context, 'logout', {}, (
+                            apiController.post(context, 'logout', {}, (
                               success,
                               responseData,
                             ) {
@@ -95,7 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }, showOverlay: true);
                           },
                         ),
-                 
                   ),
                   const VSpace(whiteSpace),
                 ],

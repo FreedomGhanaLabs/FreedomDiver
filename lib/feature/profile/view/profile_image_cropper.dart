@@ -76,74 +76,66 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
         final image = state is DriverImageSelected ? state.image : null;
         if (image == null) {
           Navigator.of(context).pop();
-          return const Center(
-            child: Text(
-              'No image selected',
-              style: TextStyle(fontSize: normalText),
-            ),
-          );
+          return CustomScreen();
         }
         if (state is DriverImageLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        return PopScope(
-
-          child: CustomScreen(
-            title: 'Update Profile Image',
-            children: [
-              const VSpace(normalWhiteSpace),
-              ...[
-                buildSelectedImage(
-                  context,
-                  image,
-                  height: Responsive.width(context) * 0.7,
-                  radius: roundedFull,
-                ),
-                const VSpace(whiteSpace),
-                SimpleButton(
-                  backgroundColor: gradient2,
-                  onPressed: () => _cropImage(image.path),
-                  title: '',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.crop, color: Colors.white),
-                      const HSpace(medWhiteSpace),
-                      const Text(
-                        'Crop Image',
-                        style: TextStyle(
-                          fontSize: normalText,
-                          color: Colors.white,
-                        ),
+        return CustomScreen(
+          title: 'Update Profile Image',
+          children: [
+            const VSpace(normalWhiteSpace),
+            ...[
+              buildSelectedImage(
+                context,
+                image,
+                height: Responsive.width(context) * 0.7,
+                radius: roundedFull,
+              ),
+              const VSpace(whiteSpace),
+              SimpleButton(
+                backgroundColor: gradient2,
+                onPressed: () => _cropImage(image.path),
+                title: '',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.crop, color: Colors.white),
+                    const HSpace(medWhiteSpace),
+                    const Text(
+                      'Crop Image',
+                      style: TextStyle(
+                        fontSize: normalText,
+                        color: Colors.white,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                VSpace(extraSmallWhiteSpace),
-                SimpleButton(
-                  onPressed:
-                      () => context.read<DocumentCubit>().uploadProfileImage(
-                        context,
+              ),
+              VSpace(extraSmallWhiteSpace),
+              SimpleButton(
+                onPressed:
+                    () => context.read<DocumentCubit>().uploadProfileImage(
+                      context,
+                    ),
+                title: '',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.image, color: Colors.white),
+                    const HSpace(medWhiteSpace),
+                    const Text(
+                      'Update Profile Image',
+                      style: TextStyle(
+                        fontSize: normalText,
+                        color: Colors.white,
                       ),
-                  title: '',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.image, color: Colors.white),
-                      const HSpace(medWhiteSpace),
-                      const Text(
-                        'Update Profile Image',
-                        style: TextStyle(
-                          fontSize: normalText,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ],
-          ),
+          ],
         );
       },
     );

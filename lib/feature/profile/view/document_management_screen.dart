@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/authentication/register/register.dart';
 import 'package:freedomdriver/feature/documents/address_proof/view/address_proof_form.dart';
+import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
+import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/view/ghana_card_form.dart';
 import 'package:freedomdriver/feature/earnings/widgets/utility.dart';
@@ -9,7 +12,7 @@ import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-
+import 'package:get/get_utils/get_utils.dart';
 
 class DocumentManagementScreen extends StatefulWidget {
   const DocumentManagementScreen({super.key});
@@ -21,34 +24,41 @@ class DocumentManagementScreen extends StatefulWidget {
 }
 
 class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
-  // final vehicleColor = TextEditingController();
-  // final vehicleMakeAndModel = TextEditingController();
-  // final vehicleLicensePlate = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    return CustomScreen(
-      title: 'Manage Documents',
-      bodyHeader: 'Keep your details accurate',
-      bodyDescription:
-          'If you change your Motorcycle or any relevant details, update the information here to maintain accuracy and transparency.',
-      children: [
-        ManageDocuments(
-          padding: EdgeInsets.zero,
-          onLicenseTap: () => Navigator.pushNamed(
-            context,
-            DriverLicenseForm.routeName,
-          ),
-          onAddressTap: () => Navigator.pushNamed(
-            context,
-            AddressProofForm.routeName,
-          ),
-          onGhanaCardTap:
-              () => Navigator.pushNamed(context, GhanaCardForm.routeName),
-        ),
+    return BlocBuilder<DocumentCubit, DocumentState>(
+      builder: (context, state) {
+        final document = state is DocumentLoaded ? state.document : null;
+        return CustomScreen(
+          title: 'Manage Documents',
+          bodyHeader: 'Keep your details accurate',
+          bodyDescription:
+              'If you change your Motorcycle or any relevant details, update the information here to maintain accuracy and transparency.',
+          children: [
+            ManageDocuments(
+              padding: EdgeInsets.zero,
+              addressStatus:
+                  document?.addressProof?.verificationStatus.capitalize,
+              ghanaCardStatus:
+                  document?.ghanaCard?.verificationStatus.capitalize,
+              licenseStatus:
+                  document?.driverLicense?.verificationStatus.capitalize,
+              motorcycleStatus:
+                  document?.motorcycleImage?.verificationStatus.capitalize,
+              onLicenseTap:
+                  () =>
+                      Navigator.pushNamed(context, DriverLicenseForm.routeName),
+              onAddressTap:
+                  () =>
+                      Navigator.pushNamed(context, AddressProofForm.routeName),
+              onGhanaCardTap:
+                  () => Navigator.pushNamed(context, GhanaCardForm.routeName),
+            ),
 
-        const VSpace(whiteSpace),
-      ],
+            const VSpace(whiteSpace),
+          ],
+        );
+      },
     );
   }
 }
@@ -77,8 +87,10 @@ class VehicleInformationContainerState
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding:
-          const EdgeInsets.symmetric(horizontal: smallWhiteSpace, vertical: 13),
+      padding: const EdgeInsets.symmetric(
+        horizontal: smallWhiteSpace,
+        vertical: 13,
+      ),
       decoration: ShapeDecoration(
         color: const Color(0x14777777),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -98,9 +110,7 @@ class VehicleInformationContainerState
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.209),
-              ),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.209)),
               borderRadius: BorderRadius.circular(4),
             ),
             child: DropdownButton<String>(
@@ -116,12 +126,13 @@ class VehicleInformationContainerState
                   dropDownValue = val!;
                 });
               },
-              items: dropDownItem.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+              items:
+                  dropDownItem.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
             ),
           ),
           const VSpace(9),
@@ -136,8 +147,9 @@ class VehicleInformationContainerState
           TextFieldFactory.itemField(
             controller: widget.vehicleColor,
             fillColor: Colors.white,
-            enabledBorderColor:
-                Colors.black.withValues(alpha: 0.20999999344348907),
+            enabledBorderColor: Colors.black.withValues(
+              alpha: 0.20999999344348907,
+            ),
           ),
           const VSpace(smallWhiteSpace),
           const Text(
@@ -151,8 +163,9 @@ class VehicleInformationContainerState
           TextFieldFactory.itemField(
             controller: widget.vehicleMakeAndModel,
             fillColor: Colors.white,
-            enabledBorderColor:
-                Colors.black.withValues(alpha: 0.20999999344348907),
+            enabledBorderColor: Colors.black.withValues(
+              alpha: 0.20999999344348907,
+            ),
           ),
           const VSpace(9),
           const Text(
@@ -166,8 +179,9 @@ class VehicleInformationContainerState
           TextFieldFactory.itemField(
             controller: widget.vehicleMakeAndModel,
             fillColor: Colors.white,
-            enabledBorderColor:
-                Colors.black.withValues(alpha: 0.20999999344348907),
+            enabledBorderColor: Colors.black.withValues(
+              alpha: 0.20999999344348907,
+            ),
           ),
           const VSpace(9),
           FreedomButton(

@@ -14,12 +14,14 @@ abstract class SectionFactory extends StatelessWidget {
     this.titleStyle,
     this.sectionTextStyle,
     this.paddingSection,
+    this.sectionSubHeadingStyle,
   });
   final VoidCallback? onItemTap;
   final EdgeInsets? padding;
   final Color backgroundColor;
   final TextStyle? titleStyle;
   final TextStyle? sectionTextStyle;
+  final TextStyle? sectionSubHeadingStyle;
   final EdgeInsetsGeometry? paddingSection;
 
   String get sectionTitle;
@@ -44,14 +46,30 @@ abstract class SectionFactory extends StatelessWidget {
             child: SvgPicture.asset(item.iconPath ?? ''),
           ),
           const SizedBox(width: smallWhiteSpace),
-          Text(
-            item.title,
-            style:
-                sectionTextStyle ??
-                const TextStyle(
-                  fontSize: smallText,
-                  fontWeight: FontWeight.w500,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.title,
+                style:
+                    sectionTextStyle ??
+                    const TextStyle(
+                      fontSize: smallText,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+              if (item.subheading != null)
+                Text(
+                  item.subheading ?? '',
+                  style:
+                      sectionSubHeadingStyle ??
+                      TextStyle(
+                        fontSize: smallText,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade600,
+                      ),
                 ),
+            ],
           ),
           const Spacer(),
           if (item.subtitle != null)
@@ -141,12 +159,16 @@ class SectionItem {
     required this.title,
     this.iconPath,
     this.subtitle,
+    this.subheading,
+    this.sectionSubHeadingStyle,
     this.onTap,
     this.showArrow = true,
   });
   final String title;
   final String? iconPath;
   final String? subtitle;
+  final String? subheading;
+  final TextStyle? sectionSubHeadingStyle;
   final VoidCallback? onTap;
   final bool showArrow;
 }
@@ -162,6 +184,7 @@ class PersonalDataSection extends SectionFactory {
     super.backgroundColor,
     super.titleStyle,
     super.sectionTextStyle,
+
     super.paddingSection,
     this.onProfileTap,
     this.onWalletTap,
@@ -274,11 +297,19 @@ class ManageDocuments extends SectionFactory {
     this.onLicenseTap,
     this.onGhanaCardTap,
     this.onMotorcycleImageTap,
+    this.addressStatus,
+    this.ghanaCardStatus,
+    this.licenseStatus,
+    this.motorcycleStatus,
   });
   final VoidCallback? onAddressTap;
   final VoidCallback? onLicenseTap;
   final VoidCallback? onMotorcycleImageTap;
   final VoidCallback? onGhanaCardTap;
+  final String? addressStatus;
+  final String? licenseStatus;
+  final String? motorcycleStatus;
+  final String? ghanaCardStatus;
 
   @override
   String get sectionTitle => '';
@@ -286,22 +317,26 @@ class ManageDocuments extends SectionFactory {
   @override
   List<SectionItem> get sectionItems => [
     SectionItem(
-      title: 'Ghana Card Details',
-      iconPath: getIconUrl('gradient_document'),
-      onTap: onGhanaCardTap,
-    ),
-    SectionItem(
       title: 'Verify Address',
+      subheading: addressStatus,
       iconPath: getIconUrl('gradient_document'),
       onTap: onAddressTap,
     ),
     SectionItem(
-      title: 'Update Driver License',
+      title: 'Driver License',
+      subheading: licenseStatus,
       iconPath: getIconUrl('gradient_document'),
       onTap: onLicenseTap,
     ),
     SectionItem(
-      title: 'Update Motorcycle Image',
+      title: 'Ghana Card Details',
+      subheading: ghanaCardStatus,
+      iconPath: getIconUrl('gradient_document'),
+      onTap: onGhanaCardTap,
+    ),
+    SectionItem(
+      title: 'Motorcycle Image',
+      subheading: motorcycleStatus,
       iconPath: getIconUrl('gradient_bike'),
       onTap: onMotorcycleImageTap,
     ),

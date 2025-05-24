@@ -410,8 +410,11 @@ class DriverCubit extends Cubit<DriverState> {
   void resetDriverCache() => _cachedDriver = null;
 
   // Private helpers
+  void updateDriverProfileImage(String profilePicture) {
+    _cachedDriver = _cachedDriver?.copyWith(profilePicture: profilePicture);
+    if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
+  }
   void _updateDriverRidePreference(String newRidePreference) {
-    log(newRidePreference);
     _cachedDriver = _cachedDriver?.copyWith(ridePreference: newRidePreference);
     if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
   }

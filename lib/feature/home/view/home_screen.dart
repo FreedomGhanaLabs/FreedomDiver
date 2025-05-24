@@ -340,7 +340,7 @@ class HomeHeader extends StatelessWidget {
                     Text(
                       driver != null
                           ? '${driver.address.country}, ${driver.address.state} '
-                          : '',
+                          : 'Your address',
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(
@@ -370,7 +370,10 @@ class HomeHeader extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
+                  onTap:
+                      driver == null
+                          ? null
+                          : () {
                     final driverCubit = context.read<DriverCubit>();
                     showCupertinoModalPopup(
                       useRootNavigator: false,
