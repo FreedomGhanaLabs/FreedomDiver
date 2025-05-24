@@ -9,6 +9,7 @@ import 'package:freedomdriver/feature/profile/widget/stacked_profile_card.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
+import 'package:freedomdriver/utilities/show_dialog.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get_utils/get_utils.dart';
 
@@ -19,7 +20,7 @@ import '../../authentication/login/view/login_form_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.hasBackButton = false});
-  static const routeName = '/profileScreen';
+  static const routeName = '/profile-screen';
   final bool hasBackButton;
 
   @override
@@ -67,11 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ).pushNamed(AvailabilityDashboard.routeName);
                     },
                     onTapLogout:
-                        () =>
-                        // showAlert.switch (expression) {
-                    //   pattern => value,
-                        // }
-                        (
+                        () => showAlertDialog(
                           context,
                           'Logout',
                           'Are you sure you want to logout?',
@@ -98,6 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }, showOverlay: true);
                           },
                         ),
+                 
                   ),
                   const VSpace(whiteSpace),
                 ],

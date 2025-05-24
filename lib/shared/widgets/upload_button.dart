@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +11,7 @@ import 'package:freedomdriver/feature/kyc/view/criminal_background_check_screen.
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
+import 'package:freedomdriver/utilities/pick_file.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
@@ -24,7 +24,7 @@ class UploadButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = getRouteParams(context);
-    
+
     return BlocBuilder<DriverImageCubit, DriverImageState>(
       builder: (context, state) {
         return Column(
@@ -59,7 +59,6 @@ class UploadButton extends StatelessWidget {
 class CustomDottedBorder extends StatelessWidget {
   const CustomDottedBorder({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final args = getRouteParams(context);
@@ -75,46 +74,9 @@ class CustomDottedBorder extends StatelessWidget {
         padding: EdgeInsets.all(smallWhiteSpace),
         radius: const Radius.circular(roundedMd),
         color: yellowGold,
-
       ),
       child: GestureDetector(
-        onTap: () {
-          final driverLicenseImage = context.read<DriverImageCubit>();
-          showCupertinoModalPopup(
-            useRootNavigator: false,
-            context: context,
-            builder:
-                (context) => CupertinoActionSheet(
-                  actions: [
-                    CupertinoActionSheetAction(
-                      child: Text(
-                        'Snap Document',
-                        style: TextStyle(color: gradient1),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        driverLicenseImage.pickImage(context);
-                      },
-                    ),
-                    CupertinoActionSheetAction(
-                      child: Text(
-                        'Choose from Gallery',
-                        style: TextStyle(color: gradient1),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        driverLicenseImage.pickImage(context, gallery: true);
-                      },
-                    ),
-                    CupertinoActionSheetAction(
-                      isDestructiveAction: true,
-                      child: const Text('Close'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-          );
-        },
+        onTap: () => pickFile(context),
         child: Container(
           width:
               Responsive.isBigMobile(context) ? Responsive.width(context) : 361,
@@ -179,7 +141,6 @@ class CustomDottedBorder extends StatelessWidget {
 }
 
 Widget buildSelectedImage(BuildContext context, File image) {
-  
   return Container(
     height: 200,
     width:

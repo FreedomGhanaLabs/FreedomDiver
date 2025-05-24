@@ -16,13 +16,12 @@ void showAlertDialog(
   DialogType dialogType = DialogType.noHeader,
   void Function()? onPressed,
 }) {
-  // final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
   AwesomeDialog(
     useRootNavigator: true,
     context: context,
     dialogType: dialogType,
-    animType: AnimType.bottomSlide,
+    animType: AnimType.topSlide,
     padding: const EdgeInsets.all(smallWhiteSpace),
     title: title,
     desc: message,

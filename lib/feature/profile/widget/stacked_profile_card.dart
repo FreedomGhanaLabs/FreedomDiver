@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
@@ -11,6 +12,10 @@ import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../../../utilities/pick_file.dart';
+import '../../documents/cubit/driver_document_state.dart';
+import '../../main_activity/cubit/main_activity_cubit.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key});
@@ -25,6 +30,11 @@ class ProfileCard extends StatelessWidget {
         final completedRides = earning?.completedRides ?? 0;
         return BlocBuilder<DriverCubit, DriverState>(
           builder: (context, state) {
+            final documentCubit = context.watch<DocumentCubit>();
+            final document =
+                documentCubit.state is DocumentLoaded
+                    ? documentCubit.state
+                    : null; 
             return Stack(
               alignment: Alignment.center,
               clipBehavior: Clip.none,
@@ -44,26 +54,43 @@ class ProfileCard extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '$completedRides Ride${completedRides <= 1 ? '' : 's'} Completed',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: extraSmallText,
-                            fontWeight: FontWeight.w500,
+                        InkWell(
+                          onTap:
+                              () => context
+                                  .read<MainActivityCubit>()
+                                  .changeIndex(2),
+                          child: Text(
+                            '$completedRides Ride${completedRides <= 1 ? '' : 's'} Completed',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: extraSmallText,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          'Reward',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: extraSmallText,
-                            fontWeight: FontWeight.w500,
+                        InkWell(
+                          onTap:
+                              () => context
+                                  .read<MainActivityCubit>()
+                                  .changeIndex(1),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Reward ',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: extraSmallText,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              AppIcon(iconName: 'arrow_right_icon', height: 12),
+                            ],
                           ),
                         ),
-                        AppIcon(iconName: 'arrow_right_icon'),
+                      
                       ],
                     ),
                   ),
@@ -108,23 +135,34 @@ class ProfileCard extends StatelessWidget {
                                 ),
                               ),
                               Positioned(
-                                bottom: -2,
-                                right: -8,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                    border: Border.all(width: 2),
-                                  ),
-                                  child: const AppIcon(
-                                    iconName: 'edit_profile',
+                                bottom: -4,
+                                right: -4,
+                                child: InkWell(
+                                  onTap: () {
+                                    pickFile(
+                                      context,
+                                      title: 'Update Profile Picture',
+                                      description:
+                                          'Select a new photo to refresh your profile image',
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      border: Border.all(width: 2),
+                                    ),
+                                    child: const AppIcon(
+                                      iconName: 'edit_profile',
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const VSpace(2),
+                        const VSpace(medWhiteSpace),
                         Text(
                           context.driver?.fullName ?? '',
                           textAlign: TextAlign.center,
@@ -134,9 +172,9 @@ class ProfileCard extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const VSpace(smallWhiteSpace),
+                        const VSpace(medWhiteSpace),
                         Container(
-                          width: 132,
+                          width: 135,
                           height: 24,
                           padding: const EdgeInsets.only(left: 10),
                           decoration: ShapeDecoration(
@@ -154,7 +192,7 @@ class ProfileCard extends StatelessWidget {
                             child: Row(
                               children: [
                                 const AppIcon(iconName: 'copy_button_icon'),
-                                const HSpace(7),
+                                const HSpace(extraSmallWhiteSpace),
                                 Text(
                                   context.driver?.phone ??
                                       context.driver?.email ??
@@ -170,6 +208,7 @@ class ProfileCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                        VSpace(2),
                         const Text(
                           'Business Suite',
                           textAlign: TextAlign.center,

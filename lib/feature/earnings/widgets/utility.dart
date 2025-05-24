@@ -288,22 +288,22 @@ class ManageDocuments extends SectionFactory {
     SectionItem(
       title: 'Ghana Card Details',
       iconPath: getIconUrl('gradient_document'),
-      onTap: () => onGhanaCardTap?.call(),
+      onTap: onGhanaCardTap,
     ),
     SectionItem(
       title: 'Verify Address',
       iconPath: getIconUrl('gradient_document'),
-      onTap: () => onAddressTap?.call(),
+      onTap: onAddressTap,
     ),
     SectionItem(
       title: 'Update Driver License',
       iconPath: getIconUrl('gradient_document'),
-      onTap: () => onLicenseTap?.call(),
+      onTap: onLicenseTap,
     ),
     SectionItem(
       title: 'Update Motorcycle Image',
-      iconPath: getIconUrl('gradient_document'),
-      onTap: () => onLicenseTap?.call(),
+      iconPath: getIconUrl('gradient_bike'),
+      onTap: onMotorcycleImageTap,
     ),
   ];
 }

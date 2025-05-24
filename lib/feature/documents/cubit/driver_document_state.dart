@@ -15,11 +15,11 @@ class DocumentLoading extends DocumentState {}
 class DocumentSuccess extends DocumentState {}
 
 class DocumentLoaded extends DocumentState {
-  const DocumentLoaded(this.driver);
-  final DriverDocument driver;
+  const DocumentLoaded(this.document);
+  final DriverDocument document;
 
   @override
-  List<Object?> get props => [driver];
+  List<Object?> get props => [document];
 }
 
 class DocumentError extends DocumentState {

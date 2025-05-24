@@ -1,0 +1,56 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/shared/theme/app_colors.dart';
+
+import '../feature/documents/cubit/document_image.dart';
+
+void pickFile(BuildContext context, {String? title, String? description}) {
+  final driverImageCubit = context.read<DriverImageCubit>();
+  showCupertinoModalPopup(
+    useRootNavigator: false,
+    context: context,
+    builder:
+        (context) => CupertinoActionSheet(
+          title:
+              title != null
+                  ? Text(
+                    title,
+                    style: normalTextStyle.copyWith(color: Colors.black),
+                  )
+                  : null,
+          message:
+              description != null
+                  ? Text(description, style: paragraphTextStyle)
+                  : null,
+          actions: [
+            CupertinoActionSheetAction(
+              child: Text('Open Camera', style: TextStyle(color: gradient1)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                driverImageCubit.pickImage(context);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: Text(
+                'Choose from Gallery',
+                style: TextStyle(color: gradient1),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                driverImageCubit.pickImage(context, gallery: true);
+              },
+            ),
+            CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              child: const Text(
+                'Close',
+                style: TextStyle(fontSize: normalText),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+  );
+}
