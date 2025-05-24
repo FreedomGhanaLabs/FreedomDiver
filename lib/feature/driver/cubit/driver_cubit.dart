@@ -53,7 +53,9 @@ class DriverCubit extends Cubit<DriverState> {
             final driver = Driver.fromJson(
               data['data'] as Map<String, dynamic>,
             );
-
+            log(
+              '[DriverCubit] Driver data fetched successfully ${data['data']} ',
+            );
             _updateDriver(driver);
           } else {
             emit(const DriverError('Failed to fetch driver data'));

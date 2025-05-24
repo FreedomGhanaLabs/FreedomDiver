@@ -40,7 +40,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     bool forceRefresh = false,
   }) async {
     if (hasDocument && !forceRefresh) {
-      log('[DriverCubit] Using cached driver data');
+      log('[DocumentCubit] Using cached document data');
       _updateDocument(_cachedDriverDocument!);
       return;
     }
@@ -55,7 +55,6 @@ class DocumentCubit extends Cubit<DocumentState> {
             _updateDocument(document);
           } else {
             emit(const DocumentError('Failed to fetch driver documents'));
-            log('[DocumentCubit] Failed to fetch driver documents: $data');
           }
         });
       },

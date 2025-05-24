@@ -49,7 +49,7 @@ class DriverSocketService {
   }) async {
     final token = await getTokenFromHive();
     _socket?.disconnect();
-    
+
     _socket = io.io(ApiConstants.baseUrl, {
       DriverSocketConstants.authKey: {DriverSocketConstants.tokenKey: token},
       DriverSocketConstants.transportsKey: [

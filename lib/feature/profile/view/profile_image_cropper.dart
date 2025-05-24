@@ -32,7 +32,6 @@ class ProfileImageCropper extends StatefulWidget {
 }
 
 class _ProfileImageCropperState extends State<ProfileImageCropper> {
-
   Future<void> _cropImage(String sourcePath) async {
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: sourcePath,
@@ -75,21 +74,25 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
     return BlocBuilder<DriverImageCubit, DriverImageState>(
       builder: (context, state) {
         final image = state is DriverImageSelected ? state.image : null;
+        if (image == null) {
+          Navigator.of(context).pop();
+          return const Center(
+            child: Text(
+              'No image selected',
+              style: TextStyle(fontSize: normalText),
+            ),
+          );
+        }
         if (state is DriverImageLoading) {
           return const Center(child: CircularProgressIndicator());
-        } 
+        }
         return PopScope(
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) {
-              context.read<DriverImageCubit>().resetImage();
-              Navigator.of(context).pop();
-            }
-          },
+
           child: CustomScreen(
             title: 'Update Profile Image',
             children: [
               const VSpace(normalWhiteSpace),
-              if (image != null) ...[
+              ...[
                 buildSelectedImage(
                   context,
                   image,
@@ -138,17 +141,11 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
                     ],
                   ),
                 ),
-              ] else ...[
-                const Text(
-                  'No image selected',
-                  style: TextStyle(fontSize: normalText, color: Colors.black),
-                ),
               ],
             ],
           ),
         );
-      }
-         
+      },
     );
   }
 }

@@ -49,6 +49,7 @@ class Driver {
     required this.suspended,
     required this.twoFactorEnabled,
     required this.isVerified,
+    required this.profilePicture,
     this.documentStatus,
     this.documentComments,
     this.status,
@@ -59,6 +60,7 @@ class Driver {
     this.role,
     this.token,
     this.socketId,
+    
   });
   factory Driver.fromJson(Map<String, dynamic> json) {
     return Driver(
@@ -111,6 +113,7 @@ class Driver {
       role: json['role'] as String?,
       token: json['token'] as String?,
       socketId: json['socketId'] as String?,
+      profilePicture: json['profilePicture'] as String?,
     );
   }
 
@@ -146,6 +149,7 @@ class Driver {
   final String? role;
   final String? token;
   final String? socketId;
+  final String? profilePicture;
 
   String get fullName => [firstName.trim(), surname.trim()].join(' ');
 
@@ -182,6 +186,7 @@ class Driver {
     String? role,
     String? token,
     String? socketId,
+    String? profilePicture,
   }) {
     return Driver(
       id: id ?? this.id,
@@ -217,10 +222,10 @@ class Driver {
       role: role ?? this.role,
       token: token ?? this.token,
       socketId: socketId ?? this.socketId,
+      profilePicture: profilePicture ?? this.profilePicture,
     );
   }
 }
-// Nested Models
 
 class Address {
   Address({
