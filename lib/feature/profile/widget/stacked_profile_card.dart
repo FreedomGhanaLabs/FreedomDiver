@@ -18,6 +18,7 @@ import 'package:freedomdriver/utilities/ui.dart';
 import '../../../utilities/pick_file.dart';
 import '../../documents/cubit/document_image.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
+import '../view/profile_picture.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key});
@@ -204,10 +205,17 @@ class ProfileAvatar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(roundedLg),
                 child:
                     driver?.profilePicture != null
-                        ? CachedNetworkImage(
-                          imageUrl: driver?.profilePicture ?? '',
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) => DefaultAvatar(),
+                        ? GestureDetector(
+                          onTap:
+                              () => Navigator.pushNamed(
+                                context,
+                                ProfilePictureScreen.routeName,
+                              ),
+                          child: CachedNetworkImage(
+                            imageUrl: driver?.profilePicture ?? '',
+                            fit: BoxFit.fill,
+                            placeholder: (context, url) => DefaultAvatar(),
+                          ),
                         )
                         : DefaultAvatar(),
               ),

@@ -29,6 +29,7 @@ import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 
 import '../feature/documents/ghana_card/view/ghana_card_form.dart';
 import '../feature/profile/view/profile_image_cropper.dart';
+import '../feature/profile/view/profile_picture.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   log('Next Route: ${settings.name}');
@@ -148,6 +149,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case ProfileImageCropper.routeName:
       return _pageBuilder(
         (_) => const ProfileImageCropper(),
+        settings: settings,
+      );
+    case ProfilePictureScreen.routeName:
+      return _pageBuilder(
+        (_) => const ProfilePictureScreen(),
         settings: settings,
       );
     case DocumentManagementScreen.routeName:

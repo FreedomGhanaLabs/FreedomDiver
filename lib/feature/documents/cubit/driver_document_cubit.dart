@@ -17,6 +17,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 
+import '../../driver/cubit/driver_cubit.dart';
+
 class DocumentCubit extends Cubit<DocumentState> {
   DocumentCubit() : super(DocumentInitial());
 
@@ -100,6 +102,10 @@ class DocumentCubit extends Cubit<DocumentState> {
         ) {
           if (success) {
             emit(DocumentSuccess());
+            context.read<DriverCubit>().getDriverProfile(
+              context,
+              forceRefresh: true,
+            );
             context.read<DriverImageCubit>().resetImage();
             Navigator.pushReplacementNamed(context, ProfileDetails.routeName);
           }
