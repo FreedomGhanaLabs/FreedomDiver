@@ -11,13 +11,12 @@ import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/profile/view/profile_details.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
-
-import '../../driver/cubit/driver_cubit.dart';
 
 class DocumentCubit extends Cubit<DocumentState> {
   DocumentCubit() : super(DocumentInitial());
@@ -31,7 +30,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     _cachedDriverDocument = updated;
     emit(DocumentLoaded(_cachedDriverDocument!));
   }
-  
+
   void resetDocument() {
     _cachedDriverDocument = null;
     emit(DocumentInitial());
@@ -64,7 +63,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     );
   }
 
-//  ------ Upload Motorcycle Image ------
+  //  ------ Upload Motorcycle Image ------
   Future<void> uploadProfileImage(BuildContext context) async {
     final driver = context.driver;
     final documentFile = context.document;
@@ -102,10 +101,7 @@ class DocumentCubit extends Cubit<DocumentState> {
         ) {
           if (success) {
             emit(DocumentSuccess());
-            context.read<DriverCubit>().getDriverProfile(
-              context,
-              forceRefresh: true,
-            );
+            loadDashboard(context);
             context.read<DriverImageCubit>().resetImage();
             Navigator.pushReplacementNamed(context, ProfileDetails.routeName);
           }
@@ -165,7 +161,7 @@ class DocumentCubit extends Cubit<DocumentState> {
     );
   }
 
-//  ------ Upload Ghana Card ------
+  //  ------ Upload Ghana Card ------
   Future<void> uploadGhanaCard(BuildContext context) async {
     final driver = context.driver;
     final documentFile = context.document;
@@ -278,7 +274,7 @@ class DocumentCubit extends Cubit<DocumentState> {
               context,
               VerificationStatusScreen.routeName,
             );
-          } 
+          }
         }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentError('Something went wrong')),
@@ -346,7 +342,7 @@ class DocumentCubit extends Cubit<DocumentState> {
               context,
               VerificationStatusScreen.routeName,
             );
-          } 
+          }
         }, showOverlay: true);
       },
       onError: (_) => emit(const DocumentError('Something went wrong')),

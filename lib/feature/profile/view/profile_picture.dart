@@ -21,11 +21,20 @@ class ProfilePictureScreen extends StatelessWidget {
           title: driver?.fullName ?? '',
           children: [
             VSpace(normalWhiteSpace),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(roundedLg),
-              child: CachedNetworkImage(
-                imageUrl: driver?.profilePicture ?? '',
-                placeholder: (context, url) => const CircularProgressIndicator(),
+            Hero(
+              tag: driver?.id ?? '',
+              transitionOnUserGestures: true,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(roundedLg),
+                child: CachedNetworkImage(
+                  imageUrl: driver?.profilePicture ?? '',
+                  placeholder:
+                      (context, url) => SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: const CircularProgressIndicator(),
+                      ),
+                ),
               ),
             ),
           ],

@@ -211,10 +211,17 @@ class ProfileAvatar extends StatelessWidget {
                                 context,
                                 ProfilePictureScreen.routeName,
                               ),
-                          child: CachedNetworkImage(
-                            imageUrl: driver?.profilePicture ?? '',
-                            fit: BoxFit.fill,
-                            placeholder: (context, url) => DefaultAvatar(),
+                          child: Hero(
+                            tag: driver?.id ?? '',
+                            transitionOnUserGestures: true,
+                            child: CachedNetworkImage(
+                              imageUrl: driver?.profilePicture ?? '',
+                              fit: BoxFit.cover,
+                              errorWidget:
+                                  (context, url, error) =>
+                                      const DefaultAvatar(),
+                              placeholder: (context, url) => DefaultAvatar(),
+                            ),
                           ),
                         )
                         : DefaultAvatar(),

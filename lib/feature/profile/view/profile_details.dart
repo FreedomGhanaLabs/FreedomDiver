@@ -53,6 +53,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Widget build(BuildContext context) {
     return CustomScreen(
       title: 'Profile Details',
+      bodyHeader: 'Update your profile information',
+      bodyDescription:
+          'Keep your profile up to date so we can contact you and verify your identity. Accurate details help us serve you better and ensure your account security.',
       children: [
         TextFieldFactory(
           controller: nameController,
