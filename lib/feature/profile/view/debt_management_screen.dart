@@ -68,7 +68,6 @@ class DebtHistorySection extends StatelessWidget {
     return FutureBuilder(
       future: context.read<DebtCubit>().getDebtPaymentHistory(context),
       builder: (context, snapshot) {
-        // You should ideally manage this with a separate state
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
         }
