@@ -27,7 +27,7 @@ class WalletScreen extends StatelessWidget {
             const VSpace(whiteSpace),
             EarningsBanner(
               title:
-                  '\$${earning?.pendingPayments.toStringAsFixed(2) ?? '0.00'}',
+                  '$appCurrency ${earning?.pendingPayments.toStringAsFixed(2) ?? '0.00'}',
               subtitle: 'Account balance',
               child2: SimpleButton(
                 title: '',

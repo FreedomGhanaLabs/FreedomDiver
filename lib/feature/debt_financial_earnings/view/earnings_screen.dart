@@ -14,7 +14,6 @@ import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-
 class EarningsScreen extends StatefulWidget {
   const EarningsScreen({super.key});
   static const String routeName = '/earnings';
@@ -36,8 +35,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
               const EarningsBackgroundWidget(),
               SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: smallWhiteSpace,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -45,14 +45,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         MediaQuery.of(context).padding.top +
                             extraSmallWhiteSpace,
                       ),
-                      Text(
-                        'Earnings Overview',
-                        style: normalTextStyle,
-                      ),
+                      Text('Earnings Overview', style: normalTextStyle),
                       SizedBox(
-                        width: Responsive.isMobile(context)
-                            ? 310
-                            : Responsive.width(context),
+                        width:
+                            Responsive.isMobile(context)
+                                ? 310
+                                : Responsive.width(context),
                         child: Text(
                           "See how much you've made this week at a glance.",
                           style: TextStyle(
@@ -65,17 +63,15 @@ class _EarningsScreenState extends State<EarningsScreen> {
                       smallWhiteSpace.verticalSpace,
                       const HomeEarnings(),
                       smallWhiteSpace.verticalSpace,
-                      Text(
-                        'Logistics Summary',
-                        style: normalTextStyle,
-                      ),
+                      Text('Logistics Summary', style: normalTextStyle),
                       smallWhiteSpace.verticalSpace,
                       Row(
                         children: [
                           Expanded(
                             child: DashboardContainer(
-                              svgImage:
-                                  const AppIcon(iconName: 'driver_score_icon'),
+                              svgImage: const AppIcon(
+                                iconName: 'driver_score_icon',
+                              ),
                               title: 'Number of trips',
                               value: '${earning?.completedRides ?? 0}',
                             ),
@@ -109,9 +105,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                 TextSpan(
                                   children: [
                                     const TextSpan(
-                                      text: r'$',
+                                      text: '$appCurrency ',
                                       style: TextStyle(
-                                        fontSize: emphasisText,
+                                        fontSize: headingText,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -132,8 +128,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
                               SimpleButton(
                                 title: '',
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed(WalletScreen.routeName);
+                                  Navigator.of(
+                                    context,
+                                  ).pushNamed(WalletScreen.routeName);
                                 },
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 19,
@@ -177,8 +174,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                     strokeAlign: BorderSide.strokeAlignOutside,
                                     color: Color(0x21E61D2A),
                                   ),
-                                  borderRadius:
-                                      BorderRadius.circular(roundedLg),
+                                  borderRadius: BorderRadius.circular(
+                                    roundedLg,
+                                  ),
                                 ),
                               ),
                               child: Column(
@@ -190,7 +188,8 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                           color: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
-                                                roundedLg,),
+                                              roundedLg,
+                                            ),
                                           ),
                                         ),
                                         padding: const EdgeInsets.only(
@@ -216,16 +215,14 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                   ),
                                   const VSpace(3),
                                   const Text(
-                                    'Complete 10 rides a day to earn an extra \$20.00!',
+                                    'Complete 10 rides a day to earn an extra $appCurrency 20.00!',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 10.89,
+                                      fontSize: smallText,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  const RideBonusContainer(
-                                    totalRides: 5,
-                                  ),
+                                  const RideBonusContainer(totalRides: 5),
                                 ],
                               ),
                             ),
@@ -234,7 +231,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                       ),
                       const VSpace(15),
                       EarningsBanner(
-                        title: 'Earn C 5,000 per invite',
+                        title: 'Earn $appCurrency 5,000 per invite',
                         subtitle:
                             'Invite your friends and family to ride with GofreedomApp',
                         child2: SvgPicture.asset('assets/app_icons/3d_tag.svg'),
@@ -248,10 +245,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
                             ),
                           ),
                           child: const Text(
-                            'Invite ',
+                            'Invite',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 10.63,
+                              fontSize: paragraphText,
                               fontWeight: FontWeight.w300,
                             ),
                           ),
@@ -318,12 +315,10 @@ class RideBonusContainerState extends State<RideBonusContainer>
       vsync: this,
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 1, end: 1.1).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _animation = Tween<double>(
+      begin: 1,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -334,8 +329,10 @@ class RideBonusContainerState extends State<RideBonusContainer>
 
   @override
   Widget build(BuildContext context) {
-    final progressPercentage =
-        (widget.totalRides / widget.requiredRides).clamp(0.0, 1.0);
+    final progressPercentage = (widget.totalRides / widget.requiredRides).clamp(
+      0.0,
+      1.0,
+    );
     final isRewardReady = widget.totalRides >= widget.requiredRides;
 
     return ScaleTransition(
@@ -361,9 +358,9 @@ class RideBonusContainerState extends State<RideBonusContainer>
             ElevatedButton(
               onPressed: () {
                 // Handle reward claim logic
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Bonus Claimed!')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Bonus Claimed!')));
               },
               child: const Text('Claim Bonus'),
             ),
@@ -389,18 +386,13 @@ class DashboardContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 17,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 17),
       // width: 190,
       // margin: EdgeInsets.symmetric(horizontal: 20),
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.black.withValues(alpha: 0.12),
-          ),
+          side: BorderSide(color: Colors.black.withValues(alpha: 0.12)),
           borderRadius: BorderRadius.circular(roundedLg),
         ),
       ),
