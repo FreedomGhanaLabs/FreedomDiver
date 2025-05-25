@@ -185,14 +185,14 @@ class PersonalDataSection extends SectionFactory {
     super.titleStyle,
     super.sectionTextStyle,
     super.paddingSection,
-    this.onFinanceTap,
+    this.onDebtTap,
     this.onProfileTap,
     this.onWalletTap,
   });
   final VoidCallback? onProfileTap;
 
   final VoidCallback? onWalletTap;
-  final VoidCallback? onFinanceTap;
+  final VoidCallback? onDebtTap;
 
   @override
   String get sectionTitle => 'Personal';
@@ -210,9 +210,9 @@ class PersonalDataSection extends SectionFactory {
       onTap: onWalletTap,
     ),
     SectionItem(
-      title: 'Finance and Debt',
+      title: 'Debt Management',
       iconPath: getIconUrl('gradient_document'),
-      onTap: onFinanceTap,
+      onTap: onDebtTap,
     ),
   ];
 }
