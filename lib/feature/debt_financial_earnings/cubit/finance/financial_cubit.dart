@@ -12,10 +12,6 @@ class FinancialCubit extends Cubit<FinancialState> {
 
   final _apiController = ApiController('financial');
 
-  static String errorMessage(String firstName) {
-    return 'Sorry $firstName! We could not retrieve your earnings at the moment. Please ensure that you have a good internet connection or restart the app. If this difficulty persist please contact our support team';
-  }
-
   Future<void> getWalletBalance(BuildContext context) async {
     await handleApiCall(
       context: context,

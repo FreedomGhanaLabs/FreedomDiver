@@ -9,7 +9,6 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});
@@ -40,7 +39,7 @@ class WalletScreen extends StatelessWidget {
                     const HSpace(extraSmallWhiteSpace),
                     Text(
                       'Withdraw',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: paragraphText,
                         fontWeight: FontWeight.w400,
@@ -55,9 +54,9 @@ class WalletScreen extends StatelessWidget {
             Text(
               'Manage Payment Method',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: Colors.black,
-                fontSize: 12.49,
+                fontSize: smallText,
                 fontWeight: FontWeight.w500,
               ),
             ),
