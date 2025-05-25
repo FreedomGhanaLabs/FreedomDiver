@@ -50,7 +50,7 @@ class DriverTotalEarnings extends StatelessWidget {
               ),
               5.verticalSpace,
               Text(
-                '\$${earning?.totalRideEarnings ?? '0.00'}',
+                '\$${earning?.totalRideEarnings.toStringAsFixed(2) ?? '0.00'}',
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: headingText,

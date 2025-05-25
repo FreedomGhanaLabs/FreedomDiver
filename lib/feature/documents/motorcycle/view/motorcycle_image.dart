@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freedomdriver/core/constants/documents.dart';
+import 'package:freedomdriver/feature/documents/extension.dart';
 import 'package:freedomdriver/feature/documents/widget/uploaded_document_image.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
@@ -21,14 +22,18 @@ class MotorcycleImageScreen extends StatefulWidget {
 class _MotorcycleImageState extends State<MotorcycleImageScreen> {
   @override
   Widget build(BuildContext context) {
-
+    final documentUrl =
+        context.driverDocument?.motorcycleImageHistory?.current.documentUrl;
     return CustomScreen(
       title: 'Motorcycle Information',
       bodyHeader: 'Update Your Motorcycle Image',
       bodyDescription:
           'Please provide image about your motorcycle. Keeping your information current helps us ensure your records are correct and improves your experience. click the Next button to submit motorcycle image.',
       children: [
-        UploadedDocumentImage(heading: "Upload Motorcycle Image"),
+        UploadedDocumentImage(
+          heading: "Uploaded Motorcycle Image",
+          documentUrl: documentUrl,
+        ),
         DecoratedContainer(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,15 +60,7 @@ class _MotorcycleImageState extends State<MotorcycleImageScreen> {
                 onPressed: submitForm,
                 useGradient: true,
                 gradient: redLinearGradient,
-                title: 'Next',
-                buttonTitle: const Text(
-                  'Next',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: paragraphText,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                title: documentUrl != null ? 'Update Image' : 'Next',
               ),
             ],
           ),

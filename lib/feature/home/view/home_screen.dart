@@ -25,6 +25,7 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 
 import '../../../shared/api/load_dashboard.dart';
+import '../../../shared/api/load_document_histories.dart';
 import '../../../utilities/driver_location_service.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 
@@ -50,7 +51,10 @@ class _HomeScreenState extends State<_HomeScreen> {
 
   @override
   void initState() {
-    DriverLocationService().requestPermission();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DriverLocationService().requestPermission();
+      loadDocumentHistories(context);
+    });
     super.initState();
   }
 
@@ -62,7 +66,10 @@ class _HomeScreenState extends State<_HomeScreen> {
         color: gradient1,
         triggerMode: RefreshIndicatorTriggerMode.anywhere,
         onRefresh: () async {
-          await loadDashboard(context);
+          await Future.wait([
+            loadDashboard(context),
+            loadDocumentHistories(context),
+          ]);
         },
         child: Stack(
           children: [
@@ -374,69 +381,73 @@ class HomeHeader extends StatelessWidget {
                       driver == null
                           ? null
                           : () {
-                    final driverCubit = context.read<DriverCubit>();
-                    showCupertinoModalPopup(
-                      useRootNavigator: false,
-                      context: context,
-                      builder:
-                          (context) => CupertinoActionSheet(
-                            title: Text(
-                              'Select Ride Preference - Ride, Deliver, or Both',
-                              style: normalTextStyle,
-                            ),
-                            message: Text(
-                              'Choose your service type: offer rides, make deliveries, or do both. Customize your experience to match your goals.',
-                              style: paragraphTextStyle,
-                            ),
-                            actions: [
-                              CupertinoActionSheetAction(
-                                child: Text(
-                                  'Rides only',
-                                  style: TextStyle(color: gradient1),
-                                ),
-                                onPressed: () async {
-                                  await driverCubit.updateDriverRidePreference(
-                                    context,
-                                    newRidePreference: 'normal',
-                                  );
+                            final driverCubit = context.read<DriverCubit>();
+                            showCupertinoModalPopup(
+                              useRootNavigator: false,
+                              context: context,
+                              builder:
+                                  (context) => CupertinoActionSheet(
+                                    title: Text(
+                                      'Select Ride Preference - Ride, Deliver, or Both',
+                                      style: normalTextStyle,
+                                    ),
+                                    message: Text(
+                                      'Choose your service type: offer rides, make deliveries, or do both. Customize your experience to match your goals.',
+                                      style: paragraphTextStyle,
+                                    ),
+                                    actions: [
+                                      CupertinoActionSheetAction(
+                                        child: Text(
+                                          'Rides only',
+                                          style: TextStyle(color: gradient1),
+                                        ),
+                                        onPressed: () async {
+                                          await driverCubit
+                                              .updateDriverRidePreference(
+                                                context,
+                                                newRidePreference: 'normal',
+                                              );
 
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              CupertinoActionSheetAction(
-                                child: Text(
-                                  'Deliveries only',
-                                  style: TextStyle(color: gradient1),
-                                ),
-                                onPressed: () async {
-                                  await driverCubit.updateDriverRidePreference(
-                                    context,
-                                    newRidePreference: 'delivery',
-                                  );
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              CupertinoActionSheetAction(
-                                child: Text(
-                                  'Rides and Deliveries ',
-                                  style: TextStyle(color: gradient1),
-                                ),
-                                onPressed: () async {
-                                  await driverCubit.updateDriverRidePreference(
-                                    context,
-                                  );
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              CupertinoActionSheetAction(
-                                isDestructiveAction: true,
-                                child: const Text('Close'),
-                                onPressed: () => Navigator.of(context).pop(),
-                              ),
-                            ],
-                          ),
-                    );
-                  },
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text(
+                                          'Deliveries only',
+                                          style: TextStyle(color: gradient1),
+                                        ),
+                                        onPressed: () async {
+                                          await driverCubit
+                                              .updateDriverRidePreference(
+                                                context,
+                                                newRidePreference: 'delivery',
+                                              );
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text(
+                                          'Rides and Deliveries ',
+                                          style: TextStyle(color: gradient1),
+                                        ),
+                                        onPressed: () async {
+                                          await driverCubit
+                                              .updateDriverRidePreference(
+                                                context,
+                                              );
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        isDestructiveAction: true,
+                                        child: const Text('Close'),
+                                        onPressed:
+                                            () => Navigator.of(context).pop(),
+                                      ),
+                                    ],
+                                  ),
+                            );
+                          },
                   child: Row(
                     children: [
                       Text(

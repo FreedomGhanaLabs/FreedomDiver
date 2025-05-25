@@ -43,10 +43,15 @@ extension DriverDocumentTypeExtension on DriverDocumentType {
 class DriverDocument {
   final String overallStatus;
   final DocumentDetail? driverLicense;
+  final DocumentHistory? driverLicenseHistory;
   final SimpleDocument? ghanaCard;
+  final DocumentHistory? ghanaCardHistory;
   final SimpleDocument? profilePicture;
+  final DocumentHistory? profilePictureHistory;
   final SimpleDocument? motorcycleImage;
+  final DocumentHistory? motorcycleImageHistory;
   final AddressProof? addressProof;
+  final DocumentHistory? addressProofHistory;
 
   DriverDocument({
     required this.overallStatus,
@@ -55,6 +60,11 @@ class DriverDocument {
     this.profilePicture,
     this.motorcycleImage,
     this.addressProof,
+    this.driverLicenseHistory,
+    this.ghanaCardHistory,
+    this.profilePictureHistory,
+    this.motorcycleImageHistory,
+    this.addressProofHistory,
   });
 
   factory DriverDocument.fromJson(Map<String, dynamic> json) {
@@ -80,6 +90,36 @@ class DriverDocument {
           json['addressProof'] != null
               ? AddressProof.fromJson(json['addressProof'])
               : null,
+    );
+  }
+
+  DriverDocument copyWith({
+    String? overallStatus,
+    DocumentDetail? driverLicense,
+    DocumentHistory? driverLicenseHistory,
+    SimpleDocument? ghanaCard,
+    DocumentHistory? ghanaCardHistory,
+    SimpleDocument? profilePicture,
+    DocumentHistory? profilePictureHistory,
+    SimpleDocument? motorcycleImage,
+    DocumentHistory? motorcycleImageHistory,
+    AddressProof? addressProof,
+    DocumentHistory? addressProofHistory,
+  }) {
+    return DriverDocument(
+      overallStatus: overallStatus ?? this.overallStatus,
+      driverLicense: driverLicense ?? this.driverLicense,
+      driverLicenseHistory: driverLicenseHistory ?? this.driverLicenseHistory,
+      ghanaCard: ghanaCard ?? this.ghanaCard,
+      ghanaCardHistory: ghanaCardHistory ?? this.ghanaCardHistory,
+      profilePicture: profilePicture ?? this.profilePicture,
+      profilePictureHistory:
+          profilePictureHistory ?? this.profilePictureHistory,
+      motorcycleImage: motorcycleImage ?? this.motorcycleImage,
+      motorcycleImageHistory:
+          motorcycleImageHistory ?? this.motorcycleImageHistory,
+      addressProof: addressProof ?? this.addressProof,
+      addressProofHistory: addressProofHistory ?? this.addressProofHistory,
     );
   }
 
@@ -219,4 +259,74 @@ class AddressProof {
     'uploadedAt': uploadedAt.toIso8601String(),
     'verifiedAt': verifiedAt?.toIso8601String(),
   };
+}
+
+class DocumentHistory {
+  final String documentType;
+  final HDocument current;
+  final List<HDocument> history;
+
+  DocumentHistory({
+    required this.documentType,
+    required this.current,
+    required this.history,
+  });
+
+  factory DocumentHistory.fromJson(Map<String, dynamic> json) {
+    return DocumentHistory(
+      documentType: json['documentType'].toString(),
+      current: HDocument.fromJson(json['current']),
+      history:
+          (json['history'] as List)
+              .map((item) => HDocument.fromJson(item))
+              .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'documentType': documentType,
+      'current': current.toJson(),
+      'history': history.map((item) => item.toJson()).toList(),
+    };
+  }
+}
+
+class HDocument {
+  final String documentUrl;
+  final String verificationStatus;
+  final DateTime uploadedAt;
+  final DateTime? verifiedAt;
+  final String? adminComments;
+
+  HDocument({
+    required this.documentUrl,
+    required this.verificationStatus,
+    required this.uploadedAt,
+    this.verifiedAt,
+    this.adminComments,
+  });
+
+  factory HDocument.fromJson(Map<String, dynamic> json) {
+    return HDocument(
+      documentUrl: json['documentUrl'].toString(),
+      verificationStatus: json['verificationStatus'].toString(),
+      uploadedAt: DateTime.parse(json['uploadedAt']),
+      verifiedAt:
+          json['verifiedAt'] != null
+              ? DateTime.tryParse(json['verifiedAt'])
+              : null,
+      adminComments: json['adminComments'].toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'documentUrl': documentUrl,
+      'verificationStatus': verificationStatus,
+      'uploadedAt': uploadedAt.toIso8601String(),
+      'verifiedAt': verifiedAt?.toIso8601String(),
+      'adminComments': adminComments,
+    };
+  }
 }

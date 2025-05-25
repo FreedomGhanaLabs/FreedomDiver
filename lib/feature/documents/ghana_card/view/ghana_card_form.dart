@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/core/constants/documents.dart';
+import 'package:freedomdriver/feature/documents/extension.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/ghana_card.model.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
@@ -15,6 +16,7 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:intl/intl.dart';
 
 import '../../driver_license/view/license_form.dart';
+import '../../widget/uploaded_document_image.dart';
 
 class GhanaCardForm extends StatefulWidget {
   const GhanaCardForm({super.key});
@@ -108,12 +110,18 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
 
   @override
   Widget build(BuildContext context) {
+    final documentUrl =
+        context.driverDocument?.ghanaCardHistory?.current.documentUrl;
     return CustomScreen(
       title: 'Ghana Card',
       bodyHeader: 'Enter your Ghana Card details',
       bodyDescription:
           'Ensure all fields are filled correctly to verify your identity.',
       children: [
+        UploadedDocumentImage(
+          heading: "Uploaded Card",
+          documentUrl: documentUrl,
+        ),
         DecoratedContainer(
           child: Form(
             key: _formKey,
@@ -151,14 +159,7 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
                   onPressed: submitForm,
                   useGradient: true,
                   gradient: redLinearGradient,
-                  title: 'Next',
-                  buttonTitle: const Text(
-                    'Next',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: paragraphText,
-                    ),
-                  ),
+                  title: documentUrl != null ? 'Update Card' : 'Next',
                 ),
               ],
             ),

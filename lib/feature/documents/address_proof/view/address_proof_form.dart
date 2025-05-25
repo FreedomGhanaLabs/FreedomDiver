@@ -62,6 +62,7 @@ class _AddressProofFormState extends State<AddressProofForm> {
 
   @override
   Widget build(BuildContext context) {
+    final documentUrl = context.driverDocument?.addressProof?.documentUrl;
     return CustomScreen(
       title: 'Address Information',
       bodyHeader: 'Keep your Address information up-to-date',
@@ -123,15 +124,7 @@ class _AddressProofFormState extends State<AddressProofForm> {
                   onPressed: submitForm,
                   useGradient: true,
                   gradient: redLinearGradient,
-                  title: 'Next',
-                  buttonTitle: const Text(
-                    'Next',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: paragraphText,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  title: documentUrl != null ? 'Update Address' : 'Next',
                 ),
               ],
             ),
@@ -159,4 +152,3 @@ class _AddressProofFormState extends State<AddressProofForm> {
     }
   }
 }
-
