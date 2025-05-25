@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_state.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_banner.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
