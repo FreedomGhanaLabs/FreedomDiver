@@ -1,26 +1,26 @@
 import 'package:equatable/equatable.dart';
 
-abstract class FinancialState extends Equatable {
-  const FinancialState();
+abstract class DebtState extends Equatable {
+  const DebtState();
 
   @override
   List<Object?> get props => [];
 }
 
-class FinancialInitial extends FinancialState {}
+class DebtInitial extends DebtState {}
 
-class FinancialLoading extends FinancialState {}
+class DebtLoading extends DebtState {}
 
-class FinancialLoaded extends FinancialState {
-  const FinancialLoaded(this.finance);
+class DebtLoaded extends DebtState {
+  const DebtLoaded(this.finance);
   final  finance;
 
   @override
   List<Object?> get props => [finance];
 }
 
-class FinancialError extends FinancialState {
-  const FinancialError(this.message);
+class DebtError extends DebtState {
+  const DebtError(this.message);
   final String message;
 
   @override
