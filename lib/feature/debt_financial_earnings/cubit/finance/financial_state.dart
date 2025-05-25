@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/finance.dart';
 
 abstract class FinancialState extends Equatable {
   const FinancialState();
@@ -13,7 +14,7 @@ class FinancialLoading extends FinancialState {}
 
 class FinancialLoaded extends FinancialState {
   const FinancialLoaded(this.finance);
-  final  finance;
+  final Finance  finance;
 
   @override
   List<Object?> get props => [finance];

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class FinanceModel extends Equatable {
+class Finance extends Equatable {
   final double walletBalance;
   final double availableBalance;
   final double debt;
@@ -18,7 +18,7 @@ class FinanceModel extends Equatable {
   final PaymentBreakdown paymentBreakdown;
   final WithdrawalMethods withdrawalMethods;
 
-  const FinanceModel({
+  const Finance({
     required this.walletBalance,
     required this.availableBalance,
     required this.debt,
@@ -37,8 +37,8 @@ class FinanceModel extends Equatable {
     required this.withdrawalMethods,
   });
 
-  factory FinanceModel.fromJson(Map<String, dynamic> json) {
-    return FinanceModel(
+  factory Finance.fromJson(Map<String, dynamic> json) {
+    return Finance(
       walletBalance:
           json['walletBalance']?.toDouble() ??
           json['wallet']?['balance']?.toDouble() ??
@@ -113,7 +113,7 @@ class FinanceModel extends Equatable {
     };
   }
 
-  FinanceModel copyWith({
+  Finance copyWith({
     double? walletBalance,
     double? availableBalance,
     double? debt,
@@ -131,7 +131,7 @@ class FinanceModel extends Equatable {
     PaymentBreakdown? paymentBreakdown,
     WithdrawalMethods? withdrawalMethods,
   }) {
-    return FinanceModel(
+    return Finance(
       walletBalance: walletBalance ?? this.walletBalance,
       availableBalance: availableBalance ?? this.availableBalance,
       debt: debt ?? this.debt,
