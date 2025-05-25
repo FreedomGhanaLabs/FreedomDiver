@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../feature/documents/cubit/driver_document_cubit.dart';
 import '../../feature/documents/models/driver_documents.dart';
+import '../../feature/earnings/cubit/finance/financial_cubit.dart';
 
 Future<void> loadDocumentHistories(BuildContext context) async {
   final documentCubit = context.read<DocumentCubit>();
+  final financialCubit = context.read<FinancialCubit>();
+
   await Future.wait([
     documentCubit.getDriverDocumentHistory(
       context,
@@ -27,5 +30,6 @@ Future<void> loadDocumentHistories(BuildContext context) async {
       context,
       documentType: DriverDocumentType.addressProof.name,
     ),
+    financialCubit.getWalletBalance(context),
   ]);
 }

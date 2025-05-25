@@ -61,7 +61,7 @@ class DocumentCubit extends Cubit<DocumentState> {
   }
 
   DriverDocument _copyWithDynamic(DriverDocumentType type, dynamic data) {
-    log('[DocumentCubit] Updating document history for $type with data: $data');
+    log('[DocumentCubit] Updating document history for $type');
 
     final history = DocumentHistory(
       documentType: data['documentType'],
