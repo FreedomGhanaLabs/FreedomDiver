@@ -1,6 +1,6 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:freedomdriver/feature/earnings/models/earning.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/earning.dart';
 
 abstract class EarningState extends Equatable {
   const EarningState();

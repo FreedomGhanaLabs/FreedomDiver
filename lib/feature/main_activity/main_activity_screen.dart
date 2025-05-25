@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:freedomdriver/feature/earnings/view/earnings_screen.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/view/earnings_screen.dart';
 import 'package:freedomdriver/feature/home/view/home_screen.dart';
 import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
 import 'package:freedomdriver/feature/profile/view/profile_screen.dart';

@@ -9,8 +9,8 @@ import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart
 import 'package:freedomdriver/feature/documents/driver_license/cubit/license_cubit.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
-import 'package:freedomdriver/feature/earnings/cubit/earnings_cubit.dart';
-import 'package:freedomdriver/feature/earnings/cubit/finance/financial_cubit.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings_cubit.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/kyc/cubit/kyc_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/rides_cubit.dart';

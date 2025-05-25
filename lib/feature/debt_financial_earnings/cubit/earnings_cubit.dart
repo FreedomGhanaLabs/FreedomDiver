@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/earnings/cubit/earnings_state.dart';
-import 'package:freedomdriver/feature/earnings/models/earning.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/earning.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 
 

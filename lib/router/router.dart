@@ -8,9 +8,9 @@ import 'package:freedomdriver/feature/authentication/register/view/register_form
 import 'package:freedomdriver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedomdriver/feature/documents/address_proof/view/address_proof_form.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
-import 'package:freedomdriver/feature/earnings/view/driver_score_details_screen.dart';
-import 'package:freedomdriver/feature/earnings/view/earnings_screen.dart';
-import 'package:freedomdriver/feature/earnings/view/wallet_screen.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/view/driver_score_details_screen.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/view/earnings_screen.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/view/wallet_screen.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/feature/kyc/view/criminal_background_check_screen.dart';

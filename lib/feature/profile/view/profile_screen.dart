@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:freedomdriver/feature/earnings/widgets/utility.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/feature/kyc/view/vehicle_details_screen.dart';
 import 'package:freedomdriver/feature/profile/view/availability_dashboard.dart';
 import 'package:freedomdriver/feature/profile/view/document_management_screen.dart';
