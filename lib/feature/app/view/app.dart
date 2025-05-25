@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:freedomdriver/feature/authentication/login/cubit/login_cubit.dart';
-import 'package:freedomdriver/feature/authentication/register/cubit/registration_cubit.dart';
-import 'package:freedomdriver/feature/authentication/register/cubit/verify_otp_cubit.dart';
-import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
-import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
-import 'package:freedomdriver/feature/documents/driver_license/cubit/license_cubit.dart';
-import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
-import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
-import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
-import 'package:freedomdriver/feature/kyc/cubit/kyc_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/rides_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
+import 'package:freedomdriver/feature/app/cubits.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
 import 'package:freedomdriver/router/router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,22 +26,7 @@ class App extends StatelessWidget {
           return FadeTransition(opacity: p1, child: p0);
         },
         child: MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (_) => RegistrationFormCubit()),
-            BlocProvider(create: (_) => LoginFormCubit()),
-            BlocProvider(create: (_) => VerifyOtpCubit()),
-            BlocProvider(create: (_) => HomeCubit()),
-            BlocProvider(create: (_) => DriverCubit()),
-            BlocProvider(create: (_) => DocumentCubit()),
-            BlocProvider(create: (_) => DriverLicenseDetailsCubit()),
-            BlocProvider(create: (_) => GhanaCardCubit()),
-            BlocProvider(create: (_) => DriverImageCubit()),
-            BlocProvider(create: (_) => KycCubit()),
-            BlocProvider(create: (_) => RideCubit()),
-            BlocProvider(create: (_) => RideHistoryCubit()),
-            BlocProvider(create: (_) => EarningCubit()),
-            BlocProvider(create: (_) => FinancialCubit()),
-          ],
+          providers: [...appCubits],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(

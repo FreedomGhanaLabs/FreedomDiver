@@ -12,11 +12,11 @@ class DebtInitial extends DebtState {}
 class DebtLoading extends DebtState {}
 
 class DebtLoaded extends DebtState {
-  const DebtLoaded(this.finance);
-  final  finance;
+  const DebtLoaded(this.debt);
+  final debt;
 
   @override
-  List<Object?> get props => [finance];
+  List<Object?> get props => [debt];
 }
 
 class DebtError extends DebtState {

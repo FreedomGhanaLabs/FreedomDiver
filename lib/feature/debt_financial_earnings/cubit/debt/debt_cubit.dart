@@ -16,20 +16,20 @@ class DebtCubit extends Cubit<DebtState> {
     return 'Sorry $firstName! We could not retrieve your earnings at the moment. Please ensure that you have a good internet connection or restart the app. If this difficulty persist please contact our support team';
   }
 
-  Future<void> getWalletBalance(BuildContext context) async {
+  Future<void> getDebtStatus(BuildContext context) async {
     await handleApiCall(
       context: context,
       apiRequest: () async {
-        await _apiController.getData(context, 'wallet', (success, data) {
+        await _apiController.getData(context, 'status', (success, data) {
           if (success && data is Map<String, dynamic>) {
-            log('[DebtCubit] wallet data $data');
+            log('[DebtCubit] debt status: $data');
             // final driver = Driver.fromJson(
             //   data['data'] as Map<String, dynamic>,
             // );
 
             // _updateDriver(driver);
           } else {
-            emit(const DebtError('Failed to fetch driver wallet balance'));
+            emit(const DebtError('Failed to fetch driver debt status'));
           }
         });
       },
