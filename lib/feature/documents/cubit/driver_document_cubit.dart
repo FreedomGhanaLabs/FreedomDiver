@@ -42,6 +42,7 @@ class DocumentCubit extends Cubit<DocumentState> {
   }) async {
     if (hasDocument && !forceRefresh) {
       log('[DocumentCubit] Using cached document data');
+
       _updateDocument(_cachedDriverDocument!);
       return;
     }

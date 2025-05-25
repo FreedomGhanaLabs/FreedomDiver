@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/ghana_card.model.dart';
-import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
-import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
@@ -36,9 +35,8 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
 
   String? dateOfBirth;
   String? expiryDate;
-  String sex = 'male';
+  String sex = 'Male';
 
-  @override
   @override
   void initState() {
     loadCardDetails();
@@ -46,13 +44,21 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
   }
 
   void loadCardDetails() {
-    final driverCubit = context.read<DriverCubit>().state;
-    if (driverCubit is DriverLoaded) {
-      final driver = driverCubit.driver;
-      surname.text = driver.surname;
-      firstName.text = driver.firstName;
-      otherName.text = driver.otherName;
-    }
+    final driver = context.driver;
+    surname.text = driver!.surname;
+    firstName.text = driver.firstName;
+    otherName.text = driver.otherName;
+  }
+
+  @override
+  void dispose() {
+    personalIdNumber.dispose();
+    surname.dispose();
+    firstName.dispose();
+    otherName.dispose();
+    height.dispose();
+
+    super.dispose();
   }
 
   Future<void> _pickDate({required bool isDob}) async {
@@ -82,7 +88,7 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
           surname: surname.text.trim(),
           firstName: firstName.text.trim(),
           otherName: otherName.text.trim(),
-          sex: sex,
+          sex: sex == 'Male' ? 'M' : 'F',
           dateOfBirth: dateOfBirth ?? '',
           height: height.text.trim(),
           expiryDate: expiryDate ?? '',
@@ -121,7 +127,7 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
                 CustomDropDown(
                   label: 'Gender',
                   value: sex,
-                  items: ['male', 'female', 'other'],
+                  items: ['Male', 'Female'],
                   onChanged: (value) {
                     setState(() {
                       sex = value;

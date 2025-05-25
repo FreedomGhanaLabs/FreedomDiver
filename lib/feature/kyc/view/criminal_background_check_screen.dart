@@ -23,6 +23,8 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
 
     final isAddress = type == address;
     final isGhanaCard = type == ghanaCard;
+    final isDriverLicense = type == driverLicense;
+    final isMotorcycle = type == motorCycle;
 
     return BlocBuilder<DocumentCubit, DocumentState>(
       builder: (context, state) {
@@ -71,7 +73,17 @@ class CriminalBackgroundCheckScreen extends StatelessWidget {
                   return;
                 }
 
-                await documentUploadCubit.uploadDriverLicense(context);
+                if (isMotorcycle) {
+                  await documentUploadCubit.uploadMotorCycleImage(context);
+                  return;
+                }
+
+                if (isDriverLicense) {
+                  await documentUploadCubit.uploadDriverLicense(context);
+                  return;
+                }
+
+                
               },
             ),
           ],

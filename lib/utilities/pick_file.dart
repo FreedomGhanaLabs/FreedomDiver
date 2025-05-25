@@ -6,7 +6,12 @@ import 'package:freedomdriver/shared/theme/app_colors.dart';
 
 import '../feature/documents/cubit/document_image.dart';
 
-void pickFile(BuildContext context, {String? title, String? description}) {
+void pickFile(
+  BuildContext context, {
+  String? title,
+  String? description,
+  String? type,
+}) {
   final driverImageCubit = context.read<DriverImageCubit>();
   showCupertinoModalPopup(
     useRootNavigator: false,
@@ -29,7 +34,7 @@ void pickFile(BuildContext context, {String? title, String? description}) {
               child: Text('Open Camera', style: TextStyle(color: gradient1)),
               onPressed: () {
                 Navigator.of(context).pop();
-                driverImageCubit.pickImage(context);
+                driverImageCubit.pickImage(context, type: type);
               },
             ),
             CupertinoActionSheetAction(
@@ -39,14 +44,14 @@ void pickFile(BuildContext context, {String? title, String? description}) {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                driverImageCubit.pickImage(context, gallery: true);
+                driverImageCubit.pickImage(context, gallery: true, type: type);
               },
             ),
             CupertinoActionSheetAction(
               isDestructiveAction: true,
               child: const Text(
                 'Close',
-                style: TextStyle(fontSize: normalText),
+                style: TextStyle(fontSize: paragraphText),
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),

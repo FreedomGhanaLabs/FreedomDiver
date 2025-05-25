@@ -6,6 +6,7 @@ import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart
 import 'package:freedomdriver/feature/documents/cubit/driver_document_state.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/documents/ghana_card/view/ghana_card_form.dart';
+import 'package:freedomdriver/feature/documents/motorcycle/view/motorcycle_image.dart';
 import 'package:freedomdriver/feature/earnings/widgets/utility.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
@@ -53,6 +54,7 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
                       Navigator.pushNamed(context, AddressProofForm.routeName),
               onGhanaCardTap:
                   () => Navigator.pushNamed(context, GhanaCardForm.routeName),
+                  onMotorcycleImageTap:  () => Navigator.pushNamed(context, MotorcycleImageScreen .routeName),
             ),
 
             const VSpace(whiteSpace),

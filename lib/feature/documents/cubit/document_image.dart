@@ -8,10 +8,18 @@ import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/file_service.dart';
 
+import '../../../core/constants/documents.dart';
+import '../../profile/view/profile_image_cropper.dart';
+
 class DriverImageCubit extends Cubit<DriverImageState> {
   DriverImageCubit() : super(DriverImageInitial());
 
-  Future<void> pickImage(BuildContext context, {bool gallery = false}) async {
+  Future<void> pickImage(
+    BuildContext context, {
+    bool gallery = false,
+    String? type,
+  }) async {
+    final isProfileImage = type == profileImage;
     try {
       emit(DriverImageLoading());
       final fileService = FileService();
@@ -23,6 +31,9 @@ class DriverImageCubit extends Cubit<DriverImageState> {
 
       if (pickedFile != null) {
         emit(DriverImageSelected(pickedFile));
+        if (isProfileImage) {
+          Navigator.pushNamed(context, ProfileImageCropper.routeName);
+        }
       } else {
         emit(DriverImageInitial());
       }
@@ -39,10 +50,10 @@ class DriverImageCubit extends Cubit<DriverImageState> {
     }
   }
 
-void addImage(File image) {
+  void addImage(File image) {
     emit(DriverImageSelected(image));
   }
-  
+
   void resetImage() {
     emit(DriverImageInitial());
   }

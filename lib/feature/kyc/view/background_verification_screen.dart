@@ -24,45 +24,50 @@ class _BackgroundVerificationScreenState
     super.initState();
   }
 
+  String _getDocumentTitle(String? type) {
+    if (type == address) return 'Utility Bill';
+    if (type == ghanaCard) return 'Ghana Card';
+    if (type == motorCycle) return 'Motorcycle Image';
+    return 'ID';
+  }
+
+  String _getDocumentDescription(String? type) {
+    if (type == motorCycle) {
+      return 'Upload a photo of your vehicle.';
+    }
+    return "Upload a photo of valid ID (Driver's License, Passport, or Ghana Card) to verify your identity.";
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = getRouteParams(context);
     final type = args['type'] as String?;
 
-    final isAddress = type == address;
-    final isGhanaCard = type == ghanaCard;
-
     return CustomScreen(
       title: 'Upload Document',
       children: [
-        ...[
-          const Text(
-            'We prioritize safety. Please upload your necessary documents for verification.',
-            style: TextStyle(fontSize: smallText, fontWeight: FontWeight.w400),
+        const Text(
+          'We prioritize safety. Please upload your necessary documents for verification.',
+          style: TextStyle(fontSize: smallText, fontWeight: FontWeight.w400),
+        ),
+        const VSpace(whiteSpace),
+        Text(
+          'Upload ${_getDocumentTitle(type)}',
+          style: const TextStyle(
+            fontSize: normalText,
+            fontWeight: FontWeight.w500,
           ),
-          const VSpace(whiteSpace),
-          Text(
-            'Upload ${isAddress
-                ? 'Utility Bill'
-                : isGhanaCard
-                ? 'Ghana Card'
-                : 'ID'}',
-            style: const TextStyle(
-              fontSize: normalText,
-              fontWeight: FontWeight.w500,
-            ),
+        ),
+        Text(
+          _getDocumentDescription(type),
+          style: TextStyle(
+            fontSize: extraSmallText,
+            fontWeight: FontWeight.w400,
           ),
-          const Text(
-            "Upload a photo of a valid ID (Driver's License, Passport, or Ghana Card) to verify your identity.",
-            style: TextStyle(
-              fontSize: extraSmallText,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const VSpace(smallWhiteSpace),
-          const UploadButton(),
-          const VSpace(normalWhiteSpace),
-        ],
+        ),
+        const VSpace(smallWhiteSpace),
+        const UploadButton(),
+        const VSpace(normalWhiteSpace),
       ],
     );
   }

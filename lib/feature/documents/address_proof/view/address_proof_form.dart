@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/feature/authentication/register/view/register_form_screen.dart';
+import 'package:freedomdriver/feature/documents/extension.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
@@ -14,6 +15,8 @@ import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/shared/widgets/decorated_container.dart';
 import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../../widget/uploaded_document_image.dart';
 
 class AddressProofForm extends StatefulWidget {
   const AddressProofForm({super.key});
@@ -34,21 +37,21 @@ class _AddressProofFormState extends State<AddressProofForm> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final driverCubit = context.read<DriverCubit>();
-      final address = context.driver?.address;
-
-      if (driverCubit.state is! DriverLoaded && address == null) {
-        await driverCubit.getDriverProfile(context);
-      }
-
-      countryValue = address?.country ?? '';
-      stateValue = address?.state ?? '';
-      cityValue = address?.city ?? '';
-      postalCodeController.text = address?.postalCode ?? '';
-    });
-
+    loadAddress();
     super.initState();
+  }
+
+  void loadAddress() {
+    final driverCubit = context.read<DriverCubit>().state;
+    if (driverCubit is DriverLoaded) {
+      final driver = driverCubit.driver;
+      final address = driver.address;
+
+      countryValue = address.country;
+      stateValue = address.state;
+      cityValue = address.city;
+      postalCodeController.text = address.postalCode;
+    }
   }
 
   @override
@@ -65,6 +68,10 @@ class _AddressProofFormState extends State<AddressProofForm> {
       bodyDescription:
           'If you change home address or any relevant details, update the information here to maintain accuracy and transparency. If your current address provided during registration, please click the Next button',
       children: [
+        UploadedDocumentImage(
+          heading: 'Uploaded Utility Bill',
+          documentUrl: context.driverDocument?.addressProof?.documentUrl,
+        ),
         DecoratedContainer(
           child: Form(
             key: _formKey,
@@ -137,12 +144,12 @@ class _AddressProofFormState extends State<AddressProofForm> {
   void submitForm() {
     if (_formKey.currentState!.validate()) {
       context.read<DriverCubit>().updateDriverAddress(
-            city: cityValue,
-            country: countryValue,
-            state: stateValue,
-            street: context.driver!.address.street,
-            postalCode: postalCodeController.text.trim(),
-          );
+        city: cityValue,
+        country: countryValue,
+        state: stateValue,
+        street: context.driver!.address.street,
+        postalCode: postalCodeController.text.trim(),
+      );
 
       Navigator.pushNamed(
         context,
@@ -152,3 +159,4 @@ class _AddressProofFormState extends State<AddressProofForm> {
     }
   }
 }
+

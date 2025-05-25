@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/feature/authentication/register/register.dart';
 import 'package:freedomdriver/feature/documents/driver_license/cubit/license_cubit.dart';
+import 'package:freedomdriver/feature/documents/extension.dart';
+import 'package:freedomdriver/feature/documents/widget/uploaded_document_image.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
@@ -14,9 +16,7 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:intl/intl.dart';
 
 class DriverLicenseForm extends StatefulWidget {
-  const DriverLicenseForm({
-    super.key,
-  });
+  const DriverLicenseForm({super.key});
   static const routeName = '/license-form';
 
   @override
@@ -25,7 +25,6 @@ class DriverLicenseForm extends StatefulWidget {
 
 class _DriverLicenseFormState extends State<DriverLicenseForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController documentType = TextEditingController();
   final TextEditingController licenseNumber = TextEditingController();
   final TextEditingController classOfLicense = TextEditingController();
 
@@ -33,12 +32,19 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
   String? issueDate;
   String? expiryDate;
 
+  @override
+  void initState() {
+    loadLicenseData();
+    super.initState();
+  }
 
-  Future<void> _pickDate({
-    bool? birth,
-    bool? issue,
-    bool? expiry,
-  }) async {
+  void loadLicenseData() {
+    final driverLicense = context.driverDocument?.driverLicense;
+    licenseNumber.text = driverLicense?.licenseNumber ?? '';
+    classOfLicense.text = 'A';
+  }
+
+  Future<void> _pickDate({bool? birth, bool? issue, bool? expiry}) async {
     final now = DateTime.now();
     final pickedDate = await showDatePicker(
       context: context,
@@ -65,6 +71,10 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
       bodyDescription:
           'If you change your Driver License or any relevant details, update the information here to maintain accuracy and transparency.',
       children: [
+        UploadedDocumentImage(
+          heading: "Uploaded Driver License",
+          documentUrl: context.driverDocument?.driverLicense?.documentUrl,
+        ),
         DecoratedContainer(
           child: Form(
             key: _formKey,
@@ -114,12 +124,12 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
   void submitForm() {
     if (_formKey.currentState!.validate()) {
       context.read<DriverLicenseDetailsCubit>().setDriverLicenseDetails(
-            licenseNumber: licenseNumber.text.trim(),
-            dob: dateOfBirth ?? '',
-            licenseClass: classOfLicense.text.trim(),
-            issueDate: issueDate ?? '',
-            expiryDate: expiryDate ?? '',
-          );
+        licenseNumber: licenseNumber.text.trim(),
+        dob: dateOfBirth ?? '',
+        licenseClass: classOfLicense.text.trim(),
+        issueDate: issueDate ?? '',
+        expiryDate: expiryDate ?? '',
+      );
 
       Navigator.pushNamed(
         context,

@@ -66,6 +66,7 @@ class CustomDottedBorder extends StatelessWidget {
 
     final isAddress = type == address;
     final isGhanaCard = type == ghanaCard;
+    final isMotorCycle = type == motorCycle;
 
     return DottedBorder(
       options: RoundedRectDottedBorderOptions(
@@ -112,6 +113,8 @@ class CustomDottedBorder extends StatelessWidget {
                           ? 'Utility Bill'
                           : isGhanaCard
                           ? 'Card'
+                          : isMotorCycle
+                          ? 'Motorcycle Image'
                           : 'ID'}',
                       style: const TextStyle(
                         color: Color(0xFFF59E0B),
@@ -125,7 +128,7 @@ class CustomDottedBorder extends StatelessWidget {
               const VSpace(8.8),
               Text(
                 // 'Upload a photo of your face to verify your identity.',
-                'Ensure your document is clear and legible.',
+                'Ensure your ${isMotorCycle ? "Image" : 'document'} is clear and legible.',
                 style: TextStyle(
                   fontSize: smallText,
                   fontWeight: FontWeight.w400,

@@ -329,7 +329,7 @@ class ManageDocuments extends SectionFactory {
       onTap: onLicenseTap,
     ),
     SectionItem(
-      title: 'Ghana Card Details',
+      title: 'Ghana Card',
       subheading: ghanaCardStatus,
       iconPath: getIconUrl('gradient_document'),
       onTap: onGhanaCardTap,
