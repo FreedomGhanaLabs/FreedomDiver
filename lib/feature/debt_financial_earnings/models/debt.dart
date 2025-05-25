@@ -1,5 +1,5 @@
 // debt_status_model.dart
-class DebtStatus {
+class Debt {
   final double currentDebt;
   final double debtThreshold;
   final int debtPercentage;
@@ -11,7 +11,7 @@ class DebtStatus {
   final double availableBalance;
   final List<DebtPaymentHistory>? debtPaymentHistory;
 
-  DebtStatus({
+  Debt({
     required this.currentDebt,
     required this.debtThreshold,
     required this.debtPercentage,
@@ -24,7 +24,7 @@ class DebtStatus {
     this.debtPaymentHistory,
   });
 
-  factory DebtStatus.fromJson(Map<String, dynamic> json) => DebtStatus(
+  factory Debt.fromJson(Map<String, dynamic> json) => Debt(
     currentDebt: (json['currentDebt'] as num).toDouble(),
     debtThreshold: (json['debtThreshold'] as num).toDouble(),
     debtPercentage: json['debtPercentage'],
@@ -35,6 +35,32 @@ class DebtStatus {
     walletBalance: (json['walletBalance'] as num).toDouble(),
     availableBalance: (json['availableBalance'] as num).toDouble(),
   );
+
+  Debt copyWith({
+    double? currentDebt,
+    double? debtThreshold,
+    int? debtPercentage,
+    String? debtStatus,
+    bool? canAcceptRides,
+    int? warningThreshold,
+    int? suspensionThreshold,
+    double? walletBalance,
+    double? availableBalance,
+    List<DebtPaymentHistory>? debtPaymentHistory,
+  }) {
+    return Debt(
+      currentDebt: currentDebt ?? this.currentDebt,
+      debtThreshold: debtThreshold ?? this.debtThreshold,
+      debtPercentage: debtPercentage ?? this.debtPercentage,
+      debtStatus: debtStatus ?? this.debtStatus,
+      canAcceptRides: canAcceptRides ?? this.canAcceptRides,
+      warningThreshold: warningThreshold ?? this.warningThreshold,
+      suspensionThreshold: suspensionThreshold ?? this.suspensionThreshold,
+      walletBalance: walletBalance ?? this.walletBalance,
+      availableBalance: availableBalance ?? this.availableBalance,
+      debtPaymentHistory: debtPaymentHistory ?? this.debtPaymentHistory,
+    );
+  }
 }
 
 class DebtPaymentHistory {

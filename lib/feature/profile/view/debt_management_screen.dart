@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
+import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
+import 'package:freedomdriver/shared/widgets/decorated_container.dart';
+import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 
 import '../../debt_financial_earnings/cubit/debt/debt_cubit.dart';
 import '../../debt_financial_earnings/cubit/debt/debt_state.dart';
 import '../../debt_financial_earnings/models/debt.dart';
-
 
 class DebtManagementScreen extends StatefulWidget {
   const DebtManagementScreen({super.key});
@@ -34,23 +41,21 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
       children: [
         BlocBuilder<DebtCubit, DebtState>(
           builder: (context, state) {
-            if (state is DebtLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is DebtLoaded) {
+            if (state is DebtLoaded) {
               final debt = state.debt;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DebtStatusCard(debt: debt),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: whiteSpace),
                   DebtPaymentForm(debt: debt),
-                  const SizedBox(height: 30),
-                  const DebtHistorySection(),
+                  const SizedBox(height: whiteSpace),
+                  DebtHistorySection(
+                    debtPaymentHistory: debt.debtPaymentHistory ?? [],
+                  ),
                 ],
               );
-            } else if (state is DebtError) {
-              return Text(state.message);
             }
             return const SizedBox.shrink();
           },
@@ -61,128 +66,198 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
 }
 
 class DebtHistorySection extends StatelessWidget {
-  const DebtHistorySection({super.key});
+  final List<DebtPaymentHistory> debtPaymentHistory;
+  const DebtHistorySection({super.key, required this.debtPaymentHistory});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: context.read<DebtCubit>().getDebtPaymentHistory(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    final payments =
+        debtPaymentHistory.isNotEmpty
+            ? debtPaymentHistory
+            : [
+              DebtPaymentHistory(
+                amount: 200,
+                method: "momo",
+                notes: "This is a mobile money payment",
+                paymentDate: DateTime.now(),
+                reference: "xyz",
+                status: "pending",
+              ),
+              DebtPaymentHistory(
+                amount: 200,
+                method: "wallet",
+                notes: "This is a wallet payment",
+                paymentDate: DateTime.now(),
+                reference: "xyz",
+                status: "successful",
+              ),
+              DebtPaymentHistory(
+                amount: 200,
+                method: "momo",
+                notes: "This is a payment",
+                paymentDate: DateTime.now(),
+                reference: "xyz",
+                status: "successful",
+              ),
+              DebtPaymentHistory(
+                amount: 200,
+                method: "wallet",
+                notes: "This is a wallet payment",
+                paymentDate: DateTime.now(),
+                reference: "xyz",
+                status: "failed",
+              ),
+            ];
 
-        final payments = <DebtPaymentHistory>[
-          DebtPaymentHistory(
-            amount: 200,
-            method: "momo",
-            notes: "This is a payment",
-            paymentDate: DateTime.now(),
-            reference: "xyz",
-            status: "Successful",
-          ),
-          DebtPaymentHistory(
-            amount: 200,
-            method: "wallet",
-            notes: "This is a wallet payment",
-            paymentDate: DateTime.now(),
-            reference: "xyz",
-            status: "Successful",
-          ),
-          DebtPaymentHistory(
-            amount: 200,
-            method: "momo",
-            notes: "This is a payment",
-            paymentDate: DateTime.now(),
-            reference: "xyz",
-            status: "Successful",
-          ),
-        ];
+    if (payments.isEmpty) {
+      return Center(
+        child: Text(
+          'No debt payment history available.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey.shade500),
+        ),
+      );
+    }
 
-        if (payments.isEmpty) {
-          return const Text('No payment history available.');
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Payment History',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Debt Payment History',
+          style: TextStyle(fontSize: normalText, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        ...payments.map((e) {
+          final statusColor =
+              {
+                'successful': greenColor,
+                'pending': gradient1,
+                'failed': redColor,
+              }[e.status.toLowerCase()] ??
+              Colors.grey.shade400;
+          return ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(
+              e.method == 'wallet'
+                  ? Icons.account_balance_wallet
+                  : Icons.phone_android,
             ),
-            const SizedBox(height: 8),
-            ...payments.map(
-              (e) => ListTile(
-                leading: Icon(
-                  e.method == 'wallet'
-                      ? Icons.account_balance_wallet
-                      : Icons.phone_android,
-                ),
-                title: Text('\$${e.amount.toStringAsFixed(2)}'),
-                subtitle: Text('${e.notes} • ${e.paymentDate.toLocal()}'),
-                trailing: Text(e.status.capitalize!),
+            title: Text(
+              '$appCurrency ${e.amount.toStringAsFixed(2)}',
+              style: normalTextStyle,
+            ),
+            subtitle: Text(
+              '${e.notes} • ${e.paymentDate.toLocal()}',
+              style: paragraphTextStyle.copyWith(color: Colors.grey.shade500),
+            ),
+            trailing: Text(
+              e.status.capitalize!,
+              style: TextStyle(
+                fontSize: extraSmallText,
+                color: statusColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ],
-        );
-      },
+          );
+        }),
+        VSpace(normalWhiteSpace),
+      ],
     );
   }
 }
 
 class DebtStatusCard extends StatelessWidget {
-  final DebtStatus debt;
+  final Debt debt;
   const DebtStatusCard({super.key, required this.debt});
 
   @override
   Widget build(BuildContext context) {
     final statusColor =
-        {
-          'normal': Colors.green,
-          'warning': Colors.orange,
-          'suspended': Colors.red,
-        }[debt.debtStatus] ??
-        Colors.grey;
+        {'good': greenColor, 'warning': gradient1, 'suspended': redColor}[debt
+            .debtStatus] ??
+        Colors.grey.shade400;
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Current Debt: \$${debt.currentDebt.toStringAsFixed(2)}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text('Wallet Balance: \$${debt.walletBalance.toStringAsFixed(2)}'),
-            Text(
-              'Available Balance: \$${debt.availableBalance.toStringAsFixed(2)}',
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: debt.debtPercentage / 100,
-              backgroundColor: Colors.grey[200],
-              color: statusColor,
-            ),
-            const SizedBox(height: 4),
-            Text('Debt Usage: ${debt.debtPercentage}%'),
-            const SizedBox(height: 4),
-            Text(
-              'Status: ${debt.debtStatus.capitalize}',
-              style: TextStyle(color: statusColor),
-            ),
-          ],
+    final debtPercentage = debt.debtPercentage;
+
+    return DashboardCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Current Debt: $appCurrency ${debt.currentDebt.toStringAsFixed(2)}',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Wallet Balance: $appCurrency ${debt.walletBalance.toStringAsFixed(2)}',
+          ),
+          VSpace(2),
+          Text(
+            'Available Balance: $appCurrency ${debt.availableBalance.toStringAsFixed(2)}',
+          ),
+          const VSpace(medWhiteSpace),
+          LinearProgressIndicator(
+            value: debtPercentage / 100,
+            backgroundColor: Colors.grey[100],
+            minHeight: 6,
+            color:
+                debtPercentage >= 40
+                    ? gradient1
+                    : debtPercentage >= 70
+                    ? redColor
+                    : greenColor,
+          ),
+          const VSpace(medWhiteSpace),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Debt Usage: ${debt.debtPercentage}%'),
+              HSpace(extraSmallWhiteSpace),
+              Text(
+                'Status: ${debt.debtStatus.capitalize}',
+                style: TextStyle(color: statusColor),
+              ),
+            ],
+          ),
+          VSpace(extraSmallWhiteSpace),
+        ],
+      ),
+    );
+  }
+}
+
+class DashboardCard extends StatelessWidget {
+  const DashboardCard({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: ShapeDecoration(
+        gradient: LinearGradient(
+          begin: const Alignment(-2, 0.72),
+          end: const Alignment(0.99, 0.05),
+          colors: cardGradientColor,
+          stops: const [0.1, 0.58, 0.7],
         ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(roundedLg),
+          side: BorderSide(color: Colors.black.withValues(alpha: 0.1)),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(smallWhiteSpace),
+        child: child,
       ),
     );
   }
 }
 
 class DebtPaymentForm extends StatefulWidget {
-  final DebtStatus debt;
+  final Debt debt;
   const DebtPaymentForm({super.key, required this.debt});
 
   @override
@@ -191,66 +266,80 @@ class DebtPaymentForm extends StatefulWidget {
 
 class DebtPaymentFormState extends State<DebtPaymentForm> {
   final _formKey = GlobalKey<FormState>();
-  double _amount = 0.0;
-  String _method = 'wallet';
-  String? _phone;
+
+  String _method = 'Wallet';
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+
+  @override
+  void initState() {
+    _phoneController.text = context.driver?.phone ?? '';
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Make a Payment',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Amount'),
+    if (widget.debt.currentDebt == 0) return SizedBox();
+    _amountController.text = widget.debt.currentDebt.toString();
+    return DecoratedContainer(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Make a Payment',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: smallWhiteSpace),
+            buildField(
+              'Amount',
+              _amountController,
+              keyboardType: TextInputType.number,
+            ),
+
+            CustomDropDown(
+              initialValue: _method,
+              items: ['Wallet', 'Mobile Money'],
+              onChanged: (value) {
+                setState(() {
+                  _method = value;
+                });
+              },
+            ),
+            if (_method == 'Mobile Money') ...[
+              buildField(
+                "Momo Phone",
+                _phoneController,
                 keyboardType: TextInputType.number,
-                onChanged: (val) => _amount = double.tryParse(val) ?? 0.0,
-              ),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                value: _method,
-                items: const [
-                  DropdownMenuItem(value: 'wallet', child: Text('Wallet')),
-                  DropdownMenuItem(value: 'momo', child: Text('Mobile Money')),
-                ],
-                onChanged: (val) => setState(() => _method = val!),
-              ),
-              if (_method == 'momo') ...[
-                const SizedBox(height: 10),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'MoMo Phone'),
-                  keyboardType: TextInputType.phone,
-                  onChanged: (val) => _phone = val,
-                ),
-              ],
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.send),
-                label: const Text('Pay Debt'),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    context.read<DebtCubit>().payDebt(
-                      context,
-                      amount: _amount,
-                      paymentType: _method,
-                      phone: _phone,
-                    );
-                  }
-                },
               ),
             ],
-          ),
+            const SizedBox(height: smallWhiteSpace),
+            SimpleButton(
+              title: '',
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.send, color: Colors.white),
+                  HSpace(extraSmallWhiteSpace),
+                  const Text('Pay Debt', style: TextStyle(color: Colors.white)),
+                ],
+              ),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  context.read<DebtCubit>().payDebt(
+                    context,
+                    amount: double.parse(_amountController.text),
+                    paymentType: _method.replaceAll('Mobile Money', 'momo'),
+                    phone: _phoneController.text,
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -9,6 +9,12 @@ Color secondaryColor = const Color(0xfff042F0);
 Color tertiaryColor = const Color.fromRGBO(255, 214, 255, 1);
 
 List<Color> gradientColor = [const Color(0xFFF59E0B), const Color(0xffE61D2A)];
+List<Color> cardGradientColor = [
+  Color(0x00F6AE35),
+  Color(0xF6FBDCA7),
+  Colors.white,
+];
+const String appCurrency = 'GHS';
 
 ButtonStyle elevatedButtonStyle = ButtonStyle(
   backgroundColor: WidgetStatePropertyAll(primaryColor),

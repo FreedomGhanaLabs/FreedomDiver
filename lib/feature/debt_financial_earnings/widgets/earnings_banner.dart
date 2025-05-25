@@ -29,9 +29,9 @@ class EarningsBanner extends StatelessWidget {
         ),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Colors.black.withValues(alpha: 0.07999999821186066),
+            color: Colors.black.withValues(alpha: 0.0),
           ),
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(roundedLg),
         ),
       ),
       child: Row(
@@ -39,8 +39,17 @@ class EarningsBanner extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+     
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: normalText,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               SizedBox(
-                width: 150,
+                width: 160,
                 child: Text(
                   subtitle,
                   maxLines: 2,
@@ -48,14 +57,6 @@ class EarningsBanner extends StatelessWidget {
                     fontSize: smallText,
                     fontWeight: FontWeight.w300,
                   ),
-                ),
-              ),
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: normalText,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               child,

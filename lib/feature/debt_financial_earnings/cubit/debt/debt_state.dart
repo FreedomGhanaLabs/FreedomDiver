@@ -14,7 +14,7 @@ class DebtLoading extends DebtState {}
 
 class DebtLoaded extends DebtState {
   const DebtLoaded(this.debt);
-  final DebtStatus debt;
+  final Debt debt;
 
   @override
   List<Object?> get props => [debt];

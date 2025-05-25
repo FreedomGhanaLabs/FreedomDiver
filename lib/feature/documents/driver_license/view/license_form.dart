@@ -140,7 +140,11 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
   }
 }
 
-Widget buildField(String label, TextEditingController controller) {
+Widget buildField(
+  String label,
+  TextEditingController controller, {
+  TextInputType? keyboardType,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -155,6 +159,7 @@ Widget buildField(String label, TextEditingController controller) {
       TextFieldFactory.itemField(
         controller: controller,
         fillColor: Colors.white,
+        keyboardType: keyboardType,
         enabledBorderColor: Colors.black.withValues(alpha: 0.2),
         validator: (val) {
           return val == null || val.trim().isEmpty

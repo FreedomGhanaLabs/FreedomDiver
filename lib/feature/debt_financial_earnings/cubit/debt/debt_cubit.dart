@@ -13,44 +13,37 @@ class DebtCubit extends Cubit<DebtState> {
 
   final _apiController = ApiController('debt');
 
-  DebtStatus? _cachedDebt;
-  bool get hasDriver => _cachedDebt != null;
+  Debt? _cachedDebt;
+  bool get hasDebt => _cachedDebt != null;
 
-  void _updateDriver(DebtStatus updated) {
+  void _updateDebt(Debt updated) {
     _cachedDebt = updated;
     emit(DebtLoaded(_cachedDebt!));
   }
 
-  void _emitIfChanged(DebtStatus updated) {
+  void _emitIfChanged(Debt updated) {
     if (_cachedDebt != updated) {
-      _updateDriver(updated);
+      _updateDebt(updated);
     } else {
       log('[DebtCubit] No changes detected, not emitting new state');
     }
   }
 
-  static String errorMessage(String firstName) {
-    return 'Sorry $firstName! We could not retrieve your earnings at the moment. Please ensure that you have a good internet connection or restart the app. If this difficulty persist please contact our support team';
-  }
-
   Future<void> getDebtStatus(BuildContext context) async {
+    if (hasDebt) return;
     await handleApiCall(
       context: context,
       apiRequest: () async {
         await _apiController.getData(context, 'status', (success, data) {
           if (success && data is Map<String, dynamic>) {
-            log('[DebtCubit] debt status: $data');
-
-            final status = DebtStatus.fromJson(data['data']);
+            final status = Debt.fromJson(data['data']);
             emit(DebtLoaded(status));
 
             _emitIfChanged(status);
-          } else {
-            emit(const DebtError('Failed to fetch driver debt status'));
-          }
+          } 
         });
       },
-      onError: (_) => emit(const DebtError('Something went wrong')),
+      onError: (_) {},
     );
   }
 
@@ -60,6 +53,7 @@ class DebtCubit extends Cubit<DebtState> {
     String? endDate,
     String? status,
   }) async {
+    if (_cachedDebt?.debtPaymentHistory != null) return;
     await handleApiCall(
       context: context,
       apiRequest: () async {
@@ -68,19 +62,19 @@ class DebtCubit extends Cubit<DebtState> {
           'payment-history/?startDate=$startDate&endDate=$endDate&status=$status',
           (success, data) {
             if (success && data is Map<String, dynamic>) {
-              log('[DebtCubit] debt payment history: $data');
-              // final driver = Driver.fromJson(
-              //   data['data'] as Map<String, dynamic>,
-              // );
+              final historyList =
+                  (data['data'] as List)
+                      .map((e) => DebtPaymentHistory.fromJson(e))
+                      .toList();
 
-              // _updateDriver(driver);
-            } else {
-              emit(const DebtError('Failed to fetch driver debt summary.'));
-            }
+              _emitIfChanged(
+                _cachedDebt!.copyWith(debtPaymentHistory: historyList),
+              );
+            } 
           },
         );
       },
-      onError: (_) => emit(const DebtError('Something went wrong')),
+      onError: (_) {},
     );
   }
 
@@ -111,13 +105,11 @@ class DebtCubit extends Cubit<DebtState> {
             //   data['data'] as Map<String, dynamic>,
             // );
 
-            // _updateDriver(driver);
-          } else {
-            emit(const DebtError('Failed to update driver bank details.'));
-          }
+            // _updateDebt(driver);
+          } 
         }, showOverlay: true);
       },
-      onError: (_) => emit(const DebtError('Something went wrong')),
+      onError: (_) {},
     );
   }
 }

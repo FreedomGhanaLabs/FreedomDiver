@@ -216,7 +216,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                   ),
                                   const VSpace(3),
                                   const Text(
-                                    'Complete 10 rides a day to earn an extra ₵20.00!',
+                                    'Complete 10 rides a day to earn an extra \$20.00!',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 10.89,
