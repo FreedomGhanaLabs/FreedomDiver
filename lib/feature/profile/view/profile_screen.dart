@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onProfileTap: () {
                       Navigator.pushNamed(context, ProfileDetails.routeName);
                     },
-                    onWalletTap: () {
+                    onDocumentTap: () {
                       Navigator.of(
                         context,
                       ).pushNamed(DocumentManagementScreen.routeName);

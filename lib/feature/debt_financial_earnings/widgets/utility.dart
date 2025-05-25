@@ -187,11 +187,13 @@ class PersonalDataSection extends SectionFactory {
     super.paddingSection,
     this.onDebtTap,
     this.onProfileTap,
+    this.onDocumentTap,
     this.onWalletTap,
   });
   final VoidCallback? onProfileTap;
 
   final VoidCallback? onWalletTap;
+  final VoidCallback? onDocumentTap;
   final VoidCallback? onDebtTap;
 
   @override
@@ -207,12 +209,17 @@ class PersonalDataSection extends SectionFactory {
     SectionItem(
       title: 'Manage Your Documents',
       iconPath: getIconUrl('gradient_document'),
-      onTap: onWalletTap,
+      onTap: onDocumentTap,
     ),
     SectionItem(
       title: 'Debt Management',
       iconPath: getIconUrl('gradient_document'),
       onTap: onDebtTap,
+    ),
+    SectionItem(
+      title: 'Finance and Account',
+      iconPath: 'assets/nav/active_icon/earnings_nav_icon_active.svg',
+      onTap: onWalletTap,
     ),
   ];
 }

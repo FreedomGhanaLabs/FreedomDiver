@@ -229,7 +229,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                           ),
                         ],
                       ),
-                      const VSpace(15),
+                      const VSpace(smallWhiteSpace),
                       EarningsBanner(
                         title: 'Earn $appCurrency 5,000 per invite',
                         subtitle:
