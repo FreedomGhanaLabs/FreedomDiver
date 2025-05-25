@@ -17,6 +17,7 @@ import '../../../shared/api/api_controller.dart';
 import '../../../shared/theme/app_colors.dart';
 import '../../../utilities/hive/token.dart';
 import '../../authentication/login/view/login_form_screen.dart';
+import 'debt_management_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.hasBackButton = false});
@@ -54,6 +55,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.of(
                         context,
                       ).pushNamed(DocumentManagementScreen.routeName);
+                    },
+                    onFinanceTap: () {
+                      Navigator.of(
+                        context,
+                      ).pushNamed(DebtManagementScreen.routeName);
                     },
                   ),
                   MoreSection(

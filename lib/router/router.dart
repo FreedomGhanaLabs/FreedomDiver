@@ -29,6 +29,7 @@ import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 
 import '../feature/documents/ghana_card/view/ghana_card_form.dart';
 import '../feature/documents/motorcycle/view/motorcycle_image.dart';
+import '../feature/profile/view/debt_management_screen.dart';
 import '../feature/profile/view/profile_image_cropper.dart';
 import '../feature/profile/view/profile_picture.dart';
 
@@ -160,6 +161,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case DocumentManagementScreen.routeName:
       return _pageBuilder(
         (_) => const DocumentManagementScreen(),
+        settings: settings,
+      );
+    case DebtManagementScreen.routeName:
+      return _pageBuilder(
+        (_) => const DebtManagementScreen(),
         settings: settings,
       );
     case MotorcycleImageScreen.routeName:

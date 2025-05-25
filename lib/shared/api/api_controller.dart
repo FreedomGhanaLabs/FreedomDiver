@@ -266,26 +266,41 @@ class ApiController {
   }
 
   String _handleError(dynamic error) {
+    String stripHtmlIfNeeded(String input) {
+      final htmlTagRegExp = RegExp(
+        r'<[^>]*>',
+        multiLine: true,
+        caseSensitive: false,
+      );
+      return input.replaceAll(htmlTagRegExp, '').trim();
+    }
+
     if (error is DioException) {
       log('error message: ${error.message}');
       final errorData = error.response?.data;
 
+      String? message;
       if (errorData is String) {
-        return errorData;
-      }
-
-      if (errorData != null) {
+        message = errorData;
+      } else if (errorData != null) {
         log('Error Data: $errorData');
-        return (errorData['message'] ?? errorData['msg'] ?? 'An error occurred')
-            .toString();
+        message =
+            (errorData['message'] ?? errorData['msg'] ?? 'An error occurred')
+                .toString();
+      } else {
+        message = 'Network Error';
       }
 
-      return 'Network Error';
+      return stripHtmlIfNeeded(message);
     }
     log('Unexpected Error Message: $error');
     return 'An unexpected error occurred';
   }
+
+
 }
+
+
 
 void showToast(
   BuildContext context,
