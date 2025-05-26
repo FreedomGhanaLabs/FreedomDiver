@@ -12,7 +12,6 @@ import 'package:freedomdriver/utilities/ui.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});
-
   static const String routeName = '/wallet';
 
   @override
