@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_state.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
@@ -27,112 +27,99 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      clipBehavior: Clip.none,
+      children: [
+        _buildBackgroundCard(),
+        Positioned(top: whiteSpace, child: _buildProfileContent()),
+      ],
+    );
+  }
 
+  Widget _buildBackgroundCard() {
     return BlocBuilder<EarningCubit, EarningState>(
-      builder: (context, earningState) {
+      builder: (context, state) {
         final completedRides =
-            (earningState is EarningLoaded)
-                ? earningState.earning.completedRides
-                : 0;
-
-        return BlocBuilder<DriverCubit, DriverState>(
-          builder: (context, state) {
-            final driver = (state is DriverLoaded) ? state.driver : null;
-            final name = context.driver?.fullName ?? '';
-
-            return Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: [
-                _buildBackgroundCard(context, completedRides),
-                Positioned(
-                  top: whiteSpace,
-                  child: _buildProfileContent(context, driver, name),
-                ),
-              ],
-            );
-          },
+            (state is EarningLoaded) ? state.earning.completedRides : 0;
+        return Container(
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(roundedLg),
+          ),
+          height: 200,
+          width:
+              Responsive.isBigMobile(context)
+                  ? 350
+                  : Responsive.width(context) - 50,
+          padding: EdgeInsets.only(
+            left: medWhiteSpace,
+            top: extraSmallWhiteSpace,
+            right: medWhiteSpace,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ProfileStatLink(
+                text:
+                    '$completedRides Ride${completedRides <= 1 ? '' : 's'} Completed',
+                onTap: () => _navigateToIndex(context, 2),
+              ),
+              const Spacer(),
+              ProfileStatLink(
+                text: 'Reward',
+                icon: 'arrow_right_icon',
+                onTap: () => _navigateToIndex(context, 1),
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
-  Widget _buildBackgroundCard(BuildContext context, int completedRides) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(roundedLg),
-      ),
-      height: 200,
-      width:
-          Responsive.isBigMobile(context)
-              ? 350
-              : Responsive.width(context) - 50,
-      padding: EdgeInsets.only(
-        left: medWhiteSpace,
-        top: extraSmallWhiteSpace,
-        right: medWhiteSpace,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ProfileStatLink(
-            text:
-                '$completedRides Ride${completedRides <= 1 ? '' : 's'} Completed',
-            onTap: () => _navigateToIndex(context, 2),
-          ),
-          const Spacer(),
-          ProfileStatLink(
-            text: 'Reward',
-            icon: 'arrow_right_icon',
-            onTap: () => _navigateToIndex(context, 1),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileContent(
-    BuildContext context,
-    dynamic driver,
-    String name,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(roundedLg),
-        image: const DecorationImage(
-          image: AssetImage('assets/app_images/profile_hbg.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      height: 187,
-      width:
-          Responsive.isBigMobile(context)
-              ? 375
-              : Responsive.width(context) - 20,
-      child: Column(
-        children: [
-          const VSpace(smallWhiteSpace),
-          ProfileAvatar(),
-          const VSpace(medWhiteSpace),
-          ProfileTitleText(name),
-          const VSpace(medWhiteSpace),
-          const DriverContactInfo(),
-          VSpace(2),
-          const Text(
-            'Business Suite',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: smallText,
-              fontWeight: FontWeight.w500,
-              decoration: TextDecoration.underline,
-              decorationColor: Colors.white,
+  Widget _buildProfileContent() {
+    return BlocBuilder<DriverCubit, DriverState>(
+      builder: (context, state) {
+        final name = context.driver?.fullName ?? '';
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(roundedLg),
+            image: const DecorationImage(
+              image: AssetImage('assets/app_images/profile_hbg.png'),
+              fit: BoxFit.cover,
             ),
           ),
-        ],
-      ),
+          height: 187,
+          width:
+              Responsive.isBigMobile(context)
+                  ? 375
+                  : Responsive.width(context) - 20,
+          child: Column(
+            children: [
+              const VSpace(smallWhiteSpace),
+              ProfileAvatar(),
+              const VSpace(medWhiteSpace),
+              ProfileTitleText(name),
+              const VSpace(medWhiteSpace),
+              const DriverContactInfo(),
+              VSpace(2),
+              const Text(
+                'Business Suite',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: smallText,
+                  fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -178,72 +165,67 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DriverCubit, DriverState>(
-      builder: (context, state) {
-        final driver = (state is DriverLoaded) ? state.driver : null;
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              height: 50,
-              width: 50,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13),
-                ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(roundedLg),
-                child:
-                    driver?.profilePicture != null
-                        ? GestureDetector(
-                          onTap:
-                              () => Navigator.pushNamed(
-                                context,
-                                ProfilePictureScreen.routeName,
-                              ),
-                          child: Hero(
-                            tag: driver?.id ?? '',
-                            transitionOnUserGestures: true,
-                            child: CachedNetworkImage(
-                              imageUrl: driver?.profilePicture ?? '',
-                              fit: BoxFit.cover,
-                              errorWidget:
-                                  (context, url, error) =>
-                                      const DefaultAvatar(),
-                              placeholder: (context, url) => DefaultAvatar(),
-                            ),
+    final driver = context.driver;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          height: 50,
+          width: 50,
+          decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(13),
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(roundedLg),
+            child:
+                driver?.profilePicture != null
+                    ? GestureDetector(
+                      onTap:
+                          () => Navigator.pushNamed(
+                            context,
+                            ProfilePictureScreen.routeName,
                           ),
-                        )
-                        : DefaultAvatar(),
-              ),
-            ),
-            Positioned(
-              bottom: -4,
-              right: -4,
-              child: InkWell(
-                onTap:
-                    () => pickFile(
-                      context,
-                      type: profileImage,
-                      title: 'Update Profile Picture',
-                      description:
-                          'Select a new photo to refresh your profile image',
-                    ),
-                child: Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    border: Border.all(width: 2),
-                  ),
-                  child: const AppIcon(iconName: 'edit_profile'),
+                      child: Hero(
+                        tag: driver?.id ?? '',
+                        transitionOnUserGestures: true,
+                        child: CachedNetworkImage(
+                          imageUrl: driver?.profilePicture ?? '',
+                          fit: BoxFit.cover,
+                          errorWidget:
+                              (context, url, error) => const DefaultAvatar(),
+                          placeholder: (context, url) => DefaultAvatar(),
+                        ),
+                      ),
+                    )
+                    : DefaultAvatar(),
+          ),
+        ),
+        Positioned(
+          bottom: -4,
+          right: -4,
+          child: InkWell(
+            onTap:
+                () => pickFile(
+                  context,
+                  type: profileImage,
+                  title: 'Update Profile Picture',
+                  description:
+                      'Select a new photo to refresh your profile image',
                 ),
+            child: Container(
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(width: 2),
               ),
+              child: const AppIcon(iconName: 'edit_profile'),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }

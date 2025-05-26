@@ -57,11 +57,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
     _pickupLocation = _locationService.generateRandomCoordinates(
       _driverLocation!,
-      radius: 1000,
+      radius: 5000,
     );
     _destinationLocation = _locationService.generateRandomCoordinates(
       _driverLocation!,
-      radius: 1000,
+      radius: 5000,
     );
     _setMapPins();
     _setPolylines().then((_) {
@@ -182,7 +182,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
   }
 
   final Dio dio = Dio();
-
 
   @override
   Widget build(BuildContext context) {
@@ -466,7 +465,7 @@ class CustomBottomSheet extends StatelessWidget {
     return DraggableScrollableSheet(
       initialChildSize: 0.1,
       minChildSize: 0.1,
-      maxChildSize: 0.9,
+      maxChildSize: 0.7,
       builder: (context, scrollController) {
         return Container(
           height: height ?? 200,

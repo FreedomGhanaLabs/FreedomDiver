@@ -31,7 +31,7 @@ void pickFile(
                   : null,
           actions: [
             CupertinoActionSheetAction(
-              child: Text('Open Camera', style: TextStyle(color: gradient1)),
+              child: Text('Use Camera', style: TextStyle(color: gradient1)),
               onPressed: () {
                 Navigator.of(context).pop();
                 driverImageCubit.pickImage(context, type: type);
