@@ -179,7 +179,7 @@ class DebtStatusCard extends StatelessWidget {
 
     final debtPercentage = debt.debtPercentage;
 
-    return DashboardCard(
+    return DebtCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -228,8 +228,8 @@ class DebtStatusCard extends StatelessWidget {
   }
 }
 
-class DashboardCard extends StatelessWidget {
-  const DashboardCard({super.key, required this.child});
+class DebtCard extends StatelessWidget {
+  const DebtCard({super.key, required this.child});
 
   final Widget child;
 

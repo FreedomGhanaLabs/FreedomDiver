@@ -33,17 +33,20 @@ abstract class SectionFactory extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 34,
-            height: 34,
+            width: 30,
+            height: 30,
             padding: paddingSection,
-            margin: const EdgeInsets.only(left: 16),
+            margin: const EdgeInsets.only(left: smallWhiteSpace),
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(roundedLg),
               ),
             ),
-            child: SvgPicture.asset(item.iconPath ?? ''),
+            child:
+                item.iconPath!.endsWith('svg')
+                    ? SvgPicture.asset(item.iconPath ?? '')
+                    : Image.asset(item.iconPath ?? ''),
           ),
           const SizedBox(width: smallWhiteSpace),
           Column(
@@ -174,6 +177,7 @@ class SectionItem {
 }
 
 String getIconUrl(String iconName) => 'assets/app_icons/$iconName.svg';
+String getPngImageUrl(String imageName) => 'assets/app_images/$imageName.png';
 
 // Personal Data Section Implementation
 class PersonalDataSection extends SectionFactory {
@@ -273,22 +277,24 @@ class ManagePayment extends SectionFactory {
     super.onItemTap,
     super.paddingSection,
     super.sectionTextStyle,
-    this.onMasterCardTap,
-    this.onVisaCardTap,
+    this.onAddWalletTap,
+    this.onAddMobileMoneyTap,
   });
-  final VoidCallback? onMasterCardTap;
-  final VoidCallback? onVisaCardTap;
+  final VoidCallback? onAddWalletTap;
+  final VoidCallback? onAddMobileMoneyTap;
   @override
   List<SectionItem> get sectionItems => [
     SectionItem(
-      title: '*** **** 1234',
+      title: 'Add New Wallet',
+      subheading: '*** **** 1234',
       iconPath: 'assets/app_icons/mastercard.svg',
-      onTap: onMasterCardTap,
+      onTap: onAddWalletTap,
     ),
     SectionItem(
-      title: '*** **** 1234',
-      iconPath: 'assets/app_icons/visa_electron.svg',
-      onTap: () => onVisaCardTap,
+      title: 'Add Mobile Money',
+      subheading: '*** **** 1234',
+      iconPath: 'assets/app_images/momo.png',
+      onTap: onAddMobileMoneyTap,
     ),
   ];
 

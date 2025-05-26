@@ -61,12 +61,9 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
     );
 
     if (croppedFile != null) {
-      debugPrint('Cropped file path: ${croppedFile.path}');
       final imageCubit = context.read<DriverImageCubit>();
       imageCubit.addImage(File(croppedFile.path));
     }
-
-    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -89,7 +86,7 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
               buildSelectedImage(
                 context,
                 image,
-                height: Responsive.width(context) * 0.7,
+                height: Responsive.height(context) * 0.5,
                 radius: roundedFull,
               ),
               const VSpace(whiteSpace),

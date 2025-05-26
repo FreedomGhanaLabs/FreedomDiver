@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 
@@ -33,7 +34,7 @@ void pickFile(
             CupertinoActionSheetAction(
               child: Text('Use Camera', style: TextStyle(color: gradient1)),
               onPressed: () {
-                Navigator.of(context).pop();
+                if (type != profileImage) Navigator.of(context).pop();
                 driverImageCubit.pickImage(context, type: type);
               },
             ),
@@ -43,7 +44,7 @@ void pickFile(
                 style: TextStyle(color: gradient1),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                if (type != profileImage) Navigator.of(context).pop();
                 driverImageCubit.pickImage(context, gallery: true, type: type);
               },
             ),

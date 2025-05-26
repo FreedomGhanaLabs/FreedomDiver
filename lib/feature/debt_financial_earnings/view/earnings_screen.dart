@@ -139,15 +139,13 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                 borderRadius: BorderRadius.circular(roundedLg),
                                 child: Row(
                                   children: [
-                                    SvgPicture.asset(
-                                      'assets/app_icons/withdraw_icons.svg',
-                                    ),
-                                    const HSpace(6),
+                                    AppIcon(iconName: 'withdraw_icons'),
+                                    const HSpace(medWhiteSpace),
                                     const Text(
                                       'Withdraw',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 17,
+                                        fontSize: paragraphText,
                                         fontWeight: FontWeight.w400,
                                       ),
                                     ),
@@ -259,15 +257,15 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         title: 'Daily Earnings Breakdown',
                         subtitle:
                             'Invite your friends and family to ride with GofreedomApp',
-                        child2: SvgPicture.asset('assets/app_icons/stats.svg'),
+                        child2: AppIcon(iconName: 'stats'),
                         child: const SizedBox(
                           child: Row(
                             children: [
                               Text(
-                                'Monday: ₵80.00',
+                                'Monday: $appCurrency 80.00',
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 11.77,
+                                  fontSize: smallText,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -276,7 +274,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                           ),
                         ),
                       ),
-                      const VSpace(41),
+                      const VSpace(normalWhiteSpace),
                     ],
                   ),
                 ),

@@ -21,7 +21,7 @@ class WalletScreen extends StatelessWidget {
       builder: (context, state) {
         final earning = state is EarningLoaded ? state.earning : null;
         return CustomScreen(
-          title: 'Wallet',
+          title: 'Account',
           children: [
             const VSpace(whiteSpace),
             EarningsBanner(
@@ -36,7 +36,7 @@ class WalletScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     AppIcon(iconName: 'withdraw_icons'),
-                    const HSpace(extraSmallWhiteSpace),
+                    const HSpace(smallWhiteSpace),
                     Text(
                       'Withdraw',
                       style: TextStyle(
@@ -50,7 +50,7 @@ class WalletScreen extends StatelessWidget {
               ),
               child: const SizedBox.shrink(),
             ),
-            const VSpace(32),
+            const VSpace(normalWhiteSpace),
             Text(
               'Manage Payment Method',
               textAlign: TextAlign.center,
