@@ -28,9 +28,7 @@ class EarningsBanner extends StatelessWidget {
           stops: [0.1, 0.58, 0.7],
         ),
         shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.black.withValues(alpha: 0.0),
-          ),
+          side: BorderSide(color: Colors.black.withValues(alpha: 0.0)),
           borderRadius: BorderRadius.circular(roundedLg),
         ),
       ),
@@ -39,7 +37,6 @@ class EarningsBanner extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-     
               Text(
                 title,
                 style: TextStyle(

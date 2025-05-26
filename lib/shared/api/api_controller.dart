@@ -8,7 +8,6 @@ import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:freedomdriver/utilities/loading_overlay.dart';
 
-
 class ApiController {
   ApiController(this.startUrl, {this.noVersion = false}) {
     _dio.interceptors.add(
@@ -42,9 +41,7 @@ class ApiController {
       baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
     ),
   );
 
@@ -74,12 +71,7 @@ class ApiController {
       final msg = _handleError(e);
 
       if (msg.isNotEmpty) {
-        showToast(
-          context,
-          'Error',
-          msg,
-          toastType: ToastType.error,
-        );
+        showToast(context, 'Error', msg, toastType: ToastType.error);
       }
       callback(false, msg);
     } finally {
@@ -107,7 +99,9 @@ class ApiController {
           toastType: ToastType.success,
         );
       } else {
-        log('/$endpoint - ${successMessage != "null" ? successMessage : 'Fetched data successfully'}');
+        log(
+          '/$endpoint - ${successMessage != "null" ? successMessage : 'Fetched data successfully'}',
+        );
       }
       callback(true, response.data);
     } catch (e) {
@@ -296,11 +290,7 @@ class ApiController {
     log('Unexpected Error Message: $error');
     return 'An unexpected error occurred';
   }
-
-
 }
-
-
 
 void showToast(
   BuildContext context,

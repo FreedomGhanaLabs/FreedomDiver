@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/finance.dart';
 
 import '../../../../shared/api/api_controller.dart';
 import '../../../../shared/api/api_handler.dart';
@@ -12,24 +13,35 @@ class FinancialCubit extends Cubit<FinancialState> {
 
   final _apiController = ApiController('financial');
 
+  Finance? _cachedFinance;
+  bool get hasDebt => _cachedFinance != null;
+
+  void _updateFinance(Finance updated) {
+    _cachedFinance = updated;
+    emit(FinancialLoaded(_cachedFinance!));
+  }
+
+  void _emitIfChanged(Finance updated) {
+    if (_cachedFinance != updated) {
+      _updateFinance(updated);
+    } else {
+      log('[FinancialCubit] No changes detected, not emitting new state');
+    }
+  }
+
   Future<void> getWalletBalance(BuildContext context) async {
     await handleApiCall(
       context: context,
       apiRequest: () async {
         await _apiController.getData(context, 'wallet', (success, data) {
           if (success && data is Map<String, dynamic>) {
-            log('[FinancialCubit] wallet data $data');
-            // final driver = Driver.fromJson(
-            //   data['data'] as Map<String, dynamic>,
-            // );
+            final finance = Finance.fromJson(data);
 
-            // _updateDriver(driver);
-          } else {
-            emit(const FinancialError('Failed to fetch driver wallet balance'));
+            _emitIfChanged(finance);
           }
         });
       },
-      onError: (_) => emit(const FinancialError('Something went wrong')),
+      onError: (_) => {},
     );
   }
 
@@ -43,19 +55,13 @@ class FinancialCubit extends Cubit<FinancialState> {
         ) {
           if (success && data is Map<String, dynamic>) {
             log('[FinancialCubit] financial-summary data $data');
-            // final driver = Driver.fromJson(
-            //   data['data'] as Map<String, dynamic>,
-            // );
+            final finance = Finance.fromJson(data['data']);
 
-            // _updateDriver(driver);
-          } else {
-            emit(
-              const FinancialError('Failed to fetch driver financial summary.'),
-            );
+            _emitIfChanged(finance);
           }
         });
       },
-      onError: (_) => emit(const FinancialError('Something went wrong')),
+      onError: (_) => {},
     );
   }
 
@@ -75,18 +81,14 @@ class FinancialCubit extends Cubit<FinancialState> {
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] withdrawals: $data');
-              // final driver = Driver.fromJson(
-              //   data['data'] as Map<String, dynamic>,
-              // );
+              final finance = Finance.fromJson(data['data']);
 
-              // _updateDriver(driver);
-            } else {
-              emit(const FinancialError('Failed to fetch driver withdrawals.'));
+              _emitIfChanged(finance);
             }
           },
         );
       },
-      onError: (_) => emit(const FinancialError('Something went wrong')),
+      onError: (_) => {},
     );
   }
 
@@ -104,22 +106,14 @@ class FinancialCubit extends Cubit<FinancialState> {
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] financial earnings: $data');
-              // final driver = Driver.fromJson(
-              //   data['data'] as Map<String, dynamic>,
-              // );
+              final finance = Finance.fromJson(data['data']);
 
-              // _updateDriver(driver);
-            } else {
-              emit(
-                const FinancialError(
-                  'Failed to fetch driver financial summary.',
-                ),
-              );
+              _emitIfChanged(finance);
             }
           },
         );
       },
-      onError: (_) => emit(const FinancialError('Something went wrong')),
+      onError: (_) => {},
     );
   }
 
@@ -136,22 +130,16 @@ class FinancialCubit extends Cubit<FinancialState> {
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] financial earnings report: $data');
-              // final driver = Driver.fromJson(
-              //   data['data'] as Map<String, dynamic>,
-              // );
-
-              // _updateDriver(driver);
-            } else {
-              emit(
-                const FinancialError(
-                  'Failed to fetch driver financial summary.',
-                ),
+              final finance = Finance.fromJson(
+                data['data'] as Map<String, dynamic>,
               );
+
+              _emitIfChanged(finance);
             }
           },
         );
       },
-      onError: (_) => emit(const FinancialError('Something went wrong')),
+      onError: (_) => {},
     );
   }
 
@@ -175,15 +163,11 @@ class FinancialCubit extends Cubit<FinancialState> {
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] bank details data $data');
-              // final driver = Driver.fromJson(
+              // final finance = Finance.fromJson(
               //   data['data'] as Map<String, dynamic>,
               // );
 
-              // _updateDriver(driver);
-            } else {
-              emit(
-                const FinancialError('Failed to update driver bank details.'),
-              );
+              // _emitIfChanged(finance);
             }
           },
           showOverlay: true,
@@ -208,11 +192,9 @@ class FinancialCubit extends Cubit<FinancialState> {
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] bank details data $data');
-              // final driver = Driver.fromJson(
-              //   data['data'] as Map<String, dynamic>,
-              // );
+              final finance = Finance.fromJson(data['data']);
 
-              // _updateDriver(driver);
+              _emitIfChanged(finance);
             } else {
               emit(
                 const FinancialError('Failed to update driver bank details.'),
@@ -234,7 +216,7 @@ class FinancialCubit extends Cubit<FinancialState> {
           if (success && data is Map<String, dynamic>) {
             log('[FinancialCubit] verify-momo $data');
             // final driver = Driver.fromJson(
-            //   data['data'] as Map<String, dynamic>,
+            //   data['data'] ,
             // );
 
             // _updateDriver(driver);
@@ -263,7 +245,7 @@ class FinancialCubit extends Cubit<FinancialState> {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] $withdrawalMethod withdrawal $data');
               // final driver = Driver.fromJson(
-              //   data['data'] as Map<String, dynamic>,
+              //   data['data'] ,
               // );
 
               // _updateDriver(driver);

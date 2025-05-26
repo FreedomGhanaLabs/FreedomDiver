@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/driver.model.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
 import 'package:freedomdriver/feature/home/view/widgets/build_diaglog.dart';
@@ -64,7 +64,6 @@ class _HomeScreenState extends State<_HomeScreen> {
       backgroundColor: Colors.white,
       body: RefreshIndicator(
         color: gradient1,
-        triggerMode: RefreshIndicatorTriggerMode.anywhere,
         onRefresh: () async {
           await Future.wait([
             loadDashboard(context),

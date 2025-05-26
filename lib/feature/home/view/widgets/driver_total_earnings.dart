@@ -52,7 +52,7 @@ class DriverTotalEarnings extends StatelessWidget {
                 '$appCurrency ${earning?.totalRideEarnings.toStringAsFixed(2) ?? '0.00'}',
                 style: const TextStyle(
                   color: Colors.black,
-                  fontSize: headingText,
+                  fontSize: headingText - 2, 
                   fontWeight: FontWeight.w600,
                   height: 1.29,
                   letterSpacing: -0.54,

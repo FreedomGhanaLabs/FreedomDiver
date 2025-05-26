@@ -8,7 +8,7 @@ class Finance extends Equatable {
   final double debtPercentage;
   final bool bankDetailsProvided;
   final bool momoDetailsProvided;
-  final double pendingWithdrawals;
+  final List pendingWithdrawals;
   final double totalEarnings;
   final int rideCount;
   final List<Transaction> recentTransactions;
@@ -64,7 +64,10 @@ class Finance extends Equatable {
           json['momoDetailsProvided'] ??
           json['wallet']?['momoDetailsProvided'] ??
           false,
-      pendingWithdrawals: json['pendingWithdrawals']?.toDouble() ?? 0.0,
+      pendingWithdrawals:
+          (json['pendingWithdrawals'] as List? ?? [])
+              .map((e) => PendingWithdrawal.fromJson(e))
+              .toList(),
       totalEarnings: json['totalEarnings']?.toDouble() ?? 0.0,
       rideCount: json['rideCount'] ?? 0,
       recentTransactions:
@@ -101,7 +104,7 @@ class Finance extends Equatable {
       'debtPercentage': debtPercentage,
       'bankDetailsProvided': bankDetailsProvided,
       'momoDetailsProvided': momoDetailsProvided,
-      'pendingWithdrawals': pendingWithdrawals,
+      'pendingWithdrawals': pendingWithdrawals.map((e) => e.toJson()).toList(),
       'totalEarnings': totalEarnings,
       'rideCount': rideCount,
       'recentTransactions': recentTransactions.map((e) => e.toJson()).toList(),
@@ -121,7 +124,7 @@ class Finance extends Equatable {
     double? debtPercentage,
     bool? bankDetailsProvided,
     bool? momoDetailsProvided,
-    double? pendingWithdrawals,
+    List<PendingWithdrawal>? pendingWithdrawals,
     double? totalEarnings,
     int? rideCount,
     List<Transaction>? recentTransactions,
@@ -383,4 +386,40 @@ class WithdrawalMethods extends Equatable {
 
   @override
   List<Object?> get props => [bank, momo];
+}
+
+class PendingWithdrawal {
+  final double amount;
+  final String method;
+  final String status;
+  final String reference;
+  final DateTime createdAt;
+
+  PendingWithdrawal({
+    required this.amount,
+    required this.method,
+    required this.status,
+    required this.reference,
+    required this.createdAt,
+  });
+
+  factory PendingWithdrawal.fromJson(Map<String, dynamic> json) {
+    return PendingWithdrawal(
+      amount: (json['amount'] as num).toDouble(),
+      method: json['method'] as String,
+      status: json['status'] as String,
+      reference: json['reference'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'amount': amount,
+      'method': method,
+      'status': status,
+      'reference': reference,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
 }
