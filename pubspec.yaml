@@ -1,6 +1,6 @@
 name: freedomdriver
 description: "Rider app for freedom"
-publish_to: 'none' 
+publish_to: "none"
 version: 1.0.0+1
 environment:
   sdk: ^3.7.2
@@ -71,7 +71,6 @@ flutter:
     - assets/nav/active_icon/
     - assets/nav/inactive_icon/
     - assets/lottie/
-
 
 flutter_launcher_icons:
   android: "launcher_icon"
