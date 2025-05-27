@@ -232,7 +232,7 @@ class FinancialCubit extends Cubit<FinancialState> {
   Future<void> makeWithdrawal(
     BuildContext context, {
     required double amount,
-    String withdrawalMethod = 'bank', // momo
+    String withdrawalMethod = 'bank', required String withdrawalType, // momo
   }) async {
     await handleApiCall(
       context: context,

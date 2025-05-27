@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
@@ -9,6 +11,7 @@ import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
+import 'package:freedomdriver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
@@ -24,10 +27,12 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController amount = TextEditingController();
   final TextEditingController accountNumber = TextEditingController();
   final TextEditingController bankCode = TextEditingController();
   final TextEditingController accountName = TextEditingController();
   final TextEditingController phoneNumber = TextEditingController();
+  final TextEditingController withdrawalType = TextEditingController();
 
   @override
   void initState() {
@@ -51,7 +56,25 @@ class _WalletScreenState extends State<WalletScreen> {
               child2: SimpleButton(
                 title: '',
                 onPressed: () {
-                  // Navigator.of(context).pushNamed(WalletScreen.routeName);
+                  showCustomModal(
+                    context,
+                    child: WithdrawalForm(
+                      formKey: _formKey,
+                      amount: amount,
+                      withdrawalType: withdrawalType,
+                    ),
+                    btnOkText: 'Withdraw',
+                    btnCancelOnPress: () {},
+                    btnOkOnPress: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<FinancialCubit>().makeWithdrawal(
+                          context,
+                          amount: double.tryParse(amount.text.trim()) ?? 0.0,
+                          withdrawalType: withdrawalType.text.trim(),
+                        );
+                      }
+                    },
+                  ).show();
                 },
                 child: Row(
                   children: [
@@ -81,6 +104,14 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
             ManagePayment(
+              walletSubheading:
+                  finance?.bankDetailsProvided != null
+                      ? ''
+                      : 'Add your bank account details to receive payments directly.',
+              mobileMoneySubheading:
+                  finance?.momoDetailsProvided != null
+                      ? ''
+                      : 'Add your mobile money details to receive payments directly.',
               onAddMobileMoneyTap: () {
                 phoneNumber.text = context.driver?.phone ?? '';
                 showCustomModal(
@@ -102,18 +133,135 @@ class _WalletScreenState extends State<WalletScreen> {
                 ).show();
               },
               onAddWalletTap: () {
-                context.read<FinancialCubit>().updateBankDetails(
+                accountName.text = context.driver?.fullName ?? '';
+                showCustomModal(
                   context,
-                  accountName: accountName.text.trim(),
-                  accountNumber: accountNumber.text.trim(),
-                  bankCode: bankCode.text.trim(),
-                );
+                  child: BankDetailsForm(
+                    formKey: _formKey,
+                    accountName: accountName,
+                    accountNumber: accountNumber,
+                    bankCode: bankCode,
+                  ),
+                  btnOkText: 'Add Account',
+                  btnOkOnPress: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.read<FinancialCubit>().updateBankDetails(
+                        context,
+                        accountName: accountName.text.trim(),
+                        accountNumber: accountNumber.text.trim(),
+                        bankCode: bankCode.text.trim(),
+                      );
+                    }
+                  },
+                  btnCancelOnPress: () {},
+                ).show();
               },
               padding: EdgeInsets.zero,
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class WithdrawalForm extends StatefulWidget {
+  const WithdrawalForm({
+    super.key,
+    required GlobalKey<FormState> formKey,
+    required this.amount,
+    required this.withdrawalType,
+  }) : _formKey = formKey;
+
+  final GlobalKey<FormState> _formKey;
+  final TextEditingController amount;
+  final TextEditingController withdrawalType;
+
+  @override
+  State<WithdrawalForm> createState() => _WithdrawalFormState();
+}
+
+class _WithdrawalFormState extends State<WithdrawalForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: widget._formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Make Withdrawal', style: normalTextStyle),
+          Text(
+            'Withdraw your earnings to your bank account.',
+            style: paragraphTextStyle.copyWith(
+              color: Colors.grey.shade600,
+              fontSize: smallText,
+            ),
+          ),
+          const VSpace(smallWhiteSpace),
+          CustomDropDown(
+            label: 'Withdrawal Type',
+            initialValue: 'Bank',
+            items: const ['Bank', 'Mobile Money'],
+            onChanged: (value) {
+              widget.withdrawalType.text =
+                  value.replaceFirst('Mobile Money', 'momo').toLowerCase();
+              log('message: ${widget.withdrawalType.text}');
+            },
+          ),
+          buildField(
+            'Amount',
+            widget.amount,
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BankDetailsForm extends StatelessWidget {
+  const BankDetailsForm({
+    super.key,
+    required GlobalKey<FormState> formKey,
+    required this.accountNumber,
+    required this.bankCode,
+    required this.accountName,
+  }) : _formKey = formKey;
+
+  final GlobalKey<FormState> _formKey;
+  final TextEditingController accountNumber;
+  final TextEditingController bankCode;
+  final TextEditingController accountName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Bank Account Details', style: normalTextStyle),
+          Text(
+            'Add your bank details to receive payments directly to your bank account.',
+            style: paragraphTextStyle.copyWith(
+              color: Colors.grey.shade600,
+              fontSize: smallText,
+            ),
+          ),
+          const VSpace(smallWhiteSpace),
+          buildField(
+            'Account Number',
+            accountNumber,
+            keyboardType: TextInputType.phone,
+          ),
+          buildField(
+            'Account Name',
+            accountName,
+            keyboardType: TextInputType.phone,
+          ),
+          buildField('Bank Code', bankCode, keyboardType: TextInputType.phone),
+        ],
+      ),
     );
   }
 }

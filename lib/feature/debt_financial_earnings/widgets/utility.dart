@@ -62,15 +62,19 @@ abstract class SectionFactory extends StatelessWidget {
                     ),
               ),
               if (item.subheading != null)
-                Text(
-                  item.subheading ?? '',
-                  style:
-                      sectionSubHeadingStyle ??
-                      TextStyle(
-                        fontSize: smallText,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey.shade600,
-                      ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 200),
+                  child: Text(
+                    item.subheading ?? '',
+                    softWrap: true,
+                    style:
+                        sectionSubHeadingStyle ??
+                        TextStyle(
+                          fontSize: smallText,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey.shade600,
+                        ),
+                  ),
                 ),
             ],
           ),
@@ -279,20 +283,26 @@ class ManagePayment extends SectionFactory {
     super.sectionTextStyle,
     this.onAddWalletTap,
     this.onAddMobileMoneyTap,
+    this.walletSubheading,
+    this.mobileMoneySubheading
   });
   final VoidCallback? onAddWalletTap;
   final VoidCallback? onAddMobileMoneyTap;
+  final String? walletSubheading;
+  final String? mobileMoneySubheading;
+
+
   @override
   List<SectionItem> get sectionItems => [
     SectionItem(
-      title: 'Add New Wallet',
-      subheading: '*** **** 1234',
+      title: 'Add Bank Account',
+      subheading: walletSubheading, // '*** **** 1234',
       iconPath: 'assets/app_icons/mastercard.svg',
       onTap: onAddWalletTap,
     ),
     SectionItem(
       title: 'Add Mobile Money',
-      subheading: '*** **** 1234',
+      subheading: mobileMoneySubheading, // '*** **** 1234',
       iconPath: 'assets/app_images/momo.png',
       onTap: onAddMobileMoneyTap,
     ),
