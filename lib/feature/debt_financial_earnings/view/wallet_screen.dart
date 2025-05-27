@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
@@ -6,12 +5,14 @@ import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/fina
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_banner.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
-import 'package:freedomdriver/shared/widgets/decorated_container.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../../../utilities/show_custom_modal.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -81,39 +82,23 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             ManagePayment(
               onAddMobileMoneyTap: () {
-                AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.noHeader,
-                  animType: AnimType.topSlide,
-                  title: 'Mobile Money',
-                  body: DecoratedContainer(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          buildField(
-                            'Momo Phone Number',
-                            phoneNumber,
-                            keyboardType: TextInputType.phone,
-                          ),
-                        ],
-                      ),
-                    ),
+                phoneNumber.text = context.driver?.phone ?? '';
+                showCustomModal(
+                  context,
+                  child: MobileMoneyForm(
+                    formKey: _formKey,
+                    phoneNumber: phoneNumber,
                   ),
-                  btnOkColor: Colors.black,
-                  autoDismiss: false,
-                  onDismissCallback: (type) {
-                    Navigator.of(context).pop();
-                  },
-                  btnOkText: 'Add Mobile Money',
-                  btnCancelText: 'Cancel',
+                  btnOkText: 'Add Number',
                   btnOkOnPress: () {
-                    context.read<FinancialCubit>().updateMomoDetails(
-                      context,
-                      phoneNumber: phoneNumber.text.trim(),
-                    );
+                    if (_formKey.currentState!.validate()) {
+                      context.read<FinancialCubit>().updateMomoDetails(
+                        context,
+                        phoneNumber: phoneNumber.text.trim(),
+                      );
+                    }
                   },
-                  btnCancelOnPress: () {}
+                  btnCancelOnPress: () {},
                 ).show();
               },
               onAddWalletTap: () {
@@ -129,6 +114,43 @@ class _WalletScreenState extends State<WalletScreen> {
           ],
         );
       },
+    );
+  }
+}
+
+class MobileMoneyForm extends StatelessWidget {
+  const MobileMoneyForm({
+    super.key,
+    required GlobalKey<FormState> formKey,
+    required this.phoneNumber,
+  }) : _formKey = formKey;
+
+  final GlobalKey<FormState> _formKey;
+  final TextEditingController phoneNumber;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Mobile Money', style: normalTextStyle),
+          Text(
+            'Add your mobile money details to receive payments directly to your mobile wallet.',
+            style: paragraphTextStyle.copyWith(
+              color: Colors.grey.shade600,
+              fontSize: smallText,
+            ),
+          ),
+          const VSpace(smallWhiteSpace),
+          buildField(
+            'Momo Phone Number',
+            phoneNumber,
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+      ),
     );
   }
 }
