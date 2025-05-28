@@ -28,10 +28,12 @@ AwesomeDialog showCustomModal(
       child: child,
     ),
     btnOkColor: Colors.black,
-    autoDismiss: false,
-    onDismissCallback: (type) {
-      Navigator.of(context).pop();
-    },
+    autoHide: Duration(minutes: 10),
+    // autoDismiss: false,
+    // onDismissCallback: (type) {
+    //   if (type == DismissType.btnOk) return;
+    //   Navigator.of(context).pop();
+    // },
     btnOkText: btnOkText,
     btnCancelText: btnCancelText,
     btnOkOnPress: btnOkOnPress,

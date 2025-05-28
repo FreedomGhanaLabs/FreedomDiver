@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -180,8 +179,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
       });
     }
   }
-
-  final Dio dio = Dio();
 
   @override
   Widget build(BuildContext context) {

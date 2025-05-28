@@ -53,7 +53,7 @@ class DriverCubit extends Cubit<DriverState> {
             final driver = Driver.fromJson(
               data['data'] as Map<String, dynamic>,
             );
-            
+
             _updateDriver(driver);
           } else {
             emit(const DriverError('Failed to fetch driver data'));
@@ -89,10 +89,9 @@ class DriverCubit extends Cubit<DriverState> {
       apiRequest:
           () => apiController.put(context, 'status', {'status': newStatus}, (
             success,
-            _,
+            _
           ) {
             if (success) {
-              log('[DriverCubit] Status updated: $newStatus');
               if (toggleOnlyApi) return;
               driverSocketService.setDriverStatus(available: isUnavailable);
             } else {
@@ -414,6 +413,7 @@ class DriverCubit extends Cubit<DriverState> {
     _cachedDriver = _cachedDriver?.copyWith(profilePicture: profilePicture);
     if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));
   }
+
   void _updateDriverRidePreference(String newRidePreference) {
     _cachedDriver = _cachedDriver?.copyWith(ridePreference: newRidePreference);
     if (_cachedDriver != null) emit(DriverLoaded(_cachedDriver!));

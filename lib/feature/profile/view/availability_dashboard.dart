@@ -59,7 +59,7 @@ class _VehicleInformationContainer extends StatefulWidget {
 
 class _VehicleInformationContainerState
     extends State<_VehicleInformationContainer> {
-  List<String> dropDownItem = <String>['offline', 'online'];
+  List<String> dropDownItem = <String>['available', 'unavailable'];
   List<DateTime> dateDropDownItem = <DateTime>[];
   String? dropDownValue;
   DateTime timeDropDownValue = DateTime.now();

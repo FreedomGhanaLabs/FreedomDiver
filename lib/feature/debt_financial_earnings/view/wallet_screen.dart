@@ -27,6 +27,8 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _withdrawalFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _paymentFormKey = GlobalKey<FormState>();
   final TextEditingController amount = TextEditingController();
   final TextEditingController accountNumber = TextEditingController();
   final TextEditingController bankCode = TextEditingController();
@@ -59,14 +61,14 @@ class _WalletScreenState extends State<WalletScreen> {
                   showCustomModal(
                     context,
                     child: WithdrawalForm(
-                      formKey: _formKey,
+                      formKey: _withdrawalFormKey,
                       amount: amount,
                       withdrawalType: withdrawalType,
                     ),
                     btnOkText: 'Withdraw',
                     btnCancelOnPress: () {},
                     btnOkOnPress: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (_withdrawalFormKey.currentState!.validate()) {
                         context.read<FinancialCubit>().makeWithdrawal(
                           context,
                           amount: double.tryParse(amount.text.trim()) ?? 0.0,
@@ -117,12 +119,12 @@ class _WalletScreenState extends State<WalletScreen> {
                 showCustomModal(
                   context,
                   child: MobileMoneyForm(
-                    formKey: _formKey,
+                    formKey: _paymentFormKey,
                     phoneNumber: phoneNumber,
                   ),
                   btnOkText: 'Add Number',
                   btnOkOnPress: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (_paymentFormKey.currentState!.validate()) {
                       context.read<FinancialCubit>().updateMomoDetails(
                         context,
                         phoneNumber: phoneNumber.text.trim(),
