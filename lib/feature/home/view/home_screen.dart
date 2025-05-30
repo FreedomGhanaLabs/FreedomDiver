@@ -479,7 +479,6 @@ class DriverStatusToggler extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DriverCubit, DriverState>(
       builder: (context, state) {
-     
         if (state is DriverLoaded) {
           final driver = state.driver;
 
