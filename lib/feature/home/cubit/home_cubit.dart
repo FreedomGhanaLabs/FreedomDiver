@@ -10,9 +10,9 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
 
   void toggleNearByRides() {
-    emit(state.copyWith(rideStatus: RideStatus.searching));
+    emit(state.copyWith(rideStatus: TransitStatus.searching));
     Timer(const Duration(seconds: 2), () {
-      emit(state.copyWith(rideStatus: RideStatus.found));
+      emit(state.copyWith(rideStatus: TransitStatus.found));
     });
   }
 
@@ -20,11 +20,11 @@ class HomeCubit extends Cubit<HomeState> {
     log('setRideAccepted: $state');
     if (isAccepted == null) return;
 
-    emit(state.copyWith(rideStatus: RideStatus.accepted));
+    emit(state.copyWith(rideStatus: TransitStatus.accepted));
     log('Current State after accept: ${state.rideStatus}');
   }
 
   void endRide() {
-    emit(state.copyWith(rideStatus: RideStatus.initial));
+    emit(state.copyWith(rideStatus: TransitStatus.initial));
   }
 }

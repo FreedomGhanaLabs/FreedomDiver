@@ -191,7 +191,7 @@ class HomeRide extends StatelessWidget {
               const VSpace(extraSmallWhiteSpace),
               Image.asset('assets/app_images/driver_image.png'),
               const VSpace(smallWhiteSpace),
-              if (state.rideStatus == RideStatus.searching)
+              if (state.rideStatus == TransitStatus.searching)
                 Text(
                   'Searching for ride requests near you…',
                   textAlign: TextAlign.center,
@@ -201,7 +201,7 @@ class HomeRide extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 )
-              else if (state.rideStatus == RideStatus.accepted)
+              else if (state.rideStatus == TransitStatus.accepted)
                 const EstimatedReachTime(),
               const VSpace(smallWhiteSpace),
               Row(
@@ -211,7 +211,7 @@ class HomeRide extends StatelessWidget {
                       listeners: [
                         BlocListener<HomeCubit, HomeState>(
                           listener: (context, state) {
-                            if (state.rideStatus == RideStatus.found) {
+                            if (state.rideStatus == TransitStatus.found) {
                               buildRideFoundDialog(context);
                             }
                           },
@@ -223,7 +223,7 @@ class HomeRide extends StatelessWidget {
                           log('Current state 2: ${state.rideStatus}');
 
                           final isRideActive =
-                              state.rideStatus == RideStatus.accepted;
+                              state.rideStatus == TransitStatus.accepted;
                           return SimpleButton(
                             title:
                                 isRideActive ? 'End Ride' : 'Find Nearby Rides',
@@ -258,11 +258,11 @@ class HomeRide extends StatelessWidget {
                       return Expanded(
                         child: SimpleButton(
                           title:
-                              state.rideStatus == RideStatus.accepted
+                              state.rideStatus == TransitStatus.accepted
                                   ? 'Navigate'
                                   : 'Search Another Area',
                           onPressed: () {
-                            if (state.rideStatus == RideStatus.accepted) {
+                            if (state.rideStatus == TransitStatus.accepted) {
                               Navigator.of(
                                 context,
                               ).pushNamed(InAppCallMap.routeName);
@@ -479,15 +479,13 @@ class DriverStatusToggler extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DriverCubit, DriverState>(
       builder: (context, state) {
-        // Ensure you're working with the loaded state
+     
         if (state is DriverLoaded) {
           final driver = state.driver;
 
-          // final available = DriverStatus.available.name;
           final unavailable = DriverStatus.unavailable.name;
 
           final isUnavailable = driver.status == unavailable;
-          // final isAvailable = driver.status == available;
 
           final Color activeColor = isUnavailable ? Colors.green : Colors.red;
 

@@ -1,5 +1,3 @@
-
-
 import 'package:equatable/equatable.dart';
 import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
 

@@ -165,43 +165,10 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final driver = context.driver;
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
-          height: 50,
-          width: 50,
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(13),
-            ),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(roundedLg),
-            child:
-                driver?.profilePicture != null
-                    ? GestureDetector(
-                      onTap:
-                          () => Navigator.pushNamed(
-                            context,
-                            ProfilePictureScreen.routeName,
-                          ),
-                      child: Hero(
-                        tag: driver?.id ?? '',
-                        transitionOnUserGestures: true,
-                        child: CachedNetworkImage(
-                          imageUrl: driver?.profilePicture ?? '',
-                          fit: BoxFit.cover,
-                          errorWidget:
-                              (context, url, error) => const DefaultAvatar(),
-                          placeholder: (context, url) => DefaultAvatar(),
-                        ),
-                      ),
-                    )
-                    : DefaultAvatar(),
-          ),
-        ),
+        DriverProfileImage(),
         Positioned(
           bottom: -4,
           right: -4,
@@ -226,6 +193,50 @@ class ProfileAvatar extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class DriverProfileImage extends StatelessWidget {
+  const DriverProfileImage({super.key, this.size});
+
+  final double? size;
+
+  @override
+  Widget build(BuildContext context) {
+    final driver = context.driver;
+    return Container(
+      height: size ?? 50,
+      width: size ?? 50,
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(roundedLg),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(roundedLg),
+        child:
+            driver?.profilePicture != null
+                ? GestureDetector(
+                  onTap:
+                      () => Navigator.pushNamed(
+                        context,
+                        ProfilePictureScreen.routeName,
+                      ),
+                  child: Hero(
+                    tag: driver?.id ?? '',
+                    transitionOnUserGestures: true,
+                    child: CachedNetworkImage(
+                      imageUrl: driver?.profilePicture ?? '',
+                      fit: BoxFit.cover,
+                      errorWidget:
+                          (context, url, error) => const DefaultAvatar(),
+                      placeholder: (context, url) => DefaultAvatar(),
+                    ),
+                  ),
+                )
+                : DefaultAvatar(),
+      ),
     );
   }
 }

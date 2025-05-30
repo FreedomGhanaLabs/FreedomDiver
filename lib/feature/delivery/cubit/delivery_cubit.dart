@@ -2,56 +2,55 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/rides_state.dart';
-import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
-import 'package:freedomdriver/shared/api/api_controller.dart';
-import 'package:freedomdriver/utilities/socket_service.dart';
 
-class RideCubit extends Cubit<RideState> {
-  RideCubit() : super(RideInitial());
+import '../../../shared/api/api_controller.dart';
+import '../../home/cubit/home_cubit.dart';
+import 'delivery_state.dart';
 
-  AcceptRide? _cachedAcceptRide;
+class DeliveryCubit extends Cubit<DeliveryState> {
+  DeliveryCubit() : super(DeliveryInitial());
 
-  AcceptRide? get currentDriver => _cachedAcceptRide;
-  bool get hasAcceptedRide => _cachedAcceptRide != null;
+  // AcceptDelivery? _cachedAcceptDelivery;
 
-  void _updateAcceptRide(AcceptRide updated) {
-    _cachedAcceptRide = updated;
-    emit(RideLoaded(_cachedAcceptRide!));
-  }
+  // AcceptDelivery? get currentDriver => _cachedAcceptDelivery;
+  // bool get hasAcceptedDelivery => _cachedAcceptDelivery != null;
 
-  void _emitIfChanged(AcceptRide updated) {
-    if (_cachedAcceptRide != updated) {
-      _updateAcceptRide(updated);
-    } else {
-      log('[RideCubit] No changes detected, not emitting new state');
-    }
-  }
+  // void _updateAcceptDelivery(AcceptDelivery updated) {
+  //   _cachedAcceptDelivery = updated;
+  //   emit(DeliveryLoaded(_cachedAcceptDelivery!));
+  // }
 
-  final ApiController apiController = ApiController('ride');
+  // void _emitIfChanged(AcceptDelivery updated) {
+  //   if (_cachedAcceptDelivery != updated) {
+  //     _updateAcceptDelivery(updated);
+  //   } else {
+  //     log('[DeliveryCubit] No changes detected, not emitting new state');
+  //   }
+  // }
 
-  Future<void> fetchRide(BuildContext context, String rideId) async {
-    emit(RideLoading());
+  final ApiController apiController = ApiController('delivery');
+
+  Future<void> fetchDelivery(BuildContext context, String rideId) async {
+    emit(DeliveryLoading());
     try {
       await apiController.getData(context, rideId, (success, data) {
         if (success) {
-          final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
-          emit(RideLoaded(ride));
+          // final delivery = AcceptDelivery.fromJson(data as Map<String, dynamic>);
+          // emit(DeliveryLoaded(delivery));
         }
       });
     } catch (e) {
-      emit(RideError('Failed to load ride'));
+      emit(DeliveryError('Failed to load delivery'));
     }
   }
 
-  Future<void> acceptRide(
+  Future<void> acceptDelivery(
     BuildContext context, {
     required String rideId,
     double latitude = 6.520379,
     double longitude = 3.375206,
   }) async {
-    emit(RideLoading());
+    emit(DeliveryLoading());
     try {
       await apiController.post(
         context,
@@ -59,39 +58,38 @@ class RideCubit extends Cubit<RideState> {
         {'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
-            final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
-            _updateAcceptRide(ride);
-            updateStatus(context, TransitStatus.accepted);
+            // final delivery = AcceptDelivery.fromJson(data as Map<String, dynamic>);
+            // _updateAcceptDelivery(delivery);
+            // updateStatus(context, TransitStatus.accepted);
           }
         },
       );
     } catch (e) {
-      emit(RideError('Failed to load ride'));
+      emit(DeliveryError('Failed to load delivery'));
     }
   }
 
-  Future<void> rejectRide(
+  Future<void> rejectDelivery(
     BuildContext context, {
     required String rideId,
     String reason = 'Too far from my current location',
   }) async {
-    DriverSocketService().rejectRideRequest('xyz-abc');
     try {
       await apiController.post(context, '$rideId/reject', {'reason': reason}, (
         success,
         data,
       ) {
         if (success) {
-          log('[RideCubit] ride rejected');
+          log('[DeliveryCubit] delivery rejected');
           updateStatus(context, TransitStatus.declined);
         }
       });
     } catch (e) {
-      emit(RideError('Failed to reject ride'));
+      emit(DeliveryError('Failed to reject delivery'));
     }
   }
 
-  Future<void> cancelRide(
+  Future<void> cancelDelivery(
     BuildContext context, {
     required String rideId,
     String reason = 'Too far from my current location',
@@ -105,17 +103,17 @@ class RideCubit extends Cubit<RideState> {
         {'reason': reason, 'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
-            log('[RideCubit] ride cancel');
+            log('[DeliveryCubit] delivery cancel');
             updateStatus(context, TransitStatus.initial);
           }
         },
       );
     } catch (e) {
-      emit(RideError('Failed to cancel ride'));
+      emit(DeliveryError('Failed to cancel delivery'));
     }
   }
 
-  Future<void> arrivedRide(
+  Future<void> arrivedDelivery(
     BuildContext context, {
     required String rideId,
     double latitude = 6.520379,
@@ -128,16 +126,16 @@ class RideCubit extends Cubit<RideState> {
         {'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
-            log('[RideCubit] ride arrived');
+            log('[DeliveryCubit] delivery arrived');
           }
         },
       );
     } catch (e) {
-      emit(RideError('Failed to arrive ride'));
+      emit(DeliveryError('Failed to arrive delivery'));
     }
   }
 
-  Future<void> startRide(
+  Future<void> startDelivery(
     BuildContext context, {
     required String rideId,
     double latitude = 6.520379,
@@ -150,17 +148,17 @@ class RideCubit extends Cubit<RideState> {
         {'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
-            log('[RideCubit] ride started');
+            log('[DeliveryCubit] delivery started');
             // updateStatus(context, TransitStatus.started);
           }
         },
       );
     } catch (e) {
-      emit(RideError('Failed to cancel ride'));
+      emit(DeliveryError('Failed to cancel delivery'));
     }
   }
 
-  Future<void> completeRide(
+  Future<void> completeDelivery(
     BuildContext context, {
     required String rideId,
     double latitude = 6.520379,
@@ -173,18 +171,18 @@ class RideCubit extends Cubit<RideState> {
         {'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
-            log('[RideCubit] ride completed');
+            log('[DeliveryCubit] delivery completed');
             updateStatus(context, TransitStatus.completed);
           }
         },
         showOverlay: true,
       );
     } catch (e) {
-      emit(RideError('Failed to end ride'));
+      emit(DeliveryError('Failed to end delivery'));
     }
   }
 
-  Future<void> confirmRidePayment(
+  Future<void> confirmDeliveryPayment(
     BuildContext context, {
     required String rideId,
   }) async {
@@ -194,15 +192,15 @@ class RideCubit extends Cubit<RideState> {
         data,
       ) {
         if (success) {
-          log('[RideCubit] ride confirm payment');
+          log('[DeliveryCubit] delivery confirm payment');
         }
       }, showOverlay: true);
     } catch (e) {
-      emit(RideError('Failed to end ride'));
+      emit(DeliveryError('Failed to end delivery'));
     }
   }
 
-  Future<void> rateRideUser(
+  Future<void> rateDeliveryUser(
     BuildContext context, {
     required String rideId,
     double rating = 5,
@@ -215,49 +213,46 @@ class RideCubit extends Cubit<RideState> {
         {'rating': rating, 'comment': comment},
         (success, data) {
           if (success) {
-            log('[RideCubit] ride user rated $rating');
+            log('[DeliveryCubit] delivery user rated $rating');
           }
         },
         showOverlay: true,
       );
     } catch (e) {
-      emit(RideError('Failed to end ride'));
+      emit(DeliveryError('Failed to end delivery'));
     }
   }
 
-  Future<void> updateStatus(
-    BuildContext context,
-    TransitStatus newStatus,
-  ) async {
-    if (!hasAcceptedRide) return;
+  Future<void> updateStatus(BuildContext context, TransitStatus newStatus) async {
+    // if (!hasAcceptedDelivery) return;
 
-    final previousStatusName = _cachedAcceptRide!.status;
+    // final previousStatusName = _cachedAcceptDelivery!.status;
 
-    emit(RideUpdating(_cachedAcceptRide!.copyWith(status: newStatus.name)));
-    emit(RideLoaded(_cachedAcceptRide!.copyWith(status: newStatus.name)));
+    // emit(DeliveryUpdating(_cachedAcceptDelivery!.copyWith(status: newStatus.name)));
+    // emit(DeliveryLoaded(_cachedAcceptDelivery!.copyWith(status: newStatus.name)));
 
     try {
       await apiController.patch(
         context,
-        _cachedAcceptRide!.rideId,
+        '_cachedAcceptDelivery!.rideId',
         {'status': newStatus.name},
         (success, data) {
           if (success) {
-            log('[ride cubit] status has been updated');
+            log('[delivery cubit] status has been updated');
           } else {
-            emit(
-              RideLoaded(
-                _cachedAcceptRide!.copyWith(status: previousStatusName),
-              ),
-            );
+            // emit(
+            //   DeliveryLoaded(
+            //     _cachedAcceptDelivery!.copyWith(status: previousStatusName),
+            //   ),
+            // );
           }
         },
       );
     } catch (_) {
-      emit(RideError('Failed to update status'));
-      emit(
-        RideLoaded(_cachedAcceptRide!.copyWith(status: previousStatusName)),
-      ); // restore
+      emit(DeliveryError('Failed to update status'));
+      // emit(
+      //   DeliveryLoaded(_cachedAcceptDelivery!.copyWith(status: previousStatusName)),
+      // ); // restore
     }
   }
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_type.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import '../../../profile/widget/stacked_profile_card.dart';
 
 class RiderTimeLine extends StatelessWidget {
   const RiderTimeLine({
@@ -26,6 +30,7 @@ class RiderTimeLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final driver = context.driver;
     return Container(
       padding: const EdgeInsets.fromLTRB(14.07, 10.47, 9, 6.17),
       child: Column(
@@ -38,21 +43,14 @@ class RiderTimeLine extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 34,
-                    width: 34,
-                    child: Image(
-                      image: AssetImage(riderImage),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  DriverProfileImage(size: 35),
                   const HSpace(7.01),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        riderName,
-                        style: GoogleFonts.poppins(
+                        driver?.fullName ?? '',
+                        style: TextStyle(
                           color: Colors.black,
                           fontSize: 6.14,
                           fontWeight: FontWeight.w400,
@@ -60,9 +58,9 @@ class RiderTimeLine extends StatelessWidget {
                       ),
                       Text(
                         riderId,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: Colors.black,
-                          fontSize: 11.83,
+                          fontSize: smallText,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -82,20 +80,21 @@ class RiderTimeLine extends StatelessWidget {
                     padding: const EdgeInsets.only(
                       top: 8,
                       left: 7,
-                      right: 5.75,
+                      right: extraSmallWhiteSpace,
                       bottom: 8.34,
                     ),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset(
-                          'assets/app_icons/feedback_icon.svg',
-                        ),
-                        const HSpace(3.25),
+                        AppIcon(iconName: 'feedback_icon'),
+                        const HSpace(4),
                         const Text(
                           'Provide Feedback',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: paragraphText,
+                          ),
                         ),
                       ],
                     ),
@@ -112,9 +111,7 @@ class RiderTimeLine extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const VSpace(14.61),
-                  SvgPicture.asset(
-                    'assets/app_images/distance_line.svg',
-                  ),
+                  SvgPicture.asset('assets/app_images/distance_line.svg'),
                   SizedBox(
                     width: 200,
                     child: Row(
@@ -127,7 +124,7 @@ class RiderTimeLine extends StatelessWidget {
                             children: [
                               Text(
                                 'Pick up',
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 8.78,
                                   fontWeight: FontWeight.w400,
@@ -140,7 +137,7 @@ class RiderTimeLine extends StatelessWidget {
                                 },
                                 child: Text(
                                   pickUpDetails,
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                     color: const Color(0xFFF59E0B),
                                     fontSize: 9.50,
                                     fontWeight: FontWeight.w600,
@@ -158,7 +155,7 @@ class RiderTimeLine extends StatelessWidget {
                             children: [
                               Text(
                                 'Destination',
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 8.78,
                                   fontWeight: FontWeight.w400,
@@ -172,7 +169,7 @@ class RiderTimeLine extends StatelessWidget {
                                 },
                                 child: Text(
                                   destinationDetails,
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                     color: const Color(0xFFF59E0B),
                                     fontSize: 9.07,
                                     fontWeight: FontWeight.w600,
@@ -189,26 +186,26 @@ class RiderTimeLine extends StatelessWidget {
               ),
               Column(
                 children: [
-                  const VSpace(16),
+                  const VSpace(smallWhiteSpace),
                   Text(
-                    'Rs. 2,000',
-                    style: GoogleFonts.poppins(
-                      fontSize: 11.78,
+                    '$appCurrency 2,000',
+                    style: TextStyle(
+                      fontSize: smallText,
                       fontWeight: FontWeight.w500,
                       color: const Color(0xFF727272),
                     ),
                   ),
-                  const VSpace(12.97),
+                  const VSpace(medWhiteSpace),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SvgPicture.asset('assets/app_icons/checked_icon.svg'),
+                      AppIcon(iconName: 'checked_icon'),
                       Text(
                         'Completed',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
+                        style: TextStyle(
+                          fontSize: smallText,
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xFF0BF535),
+                          color: greenColor,
                         ),
                       ),
                     ],

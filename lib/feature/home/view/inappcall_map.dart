@@ -185,21 +185,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: _driverLocation!,
-              zoom: 13,
-            ),
-            markers: _markers,
-            polylines: _polylines,
-            onMapCreated: (GoogleMapController controller) {
-              _mapController = controller;
-
-              _mapController?.animateCamera(
-                CameraUpdate.newLatLng(_driverLocation!),
-              );
-            },
-          ),
+          showGoogleMap(),
           Positioned(
             top: MediaQuery.of(context).padding.top + smallWhiteSpace,
             left: whiteSpace,
@@ -399,7 +385,27 @@ class _InAppCallMapState extends State<InAppCallMap> {
       ),
     );
   }
+
+  GoogleMap showGoogleMap() {
+    return GoogleMap(
+          initialCameraPosition: CameraPosition(
+            target: _driverLocation!,
+            zoom: 13,
+          ),
+          markers: _markers,
+          polylines: _polylines,
+          onMapCreated: (GoogleMapController controller) {
+            _mapController = controller;
+
+            _mapController?.animateCamera(
+              CameraUpdate.newLatLng(_driverLocation!),
+            );
+          },
+        );
+  }
 }
+
+
 
 class PassengerDestinationDetailBox extends StatelessWidget {
   const PassengerDestinationDetailBox({

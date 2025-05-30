@@ -4,7 +4,7 @@ enum ActivityType { ride, delivery }
 
 enum ActivityStatus { pending, completed }
 
-enum RideStatus {
+enum TransitStatus {
   initial,
   searching,
   found,
@@ -18,15 +18,15 @@ enum RideStatus {
 class HomeState extends Equatable {
   const HomeState({
     this.activities = const [],
-    this.rideStatus = RideStatus.initial,
+    this.rideStatus = TransitStatus.initial,
   });
 
   final List<Activity> activities;
-  final RideStatus rideStatus;
+  final TransitStatus rideStatus;
 
   HomeState copyWith({
     List<Activity>? activities,
-    RideStatus? rideStatus,
+    TransitStatus? rideStatus,
   }) {
     return HomeState(
       activities: activities ?? this.activities,
