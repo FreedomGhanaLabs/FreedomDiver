@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/widgets/build_ride_request.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/rides_cubit.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/utilities/ui.dart';

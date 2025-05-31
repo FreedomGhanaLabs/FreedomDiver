@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
 import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
+import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:freedomdriver/utilities/notification_service.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -74,14 +75,18 @@ class DriverSocketService {
       log('${DriverSocketConstants.socketConnectionError}$err');
     });
 
-    _socket!.on('new_ride_request', (data) {
+    _socket!.on(DriverSocketConstants.newRideRequest, (data) async {
       //DriverSocketConstants.newRideRequest
       log('${DriverSocketConstants.newRideRequestLog}$data');
       final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
+final isRide = ride.type == 'ride';
       NotificationService.sendNotification(
-        title: 'New ride request',
-        body: 'New ride from ${ride.pickupLocation.address}',
+        title: isRide ? 'New ride request' : "New Delivery Request",
+        body:
+            'New ${isRide ? "ride" : "delivery"} from ${ride.pickupLocation.address}',
       );
+
+      await addRideToHive(ride);
 
       onNewRideRequest?.call(ride);
     });

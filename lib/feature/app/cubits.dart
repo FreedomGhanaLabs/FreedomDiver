@@ -13,7 +13,7 @@ import '../documents/ghana_card/cubit/ghana_card_cubit.dart';
 import '../driver/cubit/driver_cubit.dart';
 import '../home/cubit/home_cubit.dart';
 import '../kyc/cubit/kyc_cubit.dart';
-import '../rides/cubit/ride/rides_cubit.dart';
+import '../rides/cubit/ride/ride_cubit.dart';
 import '../rides/cubit/ride_history/ride_history_cubit.dart';
 
 List appCubits =  [

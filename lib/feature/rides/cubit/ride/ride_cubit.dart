@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/rides_state.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
@@ -23,13 +23,13 @@ class RideCubit extends Cubit<RideState> {
     emit(RideLoaded(_cachedAcceptRide!));
   }
 
-  void _emitIfChanged(AcceptRide updated) {
-    if (_cachedAcceptRide != updated) {
-      _updateAcceptRide(updated);
-    } else {
-      log('[RideCubit] No changes detected, not emitting new state');
-    }
-  }
+  // void _emitIfChanged(AcceptRide updated) {
+  //   if (_cachedAcceptRide != updated) {
+  //     _updateAcceptRide(updated);
+  //   } else {
+  //     log('[RideCubit] No changes detected, not emitting new state');
+  //   }
+  // }
 
   final ApiController apiController = ApiController('ride');
 

@@ -1,7 +1,7 @@
 class AcceptRide {
   AcceptRide({
     required this.rideId,
-    required this.user,
+    this.user,
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.estimatedDistance,
@@ -11,51 +11,68 @@ class AcceptRide {
     required this.driverEarnings,
     required this.status,
     required this.paymentMethod,
+    required this.type,
+    required this.estimatedFare,
+    required this.currency,
+    required this.isMultiStop,
+    required this.rideType,
   });
 
   factory AcceptRide.fromJson(Map<String, dynamic> json) => AcceptRide(
-        rideId: json['rideId'].toString(),
-        user: User.fromJson(json['user'] as Map<String, dynamic>),
-        pickupLocation:
-            Location.fromJson(json['pickupLocation'] as Map<String, dynamic>),
-        dropoffLocation:
-            Location.fromJson(json['dropoffLocation'] as Map<String, dynamic>),
-        estimatedDistance: Distance.fromJson(
-            json['estimatedDistance'] as Map<String, dynamic>,),
-        estimatedDuration: DurationInfo.fromJson(
-            json['estimatedDuration'] as Map<String, dynamic>,),
-        etaToPickup:
-            DurationInfo.fromJson(json['etaToPickup'] as Map<String, dynamic>),
-        totalFare: json['totalFare'] as int,
-        driverEarnings: json['driverEarnings'] as int,
-        status: json['status'].toString(),
-        paymentMethod: json['paymentMethod'].toString(),
-      );
+    rideId: json['rideId'].toString(),
+    user: User.fromJson(json['user'] as Map<String, dynamic>),
+    pickupLocation: Location.fromJson(json['pickupLocation']),
+    dropoffLocation: Location.fromJson(json['dropoffLocation']),
+    estimatedDistance: Distance.fromJson(json['estimatedDistance']),
+    estimatedDuration: DurationInfo.fromJson(json['estimatedDuration']),
+    etaToPickup: DurationInfo.fromJson(json['etaToPickup']),
+    totalFare: (json['totalFare'] as num).toInt(),
+    driverEarnings: (json['driverEarnings'] as num).toInt(),
+    status: json['status'].toString(),
+    paymentMethod: json['paymentMethod'].toString(),
+    type: json['type'].toString(),
+    estimatedFare: (json['estimatedFare'] as num).toDouble(),
+    currency: json['currency'].toString(),
+    isMultiStop: json['isMultiStop'] as bool,
+    rideType: json['rideType'].toString(),
+  );
+
   final String rideId;
-  final User user;
+  final User? user;
   final Location pickupLocation;
   final Location dropoffLocation;
-  final Distance estimatedDistance;
-  final DurationInfo estimatedDuration;
-  final DurationInfo etaToPickup;
-  final int totalFare;
+  final Distance? estimatedDistance;
+  final DurationInfo? estimatedDuration;
+  final DurationInfo? etaToPickup;
+  final int? totalFare;
   final int driverEarnings;
   final String status;
   final String paymentMethod;
 
+  final String type;
+  final double estimatedFare;
+  final String currency;
+  final bool isMultiStop;
+  final String rideType;
+
   Map<String, dynamic> toJson() => {
-        'rideId': rideId,
-        'user': user.toJson(),
-        'pickupLocation': pickupLocation.toJson(),
-        'dropoffLocation': dropoffLocation.toJson(),
-        'estimatedDistance': estimatedDistance.toJson(),
-        'estimatedDuration': estimatedDuration.toJson(),
-        'etaToPickup': etaToPickup.toJson(),
-        'totalFare': totalFare,
-        'driverEarnings': driverEarnings,
-        'status': status,
-        'paymentMethod': paymentMethod,
-      };
+    'rideId': rideId,
+    'user': user?.toJson(),
+    'pickupLocation': pickupLocation.toJson(),
+    'dropoffLocation': dropoffLocation.toJson(),
+    'estimatedDistance': estimatedDistance?.toJson(),
+    'estimatedDuration': estimatedDuration?.toJson(),
+    'etaToPickup': etaToPickup?.toJson(),
+    'totalFare': totalFare,
+    'driverEarnings': driverEarnings,
+    'status': status,
+    'paymentMethod': paymentMethod,
+    'type': type,
+    'estimatedFare': estimatedFare,
+    'currency': currency,
+    'isMultiStop': isMultiStop,
+    'rideType': rideType,
+  };
 
   AcceptRide copyWith({
     String? rideId,
@@ -69,6 +86,11 @@ class AcceptRide {
     int? driverEarnings,
     String? status,
     String? paymentMethod,
+    String? type,
+    double? estimatedFare,
+    String? currency,
+    bool? isMultiStop,
+    String? rideType,
   }) {
     return AcceptRide(
       rideId: rideId ?? this.rideId,
@@ -82,6 +104,11 @@ class AcceptRide {
       driverEarnings: driverEarnings ?? this.driverEarnings,
       status: status ?? this.status,
       paymentMethod: paymentMethod ?? this.paymentMethod,
+      type: type ?? this.type,
+      estimatedFare: estimatedFare ?? this.estimatedFare,
+      currency: currency ?? this.currency,
+      isMultiStop: isMultiStop ?? this.isMultiStop,
+      rideType: rideType ?? this.rideType,
     );
   }
 }
