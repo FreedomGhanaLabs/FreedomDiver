@@ -1,14 +1,15 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/driver.model.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
 import 'package:freedomdriver/feature/home/view/widgets/build_diaglog.dart';
@@ -21,8 +22,10 @@ import 'package:freedomdriver/feature/kyc/view/background_verification_screen.da
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
+import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../shared/api/load_dashboard.dart';
 import '../../../shared/api/load_document_histories.dart';
@@ -52,7 +55,8 @@ class _HomeScreenState extends State<_HomeScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      DriverLocationService().requestPermission();
+      getIt<DriverLocationService>().requestPermission();
+      getIt<DriverLocationService>().sendCurrentLocationOnce(context);
       loadDocumentHistories(context);
     });
     super.initState();
@@ -153,8 +157,24 @@ class HomeActivity extends StatelessWidget {
   }
 }
 
-class HomeRide extends StatelessWidget {
+class HomeRide extends StatefulWidget {
   const HomeRide({super.key});
+
+  @override
+  State<HomeRide> createState() => _HomeRideState();
+}
+
+class _HomeRideState extends State<HomeRide> {
+  LatLng? _driverLocation;
+
+  @override
+  void initState() {
+    _driverLocation = LatLng(
+      context.driver?.location?.coordinates[0] ?? 37.774546,
+      context.driver?.location?.coordinates[1] ?? -122.433523,
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,16 +200,31 @@ class HomeRide extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Find ride',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: smallText,
                   fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade600,
                 ),
               ),
               const VSpace(extraSmallWhiteSpace),
-              Image.asset('assets/app_images/driver_image.png'),
+              // Image.asset('assets/app_images/driver_image.png'),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(roundedMd),
+                child: SizedBox(
+                  height: 100,
+                  width: Responsive.width(context),
+                  child: GoogleMap(
+                    zoomControlsEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                      target: _driverLocation!,
+                      zoom: 13,
+                    ),
+                  ),
+                ),
+              ),
               const VSpace(smallWhiteSpace),
               if (state.rideStatus == TransitStatus.searching)
                 Text(
@@ -220,15 +255,13 @@ class HomeRide extends StatelessWidget {
                       child: BlocBuilder<HomeCubit, HomeState>(
                         key: ValueKey(state.rideStatus),
                         builder: (context, state) {
-                          log('Current state 2: ${state.rideStatus}');
-
                           final isRideActive =
                               state.rideStatus == TransitStatus.accepted;
                           return SimpleButton(
                             title:
                                 isRideActive ? 'End Ride' : 'Find Nearby Rides',
                             onPressed: () {
-                              if (isRideActive == true) {
+                              if (isRideActive) {
                                 context.read<HomeCubit>().endRide();
                               } else {
                                 context.read<HomeCubit>().toggleNearByRides();

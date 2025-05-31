@@ -12,12 +12,14 @@ class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
 
   AcceptRide? _cachedAcceptRide;
+  String? _cachedRideId;
 
   AcceptRide? get currentDriver => _cachedAcceptRide;
   bool get hasAcceptedRide => _cachedAcceptRide != null;
 
-  void _updateAcceptRide(AcceptRide updated) {
+  void _updateAcceptRide(AcceptRide updated, {String? rideId}) {
     _cachedAcceptRide = updated;
+    if (rideId != null) _cachedRideId = rideId;
     emit(RideLoaded(_cachedAcceptRide!));
   }
 
@@ -31,13 +33,18 @@ class RideCubit extends Cubit<RideState> {
 
   final ApiController apiController = ApiController('ride');
 
-  Future<void> fetchRide(BuildContext context, String rideId) async {
+  /// Fetch ride, using cache unless [refresh] is true.
+  Future<void> fetchRide(BuildContext context, String rideId, {bool refresh = false}) async {
+    if (!refresh && _cachedAcceptRide != null && _cachedRideId == rideId) {
+      emit(RideLoaded(_cachedAcceptRide!));
+      return;
+    }
     emit(RideLoading());
     try {
       await apiController.getData(context, rideId, (success, data) {
         if (success) {
           final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
-          emit(RideLoaded(ride));
+          _updateAcceptRide(ride, rideId: rideId);
         }
       });
     } catch (e) {
@@ -60,7 +67,7 @@ class RideCubit extends Cubit<RideState> {
         (success, data) {
           if (success) {
             final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
-            _updateAcceptRide(ride);
+            _updateAcceptRide(ride, rideId: rideId);
             updateStatus(context, TransitStatus.accepted);
           }
         },
@@ -84,6 +91,8 @@ class RideCubit extends Cubit<RideState> {
         if (success) {
           log('[RideCubit] ride rejected');
           updateStatus(context, TransitStatus.declined);
+          _cachedAcceptRide = null;
+          _cachedRideId = null;
         }
       });
     } catch (e) {
@@ -107,6 +116,8 @@ class RideCubit extends Cubit<RideState> {
           if (success) {
             log('[RideCubit] ride cancel');
             updateStatus(context, TransitStatus.initial);
+            _cachedAcceptRide = null;
+            _cachedRideId = null;
           }
         },
       );
@@ -175,6 +186,11 @@ class RideCubit extends Cubit<RideState> {
           if (success) {
             log('[RideCubit] ride completed');
             updateStatus(context, TransitStatus.completed);
+            // Optionally update cache if API returns updated ride
+            if (data is Map<String, dynamic>) {
+              final ride = AcceptRide.fromJson(data);
+              _updateAcceptRide(ride, rideId: rideId);
+            }
           }
         },
         showOverlay: true,
@@ -244,6 +260,11 @@ class RideCubit extends Cubit<RideState> {
         (success, data) {
           if (success) {
             log('[ride cubit] status has been updated');
+            // Optionally update cache if API returns updated ride
+            if (data is Map<String, dynamic>) {
+              final ride = AcceptRide.fromJson(data);
+              _updateAcceptRide(ride, rideId: _cachedRideId);
+            }
           } else {
             emit(
               RideLoaded(

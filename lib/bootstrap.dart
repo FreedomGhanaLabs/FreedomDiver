@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freedomdriver/core/di/locator.dart';
-import 'package:freedomdriver/utilities/notification_service.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -30,7 +29,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   tz.initializeTimeZones();
 
   await Hive.initFlutter();
-  await NotificationService.initializeNotifications();
+  // await NotificationService.initializeNotifications();
   // await DriverLocationService().requestPermission();
 
   await locator();

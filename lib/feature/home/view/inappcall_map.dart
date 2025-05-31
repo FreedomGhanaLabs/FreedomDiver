@@ -438,7 +438,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
               ),
             ),
             const Text(
-              '23,Canada ,avenue',
+              '23, Canada, avenue',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 9.17,
@@ -466,9 +466,9 @@ class CustomBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.1,
+      initialChildSize: 0.7,
       minChildSize: 0.1,
-      maxChildSize: 0.7,
+      maxChildSize: 0.8,
       builder: (context, scrollController) {
         return Container(
           height: height ?? 200,

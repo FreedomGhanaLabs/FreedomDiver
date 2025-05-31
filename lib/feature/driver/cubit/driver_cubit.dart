@@ -89,7 +89,7 @@ class DriverCubit extends Cubit<DriverState> {
       apiRequest:
           () => apiController.put(context, 'status', {'status': newStatus}, (
             success,
-            _
+            _,
           ) {
             if (success) {
               if (toggleOnlyApi) return;

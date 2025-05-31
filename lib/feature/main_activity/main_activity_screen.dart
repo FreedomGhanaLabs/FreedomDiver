@@ -9,7 +9,6 @@ import 'package:freedomdriver/feature/rides/view/rides_screen.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 
-
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
   static const routeName = '/main_activity';
@@ -23,13 +22,22 @@ class MainActivityScreen extends StatelessWidget {
   }
 }
 
-class _MainActivityScreen extends StatelessWidget {
+class _MainActivityScreen extends StatefulWidget {
   const _MainActivityScreen();
 
   @override
-  Widget build(BuildContext context) {
-    loadDashboard(context);
+  State<_MainActivityScreen> createState() => _MainActivityScreenState();
+}
 
+class _MainActivityScreenState extends State<_MainActivityScreen> {
+  @override
+  void initState() {
+    loadDashboard(context);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<MainActivityCubit, MainActivityState>(
       builder: (context, state) {
         final currentIndex = state.currentIndex;
@@ -64,33 +72,30 @@ class _MainActivityScreen extends StatelessWidget {
                 fontSize: smallText,
               ),
               unselectedItemColor: Colors.grey.shade400,
-              unselectedLabelStyle: const TextStyle(
-                fontSize: smallText,
-              ),
-              items: List.generate(
-                _itemDetailsActive.length,
-                (index) {
-                  final activeIconData = _itemDetailsActive[index];
-                  final inActiveIconData = _itemDetailsInactive[index];
-                  return BottomNavigationBarItem(
-                    backgroundColor: Colors.white,
-                    icon: SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: state.currentIndex == index
-                          ? SvgPicture.asset(
+              unselectedLabelStyle: const TextStyle(fontSize: smallText),
+              items: List.generate(_itemDetailsActive.length, (index) {
+                final activeIconData = _itemDetailsActive[index];
+                final inActiveIconData = _itemDetailsInactive[index];
+                return BottomNavigationBarItem(
+                  backgroundColor: Colors.white,
+                  icon: SizedBox(
+                    width: 22,
+                    height: 22,
+                    child:
+                        state.currentIndex == index
+                            ? SvgPicture.asset(
                               'assets/nav/active_icon/${activeIconData['icon']}',
                             )
-                          : SvgPicture.asset(
+                            : SvgPicture.asset(
                               'assets/nav/inactive_icon/${inActiveIconData['icon']}',
                             ),
-                    ),
-                    label: state.currentIndex == index
-                        ? activeIconData['label']
-                        : inActiveIconData['label'],
-                  );
-                },
-              ),
+                  ),
+                  label:
+                      state.currentIndex == index
+                          ? activeIconData['label']
+                          : inActiveIconData['label'],
+                );
+              }),
             ),
           ),
         );

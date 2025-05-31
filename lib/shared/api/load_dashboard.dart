@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
 import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
+
+import '../../utilities/notification_service.dart';
 
 Future<void> loadDashboard(BuildContext context) async {
   final driverCubit = context.read<DriverCubit>();
@@ -17,6 +19,6 @@ Future<void> loadDashboard(BuildContext context) async {
     earningCubit.getPeriodicEarnings(context),
     rideHistoryCubit.getAllRideHistories(context, showOverlay: false),
     documentCubit.getDriverDocument(context),
-
+    NotificationService.initializeNotifications()
   ]);
 }
