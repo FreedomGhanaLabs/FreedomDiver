@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
-import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
+import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:freedomdriver/utilities/notification_service.dart';
@@ -44,7 +44,7 @@ class DriverSocketService {
   Future<void> connect({
     VoidCallback? onConnect,
     VoidCallback? onDisconnect,
-    Function(AcceptRide)? onNewRideRequest,
+    Function(RideRequest)? onNewRideRequest,
     Function(String status)? onNewRideAccepted,
     Function(String status)? onRideStatusUpdate,
   }) async {
@@ -78,8 +78,8 @@ class DriverSocketService {
     _socket!.on(DriverSocketConstants.newRideRequest, (data) async {
       //DriverSocketConstants.newRideRequest
       log('${DriverSocketConstants.newRideRequestLog}$data');
-      final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
-final isRide = ride.type == 'ride';
+      final ride = RideRequest.fromJson(data as Map<String, dynamic>);
+      final isRide = ride.type == 'ride';
       NotificationService.sendNotification(
         title: isRide ? 'New ride request' : "New Delivery Request",
         body:
@@ -92,13 +92,13 @@ final isRide = ride.type == 'ride';
     });
 
     _socket!.on(DriverSocketConstants.rideAccepted, (data) {
-      final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
+      final ride = RideRequest.fromJson(data as Map<String, dynamic>);
       log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
       onNewRideAccepted?.call(ride.status);
     });
 
     _socket!.on(DriverSocketConstants.rideStatusUpdated, (data) {
-      final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
+      final ride = RideRequest.fromJson(data as Map<String, dynamic>);
       log('${DriverSocketConstants.rideStatusUpdatedLog}${ride.status}');
       onRideStatusUpdate?.call(ride.status);
     });

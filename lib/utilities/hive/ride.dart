@@ -1,15 +1,15 @@
-import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
+import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:hive/hive.dart';
 
 const String rideKey = 'ride';
 const String rideBoxKey = 'ride_request';
 
-Future<AcceptRide?> getRideFromHive() async {
+Future<RideRequest?> getRideFromHive() async {
   final box = await Hive.openBox(rideBoxKey);
-  return box.get(rideKey) as AcceptRide?;
+  return box.get(rideKey) as RideRequest?;
 }
 
-Future<void> addRideToHive(AcceptRide ride) async {
+Future<void> addRideToHive(RideRequest ride) async {
   final box = await Hive.openBox(rideBoxKey);
   await box.put(rideKey, ride);
 }

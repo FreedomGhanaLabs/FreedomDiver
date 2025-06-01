@@ -1,5 +1,5 @@
-class AcceptRide {
-  AcceptRide({
+class RideRequest {
+  RideRequest({
     required this.rideId,
     this.user,
     required this.pickupLocation,
@@ -18,22 +18,25 @@ class AcceptRide {
     required this.rideType,
   });
 
-  factory AcceptRide.fromJson(Map<String, dynamic> json) => AcceptRide(
+  factory RideRequest.fromJson(Map<String, dynamic> json) => RideRequest(
     rideId: json['rideId'].toString(),
-    user: User.fromJson(json['user'] as Map<String, dynamic>),
+    user:
+        json['user'] != null
+            ? User.fromJson(json['user'] as Map<String, dynamic>)
+            : null,
     pickupLocation: Location.fromJson(json['pickupLocation']),
     dropoffLocation: Location.fromJson(json['dropoffLocation']),
     estimatedDistance: Distance.fromJson(json['estimatedDistance']),
     estimatedDuration: DurationInfo.fromJson(json['estimatedDuration']),
     etaToPickup: DurationInfo.fromJson(json['etaToPickup']),
-    totalFare: (json['totalFare'] as num).toInt(),
-    driverEarnings: (json['driverEarnings'] as num).toInt(),
+    totalFare: ((json['totalFare'] ?? 0) as num).toInt(),
+    driverEarnings: ((json['driverEarnings'] ?? 0) as num).toInt(),
     status: json['status'].toString(),
     paymentMethod: json['paymentMethod'].toString(),
     type: json['type'].toString(),
     estimatedFare: (json['estimatedFare'] as num).toDouble(),
     currency: json['currency'].toString(),
-    isMultiStop: json['isMultiStop'] as bool,
+    isMultiStop: (json['isMultiStop']) as bool,
     rideType: json['rideType'].toString(),
   );
 
@@ -74,7 +77,7 @@ class AcceptRide {
     'rideType': rideType,
   };
 
-  AcceptRide copyWith({
+  RideRequest copyWith({
     String? rideId,
     User? user,
     Location? pickupLocation,
@@ -92,7 +95,7 @@ class AcceptRide {
     bool? isMultiStop,
     String? rideType,
   }) {
-    return AcceptRide(
+    return RideRequest(
       rideId: rideId ?? this.rideId,
       user: user ?? this.user,
       pickupLocation: pickupLocation ?? this.pickupLocation,

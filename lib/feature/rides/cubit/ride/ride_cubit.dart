@@ -4,49 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
-import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
+import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
+import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 
 class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
 
-  AcceptRide? _cachedAcceptRide;
+  RideRequest? _cachedAcceptRide;
   String? _cachedRideId;
 
-  AcceptRide? get currentDriver => _cachedAcceptRide;
+  RideRequest? get currentDriver => _cachedAcceptRide;
   bool get hasAcceptedRide => _cachedAcceptRide != null;
 
-  void _updateAcceptRide(AcceptRide updated, {String? rideId}) {
+  void _updateAcceptRide(RideRequest updated, {String? rideId}) {
     _cachedAcceptRide = updated;
     if (rideId != null) _cachedRideId = rideId;
     emit(RideLoaded(_cachedAcceptRide!));
   }
 
-  // void _emitIfChanged(AcceptRide updated) {
-  //   if (_cachedAcceptRide != updated) {
-  //     _updateAcceptRide(updated);
-  //   } else {
-  //     log('[RideCubit] No changes detected, not emitting new state');
-  //   }
-  // }
-
   final ApiController apiController = ApiController('ride');
 
   /// Fetch ride, using cache unless [refresh] is true.
-  Future<void> fetchRide(BuildContext context, String rideId, {bool refresh = false}) async {
+  Future<void> fetchRide(
+    BuildContext context,
+    String rideId, {
+    bool refresh = false,
+  }) async {
     if (!refresh && _cachedAcceptRide != null && _cachedRideId == rideId) {
       emit(RideLoaded(_cachedAcceptRide!));
       return;
     }
     emit(RideLoading());
     try {
-      await apiController.getData(context, rideId, (success, data) {
-        if (success) {
-          final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
-          _updateAcceptRide(ride, rideId: rideId);
-        }
-      });
+      final activeRide = await getRideFromHive();
+
+      if (activeRide != null) {
+        _updateAcceptRide(activeRide);
+      }
     } catch (e) {
       emit(RideError('Failed to load ride'));
     }
@@ -54,11 +50,11 @@ class RideCubit extends Cubit<RideState> {
 
   Future<void> acceptRide(
     BuildContext context, {
-    required String rideId,
     double latitude = 6.520379,
     double longitude = 3.375206,
   }) async {
-    emit(RideLoading());
+    if (_cachedAcceptRide == null) return;
+    final rideId = _cachedAcceptRide?.rideId;
     try {
       await apiController.post(
         context,
@@ -66,7 +62,7 @@ class RideCubit extends Cubit<RideState> {
         {'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
-            final ride = AcceptRide.fromJson(data as Map<String, dynamic>);
+            final ride = RideRequest.fromJson(data as Map<String, dynamic>);
             _updateAcceptRide(ride, rideId: rideId);
             updateStatus(context, TransitStatus.accepted);
           }
@@ -188,7 +184,7 @@ class RideCubit extends Cubit<RideState> {
             updateStatus(context, TransitStatus.completed);
             // Optionally update cache if API returns updated ride
             if (data is Map<String, dynamic>) {
-              final ride = AcceptRide.fromJson(data);
+              final ride = RideRequest.fromJson(data);
               _updateAcceptRide(ride, rideId: rideId);
             }
           }
@@ -262,7 +258,7 @@ class RideCubit extends Cubit<RideState> {
             log('[ride cubit] status has been updated');
             // Optionally update cache if API returns updated ride
             if (data is Map<String, dynamic>) {
-              final ride = AcceptRide.fromJson(data);
+              final ride = RideRequest.fromJson(data);
               _updateAcceptRide(ride, rideId: _cachedRideId);
             }
           } else {

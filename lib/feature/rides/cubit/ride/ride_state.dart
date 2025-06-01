@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:freedomdriver/feature/rides/models/accept_ride.dart';
+import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 
 abstract class RideState extends Equatable {
   @override
@@ -12,7 +12,7 @@ class RideLoading extends RideState {}
 
 class RideUpdating extends RideState {
   RideUpdating(this.ride);
-  final AcceptRide ride;
+  final RideRequest ride;
 
   @override
   List<Object?> get props => [ride];
@@ -20,7 +20,7 @@ class RideUpdating extends RideState {
 
 class RideLoaded extends RideState {
   RideLoaded(this.ride);
-  final AcceptRide ride;
+  final RideRequest ride;
 
   @override
   List<Object?> get props => [ride];

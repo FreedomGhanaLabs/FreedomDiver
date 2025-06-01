@@ -6,14 +6,13 @@ import 'package:freedomdriver/feature/kyc/view/background_verification_screen.da
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-
 Future<void> buildRideFoundDialog(BuildContext context) {
-  return showDialog<dynamic>(
-    context: context,
-    builder: (context) {
-      return SizedBox(
+  return showCustomModal(
+    context,
+    child: SizedBox(
         width: double.infinity,
         child: AlertDialog(
           backgroundColor: Colors.white,
@@ -117,7 +116,6 @@ Future<void> buildRideFoundDialog(BuildContext context) {
             ],
           ),
         ),
-      );
-    },
-  );
+    ),
+  ).show();
 }
