@@ -6,7 +6,6 @@ import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/utilities/hive/onboarding.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 
-
 class DriverSplashScreen extends StatefulWidget {
   const DriverSplashScreen({super.key});
   static const routeName = '/driver-splash';
@@ -37,9 +36,15 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
 
   Future<void> _navigateUser() async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    final isFirstTimer = await getOnboardingFromHive();
-    final getToken = await getTokenFromHive();
-    if (getToken != null) {
+
+    final [isFirstTimer, token] = await Future.wait([
+      getOnboardingFromHive(),
+      getTokenFromHive(),
+    ]);
+
+    if (!context.mounted) return;
+
+    if (token != null) {
       await loadDashboard(context);
 
       await Navigator.pushNamedAndRemoveUntil(
