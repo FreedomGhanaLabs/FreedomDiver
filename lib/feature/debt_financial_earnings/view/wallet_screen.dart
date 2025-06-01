@@ -16,6 +16,7 @@ import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
 import '../../../utilities/show_custom_modal.dart';
+import '../widgets/bank_select.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -251,6 +252,13 @@ class BankDetailsForm extends StatelessWidget {
             ),
           ),
           const VSpace(smallWhiteSpace),
+          BankDropdown(
+            onBankSelected: (code) {
+              print('Selected bank code: $code');
+              bankCode.text = code;
+            },
+          ),
+          const VSpace(smallWhiteSpace),
           buildField(
             'Account Number',
             accountNumber,
@@ -261,7 +269,7 @@ class BankDetailsForm extends StatelessWidget {
             accountName,
             keyboardType: TextInputType.phone,
           ),
-          buildField('Bank Code', bankCode, keyboardType: TextInputType.phone),
+          // buildField('Bank Code', bankCode, keyboardType: TextInputType.phone),
         ],
       ),
     );
