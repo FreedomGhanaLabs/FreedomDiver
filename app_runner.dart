@@ -1,10 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 void main(List<String> args) async {
   // List<String> args = ['run', 'android'];
 
   if (args.length < 2) {
-    print('Usage: dart app_runner.dart [run|build] [android|ios|apk]');
+    log('Usage: dart app_runner.dart [run|build] [android|ios|apk]');
     exit(1);
   }
 
@@ -12,13 +13,13 @@ void main(List<String> args) async {
   final platform = args[1];
 
 var envFile = File('.env');
-  print('Current working directory: ${Directory.current.path}');
+  log('Current working directory: ${Directory.current.path}');
   if (!envFile.existsSync()) {
     // fallback
     envFile = File('${Directory.current.path}/.env');
   }
   if (!envFile.existsSync()) {
-    print('[ERROR] .env file not found.');
+    log('[ERROR] .env file not found.');
     exit(1);
   }
 
@@ -35,7 +36,7 @@ var envFile = File('.env');
   }
 
   if (dartDefines.isEmpty) {
-    print('[ERROR] No valid env variables found in .env file.');
+    log('[ERROR] No valid env variables found in .env file.');
     exit(1);
   }
 
@@ -68,11 +69,11 @@ var envFile = File('.env');
       ];
       break;
     default:
-      print('[ERROR] Unsupported mode/platform combination.');
+      log('[ERROR] Unsupported mode/platform combination.');
       exit(1);
   }
 
-  print('[INFO] Running: ${command.join(' ')}');
+  log('[INFO] Running: ${command.join(' ')}');
 
   final process = await Process.start(
     command.first,
@@ -82,7 +83,7 @@ var envFile = File('.env');
 
   final exitCode = await process.exitCode;
   if (exitCode != 0) {
-    print('[ERROR] Command failed with exit code $exitCode');
+    log('[ERROR] Command failed with exit code $exitCode');
     exit(exitCode);
   }
 }

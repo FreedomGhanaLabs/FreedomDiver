@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/widgets/Gauge_score.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/gauge_score.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';

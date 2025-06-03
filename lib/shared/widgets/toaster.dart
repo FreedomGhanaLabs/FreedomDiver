@@ -247,7 +247,6 @@ class _ToastWidgetState extends State<_ToastWidget>
       case ToastPosition.center:
         return Alignment.center;
       case ToastPosition.bottom:
-      default:
         return Alignment.bottomCenter;
     }
   }
