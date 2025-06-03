@@ -14,7 +14,6 @@ import 'package:freedomdriver/utilities/show_dialog.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get_utils/get_utils.dart';
 
-import '../../../shared/api/api_controller.dart';
 import '../../../shared/theme/app_colors.dart';
 import '../../../utilities/hive/token.dart';
 import '../../authentication/login/view/login_form_screen.dart';
@@ -87,22 +86,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           okButtonColor: gradient2,
                           hasSecondaryButton: true,
                           onPressed: () {
-                            final apiController = ApiController('auth');
+                            deleteTokenToHive().then((onValue) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                LoginFormScreen.routeName,
+                                (route) => false,
+                              );
+                              // final apiController = ApiController('auth');
 
-                            apiController.post(context, 'logout', {}, (
-                              success,
-                              responseData,
-                            ) {
-                              if (success) {
-                                deleteTokenToHive().then((onValue) {
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    LoginFormScreen.routeName,
-                                    (route) => false,
-                                  );
-                                });
-                              }
-                            }, showOverlay: true);
+                              // apiController.post(context, 'logout', {}, (
+                              //   success,
+                              //   responseData,
+                              // ) {
+                              //   if (success) {}
+                              // });
+                            });
                           },
                         ),
                   ),
