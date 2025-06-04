@@ -86,7 +86,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                   const VSpace(smallWhiteSpace),
                   const DriverStatusToggler(),
                   const VSpace(smallWhiteSpace),
-                  HomeContent(),
+                  const HomeContent(),
                 ],
               ),
             ),
@@ -116,7 +116,7 @@ class HomeContent extends StatelessWidget {
               VSpace(smallWhiteSpace),
               RiderTimeLine(
                 activityType: ActivityType.delivery,
-                destinationDetails: 'Ghana,Kumasi',
+                destinationDetails: 'Ghana, Kumasi',
                 pickUpDetails: 'Chale, Kumasi',
               ),
             ],
