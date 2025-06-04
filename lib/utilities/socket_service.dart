@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
-import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
-import 'package:freedomdriver/utilities/notification_service.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class DriverSocketConstants {
@@ -79,14 +77,6 @@ class DriverSocketService {
       //DriverSocketConstants.newRideRequest
       log('${DriverSocketConstants.newRideRequestLog}$data');
       final ride = RideRequest.fromJson(data as Map<String, dynamic>);
-      final isRide = ride.type == 'ride';
-      NotificationService.sendNotification(
-        title: isRide ? 'New ride request' : "New Delivery Request",
-        body:
-            'New ${isRide ? "ride" : "delivery"} from ${ride.pickupLocation.address}',
-      );
-
-      await addRideToHive(ride);
 
       onNewRideRequest?.call(ride);
     });

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -272,10 +271,10 @@ class _HomeRideState extends State<HomeRide> {
                             backgroundColor:
                                 isRideActive ? redColor : greenColor,
                             padding: const EdgeInsets.only(
-                              top: 6.93,
-                              bottom: 6.93,
-                              left: 22,
-                              right: 22,
+                              top: extraSmallWhiteSpace,
+                              bottom: extraSmallWhiteSpace,
+                              left: whiteSpace,
+                              right: whiteSpace,
                             ),
                             borderRadius: BorderRadius.circular(4.95),
                             textStyle: TextStyle(
@@ -305,10 +304,10 @@ class _HomeRideState extends State<HomeRide> {
                           },
                           backgroundColor: greyColor,
                           padding: const EdgeInsets.only(
-                            top: 6.93,
-                            bottom: 6.93,
-                            left: 22,
-                            right: 22,
+                            top: extraSmallWhiteSpace,
+                            bottom: extraSmallWhiteSpace,
+                            left: whiteSpace,
+                            right: whiteSpace,
                           ),
                           borderRadius: BorderRadius.circular(4.95),
                           textStyle: TextStyle(

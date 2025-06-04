@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freedomdriver/core/di/locator.dart';
-import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -34,7 +33,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await locator();
 
-  await DriverSocketService().connect();
+  // await DriverSocketService().connect();
 
   Bloc.observer = const AppBlocObserver();
 

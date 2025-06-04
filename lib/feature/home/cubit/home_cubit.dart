@@ -9,7 +9,11 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
 
-  void toggleNearByRides() {
+  void toggleNearByRides({TransitStatus? status}) {
+    if (status != null) {
+      emit(state.copyWith(rideStatus: status));
+      return;
+    }
     emit(state.copyWith(rideStatus: TransitStatus.searching));
     Timer(const Duration(seconds: 2), () {
       emit(state.copyWith(rideStatus: TransitStatus.found));

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,6 +40,7 @@ class _MainActivityScreenState extends State<_MainActivityScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<MainActivityCubit, MainActivityState>(
       builder: (context, state) {
         final currentIndex = state.currentIndex;

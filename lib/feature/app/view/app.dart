@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/app/cubits.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
 import 'package:freedomdriver/router/router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+
+import '../../../utilities/notification_service.dart';
+import '../../../utilities/socket_service.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -14,6 +19,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final driverSocketService = getIt<DriverSocketService>();
     return ScreenUtilInit(
       designSize: const Size(402, 874),
       splitScreenMode: true,
@@ -28,6 +34,24 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [...appCubits],
           child: MaterialApp(
+            builder: (context, child) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                driverSocketService.connect(
+                  onNewRideRequest: (ride) async {
+                    NotificationService.sendNotification(
+                      title:
+                          ride.type == 'ride'
+                              ? 'New Ride Request'
+                              : 'New Delivery Request',
+                      body: 'Pickup: ${ride.pickupLocation.address}',
+                    );
+
+                    context.read<RideCubit>().foundRide(ride, context);
+                  },
+                );
+              });
+              return child!;
+            },
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               fontFamily: GoogleFonts.poppins().fontFamily,

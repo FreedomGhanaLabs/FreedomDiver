@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
@@ -7,6 +6,8 @@ import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/shared/widgets/upload_button.dart';
 import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../../../utilities/responsive.dart';
 
 class BackgroundVerificationScreen extends StatefulWidget {
   const BackgroundVerificationScreen({super.key});
@@ -129,7 +130,10 @@ class SimpleButton extends StatelessWidget {
                 textStyle ??
                 TextStyle(
                   color: Colors.white,
-                  fontSize: normalText.sp,
+                  fontSize:
+                      Responsive.isBigMobile(context)
+                          ? normalText
+                          : paragraphText,
                   fontWeight: FontWeight.w500,
                 ),
           ),

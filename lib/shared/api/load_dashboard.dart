@@ -19,6 +19,6 @@ Future<void> loadDashboard(BuildContext context) async {
     earningCubit.getPeriodicEarnings(context),
     rideHistoryCubit.getAllRideHistories(context, showOverlay: false),
     documentCubit.getDriverDocument(context),
-    NotificationService.initializeNotifications()
+    NotificationService.initializeNotifications(),
   ]);
 }

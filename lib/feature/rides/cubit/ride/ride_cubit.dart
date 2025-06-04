@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
@@ -20,7 +21,7 @@ class RideCubit extends Cubit<RideState> {
 
   void _updateAcceptRide(RideRequest updated, {String? rideId}) {
     _cachedAcceptRide = updated;
-    if (rideId != null) _cachedRideId = rideId;
+    if (rideId != null) _cachedRideId = updated.rideId;
     emit(RideLoaded(_cachedAcceptRide!));
   }
 
@@ -48,13 +49,24 @@ class RideCubit extends Cubit<RideState> {
     }
   }
 
-  Future<void> acceptRide(
-    BuildContext context, {
-    double latitude = 6.520379,
-    double longitude = 3.375206,
-  }) async {
+  Future<void> foundRide(RideRequest ride, BuildContext context) async {
+    // await addRideToHive(ride);
+    _updateAcceptRide(ride);
+    context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
+  }
+
+  Future<void> acceptRide(BuildContext context) async {
     if (_cachedAcceptRide == null) return;
-    final rideId = _cachedAcceptRide?.rideId;
+    final rideId = _cachedRideId;
+    final latitude = context.driver?.location?.coordinates[1];
+    final longitude = context.driver?.location?.coordinates[0];
+
+    if (rideId != null) {
+      log(rideId);
+      return;
+    }
+
+    context.read<HomeCubit>().setRideAccepted(isAccepted: true);
     try {
       await apiController.post(
         context,
@@ -62,9 +74,10 @@ class RideCubit extends Cubit<RideState> {
         {'latitude': latitude, 'longitude': longitude},
         (success, data) {
           if (success) {
+            log("[Accept Ride] $data");
             final ride = RideRequest.fromJson(data as Map<String, dynamic>);
-            _updateAcceptRide(ride, rideId: rideId);
-            updateStatus(context, TransitStatus.accepted);
+            _updateAcceptRide(ride);
+            // updateStatus(context, TransitStatus.accepted);
           }
         },
       );
@@ -75,22 +88,24 @@ class RideCubit extends Cubit<RideState> {
 
   Future<void> rejectRide(
     BuildContext context, {
-    required String rideId,
-    String reason = 'Too far from my current location',
+    String? rideId,
+    String? reason,
   }) async {
-    DriverSocketService().rejectRideRequest('xyz-abc');
+    DriverSocketService().rejectRideRequest(rideId ?? "");
     try {
-      await apiController.post(context, '$rideId/reject', {'reason': reason}, (
-        success,
-        data,
-      ) {
-        if (success) {
-          log('[RideCubit] ride rejected');
-          updateStatus(context, TransitStatus.declined);
-          _cachedAcceptRide = null;
-          _cachedRideId = null;
-        }
-      });
+      await apiController.post(
+        context,
+        '$rideId/reject',
+        {'reason': reason ?? 'Too far from my current location'},
+        (success, data) {
+          if (success) {
+            log('[RideCubit] ride rejected');
+            updateStatus(context, TransitStatus.declined);
+            _cachedAcceptRide = null;
+            _cachedRideId = null;
+          }
+        },
+      );
     } catch (e) {
       emit(RideError('Failed to reject ride'));
     }

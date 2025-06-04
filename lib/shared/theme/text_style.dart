@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:freedomdriver/shared/app_config.dart';
 
-TextStyle rideRequestDetailTextStyle = GoogleFonts.poppins(
-  color: Colors.black,
-  fontSize: 15.61,
+TextStyle rideRequestDetailTextStyle = TextStyle(
+  fontSize: paragraphText,
   fontWeight: FontWeight.w400,
 );
 
-TextStyle rideRequestTitleTextStyle = GoogleFonts.poppins(
-  color: Colors.black,
-  fontSize: 15.92,
+TextStyle rideRequestTitleTextStyle = TextStyle(
+  fontSize: normalText,
   fontWeight: FontWeight.w600,
 );

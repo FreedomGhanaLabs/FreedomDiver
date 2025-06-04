@@ -3,6 +3,8 @@ import 'package:freedomdriver/core/config/environment_config.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../utilities/socket_service.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> locator() async {
@@ -11,7 +13,6 @@ Future<void> locator() async {
   );
   getIt
     ..registerSingleton<BaseApiClients>(freedomClient)
-    ..registerSingleton<DriverLocationService>(
-      DriverLocationService(),
-    );
+    ..registerSingleton<DriverLocationService>(DriverLocationService())
+    ..registerSingleton<DriverSocketService>(DriverSocketService());
 }

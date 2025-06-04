@@ -6,6 +6,7 @@ import '../shared/app_config.dart';
 AwesomeDialog showCustomModal(
   BuildContext context, {
   Widget? child,
+  EdgeInsetsGeometry? padding,
   void Function()? btnOkOnPress,
   void Function()? btnCancelOnPress,
   String? btnOkText,
@@ -19,16 +20,16 @@ AwesomeDialog showCustomModal(
     dialogType: dialogType,
     dialogBackgroundColor: dialogBackgroundColor ?? Colors.white,
     animType: animType,
-    body: Padding(
-      padding: const EdgeInsets.only(
-        top: smallWhiteSpace,
-        left: smallWhiteSpace,
-        right: smallWhiteSpace,
-      ),
-      child: child,
-    ),
+    padding:
+        padding ??
+        const EdgeInsets.only(
+          top: smallWhiteSpace,
+          left: smallWhiteSpace,
+          right: smallWhiteSpace,
+        ),
+    body: child,
     btnOkColor: Colors.black,
-    autoHide: Duration(minutes: 10),
+    autoHide: Duration(minutes: 30),
     // autoDismiss: false,
     // onDismissCallback: (type) {
     //   if (type == DismissType.btnOk) return;
