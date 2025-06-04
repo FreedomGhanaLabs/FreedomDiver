@@ -21,13 +21,12 @@ class RideCubit extends Cubit<RideState> {
 
   void _updateAcceptRide(RideRequest updated, {String? rideId}) {
     _cachedAcceptRide = updated;
-    if (rideId != null) _cachedRideId = updated.rideId;
+    _cachedRideId = updated.rideId;
     emit(RideLoaded(_cachedAcceptRide!));
   }
 
   final ApiController apiController = ApiController('ride');
 
-  /// Fetch ride, using cache unless [refresh] is true.
   Future<void> fetchRide(
     BuildContext context,
     String rideId, {
@@ -57,14 +56,9 @@ class RideCubit extends Cubit<RideState> {
 
   Future<void> acceptRide(BuildContext context) async {
     if (_cachedAcceptRide == null) return;
-    final rideId = _cachedRideId;
+    final rideId = _cachedAcceptRide?.rideId;
     final latitude = context.driver?.location?.coordinates[1];
     final longitude = context.driver?.location?.coordinates[0];
-
-    if (rideId != null) {
-      log(rideId);
-      return;
-    }
 
     context.read<HomeCubit>().setRideAccepted(isAccepted: true);
     try {
@@ -76,13 +70,13 @@ class RideCubit extends Cubit<RideState> {
           if (success) {
             log("[Accept Ride] $data");
             final ride = RideRequest.fromJson(data as Map<String, dynamic>);
-            _updateAcceptRide(ride);
+            // _updateAcceptRide(ride);
             // updateStatus(context, TransitStatus.accepted);
           }
         },
       );
     } catch (e) {
-      emit(RideError('Failed to load ride'));
+      emit(RideError('Failed to accept ride'));
     }
   }
 

@@ -12,7 +12,6 @@ import 'package:freedomdriver/feature/driver/driver.model.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
-import 'package:freedomdriver/feature/home/view/widgets/build_diaglog.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_earnings.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_order.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_score.dart';
@@ -31,6 +30,7 @@ import '../../../shared/api/load_dashboard.dart';
 import '../../../shared/api/load_document_histories.dart';
 import '../../../utilities/driver_location_service.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
+import 'widgets/build_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -81,41 +81,48 @@ class _HomeScreenState extends State<_HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
               child: Column(
                 children: [
-                  VSpace(
-                    MediaQuery.of(context).padding.top + extraSmallWhiteSpace,
-                  ),
+                  VSpace(Responsive.top(context) + extraSmallWhiteSpace),
                   const HomeHeader(),
                   const VSpace(smallWhiteSpace),
                   const DriverStatusToggler(),
                   const VSpace(smallWhiteSpace),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      children: const [
-                        HomeEarnings(),
-                        VSpace(smallWhiteSpace),
-                        HomeRide(),
-                        VSpace(smallWhiteSpace),
-                        Column(
-                          children: [
-                            HomeActivity(),
-                            VSpace(smallWhiteSpace),
-                            RiderTimeLine(
-                              activityType: ActivityType.delivery,
-                              destinationDetails: 'Ghana,Kumasi',
-                              pickUpDetails: 'Chale, Kumasi',
-                            ),
-                          ],
-                        ),
-                        VSpace(whiteSpace),
-                      ],
-                    ),
-                  ),
+                  HomeContent(),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class HomeContent extends StatelessWidget {
+  const HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: const [
+          HomeEarnings(),
+          VSpace(smallWhiteSpace),
+          HomeRide(),
+          VSpace(smallWhiteSpace),
+          Column(
+            children: [
+              HomeActivity(),
+              VSpace(smallWhiteSpace),
+              RiderTimeLine(
+                activityType: ActivityType.delivery,
+                destinationDetails: 'Ghana,Kumasi',
+                pickUpDetails: 'Chale, Kumasi',
+              ),
+            ],
+          ),
+          VSpace(whiteSpace),
+        ],
       ),
     );
   }
@@ -182,12 +189,7 @@ class _HomeRideState extends State<HomeRide> {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         return Container(
-          padding: const EdgeInsets.only(
-            left: smallWhiteSpace,
-            top: 7.9,
-            right: 14,
-            bottom: 12.75,
-          ),
+          padding: const EdgeInsets.all(medWhiteSpace),
           decoration: ShapeDecoration(
             color: Colors.white,
             shape: RoundedRectangleBorder(
@@ -195,25 +197,24 @@ class _HomeRideState extends State<HomeRide> {
                 width: 0.99,
                 color: Colors.black.withValues(alpha: 0.0500),
               ),
-              borderRadius: BorderRadius.circular(4.95),
+              borderRadius: BorderRadius.circular(roundedLg),
             ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Find ride',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: smallText,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const VSpace(extraSmallWhiteSpace),
-              // Image.asset('assets/app_images/driver_image.png'),
+              // Text(
+              //   'Find ride',
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(
+              //     fontSize: smallText,
+              //     fontWeight: FontWeight.w500,
+              //     color: Colors.grey.shade600,
+              //   ),
+              // ),
+              // const VSpace(extraSmallWhiteSpace),
               ClipRRect(
-                borderRadius: BorderRadius.circular(roundedMd),
+                borderRadius: BorderRadius.circular(roundedLg),
                 child: SizedBox(
                   height: 100,
                   width: Responsive.width(context),
@@ -243,21 +244,18 @@ class _HomeRideState extends State<HomeRide> {
               Row(
                 children: [
                   Expanded(
-                    child: MultiBlocListener(
-                      listeners: [
-                        BlocListener<HomeCubit, HomeState>(
-                          listener: (context, state) {
-                            if (state.rideStatus == TransitStatus.found) {
-                              buildRideFoundDialog(context);
-                            }
-                          },
-                        ),
-                      ],
+                    child: BlocListener<HomeCubit, HomeState>(
+                      listener: (context, state) {
+                        if (state.rideStatus == TransitStatus.found) {
+                          buildRideFoundDialog(context);
+                        }
+                      },
                       child: BlocBuilder<HomeCubit, HomeState>(
                         key: ValueKey(state.rideStatus),
                         builder: (context, state) {
                           final isRideActive =
                               state.rideStatus == TransitStatus.accepted;
+
                           return SimpleButton(
                             title:
                                 isRideActive ? 'End Ride' : 'Find Nearby Rides',
@@ -269,24 +267,13 @@ class _HomeRideState extends State<HomeRide> {
                               }
                             },
                             backgroundColor:
-                                isRideActive ? redColor : greenColor,
-                            padding: const EdgeInsets.only(
-                              top: extraSmallWhiteSpace,
-                              bottom: extraSmallWhiteSpace,
-                              left: whiteSpace,
-                              right: whiteSpace,
-                            ),
-                            borderRadius: BorderRadius.circular(4.95),
-                            textStyle: TextStyle(
-                              fontSize: paragraphText.sp,
-                              color: Colors.white,
-                            ),
+                                isRideActive ? redColor : gradient1,
                           );
                         },
                       ),
                     ),
                   ),
-                  const HSpace(whiteSpace),
+                  const HSpace(extraSmallWhiteSpace),
                   BlocBuilder<HomeCubit, HomeState>(
                     builder: (context, state) {
                       return Expanded(
@@ -303,15 +290,7 @@ class _HomeRideState extends State<HomeRide> {
                             }
                           },
                           backgroundColor: greyColor,
-                          padding: const EdgeInsets.only(
-                            top: extraSmallWhiteSpace,
-                            bottom: extraSmallWhiteSpace,
-                            left: whiteSpace,
-                            right: whiteSpace,
-                          ),
-                          borderRadius: BorderRadius.circular(4.95),
-                          textStyle: TextStyle(
-                            fontSize: paragraphText.sp,
+                          textStyle: paragraphTextStyle.copyWith(
                             color: Colors.black,
                           ),
                         ),

@@ -29,7 +29,8 @@ class NotificationService {
     // Create channel (Android)
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(_channel);
 
     // Init plugin
@@ -80,6 +81,7 @@ class NotificationService {
     required String title,
     required String body,
     Map<String, dynamic>? payload,
+    List<AndroidNotificationAction>? actions,
   }) async {
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch.remainder(100000),
@@ -92,7 +94,9 @@ class NotificationService {
           channelDescription: _channel.description,
           importance: Importance.max,
           priority: Priority.high,
-          color: darkRed,
+          color: gradient1,
+          enableLights: true,
+          actions: actions,
         ),
         iOS: const DarwinNotificationDetails(),
       ),
@@ -100,15 +104,17 @@ class NotificationService {
     );
   }
 
-static Future<void> sendNotification({
+  static Future<void> sendNotification({
     required String title,
     required String body,
     Map<String, dynamic>? payload,
+    List<AndroidNotificationAction>? actions,
   }) async {
     await _showLocalNotification(
       title: title,
       body: body,
       payload: payload,
+      actions: actions,
     );
   }
 

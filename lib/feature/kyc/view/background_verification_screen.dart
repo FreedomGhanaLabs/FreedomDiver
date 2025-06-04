@@ -118,7 +118,7 @@ class SimpleButton extends StatelessWidget {
             padding ??
             const EdgeInsets.symmetric(
               horizontal: whiteSpace,
-              vertical: medWhiteSpace,
+              vertical: extraSmallWhiteSpace + 2,
             ),
       ),
       child:
@@ -131,7 +131,7 @@ class SimpleButton extends StatelessWidget {
                 TextStyle(
                   color: Colors.white,
                   fontSize:
-                      Responsive.isBigMobile(context)
+                      Responsive.isTablet(context)
                           ? normalText
                           : paragraphText,
                   fontWeight: FontWeight.w500,
