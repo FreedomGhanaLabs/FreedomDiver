@@ -50,14 +50,15 @@ class _InAppCallMapState extends State<InAppCallMap> {
     _locationService = getIt<DriverLocationService>();
     _locationService.startLiveLocationUpdates(context);
     _driverLocation = LatLng(
-      context.driver?.location?.coordinates[0] ?? 37.774546,
-      context.driver?.location?.coordinates[1] ?? -122.433523,
+      context.driver?.location?.coordinates[1] ?? 37.774546,
+      context.driver?.location?.coordinates[0] ?? -122.433523,
     );
 
     _pickupLocation = _locationService.generateRandomCoordinates(
       _driverLocation!,
       radius: 5000,
     );
+
     _destinationLocation = _locationService.generateRandomCoordinates(
       _driverLocation!,
       radius: 5000,
@@ -82,10 +83,12 @@ class _InAppCallMapState extends State<InAppCallMap> {
   }
 
   Future<void> _setMapPins() async {
-    final motorbikeIcon =
-        await _createCustomMarker('assets/app_images/user_profile.png');
-    final userIcon =
-        await _createCustomMarker('assets/app_images/client_holder_image.png');
+    final motorbikeIcon = await _createCustomMarker(
+      'assets/app_images/user_profile.png',
+    );
+    final userIcon = await _createCustomMarker(
+      'assets/app_images/client_holder_image.png',
+    );
     // final shopIcon =
     //     await _createCustomMarker('/assets/app_images/');
 
@@ -110,10 +113,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
         Marker(
           markerId: const MarkerId('destination'),
           position: _destinationLocation!,
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
           infoWindow: const InfoWindow(title: 'User Destination'),
-        ), 
+        ),
       );
   }
 
@@ -197,8 +201,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
               children: [
                 const VSpace(whiteSpace),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: smallWhiteSpace,
+                  ),
                   child: Row(
                     children: [
                       Container(
@@ -272,8 +277,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
                         Text(
                           'Price',
                           style: TextStyle(
-                            color: Colors.black
-                                .withValues(alpha: 0.5600000023841858),
+                            color: Colors.black.withValues(
+                              alpha: 0.5600000023841858,
+                            ),
                             fontSize: extraSmallText.sp,
                             fontWeight: FontWeight.w400,
                           ),
@@ -315,8 +321,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
                         Text(
                           'Avg.TIme',
                           style: TextStyle(
-                            color: Colors.black
-                                .withValues(alpha: 0.5600000023841858),
+                            color: Colors.black.withValues(
+                              alpha: 0.5600000023841858,
+                            ),
                             fontSize: extraSmallText.sp,
                             fontWeight: FontWeight.w400,
                           ),
@@ -388,29 +395,20 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   GoogleMap showGoogleMap() {
     return GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: _driverLocation!,
-            zoom: 13,
-          ),
-          markers: _markers,
-          polylines: _polylines,
-          onMapCreated: (GoogleMapController controller) {
-            _mapController = controller;
+      initialCameraPosition: CameraPosition(target: _driverLocation!, zoom: 13),
+      markers: _markers,
+      polylines: _polylines,
+      onMapCreated: (GoogleMapController controller) {
+        _mapController = controller;
 
-            _mapController?.animateCamera(
-              CameraUpdate.newLatLng(_driverLocation!),
-            );
-          },
-        );
+        _mapController?.animateCamera(CameraUpdate.newLatLng(_driverLocation!));
+      },
+    );
   }
 }
 
-
-
 class PassengerDestinationDetailBox extends StatelessWidget {
-  const PassengerDestinationDetailBox({
-    super.key,
-  });
+  const PassengerDestinationDetailBox({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -503,9 +501,7 @@ class TypeCapsule extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.black.withValues(alpha: 0.1),
-          ),
+          side: BorderSide(color: Colors.black.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(roundedMd),
         ),
       ),

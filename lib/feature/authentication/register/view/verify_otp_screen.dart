@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:freedomdriver/core/constants/auth.dart';
 import 'package:freedomdriver/feature/authentication/login/cubit/login_cubit.dart';
 import 'package:freedomdriver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedomdriver/feature/authentication/register/cubit/verify_otp_cubit.dart';
@@ -68,7 +69,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final loginFormCubit = BlocProvider.of<LoginFormCubit>(context);
     final args = getRouteParams(context);
     final type = args['type'] as String?;
@@ -256,27 +256,29 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     LoginFormCubit loginFormCubit,
     String? type,
   ) {
-    debugPrint('$type ${loginFormCubit.state.email}');
     final verificationCode = _otpController.text.trim();
-    final isLoginType = type == 'login';
-    final isEmailUpdateType = type == 'emailUpdate';
-    final isPhoneUpdateType = type == 'phoneUpdate';
+    final isLoginType = type == login;
+    // final isRegisterType = type == register;
+    final isEmailUpdateType = type == emailUpdate;
+    final isPhoneUpdateType = type == phoneUpdate;
     if (_otpFormKey.currentState!.validate()) {
       if (verificationCode.isEmpty) {
         return;
       }
 
       if (isEmailUpdateType) {
-        context
-            .read<DriverCubit>()
-            .verifyEmailUpdate(context, verificationCode);
+        context.read<DriverCubit>().verifyEmailUpdate(
+          context,
+          verificationCode,
+        );
         return;
       }
 
       if (isPhoneUpdateType) {
-        context
-            .read<DriverCubit>()
-            .verifyPhoneUpdate(context, verificationCode);
+        context.read<DriverCubit>().verifyPhoneUpdate(
+          context,
+          verificationCode,
+        );
         return;
       }
 
@@ -294,16 +296,14 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
           if (success) {
             final token = data['data']['token'].toString();
             debugPrint(token);
-            addTokenToHive(token).then(
-              (onValue) {
+            addTokenToHive(token).then((onValue) {
               context.read<LoginFormCubit>().setEmail('');
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  MainActivityScreen.routeName,
-                  (route) => false,
-                );
-              },
-            );
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                MainActivityScreen.routeName,
+                (route) => false,
+              );
+            });
           }
         },
         showOverlay: true,
@@ -313,9 +313,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 }
 
 class DecoratedBackButton extends StatelessWidget {
-  const DecoratedBackButton({
-    super.key,
-  });
+  const DecoratedBackButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -326,8 +324,10 @@ class DecoratedBackButton extends StatelessWidget {
       child: Container(
         height: 38.09,
         width: 38.09,
-        decoration:
-            const BoxDecoration(color: Colors.black, shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.circle,
+        ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.86, 8.86, 9.74, 9.74),
           child: SvgPicture.asset('assets/app_icons/back_button.svg'),

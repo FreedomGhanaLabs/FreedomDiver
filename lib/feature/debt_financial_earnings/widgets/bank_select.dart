@@ -44,13 +44,17 @@ class BankDropdownState extends State<BankDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? showProgressIndicator()
-        : DropdownButtonFormField<String>(
+    if (_isLoading) {
+      return showProgressIndicator();
+    } else {
+      return DropdownButtonFormField<String>(
           value: _selectedBankCode,
           decoration: InputDecoration(
             labelText: 'Select a Bank',
-            labelStyle: normalTextStyle.copyWith(color: Colors.black),
+          labelStyle: normalTextStyle.copyWith(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: gradient1),
             ),
@@ -70,5 +74,6 @@ class BankDropdownState extends State<BankDropdown> {
             if (newValue != null) widget.onBankSelected(newValue);
           },
         );
+    }
   }
 }

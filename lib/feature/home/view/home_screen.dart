@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -170,9 +171,10 @@ class _HomeRideState extends State<HomeRide> {
   @override
   void initState() {
     _driverLocation = LatLng(
-      context.driver?.location?.coordinates[0] ?? 37.774546,
-      context.driver?.location?.coordinates[1] ?? -122.433523,
+      context.driver?.location?.coordinates[1] ?? 37.774546,
+      context.driver?.location?.coordinates[0] ?? -122.433523,
     );
+
     super.initState();
   }
 
