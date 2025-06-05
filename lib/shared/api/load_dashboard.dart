@@ -38,7 +38,7 @@ Future<void> loadDashboard(BuildContext context) async {
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     driverSocketService.connect(
-      onNewRideRequest: (ride, data) async {
+      onNewRideRequest: (ride) async {
         log('[Socket Ride Request] ride request received');
         context.read<RideCubit>().foundRide(ride, context);
         buildRideFoundDialog(context);

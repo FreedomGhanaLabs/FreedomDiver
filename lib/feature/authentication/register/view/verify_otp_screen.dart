@@ -248,8 +248,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-    _otpController.dispose();
-    _otpFocusNode.dispose();
+    // _otpController.dispose();
+    // _otpFocusNode.dispose();
     super.dispose();
   }
 
@@ -296,9 +296,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             isLoading = false;
           });
           if (success) {
-            await FCMService().registerFCM(context);
             final token = data['data']['token'].toString();
-            addTokenToHive(token).then((onValue) {
+            addTokenToHive(token).then((onValue) async {
+              await FCMService().registerFCM(context);
               context.read<LoginFormCubit>().setEmail('');
               Navigator.pushNamedAndRemoveUntil(
                 context,

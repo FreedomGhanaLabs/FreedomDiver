@@ -42,7 +42,7 @@ class DriverSocketService {
   Future<void> connect({
     VoidCallback? onConnect,
     VoidCallback? onDisconnect,
-    Function(RideRequest, Map<String, dynamic>)? onNewRideRequest,
+    Function(RideRequest)? onNewRideRequest,
     Function(String status)? onNewRideAccepted,
     Function(String status)? onRideStatusUpdate,
   }) async {
@@ -78,7 +78,7 @@ class DriverSocketService {
         log('${DriverSocketConstants.newRideRequestLog}$data');
         final ride = RideRequest.fromJson(data);
 
-        onNewRideRequest?.call(ride, data);
+        onNewRideRequest?.call(ride);
       } else {
         log('⚠️ Unexpected ride_request data: $data');
       }

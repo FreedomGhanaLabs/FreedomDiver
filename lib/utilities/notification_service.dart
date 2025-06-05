@@ -65,7 +65,7 @@ class NotificationService {
     // final token = await FirebaseMessaging.instance.getToken() ?? '';
     // log('[FCM TOKEN] $token');
     // await addFCMTokenToHive(token);
-    // log('[FCM TOKEN] token added to hive');
+    log('[NOTIFICATION] initialized successfully');
   }
 
   static Future<void> _requestPermissions() async {
