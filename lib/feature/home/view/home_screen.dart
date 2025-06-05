@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -26,7 +27,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../shared/api/load_dashboard.dart';
-import '../../../shared/api/load_document_histories.dart';
+import '../../../utilities/hive/token.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 import 'widgets/build_dialog.dart';
 
@@ -57,10 +58,8 @@ class _HomeScreenState extends State<_HomeScreen> {
       body: RefreshIndicator(
         color: gradient1,
         onRefresh: () async {
-          await Future.wait([
-            loadDashboard(context),
-            loadDocumentHistories(context),
-          ]);
+          await Future.wait([loadDashboard(context)]);
+          log("[token] ${await getTokenFromHive()}");
         },
         child: Stack(
           children: [
