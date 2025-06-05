@@ -37,28 +37,9 @@ class _MainActivityScreen extends StatefulWidget {
 }
 
 class _MainActivityScreenState extends State<_MainActivityScreen> {
-  final driverSocketService = getIt<DriverSocketService>();
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      driverSocketService.connect(
-        onNewRideRequest: (ride, data) async {
-          log('[Socket Ride Request] ride request received');
-          // await NotificationService.sendNotification(
-          //   title:
-          //       ride.type == 'ride'
-          //           ? 'New Ride Request'
-          //           : 'New Delivery Request',
-          //   body: 'Pickup: ${ride.pickupLocation.address}',
-          //   payload: data,
-          // );
-
-          context.read<RideCubit>().foundRide(ride, context);
-          buildRideFoundDialog(context);
-        },
-      );
-    });
-
     loadDashboard(context);
     super.initState();
   }

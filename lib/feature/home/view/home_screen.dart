@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
@@ -28,7 +27,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../shared/api/load_dashboard.dart';
 import '../../../shared/api/load_document_histories.dart';
-import '../../../utilities/driver_location_service.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 import 'widgets/build_dialog.dart';
 
@@ -50,16 +48,6 @@ class _HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<_HomeScreen> {
   void navigateToInAppCallAndMap() {
     Navigator.of(context).pushNamed(InAppCallMap.routeName);
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getIt<DriverLocationService>().requestPermission();
-      getIt<DriverLocationService>().sendCurrentLocationOnce(context);
-      loadDocumentHistories(context);
-    });
-    super.initState();
   }
 
   @override

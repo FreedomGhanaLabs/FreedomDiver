@@ -14,7 +14,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final driverSocketService = getIt<DriverSocketService>();
     return ScreenUtilInit(
       designSize: const Size(402, 874),
       splitScreenMode: true,
@@ -29,31 +28,6 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [...cubitRegistry],
           child: MaterialApp(
-            // builder: (context, child) {
-            //   WidgetsBinding.instance.addPostFrameCallback((_) {
-            //     driverSocketService.connect(
-            //       onNewRideRequest: (ride, data) async {
-            //         log('[Socket Ride Request] ride request received');
-            //         await NotificationService.sendNotification(
-            //           title:
-            //               ride.type == 'ride'
-            //                   ? 'New Ride Request'
-            //                   : 'New Delivery Request',
-            //           body: 'Pickup: ${ride.pickupLocation.address}',
-            //           payload: data,
-            //         );
-            //         context.read<RideCubit>().foundRide(ride, context);
-            //         Future.microtask(() {
-            //           log("[app] Log reached here");
-            //           if (context.mounted) {
-            //             buildRideFoundDialog(context);
-            //           }
-            //         });
-            //       },
-            //     );
-            //   });
-            //   return child!;
-            // },
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               fontFamily: GoogleFonts.poppins().fontFamily,
