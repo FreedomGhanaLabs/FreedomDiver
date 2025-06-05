@@ -21,6 +21,8 @@ import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../../../shared/api/fcm.dart';
+
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});
   static const routeName = '/verify_otp';
@@ -289,13 +291,13 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
           'email': loginFormCubit.state.email,
           'verificationCode': verificationCode,
         },
-        (success, data) {
+        (success, data) async {
           setState(() {
             isLoading = false;
           });
           if (success) {
+            await FCMService().registerFCM(context);
             final token = data['data']['token'].toString();
-            debugPrint(token);
             addTokenToHive(token).then((onValue) {
               context.read<LoginFormCubit>().setEmail('');
               Navigator.pushNamedAndRemoveUntil(

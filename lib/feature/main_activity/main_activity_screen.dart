@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/earnings_screen.dart';
 import 'package:freedomdriver/feature/home/view/home_screen.dart';
 import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
@@ -10,6 +11,10 @@ import 'package:freedomdriver/feature/profile/view/profile_screen.dart';
 import 'package:freedomdriver/feature/rides/view/rides_screen.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/utilities/socket_service.dart';
+
+import '../home/view/widgets/build_dialog.dart';
+import '../rides/cubit/ride/ride_cubit.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
@@ -32,15 +37,34 @@ class _MainActivityScreen extends StatefulWidget {
 }
 
 class _MainActivityScreenState extends State<_MainActivityScreen> {
+  final driverSocketService = getIt<DriverSocketService>();
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      driverSocketService.connect(
+        onNewRideRequest: (ride, data) async {
+          log('[Socket Ride Request] ride request received');
+          // await NotificationService.sendNotification(
+          //   title:
+          //       ride.type == 'ride'
+          //           ? 'New Ride Request'
+          //           : 'New Delivery Request',
+          //   body: 'Pickup: ${ride.pickupLocation.address}',
+          //   payload: data,
+          // );
+
+          context.read<RideCubit>().foundRide(ride, context);
+          buildRideFoundDialog(context);
+        },
+      );
+    });
+
     loadDashboard(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<MainActivityCubit, MainActivityState>(
       builder: (context, state) {
         final currentIndex = state.currentIndex;

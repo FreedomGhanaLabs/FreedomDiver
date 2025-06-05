@@ -9,7 +9,11 @@ import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:freedomdriver/utilities/loading_overlay.dart';
 
 class ApiController {
-  ApiController(this.startUrl, {this.noVersion = false}) {
+  ApiController(
+    this.startUrl, {
+    this.noVersion = false,
+    this.noDriver = false,
+  }) {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -29,9 +33,10 @@ class ApiController {
 
   final String startUrl;
   final bool noVersion;
+  final bool noDriver;
 
   String get apiUrl =>
-      'https://api-freedom.com/api/v2/driver/${startUrl.isNotEmpty ? '$startUrl/' : ''}';
+      'https://api-freedom.com/api/v2/${noDriver ? "" : "driver/"}${startUrl.isNotEmpty ? '$startUrl/' : ''}';
 
   String get baseNoVersionUrl => apiUrl.replaceFirst('/v2', '');
   String get baseUrl => noVersion ? baseNoVersionUrl : apiUrl;

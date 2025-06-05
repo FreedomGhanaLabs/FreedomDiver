@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
-import 'package:freedomdriver/utilities/hive/fcm_token.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
@@ -63,10 +62,10 @@ class NotificationService {
     });
 
     // FCM token
-    final token = await FirebaseMessaging.instance.getToken() ?? '';
-    log('[FCM TOKEN] $token');
-    await addFCMTokenToHive(token);
-    log('[FCM TOKEN] token added to hive');
+    // final token = await FirebaseMessaging.instance.getToken() ?? '';
+    // log('[FCM TOKEN] $token');
+    // await addFCMTokenToHive(token);
+    // log('[FCM TOKEN] token added to hive');
   }
 
   static Future<void> _requestPermissions() async {
