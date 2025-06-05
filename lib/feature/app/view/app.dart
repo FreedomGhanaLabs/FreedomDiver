@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/app/cubits.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
@@ -21,7 +22,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final driverSocketService = DriverSocketService();
+    final driverSocketService = getIt<DriverSocketService>();
     return ScreenUtilInit(
       designSize: const Size(402, 874),
       splitScreenMode: true,
@@ -34,7 +35,7 @@ class App extends StatelessWidget {
           return FadeTransition(opacity: p1, child: p0);
         },
         child: MultiBlocProvider(
-          providers: [...appCubits],
+          providers: [...cubitRegistry],
           child: MaterialApp(
             builder: (context, child) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,7 +52,12 @@ class App extends StatelessWidget {
                     );
 
                     context.read<RideCubit>().foundRide(ride, context);
-                    buildRideFoundDialog(context);
+                    Future.microtask(() {
+                      log("[app] Log reached here");
+                      if (context.mounted) {
+                        buildRideFoundDialog(context);
+                      }
+                    });
                   },
                 );
               });

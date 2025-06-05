@@ -16,7 +16,7 @@ import '../kyc/cubit/kyc_cubit.dart';
 import '../rides/cubit/ride/ride_cubit.dart';
 import '../rides/cubit/ride_history/ride_history_cubit.dart';
 
-List appCubits =  [
+List cubitRegistry = [
   BlocProvider(create: (_) => RegistrationFormCubit()),
   BlocProvider(create: (_) => LoginFormCubit()),
   BlocProvider(create: (_) => VerifyOtpCubit()),

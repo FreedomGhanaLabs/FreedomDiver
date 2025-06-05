@@ -74,11 +74,14 @@ class DriverSocketService {
     });
 
     _socket!.on(DriverSocketConstants.newRideRequest, (data) async {
-      //DriverSocketConstants.newRideRequest
-      log('${DriverSocketConstants.newRideRequestLog}$data');
-      final ride = RideRequest.fromJson(data as Map<String, dynamic>);
+      if (data is Map<String, dynamic>) {
+        log('${DriverSocketConstants.newRideRequestLog}$data');
+        final ride = RideRequest.fromJson(data);
 
-      onNewRideRequest?.call(ride, data);
+        onNewRideRequest?.call(ride, data);
+      } else {
+        log('⚠️ Unexpected ride_request data: $data');
+      }
     });
 
     _socket!.on(DriverSocketConstants.rideAccepted, (data) {

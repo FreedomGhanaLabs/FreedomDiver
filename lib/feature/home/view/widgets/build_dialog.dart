@@ -11,8 +11,8 @@ import 'package:freedomdriver/utilities/ui.dart';
 
 import '../../../rides/cubit/ride/ride_state.dart';
 
-Future<void> buildRideFoundDialog(BuildContext context) {
-  return showCustomModal(
+void buildRideFoundDialog(BuildContext context) {
+  showCustomModal(
     padding: EdgeInsets.all(smallWhiteSpace),
     context,
     child: RideFoundModal(),
