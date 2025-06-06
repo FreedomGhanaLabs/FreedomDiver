@@ -87,8 +87,8 @@ class DriverLocationService {
       // position.longitude,
       // position.latitude,
       // -73.9650, 40.7900,
-      6.909556,
-      4.899720,
+      6.736301,
+      7.801245,
     ]);
     // 6.9074977,
     // 4.8917135,
