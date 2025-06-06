@@ -294,6 +294,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         (success, data) async {
           setState(() {
             isLoading = false;
+            _otpController.text = "";
           });
           if (success) {
             final token = data['data']['token'].toString();

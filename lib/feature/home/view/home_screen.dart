@@ -11,7 +11,6 @@ import 'package:freedomdriver/feature/driver/driver.model.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
-import 'package:freedomdriver/feature/home/view/widgets/build_dialog.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_earnings.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_order.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_score.dart';
@@ -229,33 +228,26 @@ class _HomeRideState extends State<HomeRide> {
               Row(
                 children: [
                   Expanded(
-                    child: BlocListener<HomeCubit, HomeState>(
-                      listener: (context, state) {
-                        if (state.rideStatus == TransitStatus.found) {
-                          context.showRideDialog();
-                        }
-                      },
-                      child: BlocBuilder<HomeCubit, HomeState>(
-                        key: ValueKey(state.rideStatus),
-                        builder: (context, state) {
-                          final isRideActive =
-                              state.rideStatus == TransitStatus.accepted;
+                    child: BlocBuilder<HomeCubit, HomeState>(
+                      key: ValueKey(state.rideStatus),
+                      builder: (context, state) {
+                        final isRideActive =
+                            state.rideStatus == TransitStatus.accepted;
 
-                          return SimpleButton(
-                            title:
-                                isRideActive ? 'End Ride' : 'Find Nearby Rides',
-                            onPressed: () {
-                              if (isRideActive) {
-                                context.read<HomeCubit>().endRide();
-                              } else {
-                                context.read<HomeCubit>().toggleNearByRides();
-                              }
-                            },
-                            backgroundColor:
-                                isRideActive ? redColor : thickFillColor,
-                          );
-                        },
-                      ),
+                        return SimpleButton(
+                          title:
+                              isRideActive ? 'End Ride' : 'Find Nearby Rides',
+                          onPressed: () {
+                            if (isRideActive) {
+                              context.read<HomeCubit>().endRide();
+                            } else {
+                              context.read<HomeCubit>().toggleNearByRides();
+                            }
+                          },
+                          backgroundColor:
+                              isRideActive ? redColor : thickFillColor,
+                        );
+                      },
                     ),
                   ),
                   const HSpace(extraSmallWhiteSpace),

@@ -10,18 +10,20 @@ import '../../core/di/locator.dart';
 import '../../utilities/notification_service.dart';
 import 'load_document_histories.dart';
 
-Future<void> loadDashboard(BuildContext context) async {
+Future<void> loadDashboard(BuildContext context, {bool loadAll = true}) async {
   final driverCubit = context.read<DriverCubit>();
   final documentCubit = context.read<DocumentCubit>();
   final earningCubit = context.read<EarningCubit>();
   final rideHistoryCubit = context.read<RideHistoryCubit>();
   final driverLocationService = getIt<DriverLocationService>();
 
-  await driverLocationService.requestPermission();
-  await driverLocationService.sendCurrentLocationOnce(context);
+  if (loadAll) {
+    await driverLocationService.requestPermission();
+    await driverLocationService.sendCurrentLocationOnce(context);
+  }
 
   await Future.wait([
-    NotificationService.initializeNotifications(),
+    if (loadAll) NotificationService.initializeNotifications(),
     driverCubit.getDriverProfile(context),
     driverCubit.toggleStatus(context, setAvailable: true, toggleOnlyApi: true),
     earningCubit.getPeriodicEarnings(context),

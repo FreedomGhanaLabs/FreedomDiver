@@ -13,12 +13,13 @@ import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../../utilities/notification_service.dart';
 import '../../../utilities/socket_service.dart';
-import '../../home/view/widgets/build_dialog.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   static final GlobalKey _loaderKey = GlobalKey();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [...cubitRegistry],
           child: MaterialApp(
+            navigatorKey: navigatorKey,
             builder: (context, child) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 driverSocketService.connect(
@@ -48,10 +50,10 @@ class App extends StatelessWidget {
                               ? 'New Ride Request'
                               : 'New Delivery Request',
                       body: 'Pickup: ${ride.pickupLocation.address}',
+                      payload: ride.toJson(),
                     );
 
                     context.read<RideCubit>().foundRide(ride, context);
-                    context.showRideDialog();
                   },
                 );
               });

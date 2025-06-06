@@ -45,7 +45,7 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
     if (!context.mounted) return;
 
     if (token != null) {
-      await loadDashboard(context);
+      await loadDashboard(context, loadAll: false);
 
       await Navigator.pushNamedAndRemoveUntil(
         context,

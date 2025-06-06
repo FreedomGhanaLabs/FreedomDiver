@@ -58,7 +58,7 @@ class RideCubit extends Cubit<RideState> {
   Future<void> foundRide(RideRequest ride, BuildContext context) async {
     logRide("found");
     _updateAcceptRide(ride);
-    // context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
+    context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
   }
 
   Future<void> _postRideAction(
@@ -72,11 +72,15 @@ class RideCubit extends Cubit<RideState> {
   }) async {
     try {
       await apiController.post(context, endpoint, body ?? {}, (success, data) {
+        context.dismissRideDialog();
         if (success) {
           if (successLog != null) log(successLog);
           if (onSuccess != null && data is Map<String, dynamic>) {
             onSuccess(data);
           }
+        } else {
+          _cachedAcceptRide = null;
+          _cachedRideId = null;
         }
       }, showOverlay: showOverlay);
     } catch (e) {
@@ -115,7 +119,7 @@ class RideCubit extends Cubit<RideState> {
   }) async {
     await _postRideAction(
       context,
-      '$rideId/reject',
+      '${rideId ?? _cachedRideId}/reject',
       body: {'reason': reason ?? 'Too far from my current location'},
       successLog: '[RideCubit] ride rejected',
       onSuccess: (_) {

@@ -10,7 +10,7 @@ import 'api_controller.dart';
 
 class FCMService {
   ApiController apiController = ApiController("fcm", noDriver: true);
-
+  // static
   Future<void> registerFCM(BuildContext context) async {
     try {
       await NotificationService.initializeNotifications();
@@ -35,7 +35,7 @@ class FCMService {
             log("[FCM Backend] Registration failed: $data");
           }
         },
-        shouldShowToast: false
+        shouldShowToast: false,
       );
     } catch (e, stack) {
       log('[FCM ERROR] $e', stackTrace: stack);
