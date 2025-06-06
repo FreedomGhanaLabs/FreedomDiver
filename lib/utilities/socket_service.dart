@@ -85,6 +85,7 @@ class DriverSocketService {
     });
 
     _socket!.on(DriverSocketConstants.rideAccepted, (data) {
+      log('Received newRideRequest data type: ${data.runtimeType}');
       final ride = RideRequest.fromJson(data as Map<String, dynamic>);
       log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
       onNewRideAccepted?.call(ride.status);

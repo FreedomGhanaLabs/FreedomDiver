@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/shared/theme/app_colors.dart';
 
 enum ToastPosition {
   top,
@@ -151,11 +153,11 @@ class _ToastWidgetState extends State<_ToastWidget>
   Color _getColorForType() {
     switch (widget.type) {
       case ToastType.success:
-        return Colors.green;
+        return greenColor;
       case ToastType.error:
-        return Colors.red;
+        return redColor;
       case ToastType.warning:
-        return Colors.orange;
+        return gradient1;
       case ToastType.info:
         return Colors.blue;
     }
@@ -167,7 +169,10 @@ class _ToastWidgetState extends State<_ToastWidget>
       child: Align(
         alignment: _getAlignmentForPosition(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          padding: const EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: smallWhiteSpace,
+          ),
           child: SlideTransition(
             position: _slideAnimation,
             child: FadeTransition(
