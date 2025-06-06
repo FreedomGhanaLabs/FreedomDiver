@@ -112,7 +112,7 @@ class SimpleButton extends StatelessWidget {
         backgroundColor: backgroundColor ?? Colors.black,
         tapTargetSize: materialTapTargetSize,
         shape: RoundedRectangleBorder(
-          borderRadius: borderRadius ?? BorderRadius.circular(roundedLg),
+          borderRadius: borderRadius ?? BorderRadius.circular(roundedMd + 2),
         ),
         padding:
             padding ??

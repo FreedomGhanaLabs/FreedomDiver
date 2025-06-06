@@ -8,6 +8,7 @@ import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
+import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:get/get.dart';
@@ -57,6 +58,7 @@ class RideCubit extends Cubit<RideState> {
 
   Future<void> foundRide(RideRequest ride, BuildContext context) async {
     logRide("found");
+    if (_cachedAcceptRide != null) return;
     _updateAcceptRide(ride);
     context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
   }
@@ -70,6 +72,15 @@ class RideCubit extends Cubit<RideState> {
     String? errorMsg,
     bool showOverlay = false,
   }) async {
+    if (_cachedAcceptRide == null) {
+      showToast(
+        context,
+        "No Ride Request",
+        "Sorry! you don't have any ride request at the moment",
+        toastType: ToastType.error,
+      );
+      return;
+    }
     try {
       await apiController.post(context, endpoint, body ?? {}, (success, data) {
         context.dismissRideDialog();
@@ -78,9 +89,6 @@ class RideCubit extends Cubit<RideState> {
           if (onSuccess != null && data is Map<String, dynamic>) {
             onSuccess(data);
           }
-        } else {
-          _cachedAcceptRide = null;
-          _cachedRideId = null;
         }
       }, showOverlay: showOverlay);
     } catch (e) {
@@ -90,7 +98,7 @@ class RideCubit extends Cubit<RideState> {
 
   Future<void> acceptRide(BuildContext context) async {
     logRide("accept");
-    if (_cachedAcceptRide == null) return;
+
     final rideId = _cachedAcceptRide?.rideId;
     final latitude = context.driver?.location?.coordinates[1];
     final longitude = context.driver?.location?.coordinates[0];

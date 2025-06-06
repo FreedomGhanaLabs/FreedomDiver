@@ -1,10 +1,17 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:freedomdriver/feature/home/view/widgets/build_dialog.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:timezone/timezone.dart' as tz;
+
+import '../feature/app/app.dart';
+import '../feature/rides/cubit/ride/ride_cubit.dart';
+import '../feature/rides/models/request_ride.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -43,6 +50,23 @@ class NotificationService {
       onDidReceiveNotificationResponse: (response) {
         // Handle local notification tap
         log('Local notification tapped: ${response.payload}');
+        try {
+          final jsonPayload = jsonDecode(response.payload ?? "{}");
+          if (jsonPayload is Map<String, dynamic> &&
+              jsonPayload.containsKey("rideId")) {
+            final data = jsonPayload;
+            final ride = RideRequest.fromJson(data);
+            final context = navigatorKey.currentState?.context;
+            if (context != null) {
+              context.read<RideCubit>().foundRide(ride, context);
+              context.showRideDialog();
+            } else {
+              log('Overlay context not available');
+            }
+          }
+        } catch (e) {
+          log('Failed to handle notification payload: $e');
+        }
       },
     );
 
@@ -61,10 +85,6 @@ class NotificationService {
       log('Notification opened: ${message.notification?.title}');
     });
 
-    // FCM token
-    // final token = await FirebaseMessaging.instance.getToken() ?? '';
-    // log('[FCM TOKEN] $token');
-    // await addFCMTokenToHive(token);
     log('[NOTIFICATION] initialized successfully');
   }
 
@@ -99,7 +119,7 @@ class NotificationService {
         ),
         iOS: const DarwinNotificationDetails(),
       ),
-      payload: payload?.toString(),
+      payload: jsonEncode(payload),
     );
   }
 

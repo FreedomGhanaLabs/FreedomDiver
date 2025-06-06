@@ -128,7 +128,9 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'New Ride Request!',
+                                  ride == null
+                                      ? 'Ride Request'
+                                      : 'New Ride Request!',
                                   style: TextStyle(
                                     fontSize: normalText,
                                     fontWeight: FontWeight.w600,
@@ -150,48 +152,57 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                               ],
                             ),
                             const VSpace(smallWhiteSpace),
-                            buildCustomerDetail(context, ride),
-                            if (isDeclining)
-                              buildField(
-                                "Say reasons for declining",
-                                reasonController,
-                              ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: SimpleButton(
-                                    title: 'Decline',
-                                    onPressed: () {
-                                      if (isDeclining) {
-                                        context.read<RideCubit>().rejectRide(
-                                          context,
-                                          reason: reasonController.text.trim(),
-                                        );
+                            
+                            if (ride != null) ...[
+                              buildCustomerDetail(context, ride),
+                              if (isDeclining)
+                                buildField(
+                                  "Say reasons for declining",
+                                  reasonController,
+                                ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: SimpleButton(
+                                      title: 'Decline',
+                                      onPressed: () {
+                                        if (isDeclining) {
+                                          context.read<RideCubit>().rejectRide(
+                                            context,
+                                            reason:
+                                                reasonController.text.trim(),
+                                          );
+                                          setState(() {
+                                            isDeclining = false;
+                                          });
+                                          return;
+                                        }
                                         setState(() {
-                                          isDeclining = false;
+                                          isDeclining = true;
                                         });
-                                        return;
-                                      }
-                                      setState(() {
-                                        isDeclining = true;
-                                      });
-                                    },
+                                      },
+                                    ),
                                   ),
-                                ),
-                                const HSpace(extraSmallWhiteSpace),
-                                Expanded(
-                                  child: SimpleButton(
-                                    title: 'Accept',
-                                    onPressed: () {
-                                      context.read<RideCubit>().acceptRide(
-                                        context,
-                                      );
-                                    },
-                                    backgroundColor: thickFillColor,
+                                  const HSpace(extraSmallWhiteSpace),
+                                  Expanded(
+                                    child: SimpleButton(
+                                      title: 'Accept',
+                                      onPressed: () {
+                                        context.read<RideCubit>().acceptRide(
+                                          context,
+                                        );
+                                      },
+                                      backgroundColor: thickFillColor,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ] else
+                              Text(
+                                "No ride request yet...",
+                                style: paragraphTextStyle,
+                              )
+                             
                           ],
                         );
                       },

@@ -14,12 +14,12 @@ import 'package:loader_overlay/loader_overlay.dart';
 import '../../../utilities/notification_service.dart';
 import '../../../utilities/socket_service.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class App extends StatelessWidget {
   const App({super.key});
 
   static final GlobalKey _loaderKey = GlobalKey();
-  static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
