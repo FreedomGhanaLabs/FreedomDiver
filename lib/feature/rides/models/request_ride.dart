@@ -1,5 +1,7 @@
 import 'package:hive/hive.dart';
 
+// part 'ride_request.g.dart';
+
 T? safeParse<T>(dynamic json, T Function(Map<String, dynamic>) fromJson) {
   if (json is Map<String, dynamic>) {
     return fromJson(json);

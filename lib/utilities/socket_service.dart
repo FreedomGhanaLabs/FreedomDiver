@@ -80,23 +80,23 @@ class DriverSocketService {
       },
     );
 
-    _registerRideEvent<RideRequest>(
-      DriverSocketConstants.rideAccepted,
-      (data) => RideRequest.fromJson(data),
-      (ride) {
-        log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
-        onNewRideAccepted?.call(ride.status);
-      },
-    );
+    // _registerRideEvent<RideRequest>(
+    //   DriverSocketConstants.rideAccepted,
+    //   (data) => RideRequest.fromJson(data),
+    //   (ride) {
+    //     log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
+    //     onNewRideAccepted?.call(ride.status);
+    //   },
+    // );
 
-    _registerRideEvent<RideRequest>(
-      DriverSocketConstants.rideStatusUpdated,
-      (data) => RideRequest.fromJson(data),
-      (ride) {
-        log('${DriverSocketConstants.rideStatusUpdatedLog}${ride.status}');
-        onRideStatusUpdate?.call(ride.status);
-      },
-    );
+    // _registerRideEvent<RideRequest>(
+    //   DriverSocketConstants.rideStatusUpdated,
+    //   (data) => RideRequest.fromJson(data),
+    //   (ride) {
+    //     log('${DriverSocketConstants.rideStatusUpdatedLog}${ride.status}');
+    //     onRideStatusUpdate?.call(ride.status);
+    //   },
+    // );
 
     _socket!.connect();
   }
@@ -115,8 +115,8 @@ class DriverSocketService {
         try {
           final parsed = fromJson(data);
           onData(parsed);
-        } catch (e, stack) {
-          log('❌ Error parsing $event data: $e\n$stack');
+        } catch (e) {
+          log('❌ Error parsing $event data: $e');
         }
       } else {
         log('⚠️ Unexpected $event data: $data');

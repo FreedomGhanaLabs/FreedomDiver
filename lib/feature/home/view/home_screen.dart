@@ -17,15 +17,18 @@ import 'package:freedomdriver/feature/home/view/widgets/driver_total_score.dart'
 import 'package:freedomdriver/feature/home/view/widgets/estimated_reach_time.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_time_line.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
+import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../shared/api/load_dashboard.dart';
+import '../../documents/driver_license/view/license_form.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -156,10 +159,14 @@ class HomeRide extends StatefulWidget {
 
 class _HomeRideState extends State<HomeRide> {
   LatLng? _driverLocation;
+  bool isCompleteRide = false;
+
+  final TextEditingController reasonController = TextEditingController(
+    text: "Too far from my current location",
+  );
 
   @override
   void initState() {
-    // context.showRideDialog();
     _driverLocation = LatLng(
       context.driver?.location?.coordinates[1] ?? 37.774546,
       context.driver?.location?.coordinates[0] ?? -122.433523,
@@ -172,6 +179,7 @@ class _HomeRideState extends State<HomeRide> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
+        final isRideActive = state.rideStatus == TransitStatus.accepted;
         return Container(
           padding: const EdgeInsets.all(medWhiteSpace),
           decoration: ShapeDecoration(
@@ -225,54 +233,76 @@ class _HomeRideState extends State<HomeRide> {
               else if (state.rideStatus == TransitStatus.accepted)
                 const EstimatedReachTime(),
               const VSpace(smallWhiteSpace),
+              if (isRideActive)
+                Row(
+                  children: [
+                    Expanded(
+                      child: SimpleButton(
+                        title: !isCompleteRide ? 'Start Ride' : 'Complete Ride',
+                        onPressed: () {
+                          if (isCompleteRide) {
+                            context.read<RideCubit>().completeRide(context);
+                          } else {
+                            setState(() {
+                              isCompleteRide = true;
+                            });
+                            context.read<RideCubit>().startRide(context);
+                          }
+                        },
+                        backgroundColor:
+                            isCompleteRide ? thickFillColor : greenColor,
+                      ),
+                    ),
+                  ],
+                ),
               Row(
                 children: [
                   Expanded(
-                    child: BlocBuilder<HomeCubit, HomeState>(
-                      key: ValueKey(state.rideStatus),
-                      builder: (context, state) {
-                        final isRideActive =
-                            state.rideStatus == TransitStatus.accepted;
-
-                        return SimpleButton(
-                          title:
-                              isRideActive ? 'End Ride' : 'Find Nearby Rides',
-                          onPressed: () {
-                            if (isRideActive) {
-                              context.read<HomeCubit>().endRide();
-                            } else {
-                              context.read<HomeCubit>().toggleNearByRides();
-                            }
-                          },
-                          backgroundColor:
-                              isRideActive ? redColor : thickFillColor,
-                        );
+                    child: SimpleButton(
+                      title: isRideActive ? 'Cancel Ride' : 'Find Nearby Rides',
+                      onPressed: () {
+                        if (isRideActive) {
+                          showCustomModal(
+                            context,
+                            btnCancelText: "Back",
+                            btnOkText: "Cancel Ride",
+                            btnCancelOnPress: () {},
+                            btnOkOnPress:
+                                () => context.read<RideCubit>().cancelRide(
+                                  context,
+                                  reason: reasonController.text.trim(),
+                                ),
+                            child: buildField(
+                              "Say reasons for canceling ride",
+                              reasonController,
+                            ),
+                          ).show();
+                        } else {
+                          context.read<HomeCubit>().toggleNearByRides();
+                        }
                       },
+                      backgroundColor: isRideActive ? redColor : thickFillColor,
                     ),
                   ),
                   const HSpace(extraSmallWhiteSpace),
-                  BlocBuilder<HomeCubit, HomeState>(
-                    builder: (context, state) {
-                      return Expanded(
-                        child: SimpleButton(
-                          title:
-                              state.rideStatus == TransitStatus.accepted
-                                  ? 'Navigate'
-                                  : 'Search Another Area',
-                          onPressed: () {
-                            if (state.rideStatus == TransitStatus.accepted) {
-                              Navigator.of(
-                                context,
-                              ).pushNamed(InAppCallMap.routeName);
-                            }
-                          },
-                          backgroundColor: greyColor,
-                          textStyle: paragraphTextStyle.copyWith(
-                            color: Colors.black,
-                          ),
-                        ),
-                      );
-                    },
+                  Expanded(
+                    child: SimpleButton(
+                      title:
+                          state.rideStatus == TransitStatus.accepted
+                              ? 'Navigate'
+                              : 'Search Another Area',
+                      onPressed: () {
+                        if (state.rideStatus == TransitStatus.accepted) {
+                          Navigator.of(
+                            context,
+                          ).pushNamed(InAppCallMap.routeName);
+                        }
+                      },
+                      backgroundColor: greyColor,
+                      textStyle: paragraphTextStyle.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ],
               ),

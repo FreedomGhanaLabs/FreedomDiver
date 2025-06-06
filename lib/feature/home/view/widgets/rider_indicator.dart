@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/utilities/responsive.dart';
 
 class RiderProgressTracker extends StatefulWidget {
   const RiderProgressTracker({
@@ -70,6 +71,7 @@ class _RiderProgressTrackerState extends State<RiderProgressTracker>
           borderRadius: BorderRadius.circular(8),
           child: SizedBox(
             height: 8,
+            width: Responsive.width(context),
             child: ShaderMask(
               blendMode: BlendMode.srcIn,
               shaderCallback: (bounds) => gradient.createShader(
