@@ -1,4 +1,4 @@
-package com.freedomdriver.app.freedomdriver
+package com.freedomghana.app.rider
 
 import io.flutter.embedding.android.FlutterActivity
 

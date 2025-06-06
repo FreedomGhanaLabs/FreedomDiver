@@ -19,7 +19,7 @@ plugins {
 }
 
 android {
-    namespace = "com.freedomdriver.app.freedomdriver"
+    namespace = "com.freedomghana.app.rider"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
