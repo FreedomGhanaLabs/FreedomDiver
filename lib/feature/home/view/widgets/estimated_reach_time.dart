@@ -22,37 +22,49 @@ class _EstimatedReachTimeState extends State<EstimatedReachTime> {
       builder: (context, state) {
         final ride = state is RideLoaded ? state.ride : null;
 
-        final totalMinutes = ride?.etaToPickup?.value ?? 0;
+        final isAccepted = ride?.status == "accepted";
+
+        final etaToPickup = ride?.etaToPickup;
+        final etaToDestination = ride?.estimatedDuration?.value;
+        final destinationTime = etaToDestination.toString().split(" ")[0];
+        final destinationUnit = etaToDestination.toString().split(" ")[0];
+        final pickUpTime = etaToPickup?.text.toString().split(" ")[0];
+        final pickUpUnit = etaToPickup?.text.toString().split(" ")[1] ?? "";
+        final time = isAccepted ? pickUpTime : destinationTime;
+        final unit = isAccepted ? pickUpUnit : destinationUnit;
         return Column(
           children: [
             Row(
               children: [
                 GradientText(
-                  text: ride?.etaToPickup?.value.toString() ?? "0",
+                  text: time ?? "0",
                   fontSize: emphasisText,
                   fontWeight: FontWeight.bold,
                 ),
-                const HSpace(3.1),
+                const HSpace(3),
                 Text(
-                  ride?.etaToPickup?.text.toString() ?? 'mins',
+                  unit,
                   style: TextStyle(
                     fontSize: paragraphText,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const HSpace(medWhiteSpace),
+                const HSpace(extraSmallWhiteSpace),
                 Text(
-                  'until you reach pickup location',
+                  'until you reach ${isAccepted ? "pickup" : "destination"} location',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: Colors.grey.shade500,
                     fontSize: smallText,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
-            RiderProgressTracker(currentMinutes: 0, totalMinutes: totalMinutes),
+            RiderProgressTracker(
+              currentMinutes: 0,
+              totalMinutes: int.tryParse(time ?? "") ?? 0,
+            ),
           ],
         );
       },

@@ -30,6 +30,21 @@ class DriverLocationService {
     return true;
   }
 
+double calculateDistance(LatLng start, LatLng end) {
+    const double earthRadius = 6371000; // in meters
+    final dLat = (end.latitude - start.latitude) * (pi / 180);
+    final dLng = (end.longitude - start.longitude) * (pi / 180);
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(start.latitude * pi / 180) *
+            cos(end.latitude * pi / 180) *
+            sin(dLng / 2) *
+            sin(dLng / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+
   Future<void> sendCurrentLocationOnce(BuildContext context) async {
     final position = await getCurrentLocation(context);
 

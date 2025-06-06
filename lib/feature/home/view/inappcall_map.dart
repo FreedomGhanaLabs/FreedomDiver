@@ -2,24 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_divider.dart';
-import 'package:freedomdriver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
-import 'package:freedomdriver/shared/widgets/gradient_text.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../utilities/map/eta.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});
@@ -39,8 +39,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
   LatLng? _driverLocation;
   LatLng? _pickupLocation;
   LatLng? _destinationLocation;
-  String averageTime = '0 mins';
-  String distance = '0 KM';
 
   late final DriverLocationService _locationService;
 
@@ -49,30 +47,38 @@ class _InAppCallMapState extends State<InAppCallMap> {
     super.initState();
     _locationService = getIt<DriverLocationService>();
     _locationService.startLiveLocationUpdates(context);
+    final rideState = context.read<RideCubit>().state;
     _driverLocation = LatLng(
-      context.driver?.location?.coordinates[1] ?? 37.774546,
-      context.driver?.location?.coordinates[0] ?? -122.433523,
+      context.driver?.location?.coordinates.last ?? 37.774546,
+      context.driver?.location?.coordinates.first ?? -122.433523,
     );
 
-    _pickupLocation = _locationService.generateRandomCoordinates(
-      _driverLocation!,
-      radius: 5000,
-    );
+    final rideProperties = rideState is RideLoaded ? rideState.ride : null;
 
-    _destinationLocation = _locationService.generateRandomCoordinates(
-      _driverLocation!,
-      radius: 5000,
-    );
+    _pickupLocation =
+        rideProperties != null
+            ? LatLng(
+              rideProperties.pickupLocation.coordinates.last,
+              rideProperties.pickupLocation.coordinates.first,
+            )
+            : _locationService.generateRandomCoordinates(
+              _driverLocation!,
+              radius: 5000,
+            );
+
+    _destinationLocation =
+        rideProperties != null
+            ? LatLng(
+              rideProperties.dropoffLocation.coordinates.last,
+              rideProperties.dropoffLocation.coordinates.first,
+            )
+            : _locationService.generateRandomCoordinates(
+              _driverLocation!,
+              radius: 5000,
+            );
     _setMapPins();
     _setPolylines().then((_) {
       _animateDriver();
-      getETA(_driverLocation, _pickupLocation).then((eta) {
-        debugPrint('ETA: $eta');
-        setState(() {
-          averageTime = eta['duration'] ?? '0 mins';
-          distance = eta['distance'] ?? '0 KM';
-        });
-      });
     });
   }
 
@@ -184,211 +190,220 @@ class _InAppCallMapState extends State<InAppCallMap> {
     }
   }
 
+  void _callUser(String phoneNumber) async {
+    final url = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(url)) await launchUrl(url);
+  }
+
+  void _messageUser(String phoneNumber) async {
+    final url = Uri.parse('sms:$phoneNumber');
+    if (await canLaunchUrl(url)) await launchUrl(url);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          showGoogleMap(),
-          Positioned(
-            top: MediaQuery.of(context).padding.top + smallWhiteSpace,
-            left: whiteSpace,
-            child: const DecoratedBackButton(),
-          ),
-          CustomBottomSheet(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const VSpace(whiteSpace),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: smallWhiteSpace,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const ShapeDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/app_images/client_holder_image.png',
-                            ),
-                            fit: BoxFit.fill,
-                          ),
-                          shape: OvalBorder(),
-                        ),
-                      ),
-                      const HSpace(smallWhiteSpace),
-                      const Text(
-                        'Dr Ben Larry Cage',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: paragraphText,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const Spacer(),
-                      const TypeCapsule(),
-                    ],
-                  ),
-                ),
-                const VSpace(whiteSpace),
-                Container(
-                  width: Responsive.width(context),
-                  height: 2,
-                  decoration: const BoxDecoration(color: Color(0x72D9D9D9)),
-                ),
-                const VSpace(smallWhiteSpace),
-                Padding(
-                  padding: const EdgeInsets.only(left: smallWhiteSpace),
-                  child: Text(
-                    'A passenger is waiting for you',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: smallText.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                const VSpace(whiteSpace),
-                // EqualSignCrossContainer(),
-                const Stack(
-                  alignment: Alignment.center,
+      body: BlocConsumer<RideCubit, RideState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          final ride = state is RideLoaded ? state.ride : null;
+
+          final isAccepted = ride?.status == "accepted";
+
+          final etaToPickup = ride?.etaToPickup;
+          final etaToDestination = ride?.estimatedDuration?.value;
+          final destinationTime = etaToDestination.toString();
+          final pickUpTime = etaToPickup?.text.toString();
+          final averageTime = isAccepted ? pickUpTime : destinationTime;
+          return Stack(
+            children: [
+              showGoogleMap(),
+              Positioned(
+                top: MediaQuery.of(context).padding.top + smallWhiteSpace,
+                left: whiteSpace,
+                child: const DecoratedBackButton(),
+              ),
+              CustomBottomSheet(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
+                    const VSpace(whiteSpace),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: smallWhiteSpace,
+                      ),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("User's Contact", style: normalTextStyle),
+                              InkWell(
+                                child: Text(
+                                  ride?.user?.phone ?? "",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: paragraphText,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          TypeCapsule(rideType: ride?.rideType ?? ""),
+                        ],
+                      ),
+                    ),
+                    const VSpace(whiteSpace),
+                    Container(
+                      width: Responsive.width(context),
+                      height: 2,
+                      decoration: const BoxDecoration(color: Color(0x72D9D9D9)),
+                    ),
+                    const VSpace(smallWhiteSpace),
+                    if (isAccepted)
+                      Padding(
+                        padding: const EdgeInsets.only(left: smallWhiteSpace),
+                        child: Text(
+                          'A ${ride?.rideType == "normal" ? "passenger" : "package"} is waiting for you',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: paragraphText.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    const VSpace(whiteSpace),
+                    // EqualSignCrossContainer(),
+                    Stack(
+                      alignment: Alignment.center,
                       children: [
-                        PassengerDestinationDetailBox(),
-                        VSpace(38),
-                        PassengerDestinationDetailBox(),
+                        Column(
+                          children: [
+                            PassengerDestinationDetailBox(
+                              title: 'Pickup Point',
+                              subtitle: ride?.pickupLocation.address ?? "",
+                            ),
+                            VSpace(30),
+                            PassengerDestinationDetailBox(
+                              title: 'Destination',
+                              subtitle: ride?.dropoffLocation.address ?? "",
+                            ),
+                          ],
+                        ),
+                        AppIcon(iconName: 'conversion'),
                       ],
                     ),
-                    AppIcon(iconName: 'conversion'),
+                    const VSpace(whiteSpace),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              'Price',
+                              style: TextStyle(
+                                color: Colors.black.withValues(
+                                  alpha: 0.5600000023841858,
+                                ),
+                                fontSize: extraSmallText.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const VSpace(10),
+                            Text(
+                              "${ride?.currency} ${ride?.estimatedFare.toStringAsFixed(2) ?? "0.00"}",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: paragraphText.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              'Expected Distance Covered',
+                              style: TextStyle(
+                                color: Colors.black.withValues(alpha: 0.56),
+                                fontSize: extraSmallText.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const VSpace(10),
+                            Text(
+                              ride?.estimatedDistance?.text ?? "",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: paragraphText.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              'Avg.Time',
+                              style: TextStyle(
+                                color: Colors.black.withValues(alpha: 0.56),
+                                fontSize: extraSmallText.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const VSpace(medWhiteSpace),
+                            Text(
+                              averageTime ?? "",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: paragraphText.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const VSpace(whiteSpace),
+                    const CustomDivider(),
+                    const VSpace(whiteSpace),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: whiteSpace,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: SimpleButton(
+                              title: "Call User",
+                              onPressed:
+                                  () => _callUser(ride?.user?.phone ?? ''),
+                            ),
+                          ),
+                          const SizedBox(width: extraSmallWhiteSpace),
+                          Expanded(
+                            child: SimpleButton(
+                              title: "Message User",
+                              onPressed:
+                                  () => _messageUser(ride?.user?.phone ?? ''),
+                              backgroundColor: thickFillColor,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    ),
+                    const VSpace(whiteSpace),
                   ],
                 ),
-                const VSpace(whiteSpace),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          'Price',
-                          style: TextStyle(
-                            color: Colors.black.withValues(
-                              alpha: 0.5600000023841858,
-                            ),
-                            fontSize: extraSmallText.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const VSpace(10),
-                        Text(
-                          r'$20.5',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: paragraphText.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          'Expected Distance Covered',
-                          style: TextStyle(
-                            color: Colors.black.withValues(alpha: 0.56),
-                            fontSize: extraSmallText.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const VSpace(10),
-                        Text(
-                          distance,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: paragraphText.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          'Avg.TIme',
-                          style: TextStyle(
-                            color: Colors.black.withValues(
-                              alpha: 0.5600000023841858,
-                            ),
-                            fontSize: extraSmallText.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const VSpace(10),
-                        Text(
-                          averageTime,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: paragraphText.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const VSpace(smallWhiteSpace),
-                Padding(
-                  padding: const EdgeInsets.all(whiteSpace),
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: CustomDropDown(
-                          items: <String>['In-App Call', 'Video Call'],
-                          initialValue: 'In-App Call',
-                          onChanged: (i) {},
-                        ),
-                      ),
-                      HSpace(30),
-                      Expanded(child: GradientText(text: 'Message')),
-                    ],
-                  ),
-                ),
-                const VSpace(18),
-                const CustomDivider(),
-                const VSpace(20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: SimpleButton(
-                      title: '',
-                      onPressed: () {},
-                      borderRadius: BorderRadius.circular(5),
-                      padding: const EdgeInsets.fromLTRB(0, 13, 0, 13),
-                      backgroundColor: const Color(0xFFD47F00),
-                      child: const Text(
-                        'Waiting',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.99,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const VSpace(20),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -408,43 +423,43 @@ class _InAppCallMapState extends State<InAppCallMap> {
 }
 
 class PassengerDestinationDetailBox extends StatelessWidget {
-  const PassengerDestinationDetailBox({super.key});
+  const PassengerDestinationDetailBox({
+    super.key,
+    required this.title,
+    required this.subtitle,
+  });
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 23),
-      child: Container(
-        width: 369,
-        padding: const EdgeInsets.only(left: 8, top: 13, bottom: 12.96),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Color(0x19110F51)),
-            borderRadius: BorderRadius.circular(4),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(smallWhiteSpace),
+      margin: const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Color(0x19110F51)),
+          borderRadius: BorderRadius.circular(roundedLg),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: paragraphText,
+              fontWeight: FontWeight.w400,
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Pickup Point',
-              style: TextStyle(
-                color: Colors.black.withValues(alpha: 0.5099999904632568),
-                fontSize: 7.90,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            const Text(
-              '23, Canada, avenue',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 9.17,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
+          Text(
+            subtitle,
+            style: TextStyle(fontSize: normalText, fontWeight: FontWeight.w600),
+          ),
+        ],
       ),
     );
   }
@@ -490,7 +505,9 @@ class CustomBottomSheet extends StatelessWidget {
 }
 
 class TypeCapsule extends StatelessWidget {
-  const TypeCapsule({super.key});
+  const TypeCapsule({super.key, required this.rideType});
+
+  final String rideType;
 
   @override
   Widget build(BuildContext context) {
@@ -509,7 +526,7 @@ class TypeCapsule extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Logistics',
+            rideType.replaceAll("normal", "Ride"),
             style: TextStyle(
               color: gradient1,
               fontSize: smallText.sp,
