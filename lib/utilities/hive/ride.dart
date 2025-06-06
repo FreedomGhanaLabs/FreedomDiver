@@ -2,7 +2,7 @@ import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:hive/hive.dart';
 
 const String rideKey = 'ride';
-const String rideBoxKey = 'ride_request';
+const String rideBoxKey = 'rideRequests';
 
 Future<RideRequest?> getRideFromHive() async {
   final box = await Hive.openBox(rideBoxKey);

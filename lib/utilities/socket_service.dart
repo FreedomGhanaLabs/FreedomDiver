@@ -57,47 +57,71 @@ class DriverSocketService {
       DriverSocketConstants.autoConnectKey: false,
     });
 
-    _socket!.onConnect((_) {
-      log("${DriverSocketConstants.socketConnected} ${_socket!.id}");
-      setDriverStatus(available: true);
+    _socket!
+      ..onConnect((_) {
+        log("${DriverSocketConstants.socketConnected} ${_socket!.id}");
+        setDriverStatus(available: true);
+        onConnect?.call();
+      })
+      ..onDisconnect((_) {
+        log(DriverSocketConstants.socketDisconnected);
+        onDisconnect?.call();
+      })
+      ..onConnectError((err) {
+        log('${DriverSocketConstants.socketConnectionError}$err');
+      });
 
-      onConnect?.call();
-    });
-
-    _socket!.onDisconnect((_) {
-      log(DriverSocketConstants.socketDisconnected);
-      onDisconnect?.call();
-    });
-
-    _socket!.onConnectError((err) {
-      log('${DriverSocketConstants.socketConnectionError}$err');
-    });
-
-    _socket!.on(DriverSocketConstants.newRideRequest, (data) async {
-      if (data is Map<String, dynamic>) {
-        log('${DriverSocketConstants.newRideRequestLog}$data');
-        final ride = RideRequest.fromJson(data);
-
+    _registerRideEvent<RideRequest>(
+      DriverSocketConstants.newRideRequest,
+      (data) => RideRequest.fromJson(data),
+      (ride) {
+        log('${DriverSocketConstants.newRideRequestLog}${ride.toJson()}');
         onNewRideRequest?.call(ride);
-      } else {
-        log('⚠️ Unexpected ride_request data: $data');
-      }
-    });
+      },
+    );
 
-    _socket!.on(DriverSocketConstants.rideAccepted, (data) {
-      log('Received newRideRequest data type: ${data.runtimeType}');
-      final ride = RideRequest.fromJson(data as Map<String, dynamic>);
-      log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
-      onNewRideAccepted?.call(ride.status);
-    });
+    _registerRideEvent<RideRequest>(
+      DriverSocketConstants.rideAccepted,
+      (data) => RideRequest.fromJson(data),
+      (ride) {
+        log('${DriverSocketConstants.rideAcceptedLog}${ride.status}');
+        onNewRideAccepted?.call(ride.status);
+      },
+    );
 
-    _socket!.on(DriverSocketConstants.rideStatusUpdated, (data) {
-      final ride = RideRequest.fromJson(data as Map<String, dynamic>);
-      log('${DriverSocketConstants.rideStatusUpdatedLog}${ride.status}');
-      onRideStatusUpdate?.call(ride.status);
-    });
+    _registerRideEvent<RideRequest>(
+      DriverSocketConstants.rideStatusUpdated,
+      (data) => RideRequest.fromJson(data),
+      (ride) {
+        log('${DriverSocketConstants.rideStatusUpdatedLog}${ride.status}');
+        onRideStatusUpdate?.call(ride.status);
+      },
+    );
 
     _socket!.connect();
+  }
+
+  void _registerRideEvent<T>(
+    String event,
+    T Function(Map<String, dynamic>) fromJson,
+    void Function(T) onData,
+  ) {
+    _socket!.on(event, (data) {
+      if (data == null) {
+        log('⚠️ $event received null data.');
+        return;
+      }
+      if (data is Map<String, dynamic>) {
+        try {
+          final parsed = fromJson(data);
+          onData(parsed);
+        } catch (e, stack) {
+          log('❌ Error parsing $event data: $e\n$stack');
+        }
+      } else {
+        log('⚠️ Unexpected $event data: $data');
+      }
+    });
   }
 
   void disconnect() {
@@ -105,25 +129,26 @@ class DriverSocketService {
     _socket = null;
   }
 
-  void updateDriverLocation(String rideId) {
-    _socket?.emit(DriverSocketConstants.updateLocation, {'rideId': rideId});
-  }
+  void updateDriverLocation(String rideId) =>
+      _emit(DriverSocketConstants.updateLocation, {'rideId': rideId});
 
-  void acceptRideRequest(String rideId) {
-    _socket?.emit(DriverSocketConstants.acceptRideRequest, {'rideId': rideId});
-  }
+  void acceptRideRequest(String rideId) =>
+      _emit(DriverSocketConstants.acceptRideRequest, {'rideId': rideId});
 
-  void rejectRideRequest(String rideId) {
-    _socket?.emit(DriverSocketConstants.rejectRideRequest, {'rideId': rideId});
-  }
+  void rejectRideRequest(String rideId) =>
+      _emit(DriverSocketConstants.rejectRideRequest, {'rideId': rideId});
 
   void setDriverStatus({bool available = false}) {
     log('${DriverSocketConstants.driverStatusLog}$available');
-    _socket?.emit(DriverSocketConstants.setDriverStatus, {
+    _emit(DriverSocketConstants.setDriverStatus, {
       DriverSocketConstants.status:
           available
               ? DriverSocketConstants.available
               : DriverSocketConstants.unavailable,
     });
+  }
+
+  void _emit(String event, Map<String, dynamic> data) {
+    _socket?.emit(event, data);
   }
 }

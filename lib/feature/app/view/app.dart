@@ -51,9 +51,7 @@ class App extends StatelessWidget {
                     );
 
                     context.read<RideCubit>().foundRide(ride, context);
-                    if (context.mounted) {
-                      context.showRideDialog();
-                    }
+                    context.showRideDialog();
                   },
                 );
               });

@@ -1,8 +1,14 @@
+import 'package:hive/hive.dart';
+
 T? safeParse<T>(dynamic json, T Function(Map<String, dynamic>) fromJson) {
-  return json != null ? fromJson(json as Map<String, dynamic>) : null;
+  if (json is Map<String, dynamic>) {
+    return fromJson(json);
+  }
+  return null;
 }
 
-class RideRequest {
+@HiveType(typeId: 0)
+class RideRequest extends HiveObject {
   RideRequest({
     required this.rideId,
     this.user,
@@ -22,6 +28,54 @@ class RideRequest {
     required this.rideType,
   });
 
+  @HiveField(0)
+  final String rideId;
+
+  @HiveField(1)
+  final User? user;
+
+  @HiveField(2)
+  final Location pickupLocation;
+
+  @HiveField(3)
+  final Location dropoffLocation;
+
+  @HiveField(4)
+  final Distance? estimatedDistance;
+
+  @HiveField(5)
+  final DurationInfo? estimatedDuration;
+
+  @HiveField(6)
+  final DurationInfo? etaToPickup;
+
+  @HiveField(7)
+  final int? totalFare;
+
+  @HiveField(8)
+  final int driverEarnings;
+
+  @HiveField(9)
+  final String status;
+
+  @HiveField(10)
+  final String paymentMethod;
+
+  @HiveField(11)
+  final String type;
+
+  @HiveField(12)
+  final double estimatedFare;
+
+  @HiveField(13)
+  final String currency;
+
+  @HiveField(14)
+  final bool isMultiStop;
+
+  @HiveField(15)
+  final String rideType;
+
   factory RideRequest.fromJson(Map<String, dynamic> json) => RideRequest(
     rideId: json['rideId'].toString(),
     user: safeParse(json['user'], User.fromJson),
@@ -38,29 +92,11 @@ class RideRequest {
     status: json['status']?.toString() ?? '',
     paymentMethod: json['paymentMethod']?.toString() ?? '',
     type: json['type'].toString(),
-    estimatedFare: (json['estimatedFare'] as num).toDouble(),
+    estimatedFare: (json['estimatedFare'] as num?)?.toDouble() ?? 0.0,
     currency: json['currency'].toString(),
-    isMultiStop: (json['isMultiStop']) as bool,
+    isMultiStop: json['isMultiStop'] as bool? ?? false,
     rideType: json['rideType'].toString(),
   );
-
-  final String rideId;
-  final User? user;
-  final Location pickupLocation;
-  final Location dropoffLocation;
-  final Distance? estimatedDistance;
-  final DurationInfo? estimatedDuration;
-  final DurationInfo? etaToPickup;
-  final int? totalFare;
-  final int driverEarnings;
-  final String status;
-  final String paymentMethod;
-
-  final String type;
-  final double estimatedFare;
-  final String currency;
-  final bool isMultiStop;
-  final String rideType;
 
   Map<String, dynamic> toJson() => {
     'rideId': rideId,
@@ -120,93 +156,90 @@ class RideRequest {
   }
 }
 
-class User {
+@HiveType(typeId: 1)
+class User extends HiveObject {
   User({required this.id, required this.name, required this.phone});
+
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
+  final String name;
+
+  @HiveField(2)
+  final String phone;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json['id'].toString(),
     name: json['name'].toString(),
     phone: json['phone'].toString(),
   );
-  final String id;
-  final String name;
-  final String phone;
 
   Map<String, dynamic> toJson() => {'id': id, 'name': name, 'phone': phone};
-
-  User copyWith({String? id, String? name, String? phone}) {
-    return User(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      phone: phone ?? this.phone,
-    );
-  }
 }
 
-class Location {
+@HiveType(typeId: 2)
+class Location extends HiveObject {
   Location({
     required this.type,
     required this.coordinates,
     required this.address,
   });
 
+  @HiveField(0)
+  final String type;
+
+  @HiveField(1)
+  final List<double> coordinates;
+
+  @HiveField(2)
+  final String address;
+
   factory Location.fromJson(Map<String, dynamic> json) => Location(
     type: json['type'].toString(),
     coordinates:
-        (json['coordinates'] as List<dynamic>)
-            .map((e) => (e as num).toDouble())
-            .toList(),
+        (json['coordinates'] as List?)
+            ?.map((e) => (e as num?)?.toDouble() ?? 0.0)
+            .toList() ??
+        [],
     address: json['address'].toString(),
   );
-  final String type;
-  final List<double> coordinates;
-  final String address;
 
   Map<String, dynamic> toJson() => {
     'type': type,
     'coordinates': coordinates,
     'address': address,
   };
-
-  Location copyWith({
-    String? type,
-    List<double>? coordinates,
-    String? address,
-  }) {
-    return Location(
-      type: type ?? this.type,
-      coordinates: coordinates ?? this.coordinates,
-      address: address ?? this.address,
-    );
-  }
 }
 
-class Distance {
+@HiveType(typeId: 3)
+class Distance extends HiveObject {
   Distance({required this.value, required this.text});
+
+  @HiveField(0)
+  final int value;
+
+  @HiveField(1)
+  final String text;
 
   factory Distance.fromJson(Map<String, dynamic> json) =>
       Distance(value: json['value'] as int, text: json['text'].toString());
-  final int value;
-  final String text;
 
   Map<String, dynamic> toJson() => {'value': value, 'text': text};
-
-  Distance copyWith({int? value, String? text}) {
-    return Distance(value: value ?? this.value, text: text ?? this.text);
-  }
 }
 
-class DurationInfo {
+@HiveType(typeId: 4)
+class DurationInfo extends HiveObject {
   DurationInfo({required this.value, required this.text});
+
+  @HiveField(0)
+  final int value;
+
+  @HiveField(1)
+  final String text;
 
   factory DurationInfo.fromJson(Map<String, dynamic> json) =>
       DurationInfo(value: json['value'] as int, text: json['text'].toString());
-  final int value;
-  final String text;
 
   Map<String, dynamic> toJson() => {'value': value, 'text': text};
-
-  DurationInfo copyWith({int? value, String? text}) {
-    return DurationInfo(value: value ?? this.value, text: text ?? this.text);
-  }
 }

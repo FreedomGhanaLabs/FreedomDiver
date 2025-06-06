@@ -254,7 +254,7 @@ class BankDetailsForm extends StatelessWidget {
           const VSpace(smallWhiteSpace),
           BankDropdown(
             onBankSelected: (code) {
-              print('Selected bank code: $code');
+              debugPrint('Selected bank code: $code');
               bankCode.text = code;
             },
           ),

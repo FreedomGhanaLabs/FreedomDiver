@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.freedomdriver.app.freedomdriver"
+        applicationId = "com.freedomghana.app.rider"
 
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion

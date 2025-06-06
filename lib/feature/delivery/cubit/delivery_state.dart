@@ -11,7 +11,7 @@ class DeliveryLoading extends DeliveryState {}
 
 class DeliveryUpdating extends DeliveryState {
   DeliveryUpdating(this.ride);
-  final  ride;
+  final   ride;
 
   @override
   List<Object?> get props => [ride];

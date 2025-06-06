@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -12,6 +11,7 @@ import 'package:freedomdriver/feature/driver/driver.model.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
+import 'package:freedomdriver/feature/home/view/widgets/build_dialog.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_earnings.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_order.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_score.dart';
@@ -27,9 +27,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../shared/api/load_dashboard.dart';
-import '../../../utilities/hive/token.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
-import 'widgets/build_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -56,10 +54,9 @@ class _HomeScreenState extends State<_HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: RefreshIndicator(
-        color: gradient1,
+        color: thickFillColor,
         onRefresh: () async {
           await Future.wait([loadDashboard(context)]);
-          log("[token] ${await getTokenFromHive()}");
         },
         child: Stack(
           children: [
@@ -163,6 +160,7 @@ class _HomeRideState extends State<HomeRide> {
 
   @override
   void initState() {
+    // context.showRideDialog();
     _driverLocation = LatLng(
       context.driver?.location?.coordinates[1] ?? 37.774546,
       context.driver?.location?.coordinates[0] ?? -122.433523,
@@ -234,7 +232,7 @@ class _HomeRideState extends State<HomeRide> {
                     child: BlocListener<HomeCubit, HomeState>(
                       listener: (context, state) {
                         if (state.rideStatus == TransitStatus.found) {
-                          buildRideFoundDialog(context);
+                          context.showRideDialog();
                         }
                       },
                       child: BlocBuilder<HomeCubit, HomeState>(
@@ -254,7 +252,7 @@ class _HomeRideState extends State<HomeRide> {
                               }
                             },
                             backgroundColor:
-                                isRideActive ? redColor : gradient1,
+                                isRideActive ? redColor : thickFillColor,
                           );
                         },
                       ),
@@ -398,7 +396,9 @@ class HomeHeader extends StatelessWidget {
                                       CupertinoActionSheetAction(
                                         child: Text(
                                           'Rides only',
-                                          style: TextStyle(color: gradient1),
+                                          style: TextStyle(
+                                            color: thickFillColor,
+                                          ),
                                         ),
                                         onPressed: () async {
                                           await driverCubit
@@ -413,7 +413,9 @@ class HomeHeader extends StatelessWidget {
                                       CupertinoActionSheetAction(
                                         child: Text(
                                           'Deliveries only',
-                                          style: TextStyle(color: gradient1),
+                                          style: TextStyle(
+                                            color: thickFillColor,
+                                          ),
                                         ),
                                         onPressed: () async {
                                           await driverCubit
@@ -427,7 +429,9 @@ class HomeHeader extends StatelessWidget {
                                       CupertinoActionSheetAction(
                                         child: Text(
                                           'Rides and Deliveries ',
-                                          style: TextStyle(color: gradient1),
+                                          style: TextStyle(
+                                            color: thickFillColor,
+                                          ),
                                         ),
                                         onPressed: () async {
                                           await driverCubit

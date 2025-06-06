@@ -43,9 +43,9 @@ class RideDetailTile extends StatelessWidget {
         color: const Color(0x0FFFBA40),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 1.15,
+            width: 1,
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: Colors.black.withValues(alpha: 0.23),
+            color: Colors.black.withValues(alpha: 0.2),
           ),
           borderRadius: BorderRadius.circular(roundedLg),
         ),
@@ -57,7 +57,10 @@ class RideDetailTile extends StatelessWidget {
           children: [
             Text(title, style: rideRequestTitleTextStyle),
             // const Spacer(),
-            Text(subtitle, style: rideRequestDetailTextStyle),
+            Text(
+              subtitle.replaceAll("null", ""),
+              style: rideRequestDetailTextStyle,
+            ),
           ],
         ),
       ),

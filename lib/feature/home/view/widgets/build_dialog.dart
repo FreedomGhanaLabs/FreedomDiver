@@ -4,6 +4,7 @@ import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
 import '../../../documents/driver_license/view/license_form.dart';
@@ -20,7 +21,7 @@ class CustomRideDialog {
 
   static void show({
     required BuildContext context,
-    double verticalPadding = 24.0,
+    double verticalPadding = whiteSpace,
   }) {
     if (_isVisible) return;
 
@@ -57,108 +58,151 @@ class _RideDialogWidget extends StatefulWidget {
   State<_RideDialogWidget> createState() => _RideDialogWidgetState();
 }
 
-class _RideDialogWidgetState extends State<_RideDialogWidget> {
+class _RideDialogWidgetState extends State<_RideDialogWidget>
+    with SingleTickerProviderStateMixin {
   final TextEditingController reasonController = TextEditingController(
     text: "Too far from my current location",
   );
+
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
+  bool isDeclining = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _scaleAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Center(
         child: Material(
-          color: Colors.black.withValues(alpha: 0.5),
+          color: Colors.black.withValues(alpha: 0.35),
           child: Padding(
             padding: EdgeInsets.all(widget.verticalPadding),
             child: Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                padding: const EdgeInsets.all(smallWhiteSpace),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(medWhiteSpace),
-                ),
-                child: BlocBuilder<RideCubit, RideState>(
-                  builder: (context, state) {
-                    final ride = state is RideLoaded ? state.ride : null;
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              'New Ride Request!',
-                              style: TextStyle(
-                                fontSize: normalText,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            RideTypeChip(),
-                          ],
-                        ),
-                        const VSpace(smallWhiteSpace),
-                        buildCustomerDetail(context, ride),
-                        Row(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Container(
+                    width:
+                        Responsive.isTablet(context)
+                            ? tabletWidth - whiteSpace
+                            : Responsive.isBigMobile(context)
+                            ? Responsive.width(context) * 0.85
+                            : Responsive.width(context) * 0.9,
+                    padding: const EdgeInsets.all(smallWhiteSpace),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(medWhiteSpace),
+                    ),
+                    child: BlocBuilder<RideCubit, RideState>(
+                      builder: (context, state) {
+                        final ride = state is RideLoaded ? state.ride : null;
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Expanded(
-                              child: SimpleButton(
-                                title: 'Decline',
-                                onPressed: () {
-                                  CustomRideDialog.dismiss();
-                                  _showDeclineReason(context);
-                                },
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'New Ride Request!',
+                                  style: TextStyle(
+                                    fontSize: normalText,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    RideTypeChip(),
+                                    HSpace(extraSmallWhiteSpace),
+                                    IconButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed:
+                                          () => context.dismissRideDialog(),
+                                      icon: Icon(Icons.cancel),
+                                      tooltip: "Close dialog",
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const HSpace(extraSmallWhiteSpace),
-                            Expanded(
-                              child: SimpleButton(
-                                title: 'Accept',
-                                onPressed: () {
-                                  context.read<RideCubit>().acceptRide(context);
-                                  CustomRideDialog.dismiss();
-                                },
-                                backgroundColor: thickFillColor,
+                            const VSpace(smallWhiteSpace),
+                            buildCustomerDetail(context, ride),
+                            if (isDeclining)
+                              buildField(
+                                "Say reasons for declining",
+                                reasonController,
                               ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SimpleButton(
+                                    title: 'Decline',
+                                    onPressed: () {
+                                      if (isDeclining) {
+                                        context.read<RideCubit>().rejectRide(
+                                          context,
+                                          reason: reasonController.text.trim(),
+                                        );
+                                        setState(() {
+                                          isDeclining = false;
+                                        });
+                                        return;
+                                      }
+                                      setState(() {
+                                        isDeclining = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const HSpace(extraSmallWhiteSpace),
+                                Expanded(
+                                  child: SimpleButton(
+                                    title: 'Accept',
+                                    onPressed: () {
+                                      context.read<RideCubit>().acceptRide(
+                                        context,
+                                      );
+                                    },
+                                    backgroundColor: thickFillColor,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                      ],
-                    );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void _showDeclineReason(BuildContext context) {
-    showDialog(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            title: const Text("Decline Ride"),
-            content: buildField("Say reasons for declining", reasonController),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Back"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  context.read<RideCubit>().rejectRide(
-                    context,
-                    reason: reasonController.text.trim(),
-                  );
-                },
-                child: const Text("Decline"),
-              ),
-            ],
-          ),
     );
   }
 }
@@ -169,20 +213,23 @@ class RideTypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 10),
+      margin: const EdgeInsets.only(left: medWhiteSpace),
       height: 30,
-      padding: const EdgeInsets.symmetric(horizontal: 9.08, vertical: 3.03),
+      padding: const EdgeInsets.symmetric(
+        horizontal: medWhiteSpace,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.black.withOpacity(0.21)),
-        borderRadius: BorderRadius.circular(8.08),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
+        borderRadius: BorderRadius.circular(roundedMd),
       ),
       child: Center(
         child: Text(
           'Rider',
           style: TextStyle(
-            fontSize: normalText,
-            fontWeight: FontWeight.w500,
+            fontSize: paragraphText,
+            fontWeight: FontWeight.w400,
             color: darkGoldColor,
           ),
         ),

@@ -28,23 +28,15 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   tz.initializeTimeZones();
 
   await Hive.initFlutter();
-  // await NotificationService.initializeNotifications();
-  // await DriverLocationService().requestPermission();
+  // Hive.registerAdapter(RideRequestAdapter());
+  // Hive.registerAdapter(UserAdapter());
+  // Hive.registerAdapter(LocationAdapter());
+  // Hive.registerAdapter(DistanceAdapter());
+  // Hive.registerAdapter(DurationInfoAdapter());
 
   await locator();
 
-  // await DriverSocketService().connect();
-
   Bloc.observer = const AppBlocObserver();
-
-  // FlutterError.onError = (details) {
-  //   log(
-  //     'FlutterError: ${details.exceptionAsString()}',
-  //     stackTrace: details.stack,
-  //   );
-  //   FlutterError.presentError(details);
-  //   runApp(CustomErrorScreen(errorDetails: details));
-  // };
 
   runApp(await builder());
 }

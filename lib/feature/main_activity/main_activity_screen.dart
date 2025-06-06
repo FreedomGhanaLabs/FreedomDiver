@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/earnings_screen.dart';
 import 'package:freedomdriver/feature/home/view/home_screen.dart';
 import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
@@ -11,10 +8,6 @@ import 'package:freedomdriver/feature/profile/view/profile_screen.dart';
 import 'package:freedomdriver/feature/rides/view/rides_screen.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
-import 'package:freedomdriver/utilities/socket_service.dart';
-
-import '../home/view/widgets/build_dialog.dart';
-import '../rides/cubit/ride/ride_cubit.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
