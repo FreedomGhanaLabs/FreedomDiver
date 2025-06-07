@@ -25,9 +25,9 @@ class _EstimatedReachTimeState extends State<EstimatedReachTime> {
         final isAccepted = ride?.status == "accepted";
 
         final etaToPickup = ride?.etaToPickup;
-        final etaToDestination = ride?.estimatedDuration?.value;
+        final etaToDestination = ride?.estimatedDuration?.text;
         final destinationTime = etaToDestination.toString().split(" ")[0];
-        final destinationUnit = etaToDestination.toString().split(" ")[0];
+        final destinationUnit = etaToDestination.toString().split(" ")[1];
         final pickUpTime = etaToPickup?.text.toString().split(" ")[0];
         final pickUpUnit = etaToPickup?.text.toString().split(" ")[1] ?? "";
         final time = isAccepted ? pickUpTime : destinationTime;
@@ -51,7 +51,7 @@ class _EstimatedReachTimeState extends State<EstimatedReachTime> {
                 ),
                 const HSpace(extraSmallWhiteSpace),
                 Text(
-                  'until you reach ${isAccepted ? "pickup" : "destination"} location',
+                  'until you reach ${isAccepted ? "pickup location" : "your destination"}',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey.shade500,

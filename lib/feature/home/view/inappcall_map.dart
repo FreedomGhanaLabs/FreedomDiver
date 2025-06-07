@@ -212,7 +212,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
             children: [
               showGoogleMap(),
               Positioned(
-                top: Responsive.top(context),
+                top: Responsive.top(context) + smallWhiteSpace,
                 left: whiteSpace,
                 child: const DecoratedBackButton(),
               ),

@@ -9,6 +9,7 @@ import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
+import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,8 @@ import '../../../../core/di/locator.dart';
 
 class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
+
+  final driverLocation = getIt<DriverLocationService>();
 
   RideRequest? _cachedRideRequest;
   String? _cachedRideId;
@@ -28,7 +31,6 @@ class RideCubit extends Cubit<RideState> {
 
   void _updateRideRequest(
     RideRequest updated, {
-    String? rideId,
     bool shouldPersist = true,
   }) async {
     _cachedRideRequest = updated;
@@ -107,6 +109,7 @@ class RideCubit extends Cubit<RideState> {
       context.read<HomeCubit>().toggleNearByRides(
         status: TransitStatus.accepted,
       );
+      driverLocation.startLiveLocationUpdates(context);
       log("[Active Ride] Using persisted ride request");
       return;
     }
@@ -134,6 +137,7 @@ class RideCubit extends Cubit<RideState> {
       successLog: "[Accept Ride]",
       onSuccess: (data) {
         context.read<HomeCubit>().setRideAccepted(isAccepted: true);
+        driverLocation.startLiveLocationUpdates(context);
 
         final ride = RideRequest.fromJson(data["data"]);
         _updateRideRequest(
@@ -197,17 +201,20 @@ class RideCubit extends Cubit<RideState> {
     );
   }
 
-  Future<void> arrivedRide(
-    BuildContext context, {
-    required String rideId,
-    double latitude = 6.520379,
-    double longitude = 3.375206,
-  }) async {
+  Future<void> arrivedRide(BuildContext context) async {
+    final rideId = _cachedRideRequest?.rideId;
+    final latitude = context.driverCords?[1];
+    final longitude = context.driverCords?[0];
     await _postRideAction(
       context,
       '$rideId/arrived',
       body: {'latitude': latitude, 'longitude': longitude},
       successLog: '[RideCubit] ride arrived',
+      onSuccess: (data) {
+        _updateRideRequest(
+          _cachedRideRequest!.copyWith(status: data["data"]['status']),
+        );
+      },
       errorMsg: 'Failed to arrive ride',
     );
   }
@@ -290,44 +297,5 @@ class RideCubit extends Cubit<RideState> {
       errorMsg: 'Failed to end ride',
       showOverlay: true,
     );
-  }
-
-  Future<void> updateStatus(
-    BuildContext context,
-    TransitStatus newStatus,
-  ) async {
-    if (!hasAcceptedRide) return;
-
-    final previousStatusName = _cachedRideRequest!.status;
-    emit(RideUpdating(_cachedRideRequest!.copyWith(status: newStatus.name)));
-    emit(RideLoaded(_cachedRideRequest!.copyWith(status: newStatus.name)));
-
-    try {
-      await apiController.patch(
-        context,
-        _cachedRideRequest!.rideId,
-        {'status': newStatus.name},
-        (success, data) {
-          if (success) {
-            log('[ride cubit] status has been updated');
-            if (data is Map<String, dynamic>) {
-              final ride = RideRequest.fromJson(data);
-              _updateRideRequest(ride, rideId: _cachedRideId);
-            }
-          } else {
-            emit(
-              RideLoaded(
-                _cachedRideRequest!.copyWith(status: previousStatusName),
-              ),
-            );
-          }
-        },
-      );
-    } catch (_) {
-      emit(RideError('Failed to update status'));
-      emit(
-        RideLoaded(_cachedRideRequest!.copyWith(status: previousStatusName)),
-      );
-    }
   }
 }

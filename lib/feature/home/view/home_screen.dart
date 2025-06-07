@@ -27,9 +27,11 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../core/constants/ride.dart';
 import '../../../shared/api/load_dashboard.dart';
 import '../../documents/driver_license/view/license_form.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
+import '../../rides/cubit/ride/ride_state.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -169,136 +171,164 @@ class _HomeRideState extends State<HomeRide> {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         final isRideActive = state.rideStatus == TransitStatus.accepted;
-        return Container(
-          padding: const EdgeInsets.all(medWhiteSpace),
-          decoration: ShapeDecoration(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 0.99,
-                color: Colors.black.withValues(alpha: 0.0500),
-              ),
-              borderRadius: BorderRadius.circular(roundedLg),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Text(
-              //   'Find ride',
-              //   textAlign: TextAlign.center,
-              //   style: TextStyle(
-              //     fontSize: smallText,
-              //     fontWeight: FontWeight.w500,
-              //     color: Colors.grey.shade600,
-              //   ),
-              // ),
-              // const VSpace(extraSmallWhiteSpace),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(roundedLg),
-                child: SizedBox(
-                  height: 100,
-                  width: Responsive.width(context),
-                  child: GoogleMap(
-                    zoomControlsEnabled: false,
-                    initialCameraPosition: CameraPosition(
-                      target: context.driverLatLng!,
-                      zoom: 15.5,
-                    ),
+        return BlocBuilder<RideCubit, RideState>(
+          builder: (context, rideState) {
+            final rideDetails = rideState is RideLoaded ? rideState.ride : null;
+            final isRideAcceptedStatus = rideDetails?.status == acceptedRide;
+            final isRideArrivedStatus = rideDetails?.status == arrivedRide;
+            return Container(
+              padding: const EdgeInsets.all(medWhiteSpace),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 0.99,
+                    color: Colors.black.withValues(alpha: 0.05),
                   ),
+                  borderRadius: BorderRadius.circular(roundedLg),
                 ),
               ),
-              const VSpace(smallWhiteSpace),
-              if (state.rideStatus == TransitStatus.searching)
-                Text(
-                  'Searching for ride requests near you…',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: smallText,
-                    fontWeight: FontWeight.w500,
-                  ),
-                )
-              else if (state.rideStatus == TransitStatus.accepted)
-                const EstimatedReachTime(),
-              const VSpace(smallWhiteSpace),
-              if (isRideActive)
-                Row(
-                  children: [
-                    Expanded(
-                      child: SimpleButton(
-                        title: !isCompleteRide ? 'Start Ride' : 'Complete Ride',
-                        onPressed: () {
-                          if (isCompleteRide) {
-                            context.read<RideCubit>().completeRide(context);
-                          } else {
-                            setState(() {
-                              isCompleteRide = true;
-                            });
-                            context.read<RideCubit>().startRide(context);
-                          }
-                        },
-                        backgroundColor:
-                            isCompleteRide ? thickFillColor : greenColor,
-                      ),
-                    ),
-                  ],
-                ),
-              Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: SimpleButton(
-                      title: isRideActive ? 'Cancel Ride' : 'Find Nearby Rides',
-                      onPressed: () {
-                        if (isRideActive) {
-                          showCustomModal(
-                            context,
-                            btnCancelText: "Back",
-                            btnOkText: "Cancel Ride",
-                            btnCancelOnPress: () {},
-                            btnOkOnPress:
-                                () => context.read<RideCubit>().cancelRide(
-                                  context,
-                                  reason: reasonController.text.trim(),
-                                ),
-                            child: buildField(
-                              "Say reasons for canceling ride",
-                              reasonController,
-                            ),
-                          ).show();
-                        } else {
-                          context.read<HomeCubit>().toggleNearByRides();
-                        }
-                      },
-                      backgroundColor: isRideActive ? redColor : thickFillColor,
+                  Text(
+                    'Find ride',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: smallText,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
                     ),
                   ),
-                  const HSpace(extraSmallWhiteSpace),
-                  Expanded(
-                    child: SimpleButton(
-                      title:
-                          state.rideStatus == TransitStatus.accepted
-                              ? 'Navigate'
-                              : 'Search Another Area',
-                      onPressed: () {
-                        if (state.rideStatus == TransitStatus.accepted) {
-                          Navigator.of(
-                            context,
-                          ).pushNamed(InAppCallMap.routeName);
-                        }
-                      },
-                      backgroundColor: greyColor,
-                      textStyle: paragraphTextStyle.copyWith(
-                        color: Colors.black,
+                  const VSpace(extraSmallWhiteSpace),
+                  GoogleMapView(),
+                  const VSpace(smallWhiteSpace),
+                  if (state.rideStatus == TransitStatus.searching)
+                    Text(
+                      'Searching for ride requests near you…',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: smallText,
+                        fontWeight: FontWeight.w500,
                       ),
+                    )
+                  else if (state.rideStatus == TransitStatus.accepted)
+                    const EstimatedReachTime(),
+                  const VSpace(smallWhiteSpace),
+                  if (isRideActive)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SimpleButton(
+                            title:
+                                isRideAcceptedStatus
+                                    ? "Arrived At Pickup"
+                                    : isRideArrivedStatus
+                                    ? 'Start Ride'
+                                    : 'Complete Ride',
+                            onPressed: () {
+                              if (isRideAcceptedStatus) {
+                                context.read<RideCubit>().arrivedRide(context);
+                              } else if (isRideArrivedStatus) {
+                                context.read<RideCubit>().startRide(context);
+                              } else if (isCompleteRide) {
+                                context.read<RideCubit>().completeRide(context);
+                              } else {}
+                            },
+                            backgroundColor:
+                                isRideAcceptedStatus
+                                    ? gradient1
+                                    : isCompleteRide
+                                    ? thickFillColor
+                                    : greenColor,
+                          ),
+                        ),
+                      ],
                     ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SimpleButton(
+                          title:
+                              isRideActive
+                                  ? 'Cancel Ride'
+                                  : 'Find Nearby Rides',
+                          onPressed: () {
+                            if (isRideActive) {
+                              showCustomModal(
+                                context,
+                                btnCancelText: "Back",
+                                btnOkText: "Cancel Ride",
+                                btnCancelOnPress: () {},
+                                btnOkOnPress:
+                                    () => context.read<RideCubit>().cancelRide(
+                                      context,
+                                      reason: reasonController.text.trim(),
+                                    ),
+                                child: buildField(
+                                  "Say reasons for canceling ride",
+                                  reasonController,
+                                ),
+                              ).show();
+                            } else {
+                              context.read<HomeCubit>().toggleNearByRides();
+                            }
+                          },
+                          backgroundColor:
+                              isRideActive ? redColor : thickFillColor,
+                        ),
+                      ),
+                      const HSpace(extraSmallWhiteSpace),
+                      Expanded(
+                        child: SimpleButton(
+                          title:
+                              state.rideStatus == TransitStatus.accepted
+                                  ? 'Navigate'
+                                  : 'Search Another Area',
+                          onPressed: () {
+                            if (state.rideStatus == TransitStatus.accepted) {
+                              Navigator.of(
+                                context,
+                              ).pushNamed(InAppCallMap.routeName);
+                            }
+                          },
+                          backgroundColor: greyColor,
+                          textStyle: paragraphTextStyle.copyWith(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
+    );
+  }
+}
+
+class GoogleMapView extends StatelessWidget {
+  const GoogleMapView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(roundedLg),
+      child: SizedBox(
+        height: 100,
+        width: Responsive.width(context),
+        child: GoogleMap(
+          zoomControlsEnabled: false,
+          initialCameraPosition: CameraPosition(
+            target: context.driverLatLng!,
+            zoom: 15.5,
+          ),
+        ),
+      ),
     );
   }
 }
