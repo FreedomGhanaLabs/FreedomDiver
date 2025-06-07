@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,11 +24,16 @@ class MessageCubit extends Cubit<MessageState> {
         emit(MessageLoaded(messages));
       }
     } catch (e) {
-      emit(MessageError('Failed to load messages: $e'));
+      log("[message] $e");
+      emit(MessageError('Failed to load messages'));
     }
   }
 
-  Future<void> sendMessage(BuildContext context, MessageModel message, {bool isSocketMessage= false}) async {
+  Future<void> sendMessage(
+    BuildContext context,
+    MessageModel message, {
+    bool isSocketMessage = false,
+  }) async {
     try {
       final currentMessages =
           state is MessageLoaded
@@ -37,7 +44,11 @@ class MessageCubit extends Cubit<MessageState> {
       final jsonString = MessageModel.toJsonList(currentMessages);
       await addMessagesToHive(jsonString);
       emit(MessageLoaded(currentMessages));
-    if(!isSocketMessage)  context.read<RideCubit>().sendUserMessage(context, message: message.content);
+      if (!isSocketMessage)
+        context.read<RideCubit>().sendUserMessage(
+          context,
+          message: message.content,
+        );
     } catch (e) {
       emit(MessageError('Failed to send message: $e'));
     }

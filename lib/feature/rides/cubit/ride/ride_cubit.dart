@@ -34,11 +34,16 @@ class RideCubit extends Cubit<RideState> {
     _cachedRideRequest = updated;
     _cachedRideId = updated.rideId;
     emit(RideLoaded(_cachedRideRequest!));
-    if (shouldPersist) await addRideRequestToHive(_cachedRideRequest!);
+    if (shouldPersist) {
+      await addRideRequestToHive(_cachedRideRequest!);
+      log("[Update ride Request] Ride request is being persisted");
+    }
   }
 
   void logRide(String text) {
-    log('[${text.capitalize} Ride] ${_cachedRideRequest?.toJson()}');
+    log(
+      '[${text.capitalize} Ride] Cached Ride Request ${_cachedRideRequest?.toJson()}',
+    );
   }
 
   Future<void> _postRideAction(
@@ -88,8 +93,9 @@ class RideCubit extends Cubit<RideState> {
     emit(RideInitial());
   }
 
-  Future<void> checkForActiveRide() async {
-    logRide("Active");
+  Future<void> checkForActiveRide(BuildContext context) async {
+    logRide("active");
+
     if (_cachedRideRequest != null) {
       return;
     }
@@ -98,6 +104,11 @@ class RideCubit extends Cubit<RideState> {
 
     if (activeRide != null) {
       _updateRideRequest(activeRide, shouldPersist: false);
+      context.read<HomeCubit>().toggleNearByRides(
+        status: TransitStatus.accepted,
+      );
+      log("[Active Ride] Using persisted ride request");
+      return;
     }
 
     log("No active ride found for driver");
@@ -105,7 +116,6 @@ class RideCubit extends Cubit<RideState> {
 
   Future<void> foundRide(RideRequest ride, BuildContext context) async {
     logRide("found");
-    if (_cachedRideRequest != null) return;
     _updateRideRequest(ride, shouldPersist: false);
     context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
   }
@@ -231,7 +241,6 @@ class RideCubit extends Cubit<RideState> {
       body: {'latitude': latitude, 'longitude': longitude},
       successLog: '[RideCubit] ride completed',
       onSuccess: (data) {
-      
         // final ride = RideRequest.fromJson(data);
         // _updateRideRequest(ride, rideId: rideId);
       },

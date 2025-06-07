@@ -28,7 +28,7 @@ Future<void> loadDashboard(BuildContext context, {bool loadAll = true}) async {
     if (loadAll) NotificationService.initializeNotifications(),
     driverCubit.getDriverProfile(context),
     driverCubit.toggleStatus(context, setAvailable: true, toggleOnlyApi: true),
-    rideCubit.checkForActiveRide(),
+    rideCubit.checkForActiveRide(context),
     earningCubit.getPeriodicEarnings(context),
     rideHistoryCubit.getAllRideHistories(context, showOverlay: false),
     documentCubit.getDriverDocument(context),

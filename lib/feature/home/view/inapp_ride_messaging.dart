@@ -91,89 +91,91 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
           ],
         ),
       ),
-      children: [
-        BlocBuilder<MessageCubit, MessageState>(
-          builder: (context, state) {
-            if (state is MessageLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is MessageError) {
-              return Center(child: Text(state.message));
-            } else if (state is MessageLoaded) {
-              if (state.messages.isEmpty) {
-                return const Center(child: Text("No messages yet."));
-              }
+      differentUi: BlocBuilder<MessageCubit, MessageState>(
+        builder: (context, state) {
+          if (state is MessageLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is MessageError) {
+            return Center(child: Text(state.message));
+          } else if (state is MessageLoaded) {
+            if (state.messages.isEmpty) {
+              return const Center(child: Text("No messages yet."));
+            }
 
-              return SizedBox(
-                height: 500,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(smallWhiteSpace),
-                  reverse: true,
-                  itemCount: state.messages.length,
-                  itemBuilder: (context, index) {
-                    final message =
-                        state.messages[state.messages.length -
-                            1 -
-                            index]; // reverse order
-                    final driverIsSender = message.sender == "driver";
-                    return Align(
-                      alignment:
+            return Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(smallWhiteSpace),
+                reverse: true,
+                itemCount: state.messages.length,
+                itemBuilder: (context, index) {
+                  final message =
+                      state.messages[state.messages.length -
+                          1 -
+                          index]; // reverse order
+                  final driverIsSender = message.sender == "driver";
+                  return Align(
+                    alignment:
+                        driverIsSender
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment:
                           driverIsSender
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment:
-                            driverIsSender
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            constraints: BoxConstraints(
-                              maxWidth: Responsive.width(context) * 0.7,
-                            ),
-                            margin: const EdgeInsets.symmetric(
-                              vertical: extraSmallWhiteSpace,
-                            ),
-                            padding: const EdgeInsets.all(smallWhiteSpace),
-                            decoration: BoxDecoration(
-                              color:
-                                  driverIsSender
-                                      ? thickFillColor
-                                      : Colors.black,
-                              borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(roundedLg),
-                                topRight: const Radius.circular(roundedLg),
-                                bottomLeft: Radius.circular(
-                                  driverIsSender ? roundedLg : 0,
-                                ),
-                                bottomRight: Radius.circular(
-                                  driverIsSender ? 0 : roundedLg,
-                                ),
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          driverIsSender ? "You   " : "User",
+                          style: TextStyle(
+                            fontSize: smallText,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: Responsive.width(context) * 0.7,
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                            vertical: extraSmallWhiteSpace,
+                          ),
+                          padding: const EdgeInsets.all(smallWhiteSpace),
+                          decoration: BoxDecoration(
+                            color:
+                                driverIsSender ? thickFillColor : Colors.black,
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(roundedLg),
+                              topRight: const Radius.circular(roundedLg),
+                              bottomLeft: Radius.circular(
+                                driverIsSender ? roundedLg : 0,
+                              ),
+                              bottomRight: Radius.circular(
+                                driverIsSender ? 0 : roundedLg,
                               ),
                             ),
-                            child: Text(
-                              message.content,
-                              style: const TextStyle(color: Colors.white),
-                            ),
                           ),
-                          Text(
-                            "${message.timestamp.toIso8601String().split("T")[0].replaceAll("-", "/")}   ",
-                            style: TextStyle(
-                              fontSize: smallText,
-                              color: Colors.grey.shade400,
-                            ),
+                          child: Text(
+                            message.content,
+                            style: const TextStyle(color: Colors.white),
                           ),
-                          VSpace(smallWhiteSpace),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-      ],
+                        ),
+                        Text(
+                          "${message.timestamp.toIso8601String().split("T")[0].replaceAll("-", "/")}   ",
+                          style: TextStyle(
+                            fontSize: smallText,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        VSpace(smallWhiteSpace),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

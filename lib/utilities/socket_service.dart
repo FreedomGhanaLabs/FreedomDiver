@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
-import 'package:freedomdriver/feature/messaging/models/message.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -82,21 +81,14 @@ class DriverSocketService {
       },
     );
 
-    _registerRideEvent<MessageModel>(
-      "ride_message",
-      (data) => MessageModel.fromJson(data),
-      (message) {
-        log('New Message: ${message.toJson()}');
-      },
-    );
-
     _socket!.on("ride_message", (data) {
       if (data == null) {
         log('⚠️ ride_message received null data.');
         return;
       }
-      if (data is String) {
-        onNewMessage?.call(data);
+      if (data is Map<String, dynamic>) {
+        //I'm outside the school gate
+        onNewMessage?.call(data['notification']['body']);
       } else {
         log('⚠️ Unexpected ride_message data: $data');
       }

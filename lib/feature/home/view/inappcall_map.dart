@@ -212,7 +212,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
             children: [
               showGoogleMap(),
               Positioned(
-                top: MediaQuery.of(context).padding.top + smallWhiteSpace,
+                top: Responsive.top(context),
                 left: whiteSpace,
                 child: const DecoratedBackButton(),
               ),
@@ -226,27 +226,25 @@ class _InAppCallMapState extends State<InAppCallMap> {
                         horizontal: smallWhiteSpace,
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("User's Contact", style: normalTextStyle),
-                              InkWell(
-                                child: Text(
-                                  ride?.user?.phone ?? "",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: paragraphText,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              SelectableText(
+                                ride?.user?.phone ?? "",
+                                maxLines: 2,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: paragraphText,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
                           ),
-                          const Spacer(),
-                          TypeCapsule(rideType: ride?.rideType ?? ""),
+
+                          OutlinedContainer(rideType: ride?.rideType ?? ""),
                         ],
                       ),
                     ),
@@ -352,7 +350,10 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   GoogleMap showGoogleMap() {
     return GoogleMap(
-      initialCameraPosition: CameraPosition(target: _driverLocation!, zoom: 15),
+      initialCameraPosition: CameraPosition(
+        target: context.driverLatLng!,
+        zoom: 16,
+      ),
       markers: _markers,
       polylines: _polylines,
       myLocationEnabled: true,
@@ -360,7 +361,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
       zoomControlsEnabled: false,
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
-        _mapController?.animateCamera(CameraUpdate.newLatLng(_driverLocation!));
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLng(context.driverLatLng!),
+        );
       },
     );
   }
@@ -445,16 +448,18 @@ void callUser(String phoneNumber) async {
   if (await canLaunchUrl(url)) await launchUrl(url);
 }
 
-class TypeCapsule extends StatelessWidget {
-  const TypeCapsule({super.key, required this.rideType});
+class OutlinedContainer extends StatelessWidget {
+  const OutlinedContainer({super.key, required this.rideType});
 
   final String rideType;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 30,
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: smallWhiteSpace,
+        vertical: extraSmallWhiteSpace,
+      ),
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
         color: Colors.white,

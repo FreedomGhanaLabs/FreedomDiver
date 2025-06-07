@@ -5,7 +5,6 @@ import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-
 class CustomScreen extends StatelessWidget {
   const CustomScreen({
     super.key,
@@ -18,6 +17,7 @@ class CustomScreen extends StatelessWidget {
     this.showDivider = true,
     this.image,
     this.bottomNavigationBar,
+    this.differentUi,
   });
 
   final List<Widget> children;
@@ -29,6 +29,7 @@ class CustomScreen extends StatelessWidget {
   final String? bodyDescription;
   final ImageProvider<Object>? image;
   final Widget? bottomNavigationBar;
+  final Widget? differentUi;
 
   @override
   Widget build(BuildContext context) {
@@ -54,31 +55,35 @@ class CustomScreen extends StatelessWidget {
             ),
             const VSpace(extraSmallWhiteSpace),
             if (showDivider) const CustomDivider(height: 6),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal:
-                      Responsive.isBigMobile(context)
-                          ? whiteSpace
-                          : smallWhiteSpace,
+            differentUi ??
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal:
+                          Responsive.isBigMobile(context)
+                              ? whiteSpace
+                              : smallWhiteSpace,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (bodyHeader != null) ...[
+                          const VSpace(smallWhiteSpace),
+                          Text(bodyHeader ?? '', style: normalTextStyle),
+                        ],
+                        if (bodyDescription != null)
+                          Text(
+                            bodyDescription ?? '',
+                            style: descriptionTextStyle,
+                          ),
+                        const VSpace(smallWhiteSpace),
+                        ...children,
+                        const VSpace(whiteSpace),
+                      ],
+                    ),
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (bodyHeader != null) ...[
-                      const VSpace(smallWhiteSpace),
-                      Text(bodyHeader ?? '', style: normalTextStyle),
-                    ],
-                    if (bodyDescription != null)
-                      Text(bodyDescription ?? '', style: descriptionTextStyle),
-                    const VSpace(smallWhiteSpace),
-                    ...children,
-                    const VSpace(whiteSpace),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
       ),

@@ -158,22 +158,11 @@ class HomeRide extends StatefulWidget {
 }
 
 class _HomeRideState extends State<HomeRide> {
-  LatLng? _driverLocation;
   bool isCompleteRide = false;
 
   final TextEditingController reasonController = TextEditingController(
     text: "Too far from my current location",
   );
-
-  @override
-  void initState() {
-    _driverLocation = LatLng(
-      context.driver?.location?.coordinates[1] ?? 37.774546,
-      context.driver?.location?.coordinates[0] ?? -122.433523,
-    );
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,8 +202,8 @@ class _HomeRideState extends State<HomeRide> {
                   child: GoogleMap(
                     zoomControlsEnabled: false,
                     initialCameraPosition: CameraPosition(
-                      target: _driverLocation!,
-                      zoom: 13,
+                      target: context.driverLatLng!,
+                      zoom: 15.5,
                     ),
                   ),
                 ),
