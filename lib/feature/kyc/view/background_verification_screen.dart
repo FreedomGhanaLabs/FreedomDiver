@@ -132,19 +132,21 @@ class SimpleButton extends StatelessWidget {
                 Icon(icon, color: Colors.white),
                 HSpace(medWhiteSpace),
               ],
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style:
-                    textStyle ??
-                    TextStyle(
-                      color: Colors.white,
-                      fontSize:
-                          Responsive.isTablet(context)
-                              ? normalText
-                              : paragraphText,
-                      fontWeight: FontWeight.w500,
-                    ),
+              Expanded(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style:
+                      textStyle ??
+                      TextStyle(
+                        color: Colors.white,
+                        fontSize:
+                            Responsive.isTablet(context)
+                                ? normalText
+                                : paragraphText,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
               ),
             ],
           ),

@@ -1,19 +1,30 @@
+import 'dart:convert';
+
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:hive/hive.dart';
 
 const String rideKey = 'ride';
-const String rideBoxKey = 'rideRequests';
+const String rideBoxKey = 'rideRequest';
 
-Future<RideRequest?> getRideFromHive() async {
-  final box = await Hive.openBox(rideBoxKey);
-  return box.get(rideKey) as RideRequest?;
+Future<RideRequest?> getRideRequestFromHive() async {
+  final box = await Hive.openBox<String>(rideBoxKey);
+  final jsonString = box.get(rideKey);
+  if (jsonString == null) return null;
+  try {
+    final jsonMap = jsonDecode(jsonString);
+    return RideRequest.fromJson(jsonMap);
+  } catch (_) {
+    return null;
+  }
 }
 
-Future<void> addRideToHive(RideRequest ride) async {
-  final box = await Hive.openBox(rideBoxKey);
-  await box.put(rideKey, ride);
+Future<void> addRideRequestToHive(RideRequest ride) async {
+  final box = await Hive.openBox<String>(rideBoxKey);
+  final jsonString = jsonEncode(ride.toJson());
+  await box.put(rideKey, jsonString);
 }
 
-Future<void> deleteRideFromHive() async {
-  await Hive.box(rideBoxKey).delete(rideKey);
+Future<void> deleteRideRequestFromHive() async {
+  final box = await Hive.openBox<String>(rideBoxKey);
+  await box.delete(rideKey);
 }

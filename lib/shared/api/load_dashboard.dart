@@ -7,6 +7,7 @@ import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubi
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 
 import '../../core/di/locator.dart';
+import '../../feature/rides/cubit/ride/ride_cubit.dart';
 import '../../utilities/notification_service.dart';
 import 'load_document_histories.dart';
 
@@ -15,6 +16,7 @@ Future<void> loadDashboard(BuildContext context, {bool loadAll = true}) async {
   final documentCubit = context.read<DocumentCubit>();
   final earningCubit = context.read<EarningCubit>();
   final rideHistoryCubit = context.read<RideHistoryCubit>();
+  final rideCubit = context.read<RideCubit>();
   final driverLocationService = getIt<DriverLocationService>();
 
   if (loadAll) {
@@ -26,6 +28,7 @@ Future<void> loadDashboard(BuildContext context, {bool loadAll = true}) async {
     if (loadAll) NotificationService.initializeNotifications(),
     driverCubit.getDriverProfile(context),
     driverCubit.toggleStatus(context, setAvailable: true, toggleOnlyApi: true),
+    rideCubit.checkForActiveRide(),
     earningCubit.getPeriodicEarnings(context),
     rideHistoryCubit.getAllRideHistories(context, showOverlay: false),
     documentCubit.getDriverDocument(context),

@@ -5,6 +5,7 @@ import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/shared/widgets/decorated_container.dart';
@@ -41,7 +42,7 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
     final ride = rideState is RideLoaded ? rideState.ride : null;
 
     final newMessage = MessageModel(
-      // id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sender: "driver",
       userId: ride?.user?.id ?? "",
       riderId: context.driver?.id ?? "",
       content: content,
@@ -113,25 +114,41 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
                         state.messages[state.messages.length -
                             1 -
                             index]; // reverse order
+                    final driverIsSender = message.sender == "driver";
                     return Align(
                       alignment:
-                          message.riderId == context.driver?.id
+                          driverIsSender
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                       child: Column(
-                        crossAxisAlignment:  message.riderId == context.driver?.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            driverIsSender
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
                         children: [
                           Container(
+                            constraints: BoxConstraints(
+                              maxWidth: Responsive.width(context) * 0.7,
+                            ),
                             margin: const EdgeInsets.symmetric(
                               vertical: extraSmallWhiteSpace,
                             ),
                             padding: const EdgeInsets.all(smallWhiteSpace),
                             decoration: BoxDecoration(
                               color:
-                                  message.riderId == context.driver?.id
-                                      ? Colors.blueAccent
+                                  driverIsSender
+                                      ? thickFillColor
                                       : Colors.black,
-                              borderRadius: BorderRadius.circular(roundedLg),
+                              borderRadius: BorderRadius.only(
+                                topLeft: const Radius.circular(roundedLg),
+                                topRight: const Radius.circular(roundedLg),
+                                bottomLeft: Radius.circular(
+                                  driverIsSender ? roundedLg : 0,
+                                ),
+                                bottomRight: Radius.circular(
+                                  driverIsSender ? 0 : roundedLg,
+                                ),
+                              ),
                             ),
                             child: Text(
                               message.content,

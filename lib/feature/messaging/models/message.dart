@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 class MessageModel {
+  final String sender;
   final String userId;
   final String riderId;
   final String content;
   final DateTime timestamp;
 
   MessageModel({
+    required this.sender,
     required this.userId,
     required this.riderId,
     required this.content,
@@ -15,6 +17,7 @@ class MessageModel {
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
+      sender: json['sender'],
       userId: json['userId'],
       riderId: json['riderId'],
       content: json['content'],
@@ -23,6 +26,7 @@ class MessageModel {
   }
 
   Map<String, dynamic> toJson() => {
+    'sender': sender,
     'userId': userId,
     'riderId': riderId,
     'content': content,

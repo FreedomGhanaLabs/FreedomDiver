@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/app/cubits.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
+import 'package:freedomdriver/feature/messaging/message_cubit.dart';
+import 'package:freedomdriver/feature/messaging/models/message.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
 import 'package:freedomdriver/router/router.dart';
@@ -54,6 +57,19 @@ class App extends StatelessWidget {
                     );
 
                     context.read<RideCubit>().foundRide(ride, context);
+                  },
+                  onNewMessage: (message) {
+                    context.read<MessageCubit>().sendMessage(
+                      context,
+                      MessageModel(
+                        sender: "user",
+                        userId: "userId",
+                        riderId: context.driver?.id ?? "",
+                        content: message,
+                        timestamp: DateTime.now(),
+                      ),
+                      isSocketMessage: true,
+                    );
                   },
                 );
               });

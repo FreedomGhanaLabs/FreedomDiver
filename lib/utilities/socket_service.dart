@@ -90,6 +90,18 @@ class DriverSocketService {
       },
     );
 
+    _socket!.on("ride_message", (data) {
+      if (data == null) {
+        log('⚠️ ride_message received null data.');
+        return;
+      }
+      if (data is String) {
+        onNewMessage?.call(data);
+      } else {
+        log('⚠️ Unexpected ride_message data: $data');
+      }
+    });
+
     // _registerRideEvent<RideRequest>(
     //   DriverSocketConstants.rideAccepted,
     //   (data) => RideRequest.fromJson(data),
