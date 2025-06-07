@@ -247,6 +247,20 @@ class RideCubit extends Cubit<RideState> {
     );
   }
 
+  Future<void> sendUserMessage(
+    BuildContext context, {
+    String? rideId,
+    required String message,
+  }) async {
+    await _postRideAction(
+      context,
+      '${rideId ?? _cachedRideId}/message',
+      body: {"message": message},
+      successLog: '[RideCubit] Message sent',
+      errorMsg: 'Failed to send ride message',
+    );
+  }
+
   Future<void> rateRideUser(
     BuildContext context, {
     required String rideId,

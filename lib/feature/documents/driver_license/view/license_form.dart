@@ -144,28 +144,40 @@ Widget buildField(
   String label,
   TextEditingController controller, {
   TextInputType? keyboardType,
+  String? placeholder,
+  Widget? suffixIcon,
+  Widget? prefixIcon,
+  bool shouldValidate = true,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(
-        label,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: paragraphText,
+      if (label.isNotEmpty)
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: paragraphText,
+          ),
         ),
-      ),
       const VSpace(extraSmallWhiteSpace),
       TextFieldFactory.itemField(
         controller: controller,
         fillColor: Colors.white,
+        hintText: placeholder,
+        hintTextStyle: TextStyle(color: Colors.grey.shade400),
+        suffixIcon: suffixIcon,
+        prefixText: prefixIcon,
         keyboardType: keyboardType,
-        enabledBorderColor: Colors.black.withValues(alpha: 0.2),
-        validator: (val) {
-          return val == null || val.trim().isEmpty
-              ? '$label is required'
-              : null;
-        },
+        enabledBorderColor: Colors.grey.shade300,
+        validator:
+            !shouldValidate
+                ? null
+                : (val) {
+                  return val == null || val.trim().isEmpty
+                      ? '$label is required'
+                      : null;
+                },
       ),
       const VSpace(smallWhiteSpace),
     ],

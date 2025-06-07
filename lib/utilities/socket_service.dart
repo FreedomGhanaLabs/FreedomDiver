@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
+import 'package:freedomdriver/feature/messaging/models/message.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -45,6 +46,7 @@ class DriverSocketService {
     Function(RideRequest)? onNewRideRequest,
     Function(String status)? onNewRideAccepted,
     Function(String status)? onRideStatusUpdate,
+    Function(String message)? onNewMessage,
   }) async {
     final token = await getTokenFromHive();
     _socket?.disconnect();
@@ -77,6 +79,14 @@ class DriverSocketService {
       (ride) {
         log('${DriverSocketConstants.newRideRequestLog}${ride.toJson()}');
         onNewRideRequest?.call(ride);
+      },
+    );
+
+    _registerRideEvent<MessageModel>(
+      "ride_message",
+      (data) => MessageModel.fromJson(data),
+      (message) {
+        log('New Message: ${message.toJson()}');
       },
     );
 

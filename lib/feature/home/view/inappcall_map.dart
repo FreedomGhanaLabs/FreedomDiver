@@ -7,6 +7,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
+import 'package:freedomdriver/feature/home/view/inapp_ride_messaging.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
@@ -20,6 +21,8 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../shared/widgets/custom_draggable_sheet.dart';
 
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});
@@ -190,16 +193,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
     }
   }
 
-  void _callUser(String phoneNumber) async {
-    final url = Uri.parse('tel:$phoneNumber');
-    if (await canLaunchUrl(url)) await launchUrl(url);
-  }
-
-  void _messageUser(String phoneNumber) async {
-    final url = Uri.parse('sms:$phoneNumber');
-    if (await canLaunchUrl(url)) await launchUrl(url);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -301,71 +294,16 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Price',
-                              style: TextStyle(
-                                color: Colors.black.withValues(
-                                  alpha: 0.5600000023841858,
-                                ),
-                                fontSize: extraSmallText.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const VSpace(10),
-                            Text(
+                        InfoColumn(
+                          title: 'Price',
+                          value:
                               "${ride?.currency} ${ride?.estimatedFare.toStringAsFixed(2) ?? "0.00"}",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: paragraphText.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              'Expected Distance Covered',
-                              style: TextStyle(
-                                color: Colors.black.withValues(alpha: 0.56),
-                                fontSize: extraSmallText.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const VSpace(10),
-                            Text(
-                              ride?.estimatedDistance?.text ?? "",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: paragraphText.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                        InfoColumn(
+                          title: 'Expected Distance Covered',
+                          value: ride?.estimatedDistance?.text ?? "",
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              'Avg.Time',
-                              style: TextStyle(
-                                color: Colors.black.withValues(alpha: 0.56),
-                                fontSize: extraSmallText.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const VSpace(medWhiteSpace),
-                            Text(
-                              averageTime ?? "",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: paragraphText.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
+                        InfoColumn(title: 'Avg.Time', value: averageTime ?? ""),
                       ],
                     ),
                     const VSpace(whiteSpace),
@@ -373,29 +311,33 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     const VSpace(whiteSpace),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: whiteSpace,
+                        horizontal: smallWhiteSpace,
                       ),
                       child: Row(
                         children: [
                           Expanded(
                             child: SimpleButton(
                               title: "Call User",
+                              icon: Icons.call,
                               onPressed:
-                                  () => _callUser(ride?.user?.phone ?? ''),
+                                  () => callUser(ride?.user?.phone ?? ''),
                             ),
                           ),
                           const SizedBox(width: extraSmallWhiteSpace),
                           Expanded(
                             child: SimpleButton(
-                              title: "Message User",
+                              title: "Message",
+                              icon: Icons.send,
                               onPressed:
-                                  () => _messageUser(ride?.user?.phone ?? ''),
+                                  () => Navigator.pushNamed(
+                                    context,
+                                    InappRideMessaging.routeName,
+                                  ),
                               backgroundColor: thickFillColor,
                             ),
                           ),
                         ],
                       ),
-
                     ),
                     const VSpace(whiteSpace),
                   ],
@@ -410,14 +352,47 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
   GoogleMap showGoogleMap() {
     return GoogleMap(
-      initialCameraPosition: CameraPosition(target: _driverLocation!, zoom: 13),
+      initialCameraPosition: CameraPosition(target: _driverLocation!, zoom: 15),
       markers: _markers,
       polylines: _polylines,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
-
         _mapController?.animateCamera(CameraUpdate.newLatLng(_driverLocation!));
       },
+    );
+  }
+}
+
+class InfoColumn extends StatelessWidget {
+  const InfoColumn({super.key, required this.title, required this.value});
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.black54,
+            fontSize: smallText.sp - 1,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        const VSpace(medWhiteSpace - 2),
+        Text(
+          value,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: paragraphText.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -465,43 +440,9 @@ class PassengerDestinationDetailBox extends StatelessWidget {
   }
 }
 
-class CustomBottomSheet extends StatelessWidget {
-  const CustomBottomSheet({
-    required this.child,
-    this.height,
-    super.key,
-    this.padding,
-  });
-  final double? height;
-  final Widget child;
-  final EdgeInsetsGeometry? padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.1,
-      maxChildSize: 0.8,
-      builder: (context, scrollController) {
-        return Container(
-          height: height ?? 200,
-          padding: padding ?? EdgeInsets.zero,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(roundedLg),
-              topRight: Radius.circular(roundedLg),
-            ),
-            boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 30)],
-          ),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: child,
-          ),
-        );
-      },
-    );
-  }
+void callUser(String phoneNumber) async {
+  final url = Uri.parse('tel:$phoneNumber');
+  if (await canLaunchUrl(url)) await launchUrl(url);
 }
 
 class TypeCapsule extends StatelessWidget {

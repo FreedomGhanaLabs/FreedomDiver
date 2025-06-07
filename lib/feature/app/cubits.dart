@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/messaging/message_cubit.dart';
 
 import '../authentication/login/cubit/login_cubit.dart';
 import '../authentication/register/cubit/registration_cubit.dart';
@@ -32,4 +33,5 @@ List cubitRegistry = [
   BlocProvider(create: (_) => EarningCubit()),
   BlocProvider(create: (_) => FinancialCubit()),
   BlocProvider(create: (_) => DebtCubit()),
+  BlocProvider(create: (_) => MessageCubit()),
 ];

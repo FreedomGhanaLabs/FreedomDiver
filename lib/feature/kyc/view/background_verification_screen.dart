@@ -95,6 +95,7 @@ class SimpleButton extends StatelessWidget {
     this.textStyle,
     this.child,
     this.materialTapTargetSize,
+    this.icon,
   });
   final String title;
   final Color? backgroundColor;
@@ -103,6 +104,7 @@ class SimpleButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final TextStyle? textStyle;
   final Widget? child;
+  final IconData? icon;
   final MaterialTapTargetSize? materialTapTargetSize;
   @override
   Widget build(BuildContext context) {
@@ -123,19 +125,28 @@ class SimpleButton extends StatelessWidget {
       ),
       child:
           child ??
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style:
-                textStyle ??
-                TextStyle(
-                  color: Colors.white,
-                  fontSize:
-                      Responsive.isTablet(context)
-                          ? normalText
-                          : paragraphText,
-                  fontWeight: FontWeight.w500,
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: Colors.white),
+                HSpace(medWhiteSpace),
+              ],
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style:
+                    textStyle ??
+                    TextStyle(
+                      color: Colors.white,
+                      fontSize:
+                          Responsive.isTablet(context)
+                              ? normalText
+                              : paragraphText,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ],
           ),
     );
   }

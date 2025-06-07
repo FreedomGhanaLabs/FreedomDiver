@@ -6,11 +6,11 @@ import 'package:freedomdriver/feature/authentication/login/view/login_form_scree
 import 'package:freedomdriver/feature/authentication/register/view/personal_details.dart';
 import 'package:freedomdriver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedomdriver/feature/authentication/register/view/verify_otp_screen.dart';
-import 'package:freedomdriver/feature/documents/address_proof/view/address_proof_form.dart';
-import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/driver_score_details_screen.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/earnings_screen.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/wallet_screen.dart';
+import 'package:freedomdriver/feature/documents/address_proof/view/address_proof_form.dart';
+import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/feature/kyc/view/criminal_background_check_screen.dart';
@@ -29,6 +29,7 @@ import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 
 import '../feature/documents/ghana_card/view/ghana_card_form.dart';
 import '../feature/documents/motorcycle/view/motorcycle_image.dart';
+import '../feature/home/view/inapp_ride_messaging.dart';
 import '../feature/profile/view/debt_management_screen.dart';
 import '../feature/profile/view/profile_image_cropper.dart';
 import '../feature/profile/view/profile_picture.dart';
@@ -121,6 +122,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case InAppCallMap.routeName:
       return _pageBuilder(
         (_) => const InAppCallMap(),
+        settings: settings,
+      );
+    case InappRideMessaging.routeName:
+      return _pageBuilder(
+        (_) => const InappRideMessaging(),
         settings: settings,
       );
     case EarningsScreen.routeName:

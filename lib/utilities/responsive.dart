@@ -15,6 +15,9 @@ class Responsive {
   static double top(BuildContext context) {
     return MediaQuery.of(context).padding.top;
   }
+  static double bottom(BuildContext context) {
+    return MediaQuery.of(context).padding.bottom;
+  }
 
 // from small to big screens
   static bool isMobile(BuildContext context) {
