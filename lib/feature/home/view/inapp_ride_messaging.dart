@@ -125,7 +125,7 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
                               : CrossAxisAlignment.start,
                       children: [
                         Text(
-                          driverIsSender ? "You   " : "User",
+                          driverIsSender ? "You   " : " User",
                           style: TextStyle(
                             fontSize: smallText,
                             color: Colors.grey.shade400,
@@ -159,9 +159,9 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
                           ),
                         ),
                         Text(
-                          "${message.timestamp.toIso8601String().split("T")[0].replaceAll("-", "/")}   ",
+                          "${TimeOfDay.fromDateTime(message.timestamp).format(context)} • ${message.timestamp.day}/${message.timestamp.month}/${message.timestamp.year}",
                           style: TextStyle(
-                            fontSize: smallText,
+                            fontSize: extraSmallText,
                             color: Colors.grey.shade400,
                           ),
                         ),

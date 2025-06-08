@@ -108,13 +108,9 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             ManagePayment(
               walletSubheading:
-                  finance?.bankDetailsProvided != null
-                      ? ''
-                      : 'Add your bank account details to receive payments directly.',
+                  "${finance?.bankDetailsProvided == null ? 'Update' : 'Add '} your bank account details to receive payments directly.",
               mobileMoneySubheading:
-                  finance?.momoDetailsProvided != null
-                      ? ''
-                      : 'Add your mobile money details to receive payments directly.',
+                  "${finance?.momoDetailsProvided == null ? 'Update' : 'Add'} your mobile money details to receive payments directly.",
               onAddMobileMoneyTap: () {
                 phoneNumber.text = context.driver?.phone ?? '';
                 showCustomModal(

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../../../debt_financial_earnings/cubit/finance/financial_state.dart';
 
 
 class DriverTotalEarnings extends StatelessWidget {
@@ -13,9 +14,9 @@ class DriverTotalEarnings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EarningCubit, EarningState>(
+    return BlocBuilder<FinancialCubit, FinancialState>(
       builder: (context, state) {
-        final earning = state is EarningLoaded ? state.earning : null;
+        final finance = state is FinancialLoaded ? state.finance : null;
         return Container(
           padding:
               const EdgeInsets.only(left: 19, top: 22, right: 19, bottom: 20),
@@ -49,7 +50,7 @@ class DriverTotalEarnings extends StatelessWidget {
               ),
               5.verticalSpace,
               Text(
-                '$appCurrency ${earning?.totalRideEarnings.toStringAsFixed(2) ?? '0.00'}',
+                '$appCurrency ${finance?.walletBalance.toStringAsFixed(2) ?? '0.00'}',
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: headingText - 2, 

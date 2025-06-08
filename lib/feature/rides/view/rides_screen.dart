@@ -6,12 +6,12 @@ import 'package:freedomdriver/feature/home/view/widgets/rider_time_line.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_type.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_state.dart';
+import 'package:freedomdriver/feature/rides/models/ride_history.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 class RidesScreen extends StatefulWidget {
@@ -25,67 +25,73 @@ class _RidesScreenState extends State<RidesScreen> {
   RideTabEnum rideTabEnum = RideTabEnum.scheduled;
 
   @override
+  void initState() {
+    setState(() {
+      context.read<RideHistoryCubit>().getAllRideHistories(context);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final rideHistory = context.read<RideHistoryCubit>()
-      ..getAllRideHistories(context);
     return BlocBuilder<RideHistoryCubit, RideHistoryState>(
       builder: (context, state) {
         return CustomScreen(
           title: 'Ride History',
+          onRefresh:
+              () =>
+                  context.read<RideHistoryCubit>().refreshRideHistory(context),
           hasBackButton: false,
-          actions: [
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () => rideHistory.refreshRideHistory(context),
-              icon: const Icon(Icons.refresh),
-            ),
-          ],
-          children: [
-            if (state is RideHistoryError)
-              SizedBox(
-                height: Responsive.height(context) * 0.75,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Ride History',
-                      style: normalTextStyle.copyWith(color: redColor),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      state.message,
-                      style: descriptionTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
-            else if (state is RideHistoryLoaded) ...[
-              if (state.ride.count <= 0)
-                SizedBox(
-                  height: Responsive.height(context) * 0.75,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const AppIcon(iconName: 'no_ride_history'),
-                      const VSpace(extraSmallWhiteSpace),
-                      Text(
-                        'You have no scheduled Ride ',
-                        textAlign: TextAlign.center,
-                        style: headingTextStyle,
+          differentUi: Expanded(
+            child:
+                state is RideHistoryError
+                    ? SizedBox(
+                      height: Responsive.height(context) * 0.75,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Ride History',
+                            style: normalTextStyle.copyWith(color: redColor),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            state.message,
+                            style: descriptionTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                  ],
-                ),
-                )
-              else
-                ...List.generate(
-                  state.ride.count,
-                  (index) {
-                    return const RidesTile();
-                  },
-              ),
-            ],
-          ],
+                    )
+                    : state is RideHistoryLoaded
+                    ? (state.ride.count <= 0
+                        ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const AppIcon(iconName: 'no_ride_history'),
+                            const VSpace(extraSmallWhiteSpace),
+                            Text(
+                              'You have no scheduled Ride ',
+                              textAlign: TextAlign.center,
+                              style: headingTextStyle,
+                            ),
+                          ],
+                        )
+                        : ListView.builder(
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                Responsive.isTablet(context)
+                                    ? whiteSpace
+                                    : smallWhiteSpace,
+                            vertical: smallWhiteSpace,
+                          ),
+                          itemCount: state.ride.count,
+                          itemBuilder: (context, index) {
+                            return RidesTile(ride: state.ride.data[index]);
+                          },
+                        ))
+                    : SizedBox(),
+          ),
         );
       },
     );
@@ -93,24 +99,33 @@ class _RidesScreenState extends State<RidesScreen> {
 }
 
 class RidesTile extends StatelessWidget {
-  const RidesTile({super.key});
+  const RidesTile({super.key, required this.ride});
+
+  final Ride ride;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: smallWhiteSpace),
       decoration: ShapeDecoration(
-        color: const Color(0xFFFCFCFC),
+        color: Colors.white,
         shape: RoundedRectangleBorder(
           side: const BorderSide(
-            width: 1.08,
+            width: 1,
             strokeAlign: BorderSide.strokeAlignOutside,
             color: Color(0xFFF5F5F5),
           ),
-          borderRadius: BorderRadius.circular(15.50),
+          borderRadius: BorderRadius.circular(roundedLg),
         ),
       ),
-      child: const RiderTimeLine(),
+      child: RiderTimeLine(
+        destinationDetails: ride.dropoffLocation.address,
+        pickUpDetails: ride.pickupLocation.address,
+        riderId: ride.id,
+        currency: ride.currency,
+        fare: ride.totalFare,
+        status: ride.status,
+      ),
     );
   }
 }
@@ -135,12 +150,17 @@ class RideTab extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding:
-              const EdgeInsets.only(top: 4.96, left: 7, right: 7, bottom: 4.96),
+          padding: const EdgeInsets.only(
+            top: 4.96,
+            left: 7,
+            right: 7,
+            bottom: 4.96,
+          ),
           decoration: ShapeDecoration(
             color: const Color(0xFFF3F3F3),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -149,12 +169,15 @@ class RideTab extends StatelessWidget {
               GestureDetector(
                 onTap: onPressScheduled,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 7,
+                    horizontal: 10,
+                  ),
                   decoration: BoxDecoration(
-                    color: rideTabEnum == RideTabEnum.scheduled
-                        ? Colors.black
-                        : const Color(0xFFF3F3F3),
+                    color:
+                        rideTabEnum == RideTabEnum.scheduled
+                            ? Colors.black
+                            : const Color(0xFFF3F3F3),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Row(
@@ -163,9 +186,10 @@ class RideTab extends StatelessWidget {
                       Text(
                         'Scheduled Ride',
                         style: TextStyle(
-                          color: rideTabEnum == RideTabEnum.scheduled
-                              ? const Color(0xFFF3F3F3)
-                              : const Color(0xFFBFBFBF),
+                          color:
+                              rideTabEnum == RideTabEnum.scheduled
+                                  ? const Color(0xFFF3F3F3)
+                                  : const Color(0xFFBFBFBF),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -177,12 +201,15 @@ class RideTab extends StatelessWidget {
               GestureDetector(
                 onTap: onPressCompleted,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 7,
+                    horizontal: 10,
+                  ),
                   decoration: BoxDecoration(
-                    color: rideTabEnum == RideTabEnum.completed
-                        ? Colors.black
-                        : const Color(0xFFF3F3F3),
+                    color:
+                        rideTabEnum == RideTabEnum.completed
+                            ? Colors.black
+                            : const Color(0xFFF3F3F3),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Row(
@@ -191,9 +218,10 @@ class RideTab extends StatelessWidget {
                       Text(
                         'Completed Ride',
                         style: GoogleFonts.poppins(
-                          color: rideTabEnum == RideTabEnum.completed
-                              ? const Color(0xFFF3F3F3)
-                              : const Color(0xFFBFBFBF),
+                          color:
+                              rideTabEnum == RideTabEnum.completed
+                                  ? const Color(0xFFF3F3F3)
+                                  : const Color(0xFFBFBFBF),
                           fontSize: 16.33,
                           fontWeight: FontWeight.w500,
                         ),
@@ -228,11 +256,7 @@ class ScheduledRides extends StatefulWidget {
 class _ScheduledRidesState extends State<ScheduledRides> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 20,
-      width: 87,
-      color: Colors.red,
-    );
+    return Container(height: 20, width: 87, color: Colors.red);
   }
 }
 

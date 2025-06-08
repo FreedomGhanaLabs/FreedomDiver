@@ -41,13 +41,13 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
       children: [
         BlocBuilder<DebtCubit, DebtState>(
           builder: (context, state) {
-            if (state is DebtLoaded) {
-              final debt = state.debt;
+
+            final debt = state is DebtLoaded ? state.debt : null;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DebtStatusCard(debt: debt),
+                DebtStatusCard(debt: debt!),
                   const SizedBox(height: whiteSpace),
                   DebtPaymentForm(debt: debt),
                   const SizedBox(height: whiteSpace),
@@ -57,8 +57,7 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
                 ],
               );
             }
-            return const SizedBox.shrink();
-          },
+     
         ),
       ],
     );
@@ -74,40 +73,7 @@ class DebtHistorySection extends StatelessWidget {
     final payments =
         debtPaymentHistory.isNotEmpty
             ? debtPaymentHistory
-            : [
-              DebtPaymentHistory(
-                amount: 200,
-                method: "momo",
-                notes: "This is a mobile money payment",
-                paymentDate: DateTime.now(),
-                reference: "xyz",
-                status: "pending",
-              ),
-              DebtPaymentHistory(
-                amount: 200,
-                method: "wallet",
-                notes: "This is a wallet payment",
-                paymentDate: DateTime.now(),
-                reference: "xyz",
-                status: "successful",
-              ),
-              DebtPaymentHistory(
-                amount: 200,
-                method: "momo",
-                notes: "This is a payment",
-                paymentDate: DateTime.now(),
-                reference: "xyz",
-                status: "successful",
-              ),
-              DebtPaymentHistory(
-                amount: 200,
-                method: "wallet",
-                notes: "This is a wallet payment",
-                paymentDate: DateTime.now(),
-                reference: "xyz",
-                status: "failed",
-              ),
-            ];
+            : [];
 
     if (payments.isEmpty) {
       return Center(
@@ -179,7 +145,7 @@ class DebtStatusCard extends StatelessWidget {
 
     final debtPercentage = debt.debtPercentage;
 
-    return DebtCard(
+    return DecoratedContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

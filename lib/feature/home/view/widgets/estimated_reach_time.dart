@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/core/constants/ride.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_indicator.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
@@ -8,36 +9,33 @@ import 'package:freedomdriver/utilities/ui.dart';
 
 import '../../../rides/cubit/ride/ride_state.dart';
 
-class EstimatedReachTime extends StatefulWidget {
+class EstimatedReachTime extends StatelessWidget {
   const EstimatedReachTime({super.key});
 
-  @override
-  State<EstimatedReachTime> createState() => _EstimatedReachTimeState();
-}
-
-class _EstimatedReachTimeState extends State<EstimatedReachTime> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RideCubit, RideState>(
       builder: (context, state) {
         final ride = state is RideLoaded ? state.ride : null;
 
-        final isAccepted = ride?.status == "accepted";
+        final isArrived = ride?.status == acceptedRide;
 
-        final etaToPickup = ride?.etaToPickup;
-        final etaToDestination = ride?.estimatedDuration?.text;
-        final destinationTime = etaToDestination.toString().split(" ")[0];
-        final destinationUnit = etaToDestination.toString().split(" ")[1];
-        final pickUpTime = etaToPickup?.text.toString().split(" ")[0];
-        final pickUpUnit = etaToPickup?.text.toString().split(" ")[1] ?? "";
-        final time = isAccepted ? pickUpTime : destinationTime;
-        final unit = isAccepted ? pickUpUnit : destinationUnit;
+        String? getTimeText(bool toPickup) =>
+            (toPickup ? ride?.etaToPickup?.text : ride?.etaToDropoff?.text)
+                ?.toString();
+
+        String timeText = getTimeText(isArrived) ?? "0 min";
+        final parts = timeText.split(" ");
+        final time = parts.isNotEmpty ? parts[0] : "0";
+        final unit = parts.length > 1 ? parts[1] : "min";
+        final location = isArrived ? "pickup" : "dropoff";
+
         return Column(
           children: [
             Row(
               children: [
                 GradientText(
-                  text: time ?? "0",
+                  text: time,
                   fontSize: emphasisText,
                   fontWeight: FontWeight.bold,
                 ),
@@ -51,7 +49,7 @@ class _EstimatedReachTimeState extends State<EstimatedReachTime> {
                 ),
                 const HSpace(extraSmallWhiteSpace),
                 Text(
-                  'until you reach ${isAccepted ? "pickup location" : "your destination"}',
+                  'until you reach $location location',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey.shade500,
@@ -63,7 +61,7 @@ class _EstimatedReachTimeState extends State<EstimatedReachTime> {
             ),
             RiderProgressTracker(
               currentMinutes: 0,
-              totalMinutes: int.tryParse(time ?? "") ?? 0,
+              totalMinutes: int.tryParse(time) ?? 0,
             ),
           ],
         );

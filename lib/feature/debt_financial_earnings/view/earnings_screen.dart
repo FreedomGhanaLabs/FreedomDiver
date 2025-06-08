@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_state.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/wallet_screen.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_banner.dart';
@@ -13,6 +11,9 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../cubit/finance/financial_cubit.dart';
+import '../cubit/finance/financial_state.dart';
 
 class EarningsScreen extends StatefulWidget {
   const EarningsScreen({super.key});
@@ -27,9 +28,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocBuilder<EarningCubit, EarningState>(
+      body: BlocBuilder<FinancialCubit, FinancialState>(
         builder: (context, state) {
-          final earning = state is EarningLoaded ? state.earning : null;
+          final finance = state is FinancialLoaded ? state.finance : null;
           return Stack(
             children: [
               const EarningsBackgroundWidget(),
@@ -73,7 +74,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                 iconName: 'driver_score_icon',
                               ),
                               title: 'Number of trips',
-                              value: '${earning?.completedRides ?? 0}',
+                              value: '${finance?.rideCount ?? 0}',
                             ),
                           ),
                           smallWhiteSpace.horizontalSpace,
@@ -113,7 +114,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                     ),
                                     TextSpan(
                                       text:
-                                          earning?.pendingPayments
+                                          finance?.availableBalance
                                               .toStringAsFixed(2) ??
                                           '0.00',
                                       style: const TextStyle(

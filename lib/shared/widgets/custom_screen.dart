@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freedomdriver/feature/profile/view/profile_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
@@ -18,6 +19,7 @@ class CustomScreen extends StatelessWidget {
     this.image,
     this.bottomNavigationBar,
     this.differentUi,
+    this.onRefresh,
   });
 
   final List<Widget> children;
@@ -30,6 +32,7 @@ class CustomScreen extends StatelessWidget {
   final ImageProvider<Object>? image;
   final Widget? bottomNavigationBar;
   final Widget? differentUi;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +60,19 @@ class CustomScreen extends StatelessWidget {
             if (showDivider) const CustomDivider(height: 6),
             differentUi ??
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal:
-                          Responsive.isBigMobile(context)
-                              ? whiteSpace
-                              : smallWhiteSpace,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                  child: RefreshIndicator.adaptive(
+                    onRefresh: onRefresh ?? () async {},
+                    color: thickFillColor,
+                    backgroundColor: Colors.white,
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal:
+                            Responsive.isBigMobile(context)
+                                ? whiteSpace
+                                : smallWhiteSpace,
+                      ),
+                      // mainAxisSize: MainAxisSize.min,
+                      // crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (bodyHeader != null) ...[
                           const VSpace(smallWhiteSpace),

@@ -8,6 +8,7 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
 
 import '../../../profile/widget/stacked_profile_card.dart';
 
@@ -17,16 +18,18 @@ class RiderTimeLine extends StatelessWidget {
     this.destinationDetails = '',
     this.pickUpDetails = '',
     this.activityType = ActivityType.ride,
-    this.riderName = 'Chale Emma',
     this.riderId = 'XRFSGT2D',
-    this.riderImage = 'assets/app_images/rider2.png',
+    this.currency,
+    this.fare,
+    this.status,
   });
   final String destinationDetails;
   final String pickUpDetails;
-  final String riderName;
   final String riderId;
   final ActivityType activityType;
-  final String riderImage;
+  final String? currency;
+  final String? status;
+  final double? fare;
 
   @override
   Widget build(BuildContext context) {
@@ -50,16 +53,17 @@ class RiderTimeLine extends StatelessWidget {
                     children: [
                       Text(
                         driver?.fullName ?? '',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 6.14,
+                          fontSize: extraSmallText,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                       Text(
-                        riderId,
+                        riderId.substring(0, 10),
                         style: TextStyle(
-                          color: Colors.black,
                           fontSize: smallText,
                           fontWeight: FontWeight.w400,
                         ),
@@ -69,37 +73,23 @@ class RiderTimeLine extends StatelessWidget {
                   ),
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SimpleButton(
-                    title: '',
-                    onPressed: () {},
-                    borderRadius: BorderRadius.circular(8.65),
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                      left: 7,
-                      right: extraSmallWhiteSpace,
-                      bottom: 8.34,
+              SimpleButton(
+                title: '',
+                onPressed: () {},
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppIcon(iconName: 'feedback_icon'),
+                    const HSpace(4),
+                    const Text(
+                      'Provide Feedback',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: smallText,
+                      ),
                     ),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppIcon(iconName: 'feedback_icon'),
-                        const HSpace(4),
-                        const Text(
-                          'Provide Feedback',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: paragraphText,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -110,7 +100,7 @@ class RiderTimeLine extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const VSpace(14.61),
+                  const VSpace(smallWhiteSpace),
                   SvgPicture.asset('assets/app_images/distance_line.svg'),
                   SizedBox(
                     width: 200,
@@ -130,7 +120,7 @@ class RiderTimeLine extends StatelessWidget {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              const VSpace(10),
+                              const VSpace(medWhiteSpace),
                               ShaderMask(
                                 shaderCallback: (Rect bounds) {
                                   return darkGoldGradient.createShader(bounds);
@@ -188,7 +178,7 @@ class RiderTimeLine extends StatelessWidget {
                 children: [
                   const VSpace(smallWhiteSpace),
                   Text(
-                    '$appCurrency 2,000',
+                    '${currency ?? appCurrency} ${fare?.toStringAsFixed(2) ?? "0.00"}',
                     style: TextStyle(
                       fontSize: smallText,
                       fontWeight: FontWeight.w500,
@@ -201,7 +191,7 @@ class RiderTimeLine extends StatelessWidget {
                     children: [
                       AppIcon(iconName: 'checked_icon'),
                       Text(
-                        'Completed',
+                        status?.capitalize ?? "Completed",
                         style: TextStyle(
                           fontSize: smallText,
                           fontWeight: FontWeight.w500,

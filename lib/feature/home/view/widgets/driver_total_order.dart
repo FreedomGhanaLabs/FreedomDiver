@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_cubit.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/cubit/earnings/earnings_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+
+import '../../../debt_financial_earnings/cubit/finance/financial_cubit.dart';
+import '../../../debt_financial_earnings/cubit/finance/financial_state.dart';
 
 class DriverTotalOrder extends StatelessWidget {
   const DriverTotalOrder({
@@ -12,9 +13,9 @@ class DriverTotalOrder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EarningCubit, EarningState>(
+    return BlocBuilder<FinancialCubit, FinancialState>(
       builder: (context, state) {
-        final earning = state is EarningLoaded ? state.earning : null;
+        final finance = state is FinancialLoaded ? state.finance : null;
         return Container(
           padding: const EdgeInsets.only(
             left: smallWhiteSpace,
@@ -44,7 +45,7 @@ class DriverTotalOrder extends StatelessWidget {
               ),
               const VSpace(extraSmallWhiteSpace),
               Text(
-                '${earning?.completedRides ?? 0}',
+                '${finance?.rideCount ?? 0}',
                 style: const TextStyle(
                   color: Color(0xFFF59E0B),
                   fontSize: headingText,

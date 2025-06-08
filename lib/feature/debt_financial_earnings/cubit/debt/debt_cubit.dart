@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
 
 import '../../../../shared/api/api_controller.dart';
 import '../../../../shared/api/api_handler.dart';
@@ -30,7 +31,7 @@ class DebtCubit extends Cubit<DebtState> {
   }
 
   Future<void> getDebtStatus(BuildContext context) async {
-    if (hasDebt) return;
+    // if (hasDebt) return;
     await handleApiCall(
       context: context,
       apiRequest: () async {
@@ -40,7 +41,7 @@ class DebtCubit extends Cubit<DebtState> {
             emit(DebtLoaded(status));
 
             _emitIfChanged(status);
-          } 
+          }
         });
       },
       onError: (_) {},
@@ -53,7 +54,7 @@ class DebtCubit extends Cubit<DebtState> {
     String? endDate,
     String? status,
   }) async {
-    if (_cachedDebt?.debtPaymentHistory != null) return;
+    // if (_cachedDebt?.debtPaymentHistory != null) return;
     await handleApiCall(
       context: context,
       apiRequest: () async {
@@ -61,6 +62,7 @@ class DebtCubit extends Cubit<DebtState> {
           context,
           'payment-history/?startDate=$startDate&endDate=$endDate&status=$status',
           (success, data) {
+            log("[Debt history] $data");
             if (success && data is Map<String, dynamic>) {
               final historyList =
                   (data['data'] as List)
@@ -70,7 +72,7 @@ class DebtCubit extends Cubit<DebtState> {
               _emitIfChanged(
                 _cachedDebt!.copyWith(debtPaymentHistory: historyList),
               );
-            } 
+            }
           },
         );
       },
@@ -106,7 +108,8 @@ class DebtCubit extends Cubit<DebtState> {
             // );
 
             // _updateDebt(driver);
-          } 
+            loadDashboard(context);
+          }
         }, showOverlay: true);
       },
       onError: (_) {},

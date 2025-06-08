@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:freedomdriver/feature/rides/models/ride.dart';
+import 'package:freedomdriver/feature/rides/models/ride_history.dart';
 
 abstract class RideHistoryState extends Equatable {
   @override
@@ -12,7 +12,7 @@ class RideHistoryLoading extends RideHistoryState {}
 
 class RideHistoryLoaded extends RideHistoryState {
   RideHistoryLoaded(this.ride);
-  final Ride ride;
+  final RideHistory ride;
 
   @override
   List<Object?> get props => [ride];

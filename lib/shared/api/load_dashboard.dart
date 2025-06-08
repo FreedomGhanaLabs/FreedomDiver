@@ -7,6 +7,7 @@ import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubi
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 
 import '../../core/di/locator.dart';
+import '../../feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
 import '../../feature/rides/cubit/ride/ride_cubit.dart';
 import '../../utilities/notification_service.dart';
 import 'load_document_histories.dart';
@@ -31,6 +32,7 @@ Future<void> loadDashboard(BuildContext context, {bool loadAll = true}) async {
     rideCubit.checkForActiveRide(context),
     earningCubit.getPeriodicEarnings(context),
     rideHistoryCubit.getAllRideHistories(context, showOverlay: false),
+    context.read<FinancialCubit>().getWalletBalance(context),
     documentCubit.getDriverDocument(context),
     loadDocumentHistories(context),
   ]);

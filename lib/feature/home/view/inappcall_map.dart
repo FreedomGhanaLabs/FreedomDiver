@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/constants/ride.dart';
 import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/view/inapp_ride_messaging.dart';
@@ -202,12 +203,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
           final ride = state is RideLoaded ? state.ride : null;
 
           final isAccepted = ride?.status == "accepted";
+          final isRideArrivedStatus = ride?.status == arrivedRide;
 
-          final etaToPickup = ride?.etaToPickup;
-          final etaToDestination = ride?.estimatedDuration?.value;
-          final destinationTime = etaToDestination.toString();
-          final pickUpTime = etaToPickup?.text.toString();
-          final averageTime = isAccepted ? pickUpTime : destinationTime;
+          final etaToPickup = ride?.etaToPickup?.text;
+          final etaToDropoff = ride?.etaToDropoff?.text;
+          final averageTime = isRideArrivedStatus ? etaToPickup : etaToDropoff;
           return Stack(
             children: [
               showGoogleMap(),
@@ -243,7 +243,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
                               ),
                             ],
                           ),
-
                           OutlinedContainer(rideType: ride?.rideType ?? ""),
                         ],
                       ),

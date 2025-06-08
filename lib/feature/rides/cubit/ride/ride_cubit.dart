@@ -8,6 +8,7 @@ import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/hive/ride.dart';
@@ -20,14 +21,13 @@ class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
 
   final driverLocation = getIt<DriverLocationService>();
+  final ApiController apiController = ApiController('ride');
+  final driverSocketService = getIt<DriverSocketService>();
 
   RideRequest? _cachedRideRequest;
   String? _cachedRideId;
 
   bool get hasAcceptedRide => _cachedRideRequest != null;
-
-  final ApiController apiController = ApiController('ride');
-  final driverSocketService = getIt<DriverSocketService>();
 
   void _updateRideRequest(
     RideRequest updated, {
@@ -57,8 +57,10 @@ class RideCubit extends Cubit<RideState> {
     Function(dynamic response)? onError,
     String? errorMsg,
     bool showOverlay = false,
+    bool dismissDialog = true,
+    bool requireRide = true,
   }) async {
-    if (_cachedRideRequest == null) {
+    if (requireRide && _cachedRideRequest == null) {
       showToast(
         context,
         "No Ride Request",
@@ -69,7 +71,7 @@ class RideCubit extends Cubit<RideState> {
     }
     try {
       await apiController.post(context, endpoint, body ?? {}, (success, data) {
-        context.dismissRideDialog();
+        if (dismissDialog) context.dismissRideDialog();
         if (success) {
           if (successLog != null) log(successLog);
           if (onSuccess != null && data is Map<String, dynamic>) {
@@ -89,21 +91,21 @@ class RideCubit extends Cubit<RideState> {
     }
   }
 
-  void _resetRideRequest() {
+  void resetRideRequest({bool shouldRemovePersistence = true}) async {
     _cachedRideRequest = null;
     _cachedRideId = null;
     emit(RideInitial());
+
+    if (shouldRemovePersistence) {
+      await deleteRideRequestFromHive();
+    }
   }
 
   Future<void> checkForActiveRide(BuildContext context) async {
     logRide("active");
-
-    if (_cachedRideRequest != null) {
-      return;
-    }
+    if (_cachedRideRequest != null) return;
 
     final activeRide = await getRideRequestFromHive();
-
     if (activeRide != null) {
       _updateRideRequest(activeRide, shouldPersist: false);
       context.read<HomeCubit>().toggleNearByRides(
@@ -113,7 +115,6 @@ class RideCubit extends Cubit<RideState> {
       log("[Active Ride] Using persisted ride request");
       return;
     }
-
     log("No active ride found for driver");
   }
 
@@ -123,17 +124,38 @@ class RideCubit extends Cubit<RideState> {
     context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
   }
 
-  Future<void> acceptRide(BuildContext context) async {
-    logRide("accept");
-
-    final rideId = _cachedRideRequest?.rideId;
+  Future<void> _rideActionWithLocation(
+    BuildContext context,
+    String endpoint, {
+    Map<String, dynamic>? extraBody,
+    String? successLog,
+    Function(Map<String, dynamic> data)? onSuccess,
+    String? errorMsg,
+    bool showOverlay = false,
+  }) async {
     final latitude = context.driverCords?[1];
     final longitude = context.driverCords?[0];
-
     await _postRideAction(
       context,
+      endpoint,
+      body: {
+        if (extraBody != null) ...extraBody,
+        'latitude': latitude,
+        'longitude': longitude,
+      },
+      successLog: successLog,
+      onSuccess: onSuccess,
+      errorMsg: errorMsg,
+      showOverlay: showOverlay,
+    );
+  }
+
+  Future<void> acceptRide(BuildContext context) async {
+    logRide("accept");
+    final rideId = _cachedRideRequest?.rideId;
+    await _rideActionWithLocation(
+      context,
       '$rideId/accept',
-      body: {'latitude': latitude, 'longitude': longitude},
       successLog: "[Accept Ride]",
       onSuccess: (data) {
         context.read<HomeCubit>().setRideAccepted(isAccepted: true);
@@ -148,10 +170,12 @@ class RideCubit extends Cubit<RideState> {
             estimatedDuration: ride.estimatedDuration,
             driverEarnings: ride.driverEarnings,
             status: ride.status,
+            paymentMethod: ride.paymentMethod,
           ),
         );
       },
       errorMsg: 'Failed to accept ride',
+      showOverlay: true,
     );
   }
 
@@ -165,10 +189,9 @@ class RideCubit extends Cubit<RideState> {
       '${rideId ?? _cachedRideId}/reject',
       body: {'reason': reason ?? 'Too far from my current location'},
       successLog: '[RideCubit] ride rejected',
-      onSuccess: (_) {
-        _resetRideRequest();
-      },
+      onSuccess: (_) => resetRideRequest(),
       errorMsg: 'Failed to reject ride',
+      showOverlay: true,
     );
   }
 
@@ -181,34 +204,29 @@ class RideCubit extends Cubit<RideState> {
   }) async {
     logRide("cancel");
     if (_cachedRideRequest == null) return;
-    final latitude = lat ?? context.driverCords?[1];
-    final longitude = long ?? context.driverCords?[0];
-    await _postRideAction(
+    await _rideActionWithLocation(
       context,
-      showOverlay: true,
       '${rideId ?? _cachedRideId}/cancel',
-      body: {
+      extraBody: {
         'reason': reason ?? 'Too far from my current location',
-        'latitude': latitude,
-        'longitude': longitude,
+        if (lat != null) 'latitude': lat,
+        if (long != null) 'longitude': long,
       },
       successLog: '[RideCubit] ride cancel',
       onSuccess: (_) {
         context.read<HomeCubit>().endRide();
-        _resetRideRequest();
+        resetRideRequest(shouldRemovePersistence: true);
       },
       errorMsg: 'Failed to cancel ride',
+      showOverlay: true,
     );
   }
 
   Future<void> arrivedRide(BuildContext context) async {
     final rideId = _cachedRideRequest?.rideId;
-    final latitude = context.driverCords?[1];
-    final longitude = context.driverCords?[0];
-    await _postRideAction(
+    await _rideActionWithLocation(
       context,
       '$rideId/arrived',
-      body: {'latitude': latitude, 'longitude': longitude},
       successLog: '[RideCubit] ride arrived',
       onSuccess: (data) {
         _updateRideRequest(
@@ -219,52 +237,88 @@ class RideCubit extends Cubit<RideState> {
     );
   }
 
-  Future<void> startRide(
-    BuildContext context, {
-    String? rideId,
-    double latitude = 6.520379,
-    double longitude = 3.375206,
-  }) async {
-    await _postRideAction(
+  Future<void> startRide(BuildContext context) async {
+    final rideId = _cachedRideRequest?.rideId;
+    await _rideActionWithLocation(
       context,
-      '${rideId ?? _cachedRideId}/start',
-      body: {'latitude': latitude, 'longitude': longitude},
+      '$rideId/start',
       successLog: '[RideCubit] ride started',
+      onSuccess: (data) {
+        final newData = data['data'];
+        _updateRideRequest(
+          _cachedRideRequest!.copyWith(
+            status: newData['status'],
+            etaToDropoff: DurationInfo.fromJson(newData['etaToDropoff']),
+          ),
+        );
+      },
       errorMsg: 'Failed to start ride',
+      showOverlay: true,
     );
   }
 
-  Future<void> completeRide(
-    BuildContext context, {
-    String? rideId,
-    double? lat,
-    double? long,
-  }) async {
-    final latitude = lat ?? context.driver?.location?.coordinates[1];
-    final longitude = long ?? context.driver?.location?.coordinates[0];
-    await _postRideAction(
+  Future<void> completeRide(BuildContext context) async {
+    final rideId = _cachedRideRequest?.rideId;
+    await _rideActionWithLocation(
       context,
-      '${rideId ?? _cachedRideId}/complete',
-      body: {'latitude': latitude, 'longitude': longitude},
+      '$rideId/complete',
       successLog: '[RideCubit] ride completed',
-      onSuccess: (data) {
-        // final ride = RideRequest.fromJson(data);
-        // _updateRideRequest(ride, rideId: rideId);
+      onSuccess: (data) async {
+        final newData = data['data'];
+        _updateRideRequest(
+          _cachedRideRequest!.copyWith(
+            status: newData['status'],
+            paymentMethod: newData["paymentMethod"],
+            paymentStatus: newData['paymentStatus'],
+          ),
+        );
+        context.read<HomeCubit>().toggleNearByRides(
+          status: TransitStatus.completed,
+        );
+        await loadDashboard(context, loadAll: false);
       },
       errorMsg: 'Failed to end ride',
       showOverlay: true,
     );
   }
 
-  Future<void> confirmRidePayment(
-    BuildContext context, {
-    required String rideId,
-  }) async {
+  Future<void> confirmCashPayment(BuildContext context) async {
+    final rideId = _cachedRideRequest?.rideId;
     await _postRideAction(
       context,
       '$rideId/confirm-payment',
       successLog: '[RideCubit] ride confirm payment',
-      errorMsg: 'Failed to end ride',
+      onSuccess: (data) async {
+        log('[Confirm Payment Data] $data');
+        _updateRideRequest(
+          _cachedRideRequest!.copyWith(paymentStatus: "confirmed"),
+        );
+        await loadDashboard(context, loadAll: false);
+      },
+      errorMsg: 'Failed to confirm cash payment',
+      showOverlay: true,
+    );
+  }
+
+  Future<void> rateRideUser(
+    BuildContext context, {
+    required int rating,
+    String comment = '',
+  }) async {
+    final rideId = _cachedRideRequest?.rideId;
+    await _postRideAction(
+      context,
+      '$rideId/rate',
+      body: {'rating': rating, 'comment': comment},
+      successLog: '[RideCubit] ride user rated $rating',
+      errorMsg: 'Failed to rate user',
+      onSuccess: (_) async {
+        resetRideRequest(shouldRemovePersistence: true);
+        context.read<HomeCubit>().toggleNearByRides(
+          status: TransitStatus.initial,
+        );
+        await loadDashboard(context, loadAll: false);
+      },
       showOverlay: true,
     );
   }
@@ -280,22 +334,6 @@ class RideCubit extends Cubit<RideState> {
       body: {"message": message},
       successLog: '[RideCubit] Message sent',
       errorMsg: 'Failed to send ride message',
-    );
-  }
-
-  Future<void> rateRideUser(
-    BuildContext context, {
-    required String rideId,
-    double rating = 3,
-    String comment = 'Very polite and punctual',
-  }) async {
-    await _postRideAction(
-      context,
-      '$rideId/rate',
-      body: {'rating': rating, 'comment': comment},
-      successLog: '[RideCubit] ride user rated $rating',
-      errorMsg: 'Failed to end ride',
-      showOverlay: true,
     );
   }
 }
