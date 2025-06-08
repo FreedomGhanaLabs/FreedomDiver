@@ -326,6 +326,7 @@ void showToast(
     CustomToast.show(
       context: context,
       message: message,
+      title: title,
       duration: const Duration(seconds: 5),
       position: ToastPosition.top,
       type: toastType ?? ToastType.info,

@@ -28,11 +28,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   tz.initializeTimeZones();
 
   await Hive.initFlutter();
-  // Hive.registerAdapter(RideRequestAdapter());
-  // Hive.registerAdapter(UserAdapter());
-  // Hive.registerAdapter(LocationAdapter());
-  // Hive.registerAdapter(DistanceAdapter());
-  // Hive.registerAdapter(DurationInfoAdapter());
 
   await locator();
 

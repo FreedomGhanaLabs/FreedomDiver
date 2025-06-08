@@ -61,8 +61,10 @@ class _SplashScreenState extends State<SplashScreen>
               const VSpace(extraSmallWhiteSpace),
               Text(
                 copyrightText,
-                style:
-                    TextStyle(fontSize: smallText, color: Colors.grey.shade500),
+                style: TextStyle(
+                  fontSize: smallText,
+                  color: Colors.grey.shade500,
+                ),
               ),
             ],
           ),
@@ -72,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _goToDriverSplash() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushNamedAndRemoveUntil(
         context,
         DriverSplashScreen.routeName,

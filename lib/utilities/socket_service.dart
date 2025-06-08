@@ -1,10 +1,18 @@
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+
+import '../core/di/locator.dart';
+import '../feature/messaging/message_cubit.dart';
+import '../feature/messaging/models/message.dart';
+import '../feature/rides/cubit/ride/ride_cubit.dart';
+import 'notification_service.dart';
 
 class DriverSocketConstants {
   static const String transportWebSocket = 'websocket';
@@ -165,4 +173,37 @@ class DriverSocketService {
   void _emit(String event, Map<String, dynamic> data) {
     _socket?.emit(event, data);
   }
+}
+
+void initSockets(BuildContext context) {
+  final rideCubit = context.read<RideCubit>();
+  final messageCubit = context.read<MessageCubit>();
+  final driver = context.driver;
+
+  getIt<DriverSocketService>().connect(
+    onNewRideRequest: (ride) async {
+      log('[Socket Ride Request] ride request received');
+      await NotificationService.sendNotification(
+        title:
+            ride.type == 'ride' ? 'New Ride Request' : 'New Delivery Request',
+        body: 'Pickup: ${ride.pickupLocation.address}',
+        payload: ride.toJson(),
+      );
+
+      rideCubit.foundRide(ride, context);
+    },
+    onNewMessage: (message) {
+      messageCubit.sendMessage(
+        context,
+        MessageModel(
+          sender: "user",
+          userId: "userId",
+          riderId: driver?.id ?? "",
+          content: message,
+          timestamp: DateTime.now(),
+        ),
+        isSocketMessage: true,
+      );
+    },
+  );
 }

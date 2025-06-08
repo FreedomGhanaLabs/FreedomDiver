@@ -1,21 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/app/cubits.dart';
-import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/messaging/message_cubit.dart';
-import 'package:freedomdriver/feature/messaging/models/message.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
 import 'package:freedomdriver/router/router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-
-import '../../../utilities/notification_service.dart';
-import '../../../utilities/socket_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -26,14 +16,13 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final driverSocketService = getIt<DriverSocketService>();
     return ScreenUtilInit(
       designSize: const Size(402, 874),
       splitScreenMode: true,
       minTextAdapt: true,
       child: GlobalLoaderOverlay(
         key: _loaderKey,
-        switchInCurve: Curves.bounceIn,
+        switchInCurve: Curves.easeIn,
         overlayColor: Colors.white,
         transitionBuilder: (p0, p1) {
           return FadeTransition(opacity: p1, child: p0);
@@ -41,41 +30,8 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [...cubitRegistry],
           child: MaterialApp(
+            title: "Freedom Driver",
             navigatorKey: navigatorKey,
-            builder: (context, child) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                driverSocketService.connect(
-                  onNewRideRequest: (ride) async {
-                    log('[Socket Ride Request] ride request received');
-                    await NotificationService.sendNotification(
-                      title:
-                          ride.type == 'ride'
-                              ? 'New Ride Request'
-                              : 'New Delivery Request',
-                      body: 'Pickup: ${ride.pickupLocation.address}',
-                      payload: ride.toJson(),
-                    );
-
-                    context.read<RideCubit>().foundRide(ride, context);
-                  },
-                  onNewMessage: (message) {
-                    context.read<MessageCubit>().sendMessage(
-                      context,
-                      MessageModel(
-                        sender: "user",
-                        userId: "userId",
-                        riderId: context.driver?.id ?? "",
-                        content: message,
-                        timestamp: DateTime.now(),
-                      ),
-                      isSocketMessage: true,
-                    );
-                  },
-                );
-              });
-
-              return child!;
-            },
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               fontFamily: GoogleFonts.poppins().fontFamily,
@@ -83,8 +39,6 @@ class App extends StatelessWidget {
               splashColor: Colors.white,
               colorSchemeSeed: Colors.white,
             ),
-            // localizationsDelegates: AppLocalizations.localizationsDelegates,
-            // supportedLocales: AppLocalizations.supportedLocales,
             onGenerateRoute: onGenerateRoute,
             initialRoute: SplashScreen.routeName,
           ),

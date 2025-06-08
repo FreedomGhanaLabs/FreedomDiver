@@ -71,12 +71,12 @@ class RideCubit extends Cubit<RideState> {
     }
     try {
       await apiController.post(context, endpoint, body ?? {}, (success, data) {
-        if (dismissDialog) context.dismissRideDialog();
         if (success) {
           if (successLog != null) log(successLog);
           if (onSuccess != null && data is Map<String, dynamic>) {
             onSuccess(data);
           }
+          if (dismissDialog) context.dismissRideDialog();
         } else {
           if (data is String && data.contains("already accepted")) {
             _cachedRideRequest = null;
@@ -84,6 +84,7 @@ class RideCubit extends Cubit<RideState> {
             emit(RideInitial());
           }
           onError?.call(data);
+          if (dismissDialog) context.dismissRideDialog();
         }
       }, showOverlay: showOverlay);
     } catch (e) {
@@ -100,7 +101,7 @@ class RideCubit extends Cubit<RideState> {
       await deleteRideRequestFromHive();
     }
   }
-
+  
   Future<void> checkForActiveRide(BuildContext context) async {
     logRide("active");
     if (_cachedRideRequest != null) return;
@@ -234,6 +235,7 @@ class RideCubit extends Cubit<RideState> {
         );
       },
       errorMsg: 'Failed to arrive ride',
+      showOverlay: true,
     );
   }
 

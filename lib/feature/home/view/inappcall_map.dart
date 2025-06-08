@@ -24,6 +24,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../shared/widgets/custom_draggable_sheet.dart';
+import '../../../utilities/copy_to_clipboard.dart';
 
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});
@@ -202,6 +203,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
         builder: (context, state) {
           final ride = state is RideLoaded ? state.ride : null;
 
+          final userPhone = ride?.user?.phone ?? "";
+
           final isAccepted = ride?.status == "accepted";
           final isRideArrivedStatus = ride?.status == arrivedRide;
 
@@ -233,8 +236,14 @@ class _InAppCallMapState extends State<InAppCallMap> {
                             children: [
                               Text("User's Contact", style: normalTextStyle),
                               SelectableText(
-                                ride?.user?.phone ?? "",
+                                userPhone,
                                 maxLines: 2,
+                                onTap:
+                                    () => copyTextToClipboard(
+                                      context,
+                                      userPhone,
+                                      copyText: "Phone number",
+                                    ),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: paragraphText,
