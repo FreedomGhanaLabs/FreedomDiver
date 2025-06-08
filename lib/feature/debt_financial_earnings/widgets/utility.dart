@@ -112,7 +112,8 @@ abstract class SectionFactory extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            if (sectionTitle.isNotEmpty)
+              Text(
               sectionTitle,
               textAlign: TextAlign.center,
               style:
@@ -180,6 +181,55 @@ class SectionItem {
 
 String getIconUrl(String iconName) => 'assets/app_icons/$iconName.svg';
 String getPngImageUrl(String imageName) => 'assets/app_images/$imageName.png';
+
+// Personal Data Section Implementation
+class SecurityAndPrivacySection extends SectionFactory {
+  const SecurityAndPrivacySection({
+    super.key,
+    super.onItemTap,
+    super.padding,
+    super.backgroundColor,
+    super.titleStyle,
+    super.sectionTextStyle,
+    super.paddingSection,
+    this.onTrustedDevicesTap,
+    this.on2faTap,
+    this.onChangePasswordTap,
+    this.onManageLocationTap,
+  });
+  final VoidCallback? on2faTap;
+
+  final VoidCallback? onManageLocationTap;
+  final VoidCallback? onChangePasswordTap;
+  final VoidCallback? onTrustedDevicesTap;
+
+  @override
+  String get sectionTitle => '';
+
+  @override
+  List<SectionItem> get sectionItems => [
+    SectionItem(
+      title: 'Two-Step Verification',
+      iconPath: getIconUrl('2fa'),
+      onTap: on2faTap,
+    ),
+    SectionItem(
+      title: 'Change Password',
+      iconPath: getIconUrl('solar_password'),
+      onTap: onChangePasswordTap,
+    ),
+    SectionItem(
+      title: 'Trusted Devices',
+      iconPath: getIconUrl('solar_devices'),
+      onTap: onTrustedDevicesTap,
+    ),
+    SectionItem(
+      title: 'Manage Location Settings',
+      iconPath: getIconUrl("location_duotone"),
+      onTap: onManageLocationTap,
+    ),
+  ];
+}
 
 // Personal Data Section Implementation
 class PersonalDataSection extends SectionFactory {

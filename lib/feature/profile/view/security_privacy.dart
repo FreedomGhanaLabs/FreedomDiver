@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/shared/widgets/decorated_container.dart';
@@ -12,30 +12,21 @@ class SecurityAndPrivacy extends StatefulWidget {
   static const routeName = '/security_privacy';
 
   @override
-  State<SecurityAndPrivacy> createState() => _AvailabilityDashboardState();
+  State<SecurityAndPrivacy> createState() => _SecurityAndPrivacy();
 }
 
-class _AvailabilityDashboardState extends State<SecurityAndPrivacy> {
+class _SecurityAndPrivacy extends State<SecurityAndPrivacy> {
   final vehicleColor = TextEditingController();
   final vehicleMakeAndModel = TextEditingController();
   final vehicleLicensePlate = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return CustomScreen(
-      title: 'Availability Dashboard',
-      bodyHeader: 'Set Your Availability',
-      bodyDescription: "Control when you're ready to drive",
+      title: 'Security and privacy',
+      bodyHeader: 'Secure your account',
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const VSpace(whiteSpace),
-            _VehicleInformationContainer(
-              vehicleColor: vehicleColor,
-              vehicleLicensePlate: vehicleLicensePlate,
-              vehicleMakeAndModel: vehicleMakeAndModel,
-            ),
-          ],
+        SecurityAndPrivacySection(padding: EdgeInsets.zero,
+          
         ),
       ],
     );
@@ -81,9 +72,7 @@ class _VehicleInformationContainerState
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.209),
-              ),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.209)),
               borderRadius: BorderRadius.circular(4),
             ),
             child: DropdownButton<String>(
@@ -106,12 +95,13 @@ class _VehicleInformationContainerState
                   dropDownValue = val;
                 });
               },
-              items: dropDownItem.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+              items:
+                  dropDownItem.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
             ),
           ),
           const VSpace(15),
@@ -126,9 +116,7 @@ class _VehicleInformationContainerState
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.209),
-              ),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.209)),
               borderRadius: BorderRadius.circular(4),
             ),
             child: TimeDropdown(
@@ -155,9 +143,7 @@ class _VehicleInformationContainerState
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.209),
-              ),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.209)),
               borderRadius: BorderRadius.circular(4),
             ),
             child: TimeDropdown(
@@ -238,12 +224,10 @@ class TimeDropdownState extends State<TimeDropdown> {
           widget.onTimeSelected(newValue);
         }
       },
-      items: timeSlots.map((String time) {
-        return DropdownMenuItem<String>(
-          value: time,
-          child: Text(time),
-        );
-      }).toList(),
+      items:
+          timeSlots.map((String time) {
+            return DropdownMenuItem<String>(value: time, child: Text(time));
+          }).toList(),
     );
   }
 }
