@@ -12,7 +12,7 @@ AwesomeDialog showCustomModal(
   String? btnOkText,
   String btnCancelText = 'Cancel',
   DialogType dialogType = DialogType.noHeader,
-  AnimType animType = AnimType.topSlide,
+  AnimType animType = AnimType.scale,
   Color? dialogBackgroundColor,
 }) {
   return AwesomeDialog(

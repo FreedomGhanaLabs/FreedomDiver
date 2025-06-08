@@ -273,7 +273,7 @@ class PersonalDataSection extends SectionFactory {
       onTap: onDebtTap,
     ),
     SectionItem(
-      title: 'Finance and Account',
+      title: 'Wallet',
       iconPath: getIconUrl("solar_wallet"),
       onTap: onWalletTap,
     ),

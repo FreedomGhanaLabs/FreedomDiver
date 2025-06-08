@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_state.dart';
-import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_banner.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
-import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
+import 'package:freedomdriver/shared/widgets/decorated_container.dart';
+import 'package:freedomdriver/shared/widgets/upload_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
+import '../../../shared/widgets/app_icon.dart';
 import '../../../utilities/show_custom_modal.dart';
+import '../../kyc/view/background_verification_screen.dart';
+import '../../profile/widget/stacked_profile_card.dart';
 import '../widgets/bank_select.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -49,54 +51,48 @@ class _WalletScreenState extends State<WalletScreen> {
       builder: (context, state) {
         final finance = state is FinancialLoaded ? state.finance : null;
         return CustomScreen(
-          title: 'Account',
+          title: 'Wallet',
           children: [
-            const VSpace(whiteSpace),
-            EarningsBanner(
-              title:
-                  '$appCurrency ${finance?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
-              subtitle: 'Account balance',
-              child2: SimpleButton(
-                title: '',
-                onPressed: () {
-                  showCustomModal(
-                    context,
-                    child: WithdrawalForm(
-                      formKey: _withdrawalFormKey,
-                      amount: amount,
-                      withdrawalType: withdrawalType,
-                    ),
-                    btnOkText: 'Withdraw',
-                    btnCancelOnPress: () {},
-                    btnOkOnPress: () {
-                      if (_withdrawalFormKey.currentState!.validate()) {
-                        context.read<FinancialCubit>().makeWithdrawal(
-                          context,
-                          amount: double.tryParse(amount.text.trim()) ?? 0.0,
-                          withdrawalType: withdrawalType.text.trim(),
-                        );
-                      }
+            DecoratedContainer(
+              backgroundImage: AssetImage(getPngImageUrl('wallet_bg')),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: _BalanceSection(finance: finance)),
+                      Expanded(child: _MomoSection()),
+                    ],
+                  ),
+                  VSpace(smallWhiteSpace),
+                  _ActionButtons(
+                    onWithdraw: () {
+                      amount.text = finance?.availableBalance.toString() ?? "";
+                      showCustomModal(
+                        context,
+                        child: WithdrawalForm(
+                          formKey: _withdrawalFormKey,
+                          amount: amount,
+                          withdrawalType: withdrawalType,
+                        ),
+                        btnOkText: 'Withdraw',
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {
+                          if (_withdrawalFormKey.currentState!.validate()) {
+                            context.read<FinancialCubit>().makeWithdrawal(
+                              context,
+                              amount:
+                                  double.tryParse(amount.text.trim()) ?? 0.0,
+                              withdrawalType: withdrawalType.text.trim(),
+                            );
+                          }
+                        },
+                      ).show();
                     },
-                  ).show();
-                },
-                child: Row(
-                  children: [
-                    AppIcon(iconName: 'withdraw_icons'),
-                    const HSpace(smallWhiteSpace),
-                    Text(
-                      'Withdraw',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: paragraphText,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              child: const SizedBox.shrink(),
             ),
-            const VSpace(normalWhiteSpace),
+            const VSpace(whiteSpace),
             Text(
               'Manage Payment Method',
               textAlign: TextAlign.center,
@@ -164,54 +160,176 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 }
 
-class WithdrawalForm extends StatefulWidget {
+// --- Reusable Widgets ---
+
+class _BalanceSection extends StatelessWidget {
+  final dynamic finance;
+  const _BalanceSection({required this.finance});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Account Balance',
+          style: descriptionTextStyle.copyWith(color: Colors.white),
+        ),
+        Text(
+          '$appCurrency ${finance?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
+          style: headingTextStyle.copyWith(color: Colors.white),
+        ),
+      ],
+    );
+  }
+}
+
+class _MomoSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          'Momo Pay  ',
+          style: descriptionTextStyle.copyWith(color: Colors.white),
+        ),
+        DriverContactInfo(),
+      ],
+    );
+  }
+}
+
+class _ActionButtons extends StatelessWidget {
+  final VoidCallback onWithdraw;
+  const _ActionButtons({required this.onWithdraw});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.circular(roundedLg),
+      ),
+      child: CustomDottedBorder(
+        child: Row(
+          children: [
+            Expanded(
+              child: SimpleButton(
+                title: '',
+                onPressed: onWithdraw,
+                child: Row(
+                  children: [
+                    AppIcon(iconName: 'withdraw_icons'),
+                    const HSpace(extraSmallWhiteSpace),
+                    Text(
+                      'Withdraw',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: smallText,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const HSpace(smallWhiteSpace),
+            Expanded(
+              child: SimpleButton(
+                title: '',
+                onPressed: () {},
+                backgroundColor: Colors.white,
+                child: Row(
+                  children: [
+                    AppIcon(iconName: 'transaction'),
+                    const HSpace(extraSmallWhiteSpace),
+                    Text(
+                      'Transaction ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: smallText,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- Generic Form Section Widget ---
+
+class FormSection extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final List<Widget> children;
+
+  const FormSection({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: normalTextStyle),
+        Text(
+          subtitle,
+          style: paragraphTextStyle.copyWith(
+            color: Colors.grey.shade600,
+            fontSize: smallText,
+          ),
+        ),
+        const VSpace(smallWhiteSpace),
+        ...children,
+      ],
+    );
+  }
+}
+
+// --- Forms ---
+
+class WithdrawalForm extends StatelessWidget {
   const WithdrawalForm({
     super.key,
-    required GlobalKey<FormState> formKey,
+    required this.formKey,
     required this.amount,
     required this.withdrawalType,
-  }) : _formKey = formKey;
+  });
 
-  final GlobalKey<FormState> _formKey;
+  final GlobalKey<FormState> formKey;
   final TextEditingController amount;
   final TextEditingController withdrawalType;
 
   @override
-  State<WithdrawalForm> createState() => _WithdrawalFormState();
-}
-
-class _WithdrawalFormState extends State<WithdrawalForm> {
-  @override
   Widget build(BuildContext context) {
     return Form(
-      key: widget._formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      key: formKey,
+      child: FormSection(
+        title: 'Make Withdrawal',
+        subtitle: 'Withdraw your earnings to your bank account.',
         children: [
-          Text('Make Withdrawal', style: normalTextStyle),
-          Text(
-            'Withdraw your earnings to your bank account.',
-            style: paragraphTextStyle.copyWith(
-              color: Colors.grey.shade600,
-              fontSize: smallText,
-            ),
-          ),
-          const VSpace(smallWhiteSpace),
           CustomDropDown(
             label: 'Withdrawal Type',
             initialValue: 'Bank',
             items: const ['Bank', 'Mobile Money'],
             onChanged: (value) {
-              widget.withdrawalType.text =
+              withdrawalType.text =
                   value.replaceFirst('Mobile Money', 'momo').toLowerCase();
-              log('message: ${widget.withdrawalType.text}');
+              log('message: ${withdrawalType.text}');
             },
           ),
-          buildField(
-            'Amount',
-            widget.amount,
-            keyboardType: TextInputType.phone,
-          ),
+          buildField('Amount', amount, keyboardType: TextInputType.phone),
         ],
       ),
     );
@@ -221,13 +339,13 @@ class _WithdrawalFormState extends State<WithdrawalForm> {
 class BankDetailsForm extends StatelessWidget {
   const BankDetailsForm({
     super.key,
-    required GlobalKey<FormState> formKey,
+    required this.formKey,
     required this.accountNumber,
     required this.bankCode,
     required this.accountName,
-  }) : _formKey = formKey;
+  });
 
-  final GlobalKey<FormState> _formKey;
+  final GlobalKey<FormState> formKey;
   final TextEditingController accountNumber;
   final TextEditingController bankCode;
   final TextEditingController accountName;
@@ -235,19 +353,12 @@ class BankDetailsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Bank Account Details', style: normalTextStyle),
-          Text(
+      key: formKey,
+      child: FormSection(
+        title: 'Bank Account Details',
+        subtitle:
             'Add your bank details to receive payments directly to your bank account.',
-            style: paragraphTextStyle.copyWith(
-              color: Colors.grey.shade600,
-              fontSize: smallText,
-            ),
-          ),
-          const VSpace(smallWhiteSpace),
+        children: [
           BankDropdown(
             onBankSelected: (code) {
               debugPrint('Selected bank code: $code');
@@ -265,7 +376,6 @@ class BankDetailsForm extends StatelessWidget {
             accountName,
             keyboardType: TextInputType.phone,
           ),
-          // buildField('Bank Code', bankCode, keyboardType: TextInputType.phone),
         ],
       ),
     );
@@ -275,29 +385,22 @@ class BankDetailsForm extends StatelessWidget {
 class MobileMoneyForm extends StatelessWidget {
   const MobileMoneyForm({
     super.key,
-    required GlobalKey<FormState> formKey,
+    required this.formKey,
     required this.phoneNumber,
-  }) : _formKey = formKey;
+  });
 
-  final GlobalKey<FormState> _formKey;
+  final GlobalKey<FormState> formKey;
   final TextEditingController phoneNumber;
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Mobile Money', style: normalTextStyle),
-          Text(
+      key: formKey,
+      child: FormSection(
+        title: 'Mobile Money',
+        subtitle:
             'Add your mobile money details to receive payments directly to your mobile wallet.',
-            style: paragraphTextStyle.copyWith(
-              color: Colors.grey.shade600,
-              fontSize: smallText,
-            ),
-          ),
-          const VSpace(smallWhiteSpace),
+        children: [
           buildField(
             'Momo Phone Number',
             phoneNumber,

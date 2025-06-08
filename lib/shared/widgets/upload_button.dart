@@ -75,7 +75,7 @@ class CustomDottedBorder extends StatelessWidget {
         dashPattern: [10, 5],
         strokeWidth: 2,
         padding: EdgeInsets.all(smallWhiteSpace),
-        radius: const Radius.circular(roundedMd),
+        radius: const Radius.circular(roundedLg),
         color: yellowGold,
       ),
       child:

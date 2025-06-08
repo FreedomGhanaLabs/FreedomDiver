@@ -119,7 +119,7 @@ class SimpleButton extends StatelessWidget {
         padding:
             padding ??
             const EdgeInsets.symmetric(
-              horizontal: whiteSpace,
+              horizontal: smallWhiteSpace,
               vertical: extraSmallWhiteSpace + 2,
             ),
       ),

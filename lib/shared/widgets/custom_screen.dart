@@ -38,59 +38,62 @@ class CustomScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: bottomNavigationBar,
-      body: Container(
-        decoration: BoxDecoration(
-          image:
-              image != null
-                  ? DecorationImage(
-                    image: image!,
-                    fit: BoxFit.fill,
-                    opacity: 0.05,
-                  )
-                  : null,
-        ),
-        child: Column(
-          children: [
-            CustomAppBar(
-              title: title,
-              hasBackButton: hasBackButton,
-              actions: actions,
-            ),
-            const VSpace(extraSmallWhiteSpace),
-            if (showDivider) const CustomDivider(height: 6),
-            differentUi ??
-                Expanded(
-                  child: RefreshIndicator.adaptive(
-                    onRefresh: onRefresh ?? () async {},
-                    color: thickFillColor,
-                    backgroundColor: Colors.white,
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal:
-                            Responsive.isBigMobile(context)
-                                ? whiteSpace
-                                : smallWhiteSpace,
-                      ),
-                      // mainAxisSize: MainAxisSize.min,
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (bodyHeader != null) ...[
+      body: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            image:
+                image != null
+                    ? DecorationImage(
+                      image: image!,
+                      fit: BoxFit.fill,
+                      opacity: 0.05,
+                    )
+                    : null,
+          ),
+          child: Column(
+            children: [
+              CustomAppBar(
+                title: title,
+                hasBackButton: hasBackButton,
+                actions: actions,
+              ),
+              const VSpace(extraSmallWhiteSpace),
+              if (showDivider) const CustomDivider(height: 6),
+              differentUi ??
+                  Expanded(
+                    child: RefreshIndicator.adaptive(
+                      onRefresh: onRefresh ?? () async {},
+                      color: thickFillColor,
+                      backgroundColor: Colors.white,
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                              Responsive.isBigMobile(context)
+                                  ? whiteSpace
+                                  : smallWhiteSpace,
+                        ),
+                        // mainAxisSize: MainAxisSize.min,
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (bodyHeader != null) ...[
+                            const VSpace(smallWhiteSpace),
+                            Text(bodyHeader ?? '', style: normalTextStyle),
+                          ],
+                          if (bodyDescription != null)
+                            Text(
+                              bodyDescription ?? '',
+                              style: descriptionTextStyle,
+                            ),
                           const VSpace(smallWhiteSpace),
-                          Text(bodyHeader ?? '', style: normalTextStyle),
+                          ...children,
+                          const VSpace(whiteSpace),
                         ],
-                        if (bodyDescription != null)
-                          Text(
-                            bodyDescription ?? '',
-                            style: descriptionTextStyle,
-                          ),
-                        const VSpace(smallWhiteSpace),
-                        ...children,
-                        const VSpace(whiteSpace),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-          ],
+            ],
+          ),
         ),
       ),
     );

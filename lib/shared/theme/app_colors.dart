@@ -50,6 +50,6 @@ Color get darkGoldColor => const Color(0xffF59E0B);
 Color get greyColor => const Color(0x4CD9D9D9);
 Color get lightGreyColor => const Color(0x0CA6A6A6);
 Color get dropdownHintTextColor => const Color(0x99272727);
-Color get yellowGold => const Color(0xFFFFBA40);
+Color get yellowGold => const Color(0xFFFFBA40);//#F59E0B5E
 Color get lightRed => const Color(0x0FC01A1A);
 Color get darkRed => const Color(0xFFC01B1B);

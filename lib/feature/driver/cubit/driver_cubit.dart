@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/authentication/register/view/verify_otp_screen.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/driver.model.dart';
+import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/profile/view/profile_details.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
@@ -106,9 +107,7 @@ class DriverCubit extends Cubit<DriverState> {
     BuildContext context,
     List<double> newLocation,
   ) async {
-    if (_cachedDriver == null) return;
-
-    final previous = _cachedDriver?.location?.coordinates ?? [];
+    final previous = context.driverCords ?? [];
 
     if (newLocation == previous) return;
 

@@ -30,7 +30,7 @@ class DriverLocationService {
     return true;
   }
 
-double calculateDistance(LatLng start, LatLng end) {
+  double calculateDistance(LatLng start, LatLng end) {
     const double earthRadius = 6371000; // in meters
     final dLat = (end.latitude - start.latitude) * (pi / 180);
     final dLng = (end.longitude - start.longitude) * (pi / 180);
@@ -43,7 +43,6 @@ double calculateDistance(LatLng start, LatLng end) {
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return earthRadius * c;
   }
-
 
   Future<void> sendCurrentLocationOnce(BuildContext context) async {
     final position = await getCurrentLocation(context);
@@ -98,16 +97,12 @@ double calculateDistance(LatLng start, LatLng end) {
   }
 
   Future<void> sendToBackend(BuildContext context, Position position) async {
+    debugPrint("${position.longitude} ${position.latitude}");
     await context.read<DriverCubit>().updateDriverLocation(context, [
       // position.longitude,
       // position.latitude,
-      // -73.9650, 40.7900,
       6.736301,
       7.801245,
     ]);
-    // 6.9074977,
-    // 4.8917135,
-      // -122.084,
-    // 37.4219983,
   }
 }
