@@ -11,6 +11,7 @@ import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
+import 'package:freedomdriver/utilities/hive/messaging.dart';
 import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:get/get.dart';
@@ -98,10 +99,13 @@ class RideCubit extends Cubit<RideState> {
     emit(RideInitial());
 
     if (shouldRemovePersistence) {
-      await deleteRideRequestFromHive();
+      await Future.wait([
+        deleteRideRequestFromHive(),
+        deleteMessagesFromHive(),
+      ]);
     }
   }
-  
+
   Future<void> checkForActiveRide(BuildContext context) async {
     logRide("active");
     if (_cachedRideRequest != null) return;
