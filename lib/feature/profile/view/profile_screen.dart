@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/wallet_screen.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/feature/kyc/view/vehicle_details_screen.dart';
-import 'package:freedomdriver/feature/profile/view/availability_dashboard.dart';
 import 'package:freedomdriver/feature/profile/view/document_management_screen.dart';
 import 'package:freedomdriver/feature/profile/view/profile_details.dart';
+import 'package:freedomdriver/feature/profile/view/security_privacy.dart';
 import 'package:freedomdriver/feature/profile/widget/stacked_profile_card.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTapSecurity: () {
                       Navigator.of(
                         context,
-                      ).pushNamed(AvailabilityDashboard.routeName);
+                      ).pushNamed(SecurityAndPrivacy.routeName);
                     },
                     onTapLogout:
                         () => showAlertDialog(

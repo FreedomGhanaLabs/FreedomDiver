@@ -17,10 +17,10 @@ import 'package:freedomdriver/feature/kyc/view/criminal_background_check_screen.
 import 'package:freedomdriver/feature/kyc/view/vehicle_details_screen.dart';
 import 'package:freedomdriver/feature/main_activity/main_activity_screen.dart';
 import 'package:freedomdriver/feature/onboarding/vew/onboarding_view.dart';
-import 'package:freedomdriver/feature/profile/view/availability_dashboard.dart';
 import 'package:freedomdriver/feature/profile/view/document_management_screen.dart';
 import 'package:freedomdriver/feature/profile/view/profile_details.dart';
 import 'package:freedomdriver/feature/profile/view/profile_screen.dart';
+import 'package:freedomdriver/feature/profile/view/security_privacy.dart';
 import 'package:freedomdriver/feature/splash/driver_splash.dart';
 import 'package:freedomdriver/feature/splash/splash_screen.dart';
 import 'package:freedomdriver/router/error_route_screen.dart';
@@ -179,9 +179,9 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         (_) => const MotorcycleImageScreen(),
         settings: settings,
       );
-    case AvailabilityDashboard.routeName:
+    case SecurityAndPrivacy.routeName:
       return _pageBuilder(
-        (_) => const AvailabilityDashboard(),
+        (_) => const SecurityAndPrivacy(),
         settings: settings,
       );
     default:

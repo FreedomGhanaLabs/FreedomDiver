@@ -7,15 +7,15 @@ import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AvailabilityDashboard extends StatefulWidget {
-  const AvailabilityDashboard({super.key});
-  static const routeName = '/availability_dashboard';
+class SecurityAndPrivacy extends StatefulWidget {
+  const SecurityAndPrivacy({super.key});
+  static const routeName = '/security_privacy';
 
   @override
-  State<AvailabilityDashboard> createState() => _AvailabilityDashboardState();
+  State<SecurityAndPrivacy> createState() => _AvailabilityDashboardState();
 }
 
-class _AvailabilityDashboardState extends State<AvailabilityDashboard> {
+class _AvailabilityDashboardState extends State<SecurityAndPrivacy> {
   final vehicleColor = TextEditingController();
   final vehicleMakeAndModel = TextEditingController();
   final vehicleLicensePlate = TextEditingController();
