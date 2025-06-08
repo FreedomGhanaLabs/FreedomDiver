@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/shared/widgets/custom_drop_down_button.dart';
 import 'package:freedomdriver/shared/widgets/custom_screen.dart';
 import 'package:freedomdriver/shared/widgets/decorated_container.dart';
+import 'package:freedomdriver/shared/widgets/upload_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 
@@ -41,23 +44,34 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
       children: [
         BlocBuilder<DebtCubit, DebtState>(
           builder: (context, state) {
+            final debt =
+                state is DebtLoaded
+                    ? state.debt
+                    : Debt(
+                      currentDebt: 0.00,
+                      debtThreshold: 0.00,
+                      debtPercentage: 0,
+                      debtStatus: "",
+                      canAcceptRides: false,
+                      warningThreshold: 0,
+                      suspensionThreshold: 0,
+                      walletBalance: 0.00,
+                      availableBalance: 0.00,
+                    );
 
-            final debt = state is DebtLoaded ? state.debt : null;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                DebtStatusCard(debt: debt!),
-                  const SizedBox(height: whiteSpace),
-                  DebtPaymentForm(debt: debt),
-                  const SizedBox(height: whiteSpace),
-                  DebtHistorySection(
-                    debtPaymentHistory: debt.debtPaymentHistory ?? [],
-                  ),
-                ],
-              );
-            }
-     
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DebtStatusCard(debt: debt),
+                const SizedBox(height: whiteSpace),
+                DebtPaymentForm(debt: debt),
+                const SizedBox(height: whiteSpace),
+                DebtHistorySection(
+                  debtPaymentHistory: debt.debtPaymentHistory ?? [],
+                ),
+              ],
+            );
+          },
         ),
       ],
     );
@@ -70,10 +84,7 @@ class DebtHistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final payments =
-        debtPaymentHistory.isNotEmpty
-            ? debtPaymentHistory
-            : [];
+    final payments = debtPaymentHistory.isNotEmpty ? debtPaymentHistory : [];
 
     if (payments.isEmpty) {
       return Center(
@@ -146,25 +157,67 @@ class DebtStatusCard extends StatelessWidget {
     final debtPercentage = debt.debtPercentage;
 
     return DecoratedContainer(
+      backgroundImage: AssetImage(getPngImageUrl('wallet_bg')),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Current Debt: $appCurrency ${debt.currentDebt.toStringAsFixed(2)}',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Current Debt',
+                      style: descriptionTextStyle.copyWith(color: Colors.white),
+                    ),
+                    Text(
+                      '$appCurrency ${debt.currentDebt.toStringAsFixed(2)}',
+                      style: headingTextStyle.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              CustomDivider(height: 25, width: 2, color: Colors.white),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Wallet Balance',
+                      style: descriptionTextStyle.copyWith(color: Colors.white),
+                    ),
+                    Text(
+                      '$appCurrency ${debt.walletBalance.toStringAsFixed(2)}',
+                      style: headingTextStyle.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Wallet Balance: $appCurrency ${debt.walletBalance.toStringAsFixed(2)}',
-          ),
-          VSpace(2),
-          Text(
-            'Available Balance: $appCurrency ${debt.availableBalance.toStringAsFixed(2)}',
+          const VSpace(medWhiteSpace),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Balance After Debt: ',
+                  style: descriptionTextStyle.copyWith(color: Colors.white),
+                ),
+                TextSpan(
+                  text:
+                      '$appCurrency ${debt.availableBalance.toStringAsFixed(2)}',
+                  style: descriptionTextStyle.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
           const VSpace(medWhiteSpace),
           LinearProgressIndicator(
+            borderRadius: BorderRadius.circular(roundedLg),
             value: debtPercentage / 100,
             backgroundColor: Colors.grey[100],
             minHeight: 6,
@@ -176,18 +229,33 @@ class DebtStatusCard extends StatelessWidget {
                     : greenColor,
           ),
           const VSpace(medWhiteSpace),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Debt Usage: ${debt.debtPercentage}%'),
-              HSpace(extraSmallWhiteSpace),
-              Text(
-                'Status: ${debt.debtStatus.capitalize}',
-                style: TextStyle(color: statusColor),
-              ),
-            ],
+          CustomDottedBorder(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: DecoratedContainer(
+                    backgroundColor: Colors.black,
+                    child: Text(
+                      'Debt Usage: ${debt.debtPercentage}%',
+                      style: descriptionTextStyle.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+                HSpace(smallWhiteSpace),
+                Expanded(
+                  child: DecoratedContainer(
+                    backgroundColor: Colors.white.withValues(alpha: 0.85),
+                    child: Text(
+                      'Status: ${debt.debtStatus.capitalize}',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(color: statusColor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          VSpace(extraSmallWhiteSpace),
         ],
       ),
     );
@@ -286,6 +354,7 @@ class DebtPaymentFormState extends State<DebtPaymentForm> {
             const SizedBox(height: smallWhiteSpace),
             SimpleButton(
               title: '',
+              backgroundColor: thickFillColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

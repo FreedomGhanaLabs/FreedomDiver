@@ -33,15 +33,13 @@ abstract class SectionFactory extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 30,
-            height: 30,
-            padding: paddingSection,
+            width: 32,
+            height: 32,
+            padding: paddingSection ?? EdgeInsets.all(extraSmallWhiteSpace),
             margin: const EdgeInsets.only(left: smallWhiteSpace),
-            decoration: ShapeDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(roundedLg),
-              ),
+              borderRadius: BorderRadius.circular(roundedMd),
             ),
             child:
                 item.iconPath!.endsWith('svg')
@@ -216,7 +214,7 @@ class PersonalDataSection extends SectionFactory {
     ),
     SectionItem(
       title: 'Manage Your Documents',
-      iconPath: getIconUrl('gradient_document'),
+      iconPath: getIconUrl('address_book'),
       onTap: onDocumentTap,
     ),
     SectionItem(
@@ -226,7 +224,7 @@ class PersonalDataSection extends SectionFactory {
     ),
     SectionItem(
       title: 'Finance and Account',
-      iconPath: 'assets/nav/active_icon/earnings_nav_icon_active.svg',
+      iconPath: getIconUrl("solar_wallet"),
       onTap: onWalletTap,
     ),
   ];
@@ -254,14 +252,14 @@ class MoreSection extends SectionFactory {
 
   @override
   List<SectionItem> get sectionItems => [
-    SectionItem(
-      title: 'Vehicle Information',
-      iconPath: getIconUrl('gradient_bike'),
-      onTap: onTapAddress,
-    ),
+    // SectionItem(
+    //   title: 'Vehicle Information',
+    //   iconPath: getIconUrl('gradient_bike'),
+    //   onTap: onTapAddress,
+    // ),
     SectionItem(
       title: 'Security and Privacy',
-      iconPath: getIconUrl('availability_icon'),
+      iconPath: getIconUrl('light_security'),
       onTap: onTapSecurity,
     ),
     SectionItem(

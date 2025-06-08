@@ -21,7 +21,7 @@ void showAlertDialog(
     useRootNavigator: true,
     context: context,
     dialogType: dialogType,
-    animType: AnimType.topSlide,
+    // animType: AnimType.topSlide,
     padding: const EdgeInsets.all(smallWhiteSpace),
     title: title,
     desc: message,

@@ -80,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         () => showAlertDialog(
                           context,
                           'Logout',
-                          'Are you sure you want to logout?',
+                          'Are you sure you want to logout? Clicking on "continue" means you want to invalidate your current session.',
                           buttonText: 'Continue',
                           titleColor: gradient2,
                           okButtonColor: gradient2,
@@ -92,14 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 LoginFormScreen.routeName,
                                 (route) => false,
                               );
-                              // final apiController = ApiController('auth');
 
-                              // apiController.post(context, 'logout', {}, (
-                              //   success,
-                              //   responseData,
-                              // ) {
-                              //   if (success) {}
-                              // });
                             });
                           },
                         ),

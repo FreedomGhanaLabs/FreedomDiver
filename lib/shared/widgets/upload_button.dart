@@ -57,7 +57,9 @@ class UploadButton extends StatelessWidget {
 }
 
 class CustomDottedBorder extends StatelessWidget {
-  const CustomDottedBorder({super.key});
+  const CustomDottedBorder({super.key, this.child});
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,9 @@ class CustomDottedBorder extends StatelessWidget {
         radius: const Radius.circular(roundedMd),
         color: yellowGold,
       ),
-      child: GestureDetector(
+      child:
+          child ??
+          GestureDetector(
         onTap: () => pickFile(context),
         child: Container(
           width:
