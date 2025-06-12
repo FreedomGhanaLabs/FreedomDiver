@@ -17,7 +17,7 @@ void launchAppleMapsNavigation(LatLng destination) async {
     'http://maps.apple.com/?daddr=${destination.latitude},${destination.longitude}&dirflg=d',
   );
   if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+    await launchUrl(uri);
   } else {
     debugPrint("Could not launch Apple Maps");
   }
@@ -28,7 +28,7 @@ void launchGoogleMapsNavigation(LatLng destination) async {
     'google.navigation:q=${destination.latitude},${destination.longitude}&mode=d',
   );
   if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+    await launchUrl(uri);
   } else {
     debugPrint("Could not launch Google Maps");
   }

@@ -71,7 +71,7 @@ class _HomeScreenState extends State<_HomeScreen> {
       body: RefreshIndicator(
         color: thickFillColor,
         onRefresh: () async {
-          await Future.wait([loadDashboard(context)]);
+          await loadDashboard(context);
         },
         child: Stack(
           children: [
@@ -411,7 +411,7 @@ class GoogleMapView extends StatelessWidget {
           zoomControlsEnabled: false,
           initialCameraPosition: CameraPosition(
             target: context.driverLatLng!,
-            zoom: 15.5,
+            zoom: 16.5,
           ),
         ),
       ),

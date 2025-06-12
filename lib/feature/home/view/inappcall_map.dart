@@ -39,11 +39,9 @@ class InAppCallMap extends StatefulWidget {
 }
 
 class _InAppCallMapState extends State<InAppCallMap> {
-  // static LatLng sanFrancisco = const LatLng(37.774546, -122.433523);
   GoogleMapController? _mapController;
   final Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
-  final List<LatLng> _polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   LatLng? _driverLocation;
   LatLng? _pickupLocation;
@@ -237,10 +235,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
               Positioned(
                 top: Responsive.top(context) + smallWhiteSpace,
                 right: whiteSpace,
-                child: SimpleButton(
-                  title: "",
-                  icon: Icons.navigation,
-                  borderRadius: BorderRadius.circular(roundedFull),
+                child: IconButton(
+                  icon: Icon(Icons.navigation),
+                  color: Colors.black,
                   onPressed:
                       () => launchExternalNavigation(
                         isRideArrivedStatus
@@ -390,7 +387,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
     return GoogleMap(
       initialCameraPosition: CameraPosition(
         target: context.driverLatLng!,
-        zoom: 20,
+        zoom: 16,
       ),
       markers: _markers,
       polylines: _polylines,

@@ -150,7 +150,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               ),
             ),
           _buildActionButtons(),
-          VSpace(Responsive.bottom(context) + extraSmallWhiteSpace.sp),
+          VSpace(Responsive.bottom(context) + smallWhiteSpace.sp),
         ],
       ),
     );
