@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +26,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../shared/widgets/custom_draggable_sheet.dart';
 import '../../../utilities/copy_to_clipboard.dart';
+import '../../../utilities/tts.dart';
+import 'utilities/get_navigation_steps.dart';
+import 'utilities/launch_map_navigation.dart';
 
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});
@@ -139,6 +143,13 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
     if (result.points.isEmpty) return [];
 
+    final steps = await getNavigationSteps(destination: end, origin: start);
+
+    for (var step in steps) {
+      log("[InApp Map] Instruction: $steps");
+      await TTS.speak(step);
+    }
+
     return result.points.map((p) => LatLng(p.latitude, p.longitude)).toList();
   }
 
@@ -222,6 +233,21 @@ class _InAppCallMapState extends State<InAppCallMap> {
                 top: Responsive.top(context) + smallWhiteSpace,
                 left: whiteSpace,
                 child: const DecoratedBackButton(),
+              ),
+              Positioned(
+                top: Responsive.top(context) + smallWhiteSpace,
+                right: whiteSpace,
+                child: SimpleButton(
+                  title: "",
+                  icon: Icons.navigation,
+                  borderRadius: BorderRadius.circular(roundedFull),
+                  onPressed:
+                      () => launchExternalNavigation(
+                        isRideArrivedStatus
+                            ? _pickupLocation!
+                            : _destinationLocation!,
+                      ),
+                ),
               ),
               CustomBottomSheet(
                 child: Column(
@@ -364,7 +390,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
     return GoogleMap(
       initialCameraPosition: CameraPosition(
         target: context.driverLatLng!,
-        zoom: 16,
+        zoom: 20,
       ),
       markers: _markers,
       polylines: _polylines,
