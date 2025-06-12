@@ -1,25 +1,24 @@
-import 'dart:developer';
-
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/core/constants/auth.dart';
 import 'package:freedomdriver/feature/authentication/login/cubit/login_cubit.dart';
 import 'package:freedomdriver/feature/authentication/login/view/login_form_screen.dart';
+import 'package:freedomdriver/feature/authentication/register/cubit/registration_cubit.dart';
 import 'package:freedomdriver/feature/authentication/register/register.dart';
 import 'package:freedomdriver/feature/authentication/register/view/verify_otp_screen.dart';
-import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/utility.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/gradient_text.dart';
-import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
+
+import '../../../kyc/view/background_verification_screen.dart';
 
 class RegisterFormScreen extends StatefulWidget {
   const RegisterFormScreen({super.key});
@@ -114,7 +113,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     final data = {
       'firstName': names[0].trim().capitalize,
       'surname': names[names.length - 1].trim().capitalize,
-      'otherName': names[1].trim().capitalize,
+      'otherName': names[1].trim(),
       'email': emailController.text.trim(),
       'phone': getFullPhoneNumber(),
       'motorcycleType': motorcycleTypeController.text.trim(),
@@ -133,16 +132,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       'confirmPassword': confirmPasswordController.text,
     };
 
-    log("[Register Screen] registration data - $data");
-
     apiController.post(context, 'register', data, (success, result) {
       if (success) {
         context.read<LoginFormCubit>().setEmail(emailController.text);
-        Navigator.pushNamed(
-          context,
-          VerifyOtpScreen.routeName,
-          arguments: {"type": register},
-        );
+        Navigator.pushNamed(context, VerifyOtpScreen.routeName);
       }
     }, showOverlay: true);
   }
@@ -151,74 +144,105 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          VSpace(Responsive.top(context) + medWhiteSpace),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: whiteSpace),
-            child: AppIcon(iconName: 'login_logo'),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const VSpace(smallWhiteSpace + 5),
-                AppHeading(),
-                const VSpace(extraSmallWhiteSpace),
-                AppDescription(),
-                const VSpace(extraSmallWhiteSpace),
-              ],
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Stepper(
-                physics: const ClampingScrollPhysics(),
-                connectorColor: WidgetStatePropertyAll(gradient1),
-                currentStep: _currentStep,
-                onStepContinue: onStepContinue,
-                onStepCancel:
-                    _currentStep > 0
-                        ? () {
-                          setState(() => _currentStep--);
-                        }
-                        : null,
-                steps: [
-                  personalInfoStep(context),
-                  motorcycleInfoStep(),
-                  addressInfoStep(),
-                  securityStep(),
-                ],
-                controlsBuilder: (context, details) {
-                  final isLastStep = _currentStep == _formKeys.length - 1;
-                  return Row(
-                    children: [
-                      SimpleButton(
-                        title: isLastStep ? "Register" : "Next",
-                        onPressed: details.onStepContinue,
-                      ),
-                      if (details.onStepCancel != null)
-                        FreedomButton(
-                          title: "Back",
-                          titleColor: Colors.black,
-                          onPressed: details.onStepCancel,
-                          useOnlBorderGradient: true,
-                          backGroundColor: Colors.transparent,
-                          width: 100,
-                        ),
-                    ],
-                  );
-                },
+      backgroundColor: Colors.white,
+      body: BlocBuilder<RegistrationFormCubit, RegistrationFormState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              VSpace(Responsive.top(context) + medWhiteSpace),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: whiteSpace),
+                child: AppIcon(iconName: 'login_logo'),
               ),
-            ),
-          ),
-          const VSpace(whiteSpace),
-        ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const VSpace(smallWhiteSpace + 5),
+                    AppHeading(),
+                    const VSpace(extraSmallWhiteSpace),
+                    AppDescription(),
+                    const VSpace(extraSmallWhiteSpace),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Stepper(
+                    physics: const ClampingScrollPhysics(),
+                    connectorColor: WidgetStatePropertyAll(gradient1),
+                    currentStep: _currentStep,
+                    onStepContinue: onStepContinue,
+                    onStepCancel:
+                        _currentStep > 0
+                            ? () {
+                              setState(() => _currentStep--);
+                            }
+                            : null,
+                    steps: [
+                      personalInfoStep(context),
+                      motorcycleInfoStep(),
+                      addressInfoStep(),
+                      securityStep(),
+                    ],
+                    controlsBuilder: (context, details) {
+                      final isLastStep = _currentStep == _formKeys.length - 1;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: smallWhiteSpace),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: SimpleButton(
+                                title: isLastStep ? "Register" : "Next",
+                                onPressed: details.onStepContinue,
+                              ),
+                            ),
+                            if (details.onStepCancel != null) ...[
+                              HSpace(extraSmallWhiteSpace),
+                              OutlinedButton(
+                                onPressed: details.onStepCancel,
+                                style: ButtonStyle(
+                                  side: WidgetStatePropertyAll(
+                                    BorderSide(color: Colors.grey.shade300),
+                                  ),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        roundedMd,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Back",
+                                  style: paragraphTextStyle.copyWith(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const VSpace(whiteSpace),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: whiteSpace),
+        padding: EdgeInsets.only(
+          left: whiteSpace,
+          right: whiteSpace,
+          bottom: Responsive.bottom(context) + extraSmallWhiteSpace,
+        ),
         width: Responsive.width(context),
         color: Colors.white,
         child: const Row(
@@ -256,12 +280,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   Step securityStep() {
-    int index = 3;
     return Step(
-      title: Text("Security", style: paragraphTextStyle),
-      isActive: _currentStep >= index,
+      title: const Text("Security"),
+      isActive: _currentStep >= 3,
       content: Form(
-        key: _formKeys[index],
+        key: _formKeys[3],
         child: Column(
           children: [
             buildTextField(
@@ -287,9 +310,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 return null;
               },
             ),
-            const VSpace(smallWhiteSpace),
+            const VSpace(whiteSpace),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Checkbox.adaptive(
                   value: hasReadTermsAndCondition,
@@ -320,12 +342,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   Step addressInfoStep() {
-    int index = 2;
     return Step(
-      title: Text("Address Info", style: paragraphTextStyle),
-      isActive: _currentStep >= index,
+      title: const Text("Address Info"),
+      isActive: _currentStep >= 2,
       content: Form(
-        key: _formKeys[index],
+        key: _formKeys[2],
         child: Column(
           children: [
             SelectState(
@@ -348,12 +369,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
             buildTextField(
               controller: streetController,
               label: 'Street Name',
-              prefixIconUrl: 'assets/app_icons/typing.svg',
+              prefixIconUrl: getIconUrl('typing'),
             ),
             buildTextField(
               controller: postalCodeController,
-              label: 'Postal Code',
-              prefixIconUrl: 'assets/app_icons/numbers.svg',
+              label: 'Landmark',
+              prefixIconUrl: getIconUrl('typing'),
             ),
           ],
         ),
@@ -364,7 +385,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   Step motorcycleInfoStep() {
     int index = 1;
     return Step(
-      title: Text("Motorcycle Info", style: paragraphTextStyle),
+      title: const Text("Motorcycle Info"),
       isActive: _currentStep >= index,
       content: Form(
         key: _formKeys[index],
@@ -403,12 +424,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   Step personalInfoStep(BuildContext context) {
-    int index = 0;
     return Step(
-      title: Text("Personal Info", style: paragraphTextStyle),
-      isActive: _currentStep >= index,
+      title: const Text("Personal Info"),
+      isActive: _currentStep >= 0,
       content: Form(
-        key: _formKeys[index],
+        key: _formKeys[0],
         child: Column(
           children: [
             buildTextField(
