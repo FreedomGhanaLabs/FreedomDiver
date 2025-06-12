@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/feature/authentication/login/view/login_form_screen.dart';
 import 'package:freedomdriver/feature/authentication/register/view/register_form_screen.dart';
 import 'package:freedomdriver/feature/onboarding/vew/onboarding_carousel_one.dart';
@@ -7,8 +8,8 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/hive/onboarding.dart';
+import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingView extends StatefulWidget {
@@ -21,14 +22,27 @@ class OnboardingView extends StatefulWidget {
 
 class _OnboardingViewState extends State<OnboardingView> {
   final PageController _pageController = PageController();
-  final List<Widget> _pages = [
-    const OnboardingCarouselOne(),
-    const OnboardingCarouselTwo(),
+  final List<Widget> _pages = const [
+    OnboardingCarouselOne(),
+    OnboardingCarouselTwo(),
   ];
 
   int _currentPage = 0;
 
-  void goToPage(int page) {
+  @override
+  void initState() {
+    super.initState();
+    _checkFirstTimer();
+  }
+
+  Future<void> _checkFirstTimer() async {
+    final x = await getOnboardingFromHive();
+    if (x != null) {
+      await Navigator.pushReplacementNamed(context, LoginFormScreen.routeName);
+    }
+  }
+
+  void _goToPage(int page) {
     _pageController.animateToPage(
       page,
       duration: const Duration(milliseconds: 300),
@@ -36,21 +50,65 @@ class _OnboardingViewState extends State<OnboardingView> {
     );
   }
 
-  Future<void> checkFirstTimer() async {
-    final x = await getOnboardingFromHive();
-    if (x != null) {
-      await Navigator.pushReplacementNamed(context, LoginFormScreen.routeName);
-    }
+  Widget _buildButton({
+    required String title,
+    required VoidCallback onPressed,
+    Color? backgroundColor,
+    Gradient? gradient,
+    bool useGradient = false,
+  }) {
+    return FreedomButton(
+      backGroundColor: backgroundColor,
+      gradient: gradient ?? LinearGradient(colors: gradientColor),
+      useGradient: useGradient,
+      title: title,
+      onPressed: onPressed,
+    );
   }
 
-  @override
-  void initState() {
-    checkFirstTimer();
-    super.initState();
+  Widget _buildActionButtons() {
+    final double horizontalPadding = whiteSpace.w;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Column(
+        children: [
+          if (_currentPage == 1)
+            _buildButton(
+              title: 'Get Started',
+              backgroundColor: Colors.black,
+              onPressed: () async {
+                await addOnboardingToHive(true);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RegisterFormScreen.routeName,
+                  (route) => false,
+                );
+              },
+            ),
+          VSpace(
+            Responsive.isBigMobile(context) ? medWhiteSpace : smallWhiteSpace,
+          ),
+          _buildButton(
+            title: 'Continue',
+            useGradient: true,
+            gradient: greenGradient,
+            onPressed: () async {
+              await addOnboardingToHive(true);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                LoginFormScreen.routeName,
+                (route) => false,
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final double horizontalPadding = whiteSpace.w;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -59,101 +117,40 @@ class _OnboardingViewState extends State<OnboardingView> {
             child: PageView.builder(
               controller: _pageController,
               itemCount: _pages.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
+              onPageChanged: (index) => setState(() => _currentPage = index),
               itemBuilder: (context, index) => _pages[index],
             ),
           ),
-          const VSpace(16),
+          const VSpace(smallWhiteSpace),
           SmoothPageIndicator(
             controller: _pageController,
             count: _pages.length,
             effect: CustomizableEffect(
               dotDecoration: DotDecoration(
-                width: 10,
-                height: 10,
+                width: 10.w,
+                height: 10.w,
                 color: carouselInactiveColor,
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(roundedLg)),
+                borderRadius: BorderRadius.circular(roundedLg),
               ),
               activeDotDecoration: DotDecoration(
-                width: 36,
+                width: 30.w,
                 color: carouselActiveColor,
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(roundedLg)),
+                borderRadius: BorderRadius.circular(roundedLg),
               ),
             ),
           ),
           const VSpace(whiteSpace),
           if (_currentPage == 0)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
-              child: FreedomButton(
-                backGroundColor: Colors.black,
-                onPressed: () {
-                  goToPage(1);
-                },
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: _buildButton(
                 title: 'Next',
-                buttonTitle: Text(
-                  'Next',
-                  style:
-                      GoogleFonts.poppins(color: Colors.white, fontSize: 17.41),
-                ),
+                backgroundColor: Colors.black,
+                onPressed: () => _goToPage(1),
               ),
             ),
-          if (_currentPage == 1)
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
-                  width: double.infinity,
-                  child: FreedomButton(
-                    backGroundColor: Colors.black,
-                    // height: 57.76.h,
-                    title: 'Get Started',
-                    onPressed: () {
-                      addOnboardingToHive(true).then(
-                        (_) => Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          RegisterFormScreen.routeName,
-                          (route) => false,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const VSpace(8.24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      FreedomButton(
-                        useGradient: true,
-                        gradient: greenGradient,
-                        borderRadius: BorderRadius.circular(13),
-                        title: 'Continue',
-                        onPressed: () {
-                          addOnboardingToHive(true).then(
-                            (_) => Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              LoginFormScreen.routeName,
-                              (route) => false,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          const VSpace(smallWhiteSpace),
+          _buildActionButtons(),
+          VSpace(Responsive.bottom(context) + extraSmallWhiteSpace.sp),
         ],
       ),
     );

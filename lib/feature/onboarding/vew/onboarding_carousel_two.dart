@@ -17,7 +17,7 @@ class OnboardingCarouselTwo extends StatelessWidget {
           Stack(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.55,
+                height: Responsive.height(context) * 0.55,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image:
