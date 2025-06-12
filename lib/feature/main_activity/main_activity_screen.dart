@@ -10,6 +10,7 @@ import 'package:freedomdriver/feature/rides/view/rides_screen.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 
+import '../../shared/api/fcm.dart';
 import '../../utilities/socket_service.dart';
 import '../home/cubit/home_cubit.dart';
 
@@ -36,8 +37,11 @@ class _MainActivityScreen extends StatefulWidget {
 class _MainActivityScreenState extends State<_MainActivityScreen> {
   @override
   void initState() {
-    loadDashboard(context);
-    initSockets(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadDashboard(context);
+      initSockets(context);
+      FCMService().registerFCM(context);
+    });
     super.initState();
   }
 

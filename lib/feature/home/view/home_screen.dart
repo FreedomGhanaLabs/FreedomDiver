@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
@@ -23,6 +24,7 @@ import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_stat
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
+import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
@@ -54,6 +56,12 @@ class _HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<_HomeScreen> {
   void navigateToInAppCallAndMap() {
     Navigator.of(context).pushNamed(InAppCallMap.routeName);
+  }
+
+  @override
+  void initState() {
+    getIt<DriverLocationService>().sendCurrentLocationOnce(context);
+    super.initState();
   }
 
   @override
@@ -448,7 +456,7 @@ class HomeHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ' Current Location',
+                  ' Current Address',
                   style: TextStyle(
                     fontSize: extraSmallText.sp,
                     fontWeight: FontWeight.w500,
@@ -459,7 +467,7 @@ class HomeHeader extends StatelessWidget {
                 Row(
                   children: [
                     const AppIcon(iconName: 'location_icon'),
-                    const HSpace(1),
+                    const HSpace(2),
                     Text(
                       driver != null
                           ? '${driver.address.country}, ${driver.address.state} '
@@ -573,11 +581,14 @@ class HomeHeader extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        (driver?.ridePreference ?? 'select preference')
+                        (driver?.ridePreference
+                                        .replaceFirst('both', 'Ride, delivery')
+                                        .replaceFirst('normal', 'ride') ??
+                                    'select preference')
                                 .capitalize ??
                             '',
-                        style: const TextStyle(
-                          fontSize: smallText,
+                        style: TextStyle(
+                          fontSize: smallText.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

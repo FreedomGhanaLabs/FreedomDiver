@@ -60,31 +60,20 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
     final rideProperties = rideState is RideLoaded ? rideState.ride : null;
 
-    _pickupLocation =
-        rideProperties != null
-            ? LatLng(
-              rideProperties.pickupLocation.coordinates.last,
-              rideProperties.pickupLocation.coordinates.first,
-            )
-            : _locationService.generateRandomCoordinates(
-              _driverLocation!,
-              radius: 5000,
-            );
+    if (rideProperties == null) Navigator.of(context).pop();
 
-    _destinationLocation =
-        rideProperties != null
-            ? LatLng(
-              rideProperties.dropoffLocation.coordinates.last,
-              rideProperties.dropoffLocation.coordinates.first,
-            )
-            : _locationService.generateRandomCoordinates(
-              _driverLocation!,
-              radius: 5000,
-            );
+    _pickupLocation = LatLng(
+      rideProperties!.pickupLocation.coordinates.last,
+      rideProperties.pickupLocation.coordinates.first,
+    );
+
+    _destinationLocation = LatLng(
+      rideProperties.dropoffLocation.coordinates.last,
+      rideProperties.dropoffLocation.coordinates.first,
+    );
+
     _setMapPins();
-    _setPolylines().then((_) {
-      _animateDriver();
-    });
+    _startDriverJourney();
   }
 
   @override
@@ -138,61 +127,76 @@ class _InAppCallMapState extends State<InAppCallMap> {
     return BitmapDescriptor.bytes(bytes);
   }
 
-  Future<void> _setPolylines() async {
+  Future<List<LatLng>> _getPolylinePoints(LatLng start, LatLng end) async {
     final result = await polylinePoints.getRouteBetweenCoordinates(
       googleApiKey: mapsAPIKey,
       request: PolylineRequest(
-        origin: PointLatLng(
-          _driverLocation!.latitude,
-          _driverLocation!.longitude,
-        ),
-        destination: PointLatLng(
-          _pickupLocation!.latitude,
-          _pickupLocation!.longitude,
-        ),
+        origin: PointLatLng(start.latitude, start.longitude),
+        destination: PointLatLng(end.latitude, end.longitude),
         mode: TravelMode.driving,
       ),
     );
 
-    if (result.points.isNotEmpty) {
-      _polylineCoordinates.clear();
-      for (final point in result.points) {
-        _polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      }
+    if (result.points.isEmpty) return [];
 
-      setState(() {
-        _polylines.add(
-          Polyline(
-            polylineId: const PolylineId('route'),
-            width: 5,
-            color: gradient1,
-            points: _polylineCoordinates,
+    return result.points.map((p) => LatLng(p.latitude, p.longitude)).toList();
+  }
+
+  Future<void> _drawRoutePolyline(List<LatLng> points, String id) async {
+    _polylines.removeWhere((p) => p.polylineId.value == id);
+    _polylines.add(
+      Polyline(
+        polylineId: PolylineId(id),
+        width: 5,
+        color: gradient1,
+        points: points,
+      ),
+    );
+    setState(() {});
+  }
+
+  Future<void> _animateDriverAlong(List<LatLng> route) async {
+    for (int i = 0; i < route.length; i++) {
+      await Future.delayed(const Duration(milliseconds: 1000), () {
+        final point = route[i];
+        _driverLocation = point;
+        _markers.removeWhere((m) => m.markerId.value == 'driver');
+        _markers.add(
+          Marker(
+            markerId: const MarkerId('driver'),
+            position: point,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueBlue,
+            ),
+            infoWindow: const InfoWindow(title: 'Driver'),
           ),
         );
+        _mapController?.animateCamera(CameraUpdate.newLatLng(point));
+        setState(() {});
       });
     }
   }
 
-  Future<void> _animateDriver() async {
-    for (var i = 0; i < _polylineCoordinates.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 2000), () {
-        setState(() {
-          _driverLocation = _polylineCoordinates[i];
-          _markers
-            ..removeWhere((m) => m.markerId.value == 'driver')
-            ..add(
-              Marker(
-                markerId: const MarkerId('driver'),
-                position: _driverLocation!,
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueBlue,
-                ),
-                infoWindow: const InfoWindow(title: 'Your Location'),
-              ),
-            );
-        });
-      });
+  Future<void> _startDriverJourney() async {
+    if (_driverLocation == null ||
+        _pickupLocation == null ||
+        _destinationLocation == null) {
+      return;
     }
+
+    final toPickupRoute = await _getPolylinePoints(
+      _driverLocation!,
+      _pickupLocation!,
+    );
+    await _drawRoutePolyline(toPickupRoute, 'toPickup');
+    await _animateDriverAlong(toPickupRoute);
+
+    final toDestinationRoute = await _getPolylinePoints(
+      _pickupLocation!,
+      _destinationLocation!,
+    );
+    await _drawRoutePolyline(toDestinationRoute, 'toDestination');
+    await _animateDriverAlong(toDestinationRoute);
   }
 
   @override

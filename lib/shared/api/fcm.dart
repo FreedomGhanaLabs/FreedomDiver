@@ -12,6 +12,7 @@ class FCMService {
   ApiController apiController = ApiController("fcm", noDriver: true);
   // static
   Future<void> registerFCM(BuildContext context) async {
+    if (await getFCMTokenFromHive() != null) return;
     try {
       await NotificationService.initializeNotifications();
       final fcmToken = await FirebaseMessaging.instance.getToken();
@@ -30,7 +31,7 @@ class FCMService {
         {'token': fcmToken, 'platform': platform},
         (success, data) {
           if (success) {
-            log("[FCM Backend] $data");
+            log("[FCM Backend] ${data['data']}");
           } else {
             log("[FCM Backend] Registration failed: $data");
           }

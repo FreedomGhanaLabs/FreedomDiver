@@ -21,7 +21,6 @@ Future<void> loadDashboard(BuildContext context, {bool loadAll = true}) async {
   final driverLocationService = getIt<DriverLocationService>();
 
   if (loadAll) {
-    await driverLocationService.requestPermission();
     await driverLocationService.sendCurrentLocationOnce(context);
   }
 

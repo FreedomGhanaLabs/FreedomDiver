@@ -17,11 +17,12 @@ import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
+import 'package:freedomdriver/utilities/loading_overlay.dart';
 import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../../../shared/api/fcm.dart';
+import '../../../../shared/api/load_dashboard.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});
@@ -291,7 +292,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
           'email': loginFormCubit.state.email,
           'verificationCode': verificationCode,
         },
-        (success, data) async {
+        (success, data) {
           setState(() {
             isLoading = false;
             _otpController.text = "";
@@ -299,8 +300,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
           if (success) {
             final token = data['data']['token'].toString();
             addTokenToHive(token).then((onValue) async {
-              await FCMService().registerFCM(context);
+              showLoadingOverlay(context);
+              await loadDashboard(context, loadAll: false);
               context.read<LoginFormCubit>().setEmail('');
+              hideLoadingOverlay(context);
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 MainActivityScreen.routeName,

@@ -9,6 +9,7 @@ import 'package:freedomdriver/feature/profile/view/security_privacy.dart';
 import 'package:freedomdriver/feature/profile/widget/stacked_profile_card.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
+import 'package:freedomdriver/utilities/hive/fcm_token.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/show_dialog.dart';
 import 'package:freedomdriver/utilities/ui.dart';
@@ -80,20 +81,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         () => showAlertDialog(
                           context,
                           'Logout',
-                          'Are you sure you want to logout? Clicking on "continue" means you want to invalidate your current session.',
+                          'Are you sure you want to logout? Clicking on continue will invalidate your current session.',
                           buttonText: 'Continue',
                           titleColor: gradient2,
                           okButtonColor: gradient2,
                           hasSecondaryButton: true,
-                          onPressed: () {
-                            deleteTokenToHive().then((onValue) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                LoginFormScreen.routeName,
-                                (route) => false,
-                              );
-
-                            });
+                          onPressed: () async {
+                            await Future.wait([
+                              deleteTokenToHive(),
+                              deleteFCMTokenFromHive(),
+                            ]);
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              LoginFormScreen.routeName,
+                              (route) => false,
+                            );
                           },
                         ),
                   ),

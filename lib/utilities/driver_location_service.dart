@@ -3,67 +3,80 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
-import 'package:freedomdriver/utilities/get_location_from_coordinates.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DriverLocationService {
-  DriverLocationService();
+import '../feature/driver/cubit/driver_cubit.dart';
+import '../shared/api/api_controller.dart';
+import '../shared/widgets/toaster.dart';
 
+class DriverLocationService {
   StreamSubscription<Position>? _positionStream;
 
-  Future<bool> requestPermission() async {
-    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
+  static const LocationSettings _locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 10,
+  );
+
+  // Handles permission check and shows appropriate toasts
+  Future<bool> _handlePermission(BuildContext context) async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      _showLocationError(context, 'Location services are disabled.');
       return false;
     }
 
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) return false;
     }
 
-    if (permission == LocationPermission.deniedForever) return false;
+    if (permission == LocationPermission.denied) {
+      _showLocationError(context, 'Location permissions are denied.');
+      return false;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      _showLocationError(
+        context,
+        'Location permissions are permanently denied.',
+      );
+      return false;
+    }
 
     return true;
   }
 
-  double calculateDistance(LatLng start, LatLng end) {
-    const double earthRadius = 6371000; // in meters
-    final dLat = (end.latitude - start.latitude) * (pi / 180);
-    final dLng = (end.longitude - start.longitude) * (pi / 180);
-    final a =
-        sin(dLat / 2) * sin(dLat / 2) +
-        cos(start.latitude * pi / 180) *
-            cos(end.latitude * pi / 180) *
-            sin(dLng / 2) *
-            sin(dLng / 2);
-    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return earthRadius * c;
+  Future<Position> getCurrentLocation(BuildContext context) async {
+    final hasPermission = await _handlePermission(context);
+    if (!hasPermission) {
+      return Future.error('Location permission not granted.');
+    }
+
+    return await Geolocator.getCurrentPosition(
+      locationSettings: _locationSettings,
+    );
   }
 
   Future<void> sendCurrentLocationOnce(BuildContext context) async {
-    final position = await getCurrentLocation(context);
-
-    await sendToBackend(context, position);
+    try {
+      final position = await getCurrentLocation(context);
+      await sendToBackend(context, position);
+    } catch (e) {
+      debugPrint("Error getting/sending location: $e");
+    }
   }
 
-  Future<void> startLiveLocationUpdates(
-    BuildContext context, {
-    int distanceFilterMeters = 10,
-  }) async {
-    if (!await requestPermission()) return;
+  Future<void> startLiveLocationUpdates(BuildContext context) async {
+    if (!await _handlePermission(context)) return;
 
-    const locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 10,
-    );
+    _positionStream?.cancel(); // Prevent multiple listeners
 
     _positionStream = Geolocator.getPositionStream(
-      locationSettings: locationSettings,
-    ).listen((position) => sendToBackend(context, position));
+      locationSettings: _locationSettings,
+    ).listen((position) {
+      sendToBackend(context, position);
+    });
   }
 
   void stopLiveLocationUpdates() {
@@ -71,38 +84,65 @@ class DriverLocationService {
     _positionStream = null;
   }
 
-  // Method to generate random coordinates within a radius (in meters) from a given location
+  // Generate random coordinates within a radius (in meters)
   LatLng generateRandomCoordinates(LatLng center, {required double radius}) {
     final random = Random();
-
-    // Radius in degrees (approximate)
     final radiusInDegrees = radius / 111300.0;
-
-    // Random offset within the radius
     final u = random.nextDouble();
     final v = random.nextDouble();
-
     final w = radiusInDegrees * sqrt(u);
     final t = 2 * pi * v;
-
-    // Random displacement from the center
     final x = w * cos(t);
     final y = w * sin(t);
-
-    // Calculate new latitude and longitude
-    final newLat = center.latitude + x;
-    final newLon = center.longitude + y;
-
-    return LatLng(newLat, newLon);
+    return LatLng(center.latitude + x, center.longitude + y);
   }
 
   Future<void> sendToBackend(BuildContext context, Position position) async {
-    debugPrint("${position.longitude} ${position.latitude}");
-    await context.read<DriverCubit>().updateDriverLocation(context, [
-      // position.longitude,
-      // position.latitude,
-      6.736301,
-      7.801245,
-    ]);
+    debugPrint("Sending location: ${position.latitude}, ${position.longitude}");
+    try {
+      await context.read<DriverCubit>().updateDriverLocation(context, [
+        position.longitude,
+        position.latitude,
+      ]);
+      // lat -  7.801245,
+      // long - 6.736301
+    } catch (e) {
+      debugPrint("Failed to send location to backend: $e");
+    }
+  }
+
+  Future<Map<String, String>> getLocationFromCoordinates(
+    List<double> coordinates,
+  ) async {
+    final latitude = coordinates[0];
+    final longitude = coordinates[1];
+
+    try {
+      final placemark = await placemarkFromCoordinates(latitude, longitude);
+
+      if (placemark.isNotEmpty) {
+        final place = placemark.first;
+        final placeData = {
+          'country': place.country ?? '',
+          'city':
+              place.locality ??
+              place.subAdministrativeArea ??
+              place.administrativeArea ??
+              '',
+        };
+        debugPrint("[GeoCoding] $placeData");
+        return placeData;
+      } else {
+        final placeData = {'country': '', 'city': ''};
+        return placeData;
+      }
+    } catch (e) {
+      debugPrint('Reverse geocoding failed: $e');
+      return {'country': '', 'city': ''};
+    }
+  }
+
+  void _showLocationError(BuildContext context, String message) {
+    showToast(context, 'Location Error', message, toastType: ToastType.error);
   }
 }

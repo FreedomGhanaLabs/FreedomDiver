@@ -126,6 +126,14 @@ class DriverCubit extends Cubit<DriverState> {
           if (success) {
             log('[DriverCubit] coordinates updated: $newLocation');
             // log(responseData.toString());
+            _emitIfChanged(
+              _cachedDriver!.copyWith(
+                location: DriverLocation(
+                  type: 'Point',
+                  coordinates: newLocation,
+                ),
+              ),
+            );
           } else {
             _emitIfChanged(
               _cachedDriver!.copyWith(
