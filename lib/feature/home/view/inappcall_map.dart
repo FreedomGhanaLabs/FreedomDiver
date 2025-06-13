@@ -9,6 +9,8 @@ import 'package:freedomdriver/core/constants/ride.dart';
 import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/view/inapp_ride_messaging.dart';
+import 'package:freedomdriver/feature/home/view/utilities/calculate_bearing.dart';
+import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
@@ -19,6 +21,7 @@ import 'package:freedomdriver/shared/widgets/custom_divider.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
+import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,7 +30,7 @@ import '../../../shared/widgets/custom_draggable_sheet.dart';
 import '../../../utilities/copy_to_clipboard.dart';
 import '../../../utilities/tts.dart';
 import 'utilities/create_custom_marker.dart';
-import 'utilities/get_navigation_steps.dart';
+import 'utilities/google_map_apis.dart';
 import 'utilities/launch_map_navigation.dart';
 
 class InAppCallMap extends StatefulWidget {
@@ -46,6 +49,8 @@ class _InAppCallMapState extends State<InAppCallMap> {
   LatLng? _driverLocation;
   LatLng? _pickupLocation;
   LatLng? _destinationLocation;
+  BitmapDescriptor? _driverIcon;
+  BitmapDescriptor? _userIcon;
 
   late final DriverLocationService _locationService;
 
@@ -53,7 +58,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
   void initState() {
     super.initState();
     _locationService = getIt<DriverLocationService>();
-    _locationService.startLiveLocationUpdates(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _locationService.startLiveLocationUpdates(context);
+      _startDriverJourney();
+    });
+
     final rideState = context.read<RideCubit>().state;
     _driverLocation = LatLng(
       context.driver?.location?.coordinates.last ?? 37.774546,
@@ -75,7 +84,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
     );
 
     _setMapPins();
-    _startDriverJourney();
   }
 
   @override
@@ -85,10 +93,12 @@ class _InAppCallMapState extends State<InAppCallMap> {
   }
 
   Future<void> _setMapPins() async {
-    final motorbikeIcon = await createCustomMarker(
+    _driverIcon = await createCustomMarker(
       fallbackAssetPath: 'assets/app_images/user_profile.png',
+      networkImageUrl: context.driver?.profilePicture,
     );
-    final userIcon = await createCustomMarker(
+
+    _userIcon = await createCustomMarker(
       fallbackAssetPath: 'assets/app_images/client_holder_image.png',
     );
 
@@ -97,7 +107,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
         Marker(
           markerId: const MarkerId('driver'),
           position: _driverLocation!,
-          icon: motorbikeIcon,
+          icon: _driverIcon!,
           infoWindow: const InfoWindow(title: 'Your Location'),
         ),
       )
@@ -105,7 +115,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
         Marker(
           markerId: const MarkerId('pickup'),
           position: _pickupLocation!,
-          icon: userIcon,
+          icon: _userIcon!,
           infoWindow: const InfoWindow(title: 'User Location'),
         ),
       )
@@ -119,6 +129,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
           infoWindow: const InfoWindow(title: 'User Destination'),
         ),
       );
+    setState(() {});
   }
 
   Future<List<LatLng>> _getPolylinePoints(LatLng start, LatLng end) async {
@@ -156,26 +167,20 @@ class _InAppCallMapState extends State<InAppCallMap> {
     setState(() {});
   }
 
-  Future<void> _animateDriverAlong(List<LatLng> route) async {
-    for (int i = 0; i < route.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 1000), () {
-        final point = route[i];
-        _driverLocation = point;
-        _markers.removeWhere((m) => m.markerId.value == 'driver');
-        _markers.add(
-          Marker(
-            markerId: const MarkerId('driver'),
-            position: point,
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueBlue,
-            ),
-            infoWindow: const InfoWindow(title: 'Driver'),
-          ),
-        );
-        _mapController?.animateCamera(CameraUpdate.newLatLng(point));
-        setState(() {});
-      });
-    }
+  Future<void> _animateDriverAlong() async {
+    // final driverCubit = context.read<DriverCubit>().state;
+    // final driver = driverCubit is DriverLoaded ? driverCubit.driver : null;
+    _markers.removeWhere((m) => m.markerId.value == 'driver');
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('driver'),
+        position: _driverLocation!,
+        icon: _driverIcon!,
+        infoWindow: const InfoWindow(title: 'Your Location'),
+      ),
+    );
+    _mapController?.animateCamera(CameraUpdate.newLatLng(_driverLocation!));
+    setState(() {});
   }
 
   Future<void> _startDriverJourney() async {
@@ -185,44 +190,69 @@ class _InAppCallMapState extends State<InAppCallMap> {
       return;
     }
 
-    final rideCubitState = context.watch<RideCubit>().state;
+    final rideCubitState = context.read<RideCubit>().state;
     final ride = rideCubitState is RideLoaded ? rideCubitState.ride : null;
-    final isRideArrivedStatus = ride?.status == arrivedRide;
+    final isAccepted = ride?.status == acceptedRide;
 
-    final toPickupRoute =
-        await (isRideArrivedStatus
-            ? _getPolylinePoints(_driverLocation!, _pickupLocation!)
-            : _getPolylinePoints(_driverLocation!, _pickupLocation!));
-    await _drawRoutePolyline(toPickupRoute, 'toPickup');
-    await _animateDriverAlong(toPickupRoute);
+    final toPickupRoute = await _getPolylinePoints(
+      _driverLocation!,
+      _pickupLocation!,
+    );
 
     final toDestinationRoute = await _getPolylinePoints(
       _pickupLocation!,
       _destinationLocation!,
     );
-    await _drawRoutePolyline(toDestinationRoute, 'toDestination');
-    await _animateDriverAlong(toDestinationRoute);
+
+    final toRoute = isAccepted ? toPickupRoute : toDestinationRoute;
+
+    await _drawRoutePolyline(
+      toRoute,
+      isAccepted ? 'toPickup' : "toDestination",
+    );
+    await _animateDriverAlong();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<RideCubit, RideState>(
-        listener: (context, state) {},
+      body: BlocBuilder<RideCubit, RideState>(
         builder: (context, state) {
           final ride = state is RideLoaded ? state.ride : null;
 
           final userPhone = ride?.user?.phone ?? "";
 
           final isAccepted = ride?.status == acceptedRide;
-          final isRideArrivedStatus = ride?.status == arrivedRide;
+          final isArrived = ride?.status == arrivedRide;
 
           final etaToPickup = ride?.etaToPickup?.text;
           final etaToDropoff = ride?.etaToDropoff?.text;
-          final averageTime = isRideArrivedStatus ? etaToPickup : etaToDropoff;
+          final averageTime = isAccepted ? etaToPickup : etaToDropoff;
           return Stack(
             children: [
-              showGoogleMap(),
+              GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: context.driverLatLng!,
+                  zoom: 17,
+                  tilt: 50,
+                  bearing: calculateBearing(
+                    _pickupLocation!,
+                    _destinationLocation!,
+                  ),
+                ),
+                markers: _markers,
+                polylines: _polylines,
+                myLocationEnabled: true,
+                // myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                // cloudMapId: mapsAPIKey,
+                onMapCreated: (GoogleMapController controller) {
+                  _mapController = controller;
+                  _mapController?.animateCamera(
+                    CameraUpdate.newLatLng(context.driverLatLng!),
+                  );
+                },
+              ),
               Positioned(
                 top: Responsive.top(context) + smallWhiteSpace,
                 left: whiteSpace,
@@ -230,16 +260,49 @@ class _InAppCallMapState extends State<InAppCallMap> {
               ),
               Positioned(
                 top: Responsive.top(context) + smallWhiteSpace,
-                right: whiteSpace,
+                right: extraSmallWhiteSpace,
                 child: IconButton(
-                  icon: Icon(Icons.navigation),
                   color: Colors.black,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.white),
+                  ),
+                  tooltip: "External Navigation",
+                  icon: Icon(Icons.navigation),
                   onPressed:
                       () => launchExternalNavigation(
-                        isRideArrivedStatus
-                            ? _pickupLocation!
-                            : _destinationLocation!,
+                        isAccepted ? _pickupLocation! : _destinationLocation!,
                       ),
+                ),
+              ),
+              Positioned(
+                top: Responsive.top(context) + 65,
+                right: extraSmallWhiteSpace,
+                child: IconButton(
+                  color: Colors.black,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.white),
+                  ),
+                  tooltip: "Navigation Instructions",
+                  icon: Icon(Icons.precision_manufacturing_outlined),
+                  onPressed: () async {
+                    final instructions = await getNavigationSteps(
+                      destination: _destinationLocation!,
+                      origin: _pickupLocation!,
+                    );
+                    showCustomModal(
+                      context,
+                      btnCancelOnPress: () {},
+                      btnCancelText: "Close",
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: Responsive.height(context) * 0.75,
+                        ),
+                        child: Expanded(
+                          child: InstructionList(instructions: instructions),
+                        ),
+                      ),
+                    ).show();
+                  },
                 ),
               ),
               CustomBottomSheet(
@@ -279,12 +342,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                         ],
                       ),
                     ),
-                    const VSpace(whiteSpace),
-                    Container(
-                      width: Responsive.width(context),
-                      height: 2,
-                      decoration: const BoxDecoration(color: Color(0x72D9D9D9)),
-                    ),
+                    CustomDivider(),
                     const VSpace(smallWhiteSpace),
                     if (isAccepted)
                       Padding(
@@ -294,7 +352,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: paragraphText.sp,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -336,39 +394,62 @@ class _InAppCallMapState extends State<InAppCallMap> {
                       ],
                     ),
                     const VSpace(whiteSpace),
-                    const CustomDivider(),
-                    const VSpace(whiteSpace),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: smallWhiteSpace,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: SimpleButton(
-                              title: "Call User",
-                              icon: Icons.call,
-                              onPressed:
-                                  () => callUser(ride?.user?.phone ?? ''),
+                    if (isAccepted || isArrived) ...[
+                      const CustomDivider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: smallWhiteSpace,
+                          vertical: whiteSpace,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: SimpleButton(
+                                onPressed:
+                                    () => callUser(ride?.user?.phone ?? ''),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.call, color: Colors.white),
+                                    HSpace(extraSmallWhiteSpace),
+                                    Text(
+                                      "Call User",
+                                      style: paragraphTextStyle.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: extraSmallWhiteSpace),
-                          Expanded(
-                            child: SimpleButton(
-                              title: "Message",
-                              icon: Icons.send,
-                              onPressed:
-                                  () => Navigator.pushNamed(
-                                    context,
-                                    InappRideMessaging.routeName,
-                                  ),
-                              backgroundColor: thickFillColor,
+                            const SizedBox(width: extraSmallWhiteSpace),
+                            Expanded(
+                              child: SimpleButton(
+                                onPressed:
+                                    () => Navigator.pushNamed(
+                                      context,
+                                      InappRideMessaging.routeName,
+                                    ),
+                                backgroundColor: thickFillColor,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.send, color: Colors.white),
+                                    HSpace(extraSmallWhiteSpace),
+                                    Text(
+                                      "Message",
+                                      style: paragraphTextStyle.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const VSpace(whiteSpace),
+                    ],
                   ],
                 ),
               ),
@@ -376,26 +457,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
           );
         },
       ),
-    );
-  }
-
-  GoogleMap showGoogleMap() {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: context.driverLatLng!,
-        zoom: 16,
-      ),
-      markers: _markers,
-      polylines: _polylines,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      onMapCreated: (GoogleMapController controller) {
-        _mapController = controller;
-        _mapController?.animateCamera(
-          CameraUpdate.newLatLng(context.driverLatLng!),
-        );
-      },
     );
   }
 }
@@ -413,7 +474,7 @@ class InfoColumn extends StatelessWidget {
           title,
           style: TextStyle(
             color: Colors.black54,
-            fontSize: smallText.sp - 1,
+            fontSize: smallText.sp - 2,
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -460,7 +521,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
             title,
             style: TextStyle(
               color: Colors.black54,
-              fontSize: paragraphText,
+              fontSize: smallText,
               fontWeight: FontWeight.w400,
             ),
           ),

@@ -16,7 +16,7 @@ class CustomBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.65,
+      initialChildSize: 0.1,
       minChildSize: 0.1,
       maxChildSize: 0.7,
       builder: (context, scrollController) {

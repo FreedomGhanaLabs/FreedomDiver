@@ -37,6 +37,7 @@ import '../../../shared/widgets/star_rating.dart';
 import '../../documents/driver_license/view/license_form.dart';
 import '../../main_activity/cubit/main_activity_cubit.dart';
 import '../../rides/cubit/ride/ride_state.dart';
+import 'utilities/create_custom_marker.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -366,7 +367,8 @@ class _HomeRideState extends State<HomeRide> {
                           ),
                         ),
                         const HSpace(extraSmallWhiteSpace),
-                        Expanded(
+                        if (!isRideArrivedStatus)
+                          Expanded(
                           child: SimpleButton(
                             title:
                                 state.rideStatus == TransitStatus.accepted
@@ -397,8 +399,39 @@ class _HomeRideState extends State<HomeRide> {
   }
 }
 
-class GoogleMapView extends StatelessWidget {
+class GoogleMapView extends StatefulWidget {
   const GoogleMapView({super.key});
+
+  @override
+  State<GoogleMapView> createState() => _GoogleMapViewState();
+}
+
+class _GoogleMapViewState extends State<GoogleMapView> {
+  final Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    _setMapPins();
+    super.initState();
+  }
+
+  Future<void> _setMapPins() async {
+    final driverImage = await createCustomMarker(
+      fallbackAssetPath: 'assets/app_images/user_profile.png',
+      networkImageUrl: context.driver?.profilePicture,
+    );
+
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('driver'),
+        position: context.driverLatLng!,
+        icon: driverImage,
+        infoWindow: const InfoWindow(title: 'Your Location'),
+      ),
+    );
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -409,7 +442,7 @@ class GoogleMapView extends StatelessWidget {
         width: Responsive.width(context),
         child: GoogleMap(
           zoomControlsEnabled: false,
-          markers: {Marker(markerId: MarkerId("Driver"))},
+          markers: _markers,
           initialCameraPosition: CameraPosition(
             target: context.driverLatLng!,
             zoom: 16.5,

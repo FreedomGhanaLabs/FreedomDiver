@@ -18,17 +18,17 @@ class EstimatedReachTime extends StatelessWidget {
       builder: (context, state) {
         final ride = state is RideLoaded ? state.ride : null;
 
-        final isArrived = ride?.status == acceptedRide;
+        final isAccepted = ride?.status == acceptedRide;
 
         String? getTimeText(bool toPickup) =>
             (toPickup ? ride?.etaToPickup?.text : ride?.etaToDropoff?.text)
                 ?.toString();
 
-        String timeText = getTimeText(isArrived) ?? "0 min";
+        String timeText = getTimeText(isAccepted) ?? "0 min";
         final parts = timeText.split(" ");
         final time = parts.isNotEmpty ? parts[0] : "0";
         final unit = parts.length > 1 ? parts[1] : "min";
-        final location = isArrived ? "pickup" : "dropoff";
+        final location = isAccepted ? "pickup" : "dropoff";
 
         return Column(
           children: [

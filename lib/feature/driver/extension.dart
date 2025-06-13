@@ -15,7 +15,7 @@ extension DriverExtension on BuildContext {
   }
 
   LatLng? get driverLatLng {
-    final coords = driver?.location?.coordinates;
+    final coords = driverCords;
     if (coords == null || coords.length < 2) {
       return LatLng(37.774546, -122.433523);
     }

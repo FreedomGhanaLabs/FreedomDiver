@@ -3,16 +3,16 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<BitmapDescriptor> createCustomMarker({
   required String fallbackAssetPath,
   String? networkImageUrl,
-  int width = 100,
+  int width = 60,
 }) async {
   Uint8List? imageBytes;
 

@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../feature/driver/cubit/driver_cubit.dart';
 import '../shared/api/api_controller.dart';
@@ -15,8 +13,8 @@ class DriverLocationService {
   StreamSubscription<Position>? _positionStream;
 
   static const LocationSettings _locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 10,
+    accuracy: LocationAccuracy.bestForNavigation,
+    distanceFilter: 0,
   );
 
   // Handles permission check and shows appropriate toasts
@@ -82,19 +80,6 @@ class DriverLocationService {
   void stopLiveLocationUpdates() {
     _positionStream?.cancel();
     _positionStream = null;
-  }
-
-  // Generate random coordinates within a radius (in meters)
-  LatLng generateRandomCoordinates(LatLng center, {required double radius}) {
-    final random = Random();
-    final radiusInDegrees = radius / 111300.0;
-    final u = random.nextDouble();
-    final v = random.nextDouble();
-    final w = radiusInDegrees * sqrt(u);
-    final t = 2 * pi * v;
-    final x = w * cos(t);
-    final y = w * sin(t);
-    return LatLng(center.latitude + x, center.longitude + y);
   }
 
   Future<void> sendToBackend(BuildContext context, Position position) async {

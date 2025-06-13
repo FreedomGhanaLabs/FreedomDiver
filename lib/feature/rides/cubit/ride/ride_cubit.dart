@@ -15,8 +15,10 @@ import 'package:freedomdriver/utilities/hive/messaging.dart';
 import 'package:freedomdriver/utilities/hive/ride.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../core/di/locator.dart';
+import '../../../home/view/utilities/google_map_apis.dart';
 
 class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
@@ -340,6 +342,39 @@ class RideCubit extends Cubit<RideState> {
       body: {"message": message},
       successLog: '[RideCubit] Message sent',
       errorMsg: 'Failed to send ride message',
+    );
+  }
+
+  Future<void> updateETA(BuildContext context, LatLng newLocation) async {
+    if (_cachedRideRequest == null) return;
+
+    final dropoffCords = _cachedRideRequest!.dropoffLocation.coordinates;
+    final pickupCords = _cachedRideRequest!.dropoffLocation.coordinates;
+    final result = await getEtaAndDistance(
+      origin: newLocation,
+      destination:
+          _cachedRideRequest!.etaToDropoff != null
+              ? LatLng(dropoffCords.last, dropoffCords.first)
+              : LatLng(pickupCords.last, pickupCords.first),
+    );
+
+    // log('[Updated Eta] $result');
+
+    _updateRideRequest(
+      _cachedRideRequest!.copyWith(
+        etaToPickup: DurationInfo(
+          value: result['duration']['value'] ?? 0,
+          text: result['duration']['text'] ?? "",
+        ),
+        etaToDropoff: DurationInfo(
+          value: result['duration']['value'] ?? 0,
+          text: result['duration']['text'] ?? "",
+        ),
+        estimatedDistance: Distance(
+          value: result['distance']['value'] ?? 0,
+          text: result['distance']['text'] ?? "",
+        ),
+      ),
     );
   }
 }

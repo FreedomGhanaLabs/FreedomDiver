@@ -7,10 +7,12 @@ import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/driver.model.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/profile/view/profile_details.dart';
+import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/api_handler.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/socket_service.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DriverCubit extends Cubit<DriverState> {
   DriverCubit() : super(DriverInitial());
@@ -115,6 +117,11 @@ class DriverCubit extends Cubit<DriverState> {
       _cachedDriver!.copyWith(
         location: DriverLocation(type: 'Point', coordinates: newLocation),
       ),
+    );
+
+    await context.read<RideCubit>().updateETA(
+      context,
+      LatLng(newLocation.last, newLocation.first),
     );
 
     try {

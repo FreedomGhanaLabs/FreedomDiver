@@ -86,7 +86,7 @@ Widget showProgressIndicator({double size = 25}) {
 
 class SimpleButton extends StatelessWidget {
   const SimpleButton({
-    required this.title,
+    this.title,
     super.key,
     this.borderRadius,
     this.backgroundColor,
@@ -97,7 +97,7 @@ class SimpleButton extends StatelessWidget {
     this.materialTapTargetSize,
     this.icon,
   });
-  final String title;
+  final String? title;
   final Color? backgroundColor;
   final BorderRadiusGeometry? borderRadius;
   final void Function()? onPressed;
@@ -134,7 +134,7 @@ class SimpleButton extends StatelessWidget {
               ],
               Expanded(
                 child: Text(
-                  title,
+                  title ?? "",
                   textAlign: TextAlign.center,
                   style:
                       textStyle ??
