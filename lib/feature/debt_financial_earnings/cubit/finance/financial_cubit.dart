@@ -156,9 +156,9 @@ class FinancialCubit extends Cubit<FinancialState> {
           context,
           'bank-details',
           {
-            "accountNumber": accountNumber,
-            "bankCode": bankCode,
-            "accountName": accountName,
+            'accountNumber': accountNumber,
+            'bankCode': bankCode,
+            'accountName': accountName,
           },
           (success, data) {
             if (success && data is Map<String, dynamic>) {
@@ -188,7 +188,7 @@ class FinancialCubit extends Cubit<FinancialState> {
         await _apiController.post(
           context,
           'momo-details',
-          {"phoneNumber": phoneNumber, "provider": provider ?? "mtn"},
+          {'phoneNumber': phoneNumber, 'provider': provider ?? 'mtn'},
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] bank details data $data');
@@ -240,7 +240,7 @@ class FinancialCubit extends Cubit<FinancialState> {
         await _apiController.post(
           context,
           'withdraw/$withdrawalMethod',
-          {"amount": amount},
+          {'amount': amount},
           (success, data) {
             if (success && data is Map<String, dynamic>) {
               log('[FinancialCubit] $withdrawalMethod withdrawal $data');

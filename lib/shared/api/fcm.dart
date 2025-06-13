@@ -9,7 +9,7 @@ import '../../utilities/hive/fcm_token.dart';
 import 'api_controller.dart';
 
 class FCMService {
-  ApiController apiController = ApiController("fcm", noDriver: true);
+  ApiController apiController = ApiController('fcm', noDriver: true);
   // static
   Future<void> registerFCM(BuildContext context) async {
     if (await getFCMTokenFromHive() != null) return;
@@ -27,13 +27,13 @@ class FCMService {
 
       await apiController.post(
         context,
-        "register",
+        'register',
         {'token': fcmToken, 'platform': platform},
         (success, data) {
           if (success) {
             log("[FCM Backend] ${data['data']}");
           } else {
-            log("[FCM Backend] Registration failed: $data");
+            log('[FCM Backend] Registration failed: $data');
           }
         },
         shouldShowToast: false,

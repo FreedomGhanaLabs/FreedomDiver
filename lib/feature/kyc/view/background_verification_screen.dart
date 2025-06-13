@@ -61,7 +61,7 @@ class _BackgroundVerificationScreenState
         ),
         Text(
           _getDocumentDescription(type),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: extraSmallText,
             fontWeight: FontWeight.w400,
           ),
@@ -130,11 +130,11 @@ class SimpleButton extends StatelessWidget {
             children: [
               if (icon != null) ...[
                 Icon(icon, color: Colors.white),
-                HSpace(medWhiteSpace),
+                const HSpace(medWhiteSpace),
               ],
               Expanded(
                 child: Text(
-                  title ?? "",
+                  title ?? '',
                   textAlign: TextAlign.center,
                   style:
                       textStyle ??

@@ -64,12 +64,12 @@ class RiderTimeLine extends StatelessWidget {
         SimpleButton(
           title: '',
           onPressed: () {},
-          child: Row(
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               AppIcon(iconName: 'feedback_icon'),
-              const HSpace(extraSmallWhiteSpace),
-              const Text(
+              HSpace(extraSmallWhiteSpace),
+              Text(
                 'Provide Feedback',
                 style: TextStyle(color: Colors.white, fontSize: smallText),
               ),
@@ -96,7 +96,7 @@ class RiderTimeLine extends StatelessWidget {
         ),
         InkWell(
           onTap:
-              () => copyTextToClipboard(context, riderId, copyText: "Ride id"),
+              () => copyTextToClipboard(context, riderId, copyText: 'Ride id'),
           child: Text(
             riderId.substring(0, 10),
             style: const TextStyle(
@@ -194,9 +194,9 @@ class RiderTimeLine extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (status == "completed") AppIcon(iconName: 'checked_icon'),
+            if (status == 'completed') const AppIcon(iconName: 'checked_icon'),
             Text(
-              status?.capitalize ?? "Completed",
+              status?.capitalize ?? 'Completed',
               style: TextStyle(
                 fontSize: smallText,
                 fontWeight: FontWeight.w500,

@@ -68,7 +68,7 @@ class DriverSocketService {
 
     _socket!
       ..onConnect((_) {
-        log("${DriverSocketConstants.socketConnected} ${_socket!.id}");
+        log('${DriverSocketConstants.socketConnected} ${_socket!.id}');
         setDriverStatus(available: true);
         onConnect?.call();
       })
@@ -89,7 +89,7 @@ class DriverSocketService {
       },
     );
 
-    _socket!.on("ride_message", (data) {
+    _socket!.on('ride_message', (data) {
       if (data == null) {
         log('⚠️ ride_message received null data.');
         return;
@@ -196,9 +196,9 @@ void initSockets(BuildContext context) {
       messageCubit.sendMessage(
         context,
         MessageModel(
-          sender: "user",
-          userId: "userId",
-          riderId: driver?.id ?? "",
+          sender: 'user',
+          userId: 'userId',
+          riderId: driver?.id ?? '',
           content: message,
           timestamp: DateTime.now(),
         ),

@@ -253,7 +253,7 @@ class _ToastWidgetState extends State<_ToastWidget>
                             ),
                           ),
                         ),
-                        HSpace(extraSmallWhiteSpace),
+                        const HSpace(extraSmallWhiteSpace),
                         Expanded(
                           child: Text(
                             widget.message,
@@ -323,7 +323,7 @@ class ToastExample extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.showToast(
-                  title: "Toast Title",
+                  title: 'Toast Title',
                   message: 'This is a success toast!',
                   type: ToastType.success,
                 );
@@ -334,7 +334,7 @@ class ToastExample extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.showToast(
-                  title: "Error Toast",
+                  title: 'Error Toast',
                   message: 'This is an error toast!',
                   type: ToastType.error,
                 );
@@ -345,7 +345,7 @@ class ToastExample extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.showToast(
-                  title: "Warning Toast",
+                  title: 'Warning Toast',
                   message: 'This is a warning toast!',
                   type: ToastType.warning,
                   position: ToastPosition.top,
@@ -357,7 +357,7 @@ class ToastExample extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.showToast(
-                  title: "Info Toast",
+                  title: 'Info Toast',
                   message:
                       'This is an info toast with a longer message that may wrap to multiple lines.',
                   position: ToastPosition.center,

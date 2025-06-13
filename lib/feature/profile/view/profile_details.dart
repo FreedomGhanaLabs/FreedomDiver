@@ -57,7 +57,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       bodyDescription:
           'Keep your profile up to date so we can contact you and verify your identity. Accurate details help us serve you better and ensure your account security.',
       children: [
-        VSpace(smallWhiteSpace),
+        const VSpace(smallWhiteSpace),
         TextFieldFactory(
           controller: nameController,
           hintText: 'John Doe',

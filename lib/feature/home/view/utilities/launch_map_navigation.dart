@@ -19,7 +19,7 @@ void launchAppleMapsNavigation(LatLng destination) async {
   if (await canLaunchUrl(uri)) {
     await launchUrl(uri);
   } else {
-    debugPrint("Could not launch Apple Maps");
+    debugPrint('Could not launch Apple Maps');
   }
 }
 
@@ -30,6 +30,6 @@ void launchGoogleMapsNavigation(LatLng destination) async {
   if (await canLaunchUrl(uri)) {
     await launchUrl(uri);
   } else {
-    debugPrint("Could not launch Google Maps");
+    debugPrint('Could not launch Google Maps');
   }
 }

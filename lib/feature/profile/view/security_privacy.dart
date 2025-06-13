@@ -16,7 +16,7 @@ class _SecurityAndPrivacy extends State<SecurityAndPrivacy> {
   final vehicleLicensePlate = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return CustomScreen(
+    return const CustomScreen(
       title: 'Security and privacy',
       bodyHeader: 'Secure your account',
       children: [SecurityAndPrivacySection(padding: EdgeInsets.zero)],

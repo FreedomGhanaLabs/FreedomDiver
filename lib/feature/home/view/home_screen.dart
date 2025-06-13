@@ -108,20 +108,20 @@ class HomeContent extends StatelessWidget {
         final firstRide = rideHistory?.data[0];
 
         if (firstRide == null) {
-          return SizedBox();
+          return const SizedBox();
         }
         return Expanded(
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              HomeEarnings(),
-              VSpace(smallWhiteSpace),
-              HomeRide(),
-              VSpace(smallWhiteSpace),
+              const HomeEarnings(),
+              const VSpace(smallWhiteSpace),
+              const HomeRide(),
+              const VSpace(smallWhiteSpace),
               Column(
                 children: [
-                  HomeActivity(),
-                  VSpace(smallWhiteSpace),
+                  const HomeActivity(),
+                  const VSpace(smallWhiteSpace),
                   RiderTimeLine(
                     // activityType: ActivityType.delivery,
                     currency: firstRide.currency,
@@ -133,7 +133,7 @@ class HomeContent extends StatelessWidget {
                   ),
                 ],
               ),
-              VSpace(whiteSpace),
+              const VSpace(whiteSpace),
             ],
           ),
         );
@@ -190,7 +190,7 @@ class _HomeRideState extends State<HomeRide> {
   bool showCommentField = false;
 
   final TextEditingController reasonController = TextEditingController(
-    text: "Too far from my current location",
+    text: 'Too far from my current location',
   );
   final TextEditingController commentController = TextEditingController(
     text: "He's a very nice and punctual person",
@@ -210,8 +210,8 @@ class _HomeRideState extends State<HomeRide> {
             final isRideStartedStatus = rideDetails?.status == inProgressRide;
             final isRideCompletedStatus = rideDetails?.status == completedRide;
             final checkIfCashRide =
-                rideDetails?.paymentMethod == "cash" &&
-                rideDetails?.paymentStatus == "pending";
+                rideDetails?.paymentMethod == 'cash' &&
+                rideDetails?.paymentStatus == 'pending';
             return Container(
               padding: const EdgeInsets.all(medWhiteSpace),
               decoration: ShapeDecoration(
@@ -237,7 +237,7 @@ class _HomeRideState extends State<HomeRide> {
                     ),
                   ),
                   const VSpace(extraSmallWhiteSpace),
-                  GoogleMapView(),
+                  const GoogleMapView(),
                   const VSpace(smallWhiteSpace),
                   if (state.rideStatus == TransitStatus.searching)
                     Text(
@@ -258,7 +258,7 @@ class _HomeRideState extends State<HomeRide> {
                     Column(
                       children: [
                         const Text(
-                          "How will you rate this ride? Tap to rate User",
+                          'How will you rate this ride? Tap to rate User',
                           style: TextStyle(fontSize: normalText),
                         ),
                         const VSpace(extraSmallWhiteSpace),
@@ -281,7 +281,7 @@ class _HomeRideState extends State<HomeRide> {
                         const VSpace(extraSmallWhiteSpace),
                         if (showCommentField)
                           buildField(
-                            "Say something about the user",
+                            'Say something about the user',
                             commentController,
                           ),
                       ],
@@ -293,14 +293,14 @@ class _HomeRideState extends State<HomeRide> {
                           child: SimpleButton(
                             title:
                                 isRideAcceptedStatus
-                                    ? "Arrived At Pickup"
+                                    ? 'Arrived At Pickup'
                                     : isRideArrivedStatus
                                     ? 'Start Ride'
                                     : isRideStartedStatus
                                     ? 'Complete Ride'
                                     : checkIfCashRide
-                                    ? "Confirm Cash Payment"
-                                    : "Rate User",
+                                    ? 'Confirm Cash Payment'
+                                    : 'Rate User',
                             onPressed: () {
                               if (isRideAcceptedStatus) {
                                 context.read<RideCubit>().arrivedRide(context);
@@ -343,8 +343,8 @@ class _HomeRideState extends State<HomeRide> {
                               if (isRideActive) {
                                 showCustomModal(
                                   context,
-                                  btnCancelText: "Back",
-                                  btnOkText: "Cancel Ride",
+                                  btnCancelText: 'Back',
+                                  btnOkText: 'Cancel Ride',
                                   btnCancelOnPress: () {},
                                   btnOkOnPress:
                                       () =>
@@ -354,7 +354,7 @@ class _HomeRideState extends State<HomeRide> {
                                                 reasonController.text.trim(),
                                           ),
                                   child: buildField(
-                                    "Say reasons for canceling ride",
+                                    'Say reasons for canceling ride',
                                     reasonController,
                                   ),
                                 ).show();

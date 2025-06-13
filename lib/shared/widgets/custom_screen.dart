@@ -40,7 +40,7 @@ class CustomScreen extends StatelessWidget {
       bottomNavigationBar: bottomNavigationBar,
       body: Center(
         child: Container(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           decoration: BoxDecoration(
             image:
                 image != null

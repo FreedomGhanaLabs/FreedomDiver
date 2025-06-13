@@ -52,7 +52,7 @@ class ProfileCard extends StatelessWidget {
               Responsive.isBigMobile(context)
                   ? 350
                   : Responsive.width(context) - 50,
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: medWhiteSpace,
             top: extraSmallWhiteSpace,
             right: medWhiteSpace,
@@ -99,12 +99,12 @@ class ProfileCard extends StatelessWidget {
           child: Column(
             children: [
               const VSpace(smallWhiteSpace),
-              ProfileAvatar(),
+              const ProfileAvatar(),
               const VSpace(medWhiteSpace),
               ProfileTitleText(name),
               const VSpace(medWhiteSpace),
               const DriverContactInfo(),
-              VSpace(2),
+              const VSpace(2),
               const Text(
                 'Business Suite',
                 textAlign: TextAlign.center,
@@ -168,7 +168,7 @@ class ProfileAvatar extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        DriverProfileImage(),
+        const DriverProfileImage(),
         Positioned(
           bottom: -4,
           right: -4,
@@ -231,11 +231,11 @@ class DriverProfileImage extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorWidget:
                           (context, url, error) => const DefaultAvatar(),
-                      placeholder: (context, url) => DefaultAvatar(),
+                      placeholder: (context, url) => const DefaultAvatar(),
                     ),
                   ),
                 )
-                : DefaultAvatar(),
+                : const DefaultAvatar(),
       ),
     );
   }

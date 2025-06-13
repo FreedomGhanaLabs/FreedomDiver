@@ -42,9 +42,9 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
     final ride = rideState is RideLoaded ? rideState.ride : null;
 
     final newMessage = MessageModel(
-      sender: "driver",
-      userId: ride?.user?.id ?? "",
-      riderId: context.driver?.id ?? "",
+      sender: 'driver',
+      userId: ride?.user?.id ?? '',
+      riderId: context.driver?.id ?? '',
       content: content,
       timestamp: DateTime.now(),
     );
@@ -56,8 +56,8 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
   @override
   Widget build(BuildContext context) {
     return CustomScreen(
-      image: AssetImage('assets/app_images/chat_bg.png'),
-      title: "Messaging",
+      image: const AssetImage('assets/app_images/chat_bg.png'),
+      title: 'Messaging',
       bottomNavigationBar: DecoratedContainer(
         margin: EdgeInsets.only(
           top: extraSmallWhiteSpace,
@@ -69,23 +69,23 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
           mainAxisSize: MainAxisSize.min,
           children: [
             buildField(
-              "",
+              '',
               messageController,
               shouldValidate: false,
-              placeholder: "Type your message here...",
-              prefixIcon: AppIcon(
+              placeholder: 'Type your message here...',
+              prefixIcon: const AppIcon(
                 iconName: 'message_bubble',
-                padding: const EdgeInsets.all(medWhiteSpace),
+                padding: EdgeInsets.all(medWhiteSpace),
               ),
-              suffixIcon: AppIcon(
+              suffixIcon: const AppIcon(
                 iconName: 'ph_camera-fill',
-                padding: const EdgeInsets.all(medWhiteSpace),
+                padding: EdgeInsets.all(medWhiteSpace),
               ),
             ),
             FreedomButton(
               onPressed: _sendMessage,
               useGradient: true,
-              title: "Send Message",
+              title: 'Send Message',
               gradient: LinearGradient(colors: gradientColor),
             ),
           ],
@@ -99,7 +99,7 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
             return Center(child: Text(state.message));
           } else if (state is MessageLoaded) {
             if (state.messages.isEmpty) {
-              return const Center(child: Text("No messages yet."));
+              return const Center(child: Text('No messages yet.'));
             }
 
             return Expanded(
@@ -112,7 +112,7 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
                       state.messages[state.messages.length -
                           1 -
                           index]; // reverse order
-                  final driverIsSender = message.sender == "driver";
+                  final driverIsSender = message.sender == 'driver';
                   return Align(
                     alignment:
                         driverIsSender
@@ -125,7 +125,7 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
                               : CrossAxisAlignment.start,
                       children: [
                         Text(
-                          driverIsSender ? "You   " : " User",
+                          driverIsSender ? 'You   ' : ' User',
                           style: TextStyle(
                             fontSize: smallText,
                             color: Colors.grey.shade400,
@@ -159,13 +159,13 @@ class _InappRideMessagingState extends State<InappRideMessaging> {
                           ),
                         ),
                         Text(
-                          "${TimeOfDay.fromDateTime(message.timestamp).format(context)} • ${message.timestamp.day}/${message.timestamp.month}/${message.timestamp.year}",
+                          '${TimeOfDay.fromDateTime(message.timestamp).format(context)} • ${message.timestamp.day}/${message.timestamp.month}/${message.timestamp.year}',
                           style: TextStyle(
                             fontSize: extraSmallText,
                             color: Colors.grey.shade400,
                           ),
                         ),
-                        VSpace(smallWhiteSpace),
+                        const VSpace(smallWhiteSpace),
                       ],
                     ),
                   );

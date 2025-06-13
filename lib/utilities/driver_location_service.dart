@@ -61,7 +61,7 @@ class DriverLocationService {
       final position = await getCurrentLocation(context);
       await sendToBackend(context, position);
     } catch (e) {
-      debugPrint("Error getting/sending location: $e");
+      debugPrint('Error getting/sending location: $e');
     }
   }
 
@@ -83,7 +83,7 @@ class DriverLocationService {
   }
 
   Future<void> sendToBackend(BuildContext context, Position position) async {
-    debugPrint("Sending location: ${position.latitude}, ${position.longitude}");
+    debugPrint('Sending location: ${position.latitude}, ${position.longitude}');
     try {
       await context.read<DriverCubit>().updateDriverLocation(context, [
         position.longitude,
@@ -92,7 +92,7 @@ class DriverLocationService {
       // lat -  7.801245,
       // long - 6.736301
     } catch (e) {
-      debugPrint("Failed to send location to backend: $e");
+      debugPrint('Failed to send location to backend: $e');
     }
   }
 
@@ -115,7 +115,7 @@ class DriverLocationService {
               place.administrativeArea ??
               '',
         };
-        debugPrint("[GeoCoding] $placeData");
+        debugPrint('[GeoCoding] $placeData');
         return placeData;
       } else {
         final placeData = {'country': '', 'city': ''};

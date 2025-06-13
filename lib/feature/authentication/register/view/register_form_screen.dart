@@ -155,16 +155,16 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 padding: EdgeInsets.symmetric(horizontal: whiteSpace),
                 child: AppIcon(iconName: 'login_logo'),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: whiteSpace),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: whiteSpace),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const VSpace(smallWhiteSpace + 5),
+                    VSpace(smallWhiteSpace + 5),
                     AppHeading(),
-                    const VSpace(extraSmallWhiteSpace),
+                    VSpace(extraSmallWhiteSpace),
                     AppDescription(),
-                    const VSpace(extraSmallWhiteSpace),
+                    VSpace(extraSmallWhiteSpace),
                   ],
                 ),
               ),
@@ -197,12 +197,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             SizedBox(
                               width: 100,
                               child: SimpleButton(
-                                title: isLastStep ? "Register" : "Next",
+                                title: isLastStep ? 'Register' : 'Next',
                                 onPressed: details.onStepContinue,
                               ),
                             ),
                             if (details.onStepCancel != null) ...[
-                              HSpace(extraSmallWhiteSpace),
+                              const HSpace(extraSmallWhiteSpace),
                               OutlinedButton(
                                 onPressed: details.onStepCancel,
                                 style: ButtonStyle(
@@ -218,7 +218,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                   ),
                                 ),
                                 child: Text(
-                                  "Back",
+                                  'Back',
                                   style: paragraphTextStyle.copyWith(
                                     color: Colors.black,
                                   ),
@@ -266,7 +266,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         if (!hasReadTermsAndCondition) {
           showToast(
             context,
-            "Terms and Condition",
+            'Terms and Condition',
             'You must accept the Terms & Conditions',
             toastType: ToastType.warning,
           );
@@ -281,7 +281,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   Step securityStep() {
     return Step(
-      title: const Text("Security"),
+      title: const Text('Security'),
       isActive: _currentStep >= 3,
       content: Form(
         key: _formKeys[3],
@@ -343,7 +343,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   Step addressInfoStep() {
     return Step(
-      title: const Text("Address Info"),
+      title: const Text('Address Info'),
       isActive: _currentStep >= 2,
       content: Form(
         key: _formKeys[2],
@@ -385,7 +385,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   Step motorcycleInfoStep() {
     int index = 1;
     return Step(
-      title: const Text("Motorcycle Info"),
+      title: const Text('Motorcycle Info'),
       isActive: _currentStep >= index,
       content: Form(
         key: _formKeys[index],
@@ -425,7 +425,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   Step personalInfoStep(BuildContext context) {
     return Step(
-      title: const Text("Personal Info"),
+      title: const Text('Personal Info'),
       isActive: _currentStep >= 0,
       content: Form(
         key: _formKeys[0],

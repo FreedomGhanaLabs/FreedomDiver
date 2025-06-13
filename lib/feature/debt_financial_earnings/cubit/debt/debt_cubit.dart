@@ -62,7 +62,7 @@ class DebtCubit extends Cubit<DebtState> {
           context,
           'payment-history/?startDate=$startDate&endDate=$endDate&status=$status',
           (success, data) {
-            log("[Debt history] $data");
+            log('[Debt history] $data');
             if (success && data is Map<String, dynamic>) {
               final historyList =
                   (data['data'] as List)
@@ -84,14 +84,14 @@ class DebtCubit extends Cubit<DebtState> {
     BuildContext context, {
     required double amount,
     String paymentType = 'wallet', // momo
-    String provider = "mtn",
+    String provider = 'mtn',
     String? phone,
   }) async {
-    final walletPayload = {"amount": amount};
+    final walletPayload = {'amount': amount};
     final momoPayload = {
       ...walletPayload,
-      "phone": phone,
-      "provider": provider,
+      'phone': phone,
+      'provider': provider,
     };
     final payload = paymentType == 'wallet' ? walletPayload : momoPayload;
     await handleApiCall(

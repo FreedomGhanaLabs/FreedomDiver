@@ -63,10 +63,10 @@ class _WalletScreenState extends State<WalletScreen> {
                       Expanded(child: _MomoSection()),
                     ],
                   ),
-                  VSpace(smallWhiteSpace),
+                  const VSpace(smallWhiteSpace),
                   _ActionButtons(
                     onWithdraw: () {
-                      amount.text = finance?.availableBalance.toString() ?? "";
+                      amount.text = finance?.availableBalance.toString() ?? '';
                       showCustomModal(
                         context,
                         child: WithdrawalForm(
@@ -93,7 +93,7 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
             const VSpace(whiteSpace),
-            Text(
+            const Text(
               'Manage Payment Method',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -194,7 +194,7 @@ class _MomoSection extends StatelessWidget {
           'Momo Pay  ',
           style: descriptionTextStyle.copyWith(color: Colors.white),
         ),
-        DriverContactInfo(),
+        const DriverContactInfo(),
       ],
     );
   }
@@ -218,10 +218,10 @@ class _ActionButtons extends StatelessWidget {
               child: SimpleButton(
                 title: '',
                 onPressed: onWithdraw,
-                child: Row(
+                child: const Row(
                   children: [
                     AppIcon(iconName: 'withdraw_icons'),
-                    const HSpace(extraSmallWhiteSpace),
+                    HSpace(extraSmallWhiteSpace),
                     Text(
                       'Withdraw',
                       style: TextStyle(
@@ -240,10 +240,10 @@ class _ActionButtons extends StatelessWidget {
                 title: '',
                 onPressed: () {},
                 backgroundColor: Colors.white,
-                child: Row(
+                child: const Row(
                   children: [
                     AppIcon(iconName: 'transaction'),
-                    const HSpace(extraSmallWhiteSpace),
+                    HSpace(extraSmallWhiteSpace),
                     Text(
                       'Transaction ',
                       style: TextStyle(

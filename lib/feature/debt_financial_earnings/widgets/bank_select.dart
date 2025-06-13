@@ -64,12 +64,12 @@ class BankDropdownState extends State<BankDropdown> {
           items:
               _banks.map((bank) {
                 return DropdownMenuItem(
-                  value: "${bank.code}-${bank.id}",
+                  value: '${bank.code}-${bank.id}',
                   child: Text(bank.name),
                 );
               }).toList(),
           onChanged: (value) {
-            final newValue = value?.split("-")[0];
+            final newValue = value?.split('-')[0];
             setState(() => _selectedBankCode = value);
             if (newValue != null) widget.onBankSelected(newValue);
           },

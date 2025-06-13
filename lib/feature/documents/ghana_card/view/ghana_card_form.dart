@@ -119,7 +119,7 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
           'Ensure all fields are filled correctly to verify your identity.',
       children: [
         UploadedDocumentImage(
-          heading: "Uploaded Card",
+          heading: 'Uploaded Card',
           documentUrl: documentUrl,
         ),
         DecoratedContainer(

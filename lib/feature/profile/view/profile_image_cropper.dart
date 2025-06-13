@@ -73,7 +73,7 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
         final image = state is DriverImageSelected ? state.image : null;
         if (image == null) {
           Navigator.of(context).pop();
-          return CustomScreen();
+          return const CustomScreen();
         }
         if (state is DriverImageLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -94,12 +94,12 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
                 backgroundColor: gradient2,
                 onPressed: () => _cropImage(image.path),
                 title: '',
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.crop, color: Colors.white),
-                    const HSpace(medWhiteSpace),
-                    const Text(
+                    Icon(Icons.crop, color: Colors.white),
+                    HSpace(medWhiteSpace),
+                    Text(
                       'Crop Image',
                       style: TextStyle(
                         fontSize: normalText,
@@ -109,19 +109,19 @@ class _ProfileImageCropperState extends State<ProfileImageCropper> {
                   ],
                 ),
               ),
-              VSpace(extraSmallWhiteSpace),
+              const VSpace(extraSmallWhiteSpace),
               SimpleButton(
                 onPressed:
                     () => context.read<DocumentCubit>().uploadProfileImage(
                       context,
                     ),
                 title: '',
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.image, color: Colors.white),
-                    const HSpace(medWhiteSpace),
-                    const Text(
+                    Icon(Icons.image, color: Colors.white),
+                    HSpace(medWhiteSpace),
+                    Text(
                       'Update Profile Image',
                       style: TextStyle(
                         fontSize: normalText,

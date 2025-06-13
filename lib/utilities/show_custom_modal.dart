@@ -29,7 +29,7 @@ AwesomeDialog showCustomModal(
         ),
     body: child,
     btnOkColor: Colors.black,
-    autoHide: Duration(minutes: 30),
+    autoHide: const Duration(minutes: 30),
     // autoDismiss: false,
     // onDismissCallback: (type) {
     //   if (type == DismissType.btnOk) return;

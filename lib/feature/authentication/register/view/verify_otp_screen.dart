@@ -95,7 +95,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     String getIdentifier() {
       if (isPhoneUpdate) return context.driver?.phone ?? '';
       if (isEmailUpdate) return context.driver?.email ?? '';
-      return loginFormCubit.state.email ?? "";
+      return loginFormCubit.state.email ?? '';
     }
 
     return Scaffold(
@@ -126,7 +126,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     ),
                   ),
                   const VSpace(extraSmallWhiteSpace),
-                  Text(
+                  const Text(
                     'A verification code was sent to',
                     style: TextStyle(
                       fontSize: paragraphText,
@@ -309,12 +309,12 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       {
         'email': loginFormCubit.state.email,
         'verificationCode': verificationCode,
-        if (isLoginType) ...{"fcmToken": fcmToken, "platform": platform},
+        if (isLoginType) ...{'fcmToken': fcmToken, 'platform': platform},
       },
       (success, data) async {
         setState(() {
           isLoading = false;
-          _otpController.text = "";
+          _otpController.text = '';
         });
         if (success) {
           final token = data['data']['token'].toString();

@@ -29,7 +29,7 @@ class UploadButton extends StatelessWidget {
       builder: (context, state) {
         return Column(
           children: [
-            CustomDottedBorder(),
+            const CustomDottedBorder(),
             if (state is DriverImageLoading) ...[
               const VSpace(smallWhiteSpace),
               showProgressIndicator(),
@@ -74,7 +74,7 @@ class CustomDottedBorder extends StatelessWidget {
       options: RoundedRectDottedBorderOptions(
         dashPattern: [10, 5],
         strokeWidth: 2,
-        padding: EdgeInsets.all(smallWhiteSpace),
+        padding: const EdgeInsets.all(smallWhiteSpace),
         radius: const Radius.circular(roundedLg),
         color: yellowGold,
       ),

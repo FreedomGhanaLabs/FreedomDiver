@@ -39,7 +39,7 @@ class EarningsBanner extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: normalText,
                   fontWeight: FontWeight.w600,
@@ -50,7 +50,7 @@ class EarningsBanner extends StatelessWidget {
                 child: Text(
                   subtitle,
                   maxLines: 2,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: smallText,
                     fontWeight: FontWeight.w300,
                   ),

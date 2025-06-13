@@ -18,14 +18,14 @@ class MessageCubit extends Cubit<MessageState> {
     try {
       final jsonString = await getMessagesFromHive();
       if (jsonString == null) {
-        emit(MessageLoaded([]));
+        emit(const MessageLoaded([]));
       } else {
         final messages = MessageModel.fromJsonList(jsonString);
         emit(MessageLoaded(messages));
       }
     } catch (e) {
-      log("[message] $e");
-      emit(MessageError('Failed to load messages'));
+      log('[message] $e');
+      emit(const MessageError('Failed to load messages'));
     }
   }
 
@@ -44,11 +44,12 @@ class MessageCubit extends Cubit<MessageState> {
       final jsonString = MessageModel.toJsonList(currentMessages);
       await addMessagesToHive(jsonString);
       emit(MessageLoaded(currentMessages));
-      if (!isSocketMessage)
+      if (!isSocketMessage) {
         context.read<RideCubit>().sendUserMessage(
           context,
           message: message.content,
         );
+      }
     } catch (e) {
       emit(MessageError('Failed to send message: $e'));
     }
@@ -57,7 +58,7 @@ class MessageCubit extends Cubit<MessageState> {
   Future<void> clearMessages() async {
     try {
       await deleteMessagesFromHive();
-      emit(MessageLoaded([]));
+      emit(const MessageLoaded([]));
     } catch (e) {
       emit(MessageError('Failed to delete messages: $e'));
     }

@@ -61,7 +61,7 @@ class _RideDialogWidget extends StatefulWidget {
 class _RideDialogWidgetState extends State<_RideDialogWidget>
     with SingleTickerProviderStateMixin {
   final TextEditingController reasonController = TextEditingController(
-    text: "Too far from my current location",
+    text: 'Too far from my current location',
   );
 
   late final AnimationController _controller;
@@ -131,21 +131,21 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                                   ride == null
                                       ? 'Ride Request'
                                       : 'New Ride Request!',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: normalText,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Row(
                                   children: [
-                                    RideTypeChip(),
-                                    HSpace(extraSmallWhiteSpace),
+                                    const RideTypeChip(),
+                                    const HSpace(extraSmallWhiteSpace),
                                     IconButton(
                                       padding: EdgeInsets.zero,
                                       onPressed:
                                           () => context.dismissRideDialog(),
-                                      icon: Icon(Icons.cancel),
-                                      tooltip: "Close dialog",
+                                      icon: const Icon(Icons.cancel),
+                                      tooltip: 'Close dialog',
                                     ),
                                   ],
                                 ),
@@ -157,7 +157,7 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                               buildCustomerDetail(context, ride),
                               if (isDeclining)
                                 buildField(
-                                  "Say reasons for declining",
+                                  'Say reasons for declining',
                                   reasonController,
                                 ),
                               Row(
@@ -199,7 +199,7 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                               ),
                             ] else
                               Text(
-                                "No ride request yet...",
+                                'No ride request yet...',
                                 style: paragraphTextStyle,
                               )
                              

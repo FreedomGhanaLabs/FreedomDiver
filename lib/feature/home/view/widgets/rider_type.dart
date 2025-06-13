@@ -28,9 +28,9 @@ class RideType extends StatelessWidget {
           Row(
             children: [
               if (activityType == ActivityType.ride)
-                AppIcon(iconName: 'green_color_motorcycle')
+                const AppIcon(iconName: 'green_color_motorcycle')
               else
-                AppIcon(iconName: 'delivery_cart'),
+                const AppIcon(iconName: 'delivery_cart'),
               const HSpace(1.08),
               Text(
                 activityType == ActivityType.ride ? 'Ride' : 'Logistics item',

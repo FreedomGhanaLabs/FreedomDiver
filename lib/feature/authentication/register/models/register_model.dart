@@ -43,8 +43,8 @@ class RegisterModel {
 class RegisterResponse {
   factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
       RegisterResponse(
-        success: json["success"] as bool,
-        message: json["message"] as String,
+        success: json['success'] as bool,
+        message: json['message'] as String,
       );
   RegisterResponse({
     required this.success,

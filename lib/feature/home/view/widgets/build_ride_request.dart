@@ -10,11 +10,11 @@ Widget buildCustomerDetail(BuildContext context, [RideRequest? ride]) {
     children: [
       RideDetailTile(
         title: 'Pickup Location',
-        subtitle: ride?.pickupLocation.address ?? "",
+        subtitle: ride?.pickupLocation.address ?? '',
       ),
       RideDetailTile(
         title: 'Dropoff Location',
-        subtitle: ride?.dropoffLocation.address ?? "",
+        subtitle: ride?.dropoffLocation.address ?? '',
       ),
       RideDetailTile(
         title: 'Estimated Fare',
@@ -58,7 +58,7 @@ class RideDetailTile extends StatelessWidget {
             Text(title, style: rideRequestTitleTextStyle),
             // const Spacer(),
             Text(
-              subtitle.replaceAll("null", ""),
+              subtitle.replaceAll('null', ''),
               style: rideRequestDetailTextStyle,
             ),
           ],

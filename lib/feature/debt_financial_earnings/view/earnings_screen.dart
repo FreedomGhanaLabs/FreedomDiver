@@ -138,11 +138,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                   vertical: 12,
                                 ),
                                 borderRadius: BorderRadius.circular(roundedLg),
-                                child: Row(
+                                child: const Row(
                                   children: [
                                     AppIcon(iconName: 'withdraw_icons'),
-                                    const HSpace(medWhiteSpace),
-                                    const Text(
+                                    HSpace(medWhiteSpace),
+                                    Text(
                                       'Withdraw',
                                       style: TextStyle(
                                         color: Colors.white,
@@ -254,12 +254,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         ),
                       ),
                       const VSpace(12),
-                      EarningsBanner(
+                      const EarningsBanner(
                         title: 'Daily Earnings Breakdown',
                         subtitle:
                             'Invite your friends and family to ride with GofreedomApp',
                         child2: AppIcon(iconName: 'stats'),
-                        child: const SizedBox(
+                        child: SizedBox(
                           child: Row(
                             children: [
                               Text(

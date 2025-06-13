@@ -41,7 +41,7 @@ class RideCubit extends Cubit<RideState> {
     emit(RideLoaded(_cachedRideRequest!));
     if (shouldPersist) {
       await addRideRequestToHive(_cachedRideRequest!);
-      log("[Update ride Request] Ride request is being persisted");
+      log('[Update ride Request] Ride request is being persisted');
     }
   }
 
@@ -66,7 +66,7 @@ class RideCubit extends Cubit<RideState> {
     if (requireRide && _cachedRideRequest == null) {
       showToast(
         context,
-        "No Ride Request",
+        'No Ride Request',
         "Sorry! you don't have any ride request at the moment",
         toastType: ToastType.error,
       );
@@ -81,7 +81,7 @@ class RideCubit extends Cubit<RideState> {
           }
           if (dismissDialog) context.dismissRideDialog();
         } else {
-          if (data is String && data.contains("already accepted")) {
+          if (data is String && data.contains('already accepted')) {
             _cachedRideRequest = null;
             _cachedRideId = null;
             emit(RideInitial());
@@ -109,7 +109,7 @@ class RideCubit extends Cubit<RideState> {
   }
 
   Future<void> checkForActiveRide(BuildContext context) async {
-    logRide("active");
+    logRide('active');
     if (_cachedRideRequest != null) return;
 
     final activeRide = await getRideRequestFromHive();
@@ -119,14 +119,14 @@ class RideCubit extends Cubit<RideState> {
         status: TransitStatus.accepted,
       );
       driverLocation.startLiveLocationUpdates(context);
-      log("[Active Ride] Using persisted ride request");
+      log('[Active Ride] Using persisted ride request');
       return;
     }
-    log("No active ride found for driver");
+    log('No active ride found for driver');
   }
 
   Future<void> foundRide(RideRequest ride, BuildContext context) async {
-    logRide("found");
+    logRide('found');
     _updateRideRequest(ride, shouldPersist: false);
     context.read<HomeCubit>().toggleNearByRides(status: TransitStatus.found);
   }
@@ -158,17 +158,17 @@ class RideCubit extends Cubit<RideState> {
   }
 
   Future<void> acceptRide(BuildContext context) async {
-    logRide("accept");
+    logRide('accept');
     final rideId = _cachedRideRequest?.rideId;
     await _rideActionWithLocation(
       context,
       '$rideId/accept',
-      successLog: "[Accept Ride]",
+      successLog: '[Accept Ride]',
       onSuccess: (data) {
         context.read<HomeCubit>().setRideAccepted(isAccepted: true);
         driverLocation.startLiveLocationUpdates(context);
 
-        final ride = RideRequest.fromJson(data["data"]);
+        final ride = RideRequest.fromJson(data['data']);
         _updateRideRequest(
           _cachedRideRequest!.copyWith(
             user: ride.user,
@@ -209,7 +209,7 @@ class RideCubit extends Cubit<RideState> {
     double? lat,
     double? long,
   }) async {
-    logRide("cancel");
+    logRide('cancel');
     if (_cachedRideRequest == null) return;
     await _rideActionWithLocation(
       context,
@@ -237,7 +237,7 @@ class RideCubit extends Cubit<RideState> {
       successLog: '[RideCubit] ride arrived',
       onSuccess: (data) {
         _updateRideRequest(
-          _cachedRideRequest!.copyWith(status: data["data"]['status']),
+          _cachedRideRequest!.copyWith(status: data['data']['status']),
         );
       },
       errorMsg: 'Failed to arrive ride',
@@ -276,7 +276,7 @@ class RideCubit extends Cubit<RideState> {
         _updateRideRequest(
           _cachedRideRequest!.copyWith(
             status: newData['status'],
-            paymentMethod: newData["paymentMethod"],
+            paymentMethod: newData['paymentMethod'],
             paymentStatus: newData['paymentStatus'],
           ),
         );
@@ -299,7 +299,7 @@ class RideCubit extends Cubit<RideState> {
       onSuccess: (data) async {
         log('[Confirm Payment Data] $data');
         _updateRideRequest(
-          _cachedRideRequest!.copyWith(paymentStatus: "confirmed"),
+          _cachedRideRequest!.copyWith(paymentStatus: 'confirmed'),
         );
         await loadDashboard(context, loadAll: false);
       },
@@ -339,7 +339,7 @@ class RideCubit extends Cubit<RideState> {
     await _postRideAction(
       context,
       '${rideId ?? _cachedRideId}/message',
-      body: {"message": message},
+      body: {'message': message},
       successLog: '[RideCubit] Message sent',
       errorMsg: 'Failed to send ride message',
     );
@@ -364,15 +364,15 @@ class RideCubit extends Cubit<RideState> {
       _cachedRideRequest!.copyWith(
         etaToPickup: DurationInfo(
           value: result['duration']['value'] ?? 0,
-          text: result['duration']['text'] ?? "",
+          text: result['duration']['text'] ?? '',
         ),
         etaToDropoff: DurationInfo(
           value: result['duration']['value'] ?? 0,
-          text: result['duration']['text'] ?? "",
+          text: result['duration']['text'] ?? '',
         ),
         estimatedDistance: Distance(
           value: result['distance']['value'] ?? 0,
-          text: result['distance']['text'] ?? "",
+          text: result['distance']['text'] ?? '',
         ),
       ),
     );

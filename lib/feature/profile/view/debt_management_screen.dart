@@ -51,7 +51,7 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
                       currentDebt: 0.00,
                       debtThreshold: 0.00,
                       debtPercentage: 0,
-                      debtStatus: "",
+                      debtStatus: '',
                       canAcceptRides: false,
                       warningThreshold: 0,
                       suspensionThreshold: 0,
@@ -137,7 +137,7 @@ class DebtHistorySection extends StatelessWidget {
             ),
           );
         }),
-        VSpace(normalWhiteSpace),
+        const VSpace(normalWhiteSpace),
       ],
     );
   }
@@ -178,7 +178,7 @@ class DebtStatusCard extends StatelessWidget {
                   ],
                 ),
               ),
-              CustomDivider(height: 25, width: 2, color: Colors.white),
+              const CustomDivider(height: 25, width: 2, color: Colors.white),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -242,7 +242,7 @@ class DebtStatusCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                HSpace(smallWhiteSpace),
+                const HSpace(smallWhiteSpace),
                 Expanded(
                   child: DecoratedContainer(
                     backgroundColor: Colors.white.withValues(alpha: 0.85),
@@ -314,7 +314,7 @@ class DebtPaymentFormState extends State<DebtPaymentForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.debt.currentDebt == 0) return SizedBox();
+    if (widget.debt.currentDebt == 0) return const SizedBox();
     _amountController.text = widget.debt.currentDebt.toString();
     return DecoratedContainer(
       child: Form(
@@ -346,7 +346,7 @@ class DebtPaymentFormState extends State<DebtPaymentForm> {
             ),
             if (_method == 'Mobile Money') ...[
               buildField(
-                "Momo Phone",
+                'Momo Phone',
                 _phoneController,
                 keyboardType: TextInputType.number,
               ),
@@ -355,12 +355,12 @@ class DebtPaymentFormState extends State<DebtPaymentForm> {
             SimpleButton(
               title: '',
               backgroundColor: thickFillColor,
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.send, color: Colors.white),
+                  Icon(Icons.send, color: Colors.white),
                   HSpace(extraSmallWhiteSpace),
-                  const Text('Pay Debt', style: TextStyle(color: Colors.white)),
+                  Text('Pay Debt', style: TextStyle(color: Colors.white)),
                 ],
               ),
               onPressed: () {

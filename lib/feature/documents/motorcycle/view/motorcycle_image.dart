@@ -31,7 +31,7 @@ class _MotorcycleImageState extends State<MotorcycleImageScreen> {
           'Please provide image about your motorcycle. Keeping your information current helps us ensure your records are correct and improves your experience. click the Next button to submit motorcycle image.',
       children: [
         UploadedDocumentImage(
-          heading: "Uploaded Motorcycle Image",
+          heading: 'Uploaded Motorcycle Image',
           documentUrl: documentUrl,
         ),
         DecoratedContainer(
@@ -94,7 +94,7 @@ class MotorcycleDetailTile extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       title: Text(
         title,
-        style: TextStyle(fontSize: smallText, color: Colors.grey),
+        style: const TextStyle(fontSize: smallText, color: Colors.grey),
       ),
       subtitle: Text(
         subtitle ?? 'Not provided',

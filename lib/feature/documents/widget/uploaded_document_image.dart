@@ -18,7 +18,7 @@ class UploadedDocumentImage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(heading, style: normalTextStyle),
-          VSpace(extraSmallWhiteSpace),
+          const VSpace(extraSmallWhiteSpace),
           ClipRRect(
             borderRadius: BorderRadius.circular(roundedMd),
             child: CachedNetworkImage(
@@ -29,10 +29,10 @@ class UploadedDocumentImage extends StatelessWidget {
                       : Responsive.width(context),
             ),
           ),
-          VSpace(whiteSpace),
+          const VSpace(whiteSpace),
         ],
       );
     }
-    return SizedBox();
+    return const SizedBox();
   }
 }

@@ -24,11 +24,11 @@ class EstimatedReachTime extends StatelessWidget {
             (toPickup ? ride?.etaToPickup?.text : ride?.etaToDropoff?.text)
                 ?.toString();
 
-        String timeText = getTimeText(isAccepted) ?? "0 min";
-        final parts = timeText.split(" ");
-        final time = parts.isNotEmpty ? parts[0] : "0";
-        final unit = parts.length > 1 ? parts[1] : "min";
-        final location = isAccepted ? "pickup" : "dropoff";
+        String timeText = getTimeText(isAccepted) ?? '0 min';
+        final parts = timeText.split(' ');
+        final time = parts.isNotEmpty ? parts[0] : '0';
+        final unit = parts.length > 1 ? parts[1] : 'min';
+        final location = isAccepted ? 'pickup' : 'dropoff';
 
         return Column(
           children: [
@@ -42,7 +42,7 @@ class EstimatedReachTime extends StatelessWidget {
                 const HSpace(3),
                 Text(
                   unit,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: paragraphText,
                     fontWeight: FontWeight.w500,
                   ),

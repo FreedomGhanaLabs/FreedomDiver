@@ -40,20 +40,20 @@ class ProfilePictureScreen extends StatelessWidget {
           ],
           children: [
             DriverProfileImage(size: Responsive.width(context)),
-            VSpace(smallWhiteSpace),
+            const VSpace(smallWhiteSpace),
             Row(
               children: [
-                Text("Profile Information", style: normalTextStyle),
-                HSpace(smallWhiteSpace),
-                Expanded(child: CustomDivider()),
-                HSpace(smallWhiteSpace),
+                Text('Profile Information', style: normalTextStyle),
+                const HSpace(smallWhiteSpace),
+                const Expanded(child: CustomDivider()),
+                const HSpace(smallWhiteSpace),
                 DecoratedContainer(
                   backgroundColor: Colors.black,
                   child: Column(
                     children: [
-                      Text("Profile Rating", style: descriptionTextStyle),
+                      Text('Profile Rating', style: descriptionTextStyle),
                       Text(
-                        driver?.ratings.toString() ?? "",
+                        driver?.ratings.toString() ?? '',
                         style: normalTextStyle.copyWith(color: Colors.white),
                       ),
                     ],
@@ -61,41 +61,41 @@ class ProfilePictureScreen extends StatelessWidget {
                 ),
               ],
             ),
-            VSpace(smallWhiteSpace),
+            const VSpace(smallWhiteSpace),
             DecoratedContainer(
               child: Column(
                 children: [
                   ProfilePictureTile(
-                    leading: "Full Name",
+                    leading: 'Full Name',
                     trailing: driver?.fullName.capitalize,
                   ),
-                  ProfilePictureTile(leading: "Email", trailing: driver?.email),
+                  ProfilePictureTile(leading: 'Email', trailing: driver?.email),
                   ProfilePictureTile(
-                    leading: "Phone Number",
+                    leading: 'Phone Number',
                     trailing: driver?.phone,
                   ),
                   ProfilePictureTile(
-                    leading: "Personal Address",
+                    leading: 'Personal Address',
                     trailing: driver?.address.street.capitalize,
                   ),
                   ProfilePictureTile(
-                    leading: "Ride Status",
+                    leading: 'Ride Status',
                     trailing: driver?.status?.capitalize,
                   ),
                   ProfilePictureTile(
-                    leading: "Ride Preference",
+                    leading: 'Ride Preference',
                     trailing:
                         (driver?.ridePreference
-                            .replaceAll("normal", "Ride only")
-                            .replaceAll("both", "Ride, Delivery"))?.capitalize,
+                            .replaceAll('normal', 'Ride only')
+                            .replaceAll('both', 'Ride, Delivery'))?.capitalize,
                   ),
 
                   ProfilePictureTile(
-                    leading: "License Number",
+                    leading: 'License Number',
                     trailing: driver?.licenseNumber,
                   ),
                   ProfilePictureTile(
-                    leading: "Motorcycle Number",
+                    leading: 'Motorcycle Number',
                     trailing: driver?.motorcycleNumber,
                     isLast: true,
                   ),
@@ -126,20 +126,20 @@ class ProfilePictureTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          leading: Text(leading?.capitalize ?? "", style: descriptionTextStyle),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+          leading: Text(leading?.capitalize ?? '', style: descriptionTextStyle),
           trailing: SelectableText(
-            trailing ?? "N/A",
+            trailing ?? 'N/A',
             onTap:
                 () => copyTextToClipboard(
                   context,
-                  trailing ?? "",
+                  trailing ?? '',
                   copyText: leading,
                 ),
             style: paragraphTextStyle.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
-        if (!isLast) CustomDivider(),
+        if (!isLast) const CustomDivider(),
       ],
     );
   }

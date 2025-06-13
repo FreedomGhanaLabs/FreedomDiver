@@ -35,7 +35,7 @@ abstract class SectionFactory extends StatelessWidget {
           Container(
             width: 32,
             height: 32,
-            padding: paddingSection ?? EdgeInsets.all(extraSmallWhiteSpace),
+            padding: paddingSection ?? const EdgeInsets.all(extraSmallWhiteSpace),
             margin: const EdgeInsets.only(left: smallWhiteSpace),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -61,7 +61,7 @@ abstract class SectionFactory extends StatelessWidget {
               ),
               if (item.subheading != null)
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 200),
+                  constraints: const BoxConstraints(maxWidth: 200),
                   child: Text(
                     item.subheading ?? '',
                     softWrap: true,
@@ -225,7 +225,7 @@ class SecurityAndPrivacySection extends SectionFactory {
     ),
     SectionItem(
       title: 'Manage Location Settings',
-      iconPath: getIconUrl("location_duotone"),
+      iconPath: getIconUrl('location_duotone'),
       onTap: onManageLocationTap,
     ),
   ];
@@ -274,7 +274,7 @@ class PersonalDataSection extends SectionFactory {
     ),
     SectionItem(
       title: 'Wallet',
-      iconPath: getIconUrl("solar_wallet"),
+      iconPath: getIconUrl('solar_wallet'),
       onTap: onWalletTap,
     ),
   ];

@@ -147,7 +147,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
     final steps = await getNavigationSteps(destination: end, origin: start);
 
     for (var step in steps) {
-      log("[InApp Map] Instruction: $steps");
+      log('[InApp Map] Instruction: $steps');
       await TTS.speak(step);
     }
 
@@ -208,7 +208,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
     await _drawRoutePolyline(
       toRoute,
-      isAccepted ? 'toPickup' : "toDestination",
+      isAccepted ? 'toPickup' : 'toDestination',
     );
     await _animateDriverAlong();
   }
@@ -220,7 +220,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
         builder: (context, state) {
           final ride = state is RideLoaded ? state.ride : null;
 
-          final userPhone = ride?.user?.phone ?? "";
+          final userPhone = ride?.user?.phone ?? '';
 
           final isAccepted = ride?.status == acceptedRide;
           final isArrived = ride?.status == arrivedRide;
@@ -263,11 +263,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
                 right: extraSmallWhiteSpace,
                 child: IconButton(
                   color: Colors.black,
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.white),
                   ),
-                  tooltip: "External Navigation",
-                  icon: Icon(Icons.navigation),
+                  tooltip: 'External Navigation',
+                  icon: const Icon(Icons.navigation),
                   onPressed:
                       () => launchExternalNavigation(
                         isAccepted ? _pickupLocation! : _destinationLocation!,
@@ -279,11 +279,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
                 right: extraSmallWhiteSpace,
                 child: IconButton(
                   color: Colors.black,
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.white),
                   ),
-                  tooltip: "Navigation Instructions",
-                  icon: Icon(Icons.precision_manufacturing_outlined),
+                  tooltip: 'Navigation Instructions',
+                  icon: const Icon(Icons.precision_manufacturing_outlined),
                   onPressed: () async {
                     final instructions = await getNavigationSteps(
                       destination: _destinationLocation!,
@@ -292,7 +292,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     showCustomModal(
                       context,
                       btnCancelOnPress: () {},
-                      btnCancelText: "Close",
+                      btnCancelText: 'Close',
                       child: Container(
                         constraints: BoxConstraints(
                           maxHeight: Responsive.height(context) * 0.75,
@@ -328,9 +328,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
                                     () => copyTextToClipboard(
                                       context,
                                       userPhone,
-                                      copyText: "Phone number",
+                                      copyText: 'Phone number',
                                     ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: paragraphText,
                                   fontWeight: FontWeight.w500,
@@ -338,11 +338,11 @@ class _InAppCallMapState extends State<InAppCallMap> {
                               ),
                             ],
                           ),
-                          OutlinedContainer(rideType: ride?.rideType ?? ""),
+                          OutlinedContainer(rideType: ride?.rideType ?? ''),
                         ],
                       ),
                     ),
-                    CustomDivider(),
+                    const CustomDivider(),
                     const VSpace(smallWhiteSpace),
                     if (isAccepted)
                       Padding(
@@ -365,16 +365,16 @@ class _InAppCallMapState extends State<InAppCallMap> {
                           children: [
                             PassengerDestinationDetailBox(
                               title: 'Pickup Point',
-                              subtitle: ride?.pickupLocation.address ?? "",
+                              subtitle: ride?.pickupLocation.address ?? '',
                             ),
-                            VSpace(30),
+                            const VSpace(30),
                             PassengerDestinationDetailBox(
                               title: 'Destination',
-                              subtitle: ride?.dropoffLocation.address ?? "",
+                              subtitle: ride?.dropoffLocation.address ?? '',
                             ),
                           ],
                         ),
-                        AppIcon(iconName: 'conversion'),
+                        const AppIcon(iconName: 'conversion'),
                       ],
                     ),
                     const VSpace(whiteSpace),
@@ -388,9 +388,9 @@ class _InAppCallMapState extends State<InAppCallMap> {
                         ),
                         InfoColumn(
                           title: 'Expected Distance Covered',
-                          value: ride?.estimatedDistance?.text ?? "",
+                          value: ride?.estimatedDistance?.text ?? '',
                         ),
-                        InfoColumn(title: 'Avg.Time', value: averageTime ?? ""),
+                        InfoColumn(title: 'Avg.Time', value: averageTime ?? ''),
                       ],
                     ),
                     const VSpace(whiteSpace),
@@ -410,10 +410,10 @@ class _InAppCallMapState extends State<InAppCallMap> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.call, color: Colors.white),
-                                    HSpace(extraSmallWhiteSpace),
+                                    const Icon(Icons.call, color: Colors.white),
+                                    const HSpace(extraSmallWhiteSpace),
                                     Text(
-                                      "Call User",
+                                      'Call User',
                                       style: paragraphTextStyle.copyWith(
                                         color: Colors.white,
                                       ),
@@ -434,10 +434,10 @@ class _InAppCallMapState extends State<InAppCallMap> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.send, color: Colors.white),
-                                    HSpace(extraSmallWhiteSpace),
+                                    const Icon(Icons.send, color: Colors.white),
+                                    const HSpace(extraSmallWhiteSpace),
                                     Text(
-                                      "Message",
+                                      'Message',
                                       style: paragraphTextStyle.copyWith(
                                         color: Colors.white,
                                       ),
@@ -519,7 +519,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black54,
               fontSize: smallText,
               fontWeight: FontWeight.w400,
@@ -527,7 +527,7 @@ class PassengerDestinationDetailBox extends StatelessWidget {
           ),
           Text(
             subtitle,
-            style: TextStyle(fontSize: normalText, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: normalText, fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -564,7 +564,7 @@ class OutlinedContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            rideType.replaceAll("normal", "Ride"),
+            rideType.replaceAll('normal', 'Ride'),
             style: TextStyle(
               color: gradient1,
               fontSize: smallText.sp,

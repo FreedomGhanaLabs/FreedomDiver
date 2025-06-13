@@ -51,9 +51,9 @@ class NotificationService {
         // Handle local notification tap
         log('Local notification tapped: ${response.payload}');
         try {
-          final jsonPayload = jsonDecode(response.payload ?? "{}");
+          final jsonPayload = jsonDecode(response.payload ?? '{}');
           if (jsonPayload is Map<String, dynamic> &&
-              jsonPayload.containsKey("rideId")) {
+              jsonPayload.containsKey('rideId')) {
             final data = jsonPayload;
             final ride = RideRequest.fromJson(data);
             final context = navigatorKey.currentState?.context;

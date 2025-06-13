@@ -20,7 +20,7 @@ class DecoratedContainer extends StatelessWidget {
       padding: const EdgeInsets.all(smallWhiteSpace),
       margin: margin,
       decoration: BoxDecoration(
-        color: backgroundColor ?? Color.fromRGBO(119, 119, 119, 0.08),
+        color: backgroundColor ?? const Color.fromRGBO(119, 119, 119, 0.08),
         borderRadius: BorderRadius.circular(roundedMd),
         image:
             backgroundImage != null

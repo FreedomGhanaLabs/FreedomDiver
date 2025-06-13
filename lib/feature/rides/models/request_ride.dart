@@ -62,7 +62,7 @@ class RideRequest {
     driverEarnings: (json['driverEarnings'] as num?)?.toInt() ?? 0,
     status: json['status']?.toString() ?? '',
     paymentMethod: json['paymentMethod']?.toString() ?? '',
-    paymentStatus: json['paymentStatus']?.toString() ?? "",
+    paymentStatus: json['paymentStatus']?.toString() ?? '',
     type: json['type'].toString(),
     estimatedFare: (json['estimatedFare'] as num?)?.toDouble() ?? 0.0,
     currency: json['currency'].toString(),

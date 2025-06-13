@@ -72,7 +72,7 @@ class _DriverLicenseFormState extends State<DriverLicenseForm> {
           'If you change your Driver License or any relevant details, update the information here to maintain accuracy and transparency.',
       children: [
         UploadedDocumentImage(
-          heading: "Uploaded Driver License",
+          heading: 'Uploaded Driver License',
           documentUrl: context.driverDocument?.driverLicense?.documentUrl,
         ),
         DecoratedContainer(
