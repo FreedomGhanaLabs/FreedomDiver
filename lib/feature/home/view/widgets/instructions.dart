@@ -11,9 +11,9 @@ class InstructionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       itemCount: instructions.length,
-      separatorBuilder: (_, __) => Divider(height: 1),
+      separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final step = instructions[index];
         return ListTile(
@@ -23,7 +23,7 @@ class InstructionList extends StatelessWidget {
             backgroundColor: thickFillColor,
             child: Text(
               '${index + 1}',
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
           title: Text(step, style: paragraphTextStyle),

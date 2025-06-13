@@ -27,11 +27,11 @@ class _RidesScreenState extends State<RidesScreen> {
     context.read<RideHistoryCubit>().getAllRideHistories(context);
   }
 
-  void _onTabChanged(RideTabEnum tab) {
-    setState(() {
-      rideTabEnum = tab;
-    });
-  }
+  // void _onTabChanged(RideTabEnum tab) {
+  //   setState(() {
+  //     rideTabEnum = tab;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _RidesScreenState extends State<RidesScreen> {
           content = _ErrorContent(message: state.message);
         } else if (state is RideHistoryLoaded) {
           if (state.ride.count <= 0) {
-            content = _EmptyContent();
+            content = const _EmptyContent();
           } else {
             content = Column(
               crossAxisAlignment: CrossAxisAlignment.start,

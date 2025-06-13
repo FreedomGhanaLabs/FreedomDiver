@@ -30,7 +30,7 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [...cubitRegistry],
           child: MaterialApp(
-            title: "Freedom Driver",
+            title: 'Freedom Driver',
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
