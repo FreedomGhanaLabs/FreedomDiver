@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +26,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../shared/widgets/custom_draggable_sheet.dart';
 import '../../../utilities/copy_to_clipboard.dart';
 import '../../../utilities/tts.dart';
+import 'utilities/create_custom_marker.dart';
 import 'utilities/get_navigation_steps.dart';
 import 'utilities/launch_map_navigation.dart';
 
@@ -85,14 +85,12 @@ class _InAppCallMapState extends State<InAppCallMap> {
   }
 
   Future<void> _setMapPins() async {
-    final motorbikeIcon = await _createCustomMarker(
-      'assets/app_images/user_profile.png',
+    final motorbikeIcon = await createCustomMarker(
+      fallbackAssetPath: 'assets/app_images/user_profile.png',
     );
-    final userIcon = await _createCustomMarker(
-      'assets/app_images/client_holder_image.png',
+    final userIcon = await createCustomMarker(
+      fallbackAssetPath: 'assets/app_images/client_holder_image.png',
     );
-    // final shopIcon =
-    //     await _createCustomMarker('/assets/app_images/');
 
     _markers
       ..add(
@@ -121,12 +119,6 @@ class _InAppCallMapState extends State<InAppCallMap> {
           infoWindow: const InfoWindow(title: 'User Destination'),
         ),
       );
-  }
-
-  Future<BitmapDescriptor> _createCustomMarker(String assetPath) async {
-    final data = await rootBundle.load(assetPath);
-    final bytes = data.buffer.asUint8List();
-    return BitmapDescriptor.bytes(bytes);
   }
 
   Future<List<LatLng>> _getPolylinePoints(LatLng start, LatLng end) async {
@@ -193,10 +185,14 @@ class _InAppCallMapState extends State<InAppCallMap> {
       return;
     }
 
-    final toPickupRoute = await _getPolylinePoints(
-      _driverLocation!,
-      _pickupLocation!,
-    );
+    final rideCubitState = context.watch<RideCubit>().state;
+    final ride = rideCubitState is RideLoaded ? rideCubitState.ride : null;
+    final isRideArrivedStatus = ride?.status == arrivedRide;
+
+    final toPickupRoute =
+        await (isRideArrivedStatus
+            ? _getPolylinePoints(_driverLocation!, _pickupLocation!)
+            : _getPolylinePoints(_driverLocation!, _pickupLocation!));
     await _drawRoutePolyline(toPickupRoute, 'toPickup');
     await _animateDriverAlong(toPickupRoute);
 
@@ -218,7 +214,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
 
           final userPhone = ride?.user?.phone ?? "";
 
-          final isAccepted = ride?.status == "accepted";
+          final isAccepted = ride?.status == acceptedRide;
           final isRideArrivedStatus = ride?.status == arrivedRide;
 
           final etaToPickup = ride?.etaToPickup?.text;

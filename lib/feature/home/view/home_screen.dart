@@ -409,6 +409,7 @@ class GoogleMapView extends StatelessWidget {
         width: Responsive.width(context),
         child: GoogleMap(
           zoomControlsEnabled: false,
+          markers: {Marker(markerId: MarkerId("Driver"))},
           initialCameraPosition: CameraPosition(
             target: context.driverLatLng!,
             zoom: 16.5,
