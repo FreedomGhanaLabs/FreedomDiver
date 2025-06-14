@@ -256,9 +256,9 @@ class _HomeRideState extends State<HomeRide> {
                   if (isRideCompletedStatus && !checkIfCashRide)
                     Column(
                       children: [
-                        const Text(
-                          'How will you rate this ride? Tap to rate User',
-                          style: TextStyle(fontSize: normalText),
+                        Text(
+                          'How will you rate this ${rideDetails?.type ?? "ride"}? Tap to rate User',
+                          style: const TextStyle(fontSize: normalText),
                         ),
                         const VSpace(extraSmallWhiteSpace),
                         Row(
@@ -294,12 +294,12 @@ class _HomeRideState extends State<HomeRide> {
                                 isRideAcceptedStatus
                                     ? 'Arrived At Pickup'
                                     : isRideArrivedStatus
-                                    ? 'Start Ride'
+                                    ? 'Start ${rideDetails?.type.capitalize}'
                                     : isRideStartedStatus
-                                    ? 'Complete Ride'
+                                    ? 'Complete ${rideDetails?.type.capitalize}'
                                     : checkIfCashRide
                                     ? 'Confirm Cash Payment'
-                                    : 'Rate User',
+                                    : 'Rate ${rideDetails?.type == "delivery" ? "Delivery" : "User"}',
                             onPressed: () {
                               if (isRideAcceptedStatus) {
                                 context.read<RideCubit>().arrivedRide(context);
@@ -336,14 +336,15 @@ class _HomeRideState extends State<HomeRide> {
                           child: SimpleButton(
                             title:
                                 isRideActive
-                                    ? 'Cancel Ride'
+                                    ? 'Cancel ${rideDetails?.type.capitalize}'
                                     : 'Find Nearby Rides',
                             onPressed: () {
                               if (isRideActive) {
                                 showCustomModal(
                                   context,
                                   btnCancelText: 'Back',
-                                  btnOkText: 'Cancel Ride',
+                                  btnOkText:
+                                      'Cancel ${rideDetails?.type.capitalize}',
                                   btnCancelOnPress: () {},
                                   btnOkOnPress:
                                       () =>
@@ -353,7 +354,7 @@ class _HomeRideState extends State<HomeRide> {
                                                 reasonController.text.trim(),
                                           ),
                                   child: buildField(
-                                    'Say reasons for canceling ride',
+                                    'Say reasons for canceling ${rideDetails?.type}',
                                     reasonController,
                                   ),
                                 ).show();
