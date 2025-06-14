@@ -11,8 +11,8 @@ import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/utils.dart';
 
-import '../../../utilities/responsive.dart';
-import '../../driver/cubit/driver_state.dart';
+import 'package:freedomdriver/utilities/responsive.dart';
+import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 
 class ProfilePictureScreen extends StatelessWidget {
   const ProfilePictureScreen({super.key});
@@ -126,7 +126,7 @@ class ProfilePictureTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+          contentPadding: const EdgeInsets.symmetric(),
           leading: Text(leading?.capitalize ?? '', style: descriptionTextStyle),
           trailing: SelectableText(
             trailing ?? 'N/A',

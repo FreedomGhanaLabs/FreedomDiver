@@ -6,7 +6,7 @@ import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../shared/app_config.dart';
+import 'package:freedomdriver/shared/app_config.dart';
 
 class RideType extends StatelessWidget {
   const RideType({
@@ -16,7 +16,7 @@ class RideType extends StatelessWidget {
   final ActivityType? activityType;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(2.51),
         color: activityType == ActivityType.ride

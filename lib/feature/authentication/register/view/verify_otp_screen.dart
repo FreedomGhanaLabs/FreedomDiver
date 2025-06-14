@@ -24,10 +24,10 @@ import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../../../shared/api/load_dashboard.dart';
-import '../../../../utilities/get_platform.dart';
-import '../../../../utilities/hive/fcm_token.dart';
-import '../../../../utilities/notification_service.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
+import 'package:freedomdriver/utilities/get_platform.dart';
+import 'package:freedomdriver/utilities/hive/fcm_token.dart';
+import 'package:freedomdriver/utilities/notification_service.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});

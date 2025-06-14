@@ -18,7 +18,7 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 
-import '../../../kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 
 class RegisterFormScreen extends StatefulWidget {
   const RegisterFormScreen({super.key});
@@ -383,7 +383,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   Step motorcycleInfoStep() {
-    int index = 1;
+    final int index = 1;
     return Step(
       title: const Text('Motorcycle Info'),
       isActive: _currentStep >= index,
@@ -474,7 +474,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     bottom: 7,
                     right: 17,
                   ),
-                  child: Container(
+                  child: DecoratedBox(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(11),
                       color: const Color(0x4FF59E0B),

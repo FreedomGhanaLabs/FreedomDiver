@@ -4,40 +4,39 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:freedomdriver/core/constants/ride.dart';
 import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
+import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_state.dart';
 import 'package:freedomdriver/feature/driver/driver.model.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
+import 'package:freedomdriver/feature/home/view/utilities/create_custom_marker.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_earnings.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_order.dart';
 import 'package:freedomdriver/feature/home/view/widgets/driver_total_score.dart';
 import 'package:freedomdriver/feature/home/view/widgets/estimated_reach_time.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_time_line.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_state.dart';
+import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride_history/ride_history_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride_history/ride_history_state.dart';
+import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
+import 'package:freedomdriver/shared/widgets/star_rating.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../core/constants/ride.dart';
-import '../../../shared/api/load_dashboard.dart';
-import '../../../shared/widgets/star_rating.dart';
-import '../../documents/driver_license/view/license_form.dart';
-import '../../main_activity/cubit/main_activity_cubit.dart';
-import '../../rides/cubit/ride/ride_state.dart';
-import 'utilities/create_custom_marker.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -369,24 +368,25 @@ class _HomeRideState extends State<HomeRide> {
                         const HSpace(extraSmallWhiteSpace),
                         if (!isRideArrivedStatus)
                           Expanded(
-                          child: SimpleButton(
-                            title:
-                                state.rideStatus == TransitStatus.accepted
-                                    ? 'Navigate'
-                                    : 'Search Another Area',
-                            onPressed: () {
-                              if (state.rideStatus == TransitStatus.accepted) {
-                                Navigator.of(
-                                  context,
-                                ).pushNamed(InAppCallMap.routeName);
-                              }
-                            },
-                            backgroundColor: greyColor,
-                            textStyle: paragraphTextStyle.copyWith(
-                              color: Colors.black,
+                            child: SimpleButton(
+                              title:
+                                  state.rideStatus == TransitStatus.accepted
+                                      ? 'Navigate'
+                                      : 'Search Another Area',
+                              onPressed: () {
+                                if (state.rideStatus ==
+                                    TransitStatus.accepted) {
+                                  Navigator.of(
+                                    context,
+                                  ).pushNamed(InAppCallMap.routeName);
+                                }
+                              },
+                              backgroundColor: greyColor,
+                              textStyle: paragraphTextStyle.copyWith(
+                                color: Colors.black,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                 ],
@@ -445,7 +445,7 @@ class _GoogleMapViewState extends State<GoogleMapView> {
           markers: _markers,
           initialCameraPosition: CameraPosition(
             target: context.driverLatLng!,
-            zoom: 16.5,
+            zoom: 13,
           ),
         ),
       ),

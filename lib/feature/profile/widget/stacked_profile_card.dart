@@ -13,10 +13,10 @@ import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../../core/constants/documents.dart';
-import '../../../utilities/pick_file.dart';
-import '../../main_activity/cubit/main_activity_cubit.dart';
-import '../view/profile_picture.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
+import 'package:freedomdriver/utilities/pick_file.dart';
+import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
+import 'package:freedomdriver/feature/profile/view/profile_picture.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key});

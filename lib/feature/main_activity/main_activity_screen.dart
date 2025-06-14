@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/view/earnings_screen.dart';
+import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
 import 'package:freedomdriver/feature/home/view/home_screen.dart';
 import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 import 'package:freedomdriver/feature/main_activity/cubit/main_activity_cubit.dart';
 import 'package:freedomdriver/feature/profile/view/profile_screen.dart';
-import 'package:freedomdriver/feature/rides/view/rides_screen.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/view/rides_screen.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/app_config.dart';
-
-import '../../shared/api/fcm.dart';
-import '../../utilities/socket_service.dart';
-import '../home/cubit/home_cubit.dart';
+import 'package:freedomdriver/utilities/socket_service.dart';
 
 class MainActivityScreen extends StatelessWidget {
   const MainActivityScreen({super.key});
@@ -40,7 +38,6 @@ class _MainActivityScreenState extends State<_MainActivityScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadDashboard(context);
       initSockets(context);
-      FCMService().registerFCM(context);
     });
     super.initState();
   }
@@ -58,7 +55,7 @@ class _MainActivityScreenState extends State<_MainActivityScreen> {
           final currentIndex = state.currentIndex;
           return Scaffold(
             body: _pages[currentIndex],
-            bottomNavigationBar: Container(
+            bottomNavigationBar: DecoratedBox(
               decoration: const BoxDecoration(
                 color: Colors.white,
                 boxShadow: [

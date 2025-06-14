@@ -4,9 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:freedomdriver/utilities/notification_service.dart';
 
-import '../../utilities/get_platform.dart';
-import '../../utilities/hive/fcm_token.dart';
-import 'api_controller.dart';
+import 'package:freedomdriver/utilities/get_platform.dart';
+import 'package:freedomdriver/utilities/hive/fcm_token.dart';
+import 'package:freedomdriver/shared/api/api_controller.dart';
 
 class FCMService {
   ApiController apiController = ApiController('fcm', noDriver: true);

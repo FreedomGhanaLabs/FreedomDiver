@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../shared/app_config.dart';
+import 'package:freedomdriver/shared/app_config.dart';
 
 Future<Map<String, String>> getETA(
   LatLng? driverLocation,

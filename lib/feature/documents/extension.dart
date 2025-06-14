@@ -12,8 +12,8 @@ import 'package:freedomdriver/feature/documents/driver_license/driver_license.mo
 import 'package:freedomdriver/feature/documents/ghana_card/ghana_card.model.dart';
 import 'package:freedomdriver/feature/documents/models/driver_documents.dart';
 
-import 'ghana_card/cubit/ghana_card_cubit.dart';
-import 'ghana_card/cubit/ghana_card_state.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_cubit.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_state.dart';
 
 extension DriverExtension on BuildContext {
   DriverLicense? get driverLicense {

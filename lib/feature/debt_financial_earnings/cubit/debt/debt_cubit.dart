@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 
-import '../../../../shared/api/api_controller.dart';
-import '../../../../shared/api/api_handler.dart';
-import '../../models/debt.dart';
-import 'debt_state.dart';
+import 'package:freedomdriver/shared/api/api_controller.dart';
+import 'package:freedomdriver/shared/api/api_handler.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/debt.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/debt/debt_state.dart';
 
 class DebtCubit extends Cubit<DebtState> {
   DebtCubit() : super(DebtInitial());

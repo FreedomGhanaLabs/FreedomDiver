@@ -11,9 +11,9 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-import '../../documents/cubit/document_image.dart';
-import '../../documents/cubit/document_image_state.dart';
-import '../../documents/cubit/driver_document_cubit.dart';
+import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
+import 'package:freedomdriver/feature/documents/cubit/document_image_state.dart';
+import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
 
 class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
   @override

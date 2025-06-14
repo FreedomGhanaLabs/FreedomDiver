@@ -16,7 +16,7 @@ import 'package:freedomdriver/shared/widgets/decorated_container.dart';
 import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../widget/uploaded_document_image.dart';
+import 'package:freedomdriver/feature/documents/widget/uploaded_document_image.dart';
 
 class AddressProofForm extends StatefulWidget {
   const AddressProofForm({super.key});

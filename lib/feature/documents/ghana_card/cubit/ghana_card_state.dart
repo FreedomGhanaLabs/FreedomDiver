@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../ghana_card.model.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/ghana_card.model.dart';
 
 abstract class GhanaCardState extends Equatable {
   const GhanaCardState();

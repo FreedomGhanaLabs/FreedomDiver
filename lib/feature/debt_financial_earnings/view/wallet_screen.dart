@@ -14,11 +14,11 @@ import 'package:freedomdriver/shared/widgets/decorated_container.dart';
 import 'package:freedomdriver/shared/widgets/upload_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../../shared/widgets/app_icon.dart';
-import '../../../utilities/show_custom_modal.dart';
-import '../../kyc/view/background_verification_screen.dart';
-import '../../profile/widget/stacked_profile_card.dart';
-import '../widgets/bank_select.dart';
+import 'package:freedomdriver/shared/widgets/app_icon.dart';
+import 'package:freedomdriver/utilities/show_custom_modal.dart';
+import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/profile/widget/stacked_profile_card.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/widgets/bank_select.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -206,7 +206,7 @@ class _ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.black26,
         borderRadius: BorderRadius.circular(roundedLg),

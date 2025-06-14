@@ -10,7 +10,7 @@ import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../core/constants/documents.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
 
 class CriminalBackgroundCheckScreen extends StatelessWidget {
   const CriminalBackgroundCheckScreen({super.key});

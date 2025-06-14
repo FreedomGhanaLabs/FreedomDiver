@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
-import '../shared/app_config.dart';
+import 'package:freedomdriver/shared/app_config.dart';
 
 AwesomeDialog showCustomModal(
   BuildContext context, {

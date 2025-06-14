@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../shared/widgets/custom_draggable_sheet.dart';
+import 'package:freedomdriver/shared/widgets/custom_draggable_sheet.dart';
 
 Future<void> showCustomBottomSheet(BuildContext context, Widget child) async {
   showBottomSheet(

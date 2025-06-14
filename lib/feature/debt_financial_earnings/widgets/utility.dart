@@ -125,7 +125,7 @@ abstract class SectionFactory extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 6.5),
-            Container(
+            DecoratedBox(
               decoration: ShapeDecoration(
                 color: backgroundColor,
                 shape: RoundedRectangleBorder(

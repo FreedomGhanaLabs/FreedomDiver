@@ -14,9 +14,9 @@ import 'package:freedomdriver/shared/widgets/upload_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get.dart';
 
-import '../../debt_financial_earnings/cubit/debt/debt_cubit.dart';
-import '../../debt_financial_earnings/cubit/debt/debt_state.dart';
-import '../../debt_financial_earnings/models/debt.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/debt/debt_cubit.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/debt/debt_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/debt.dart';
 
 class DebtManagementScreen extends StatefulWidget {
   const DebtManagementScreen({super.key});
@@ -269,7 +269,7 @@ class DebtCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: ShapeDecoration(
         gradient: LinearGradient(
           begin: const Alignment(-2, 0.72),
@@ -337,7 +337,7 @@ class DebtPaymentFormState extends State<DebtPaymentForm> {
 
             CustomDropDown(
               initialValue: _method,
-              items: ['Wallet', 'Mobile Money'],
+              items: const ['Wallet', 'Mobile Money'],
               onChanged: (value) {
                 setState(() {
                   _method = value;

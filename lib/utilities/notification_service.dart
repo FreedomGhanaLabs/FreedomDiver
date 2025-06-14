@@ -9,9 +9,9 @@ import 'package:freedomdriver/feature/home/view/widgets/build_dialog.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import '../feature/app/app.dart';
-import '../feature/rides/cubit/ride/ride_cubit.dart';
-import '../feature/rides/models/request_ride.dart';
+import 'package:freedomdriver/feature/app/app.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/request_ride.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

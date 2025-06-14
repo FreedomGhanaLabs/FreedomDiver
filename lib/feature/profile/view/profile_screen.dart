@@ -15,10 +15,10 @@ import 'package:freedomdriver/utilities/show_dialog.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get_utils/get_utils.dart';
 
-import '../../../shared/theme/app_colors.dart';
-import '../../../utilities/hive/token.dart';
-import '../../authentication/login/view/login_form_screen.dart';
-import 'debt_management_screen.dart';
+import 'package:freedomdriver/shared/theme/app_colors.dart';
+import 'package:freedomdriver/utilities/hive/token.dart';
+import 'package:freedomdriver/feature/authentication/login/view/login_form_screen.dart';
+import 'package:freedomdriver/feature/profile/view/debt_management_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.hasBackButton = false});

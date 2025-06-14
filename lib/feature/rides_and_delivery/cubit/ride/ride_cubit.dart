@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/cubit/home_cubit.dart';
+import 'package:freedomdriver/feature/home/view/utilities/google_map_apis.dart';
 import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
-import 'package:freedomdriver/feature/rides/models/request_ride.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/request_ride.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/api/load_dashboard.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
@@ -17,20 +19,26 @@ import 'package:freedomdriver/utilities/socket_service.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../core/di/locator.dart';
-import '../../../home/view/utilities/google_map_apis.dart';
-
 class RideCubit extends Cubit<RideState> {
   RideCubit() : super(RideInitial());
 
   final driverLocation = getIt<DriverLocationService>();
-  final ApiController apiController = ApiController('ride');
+  final ApiController rideApiController = ApiController('ride');
+  final ApiController deliveryApiController = ApiController('delivery');
   final driverSocketService = getIt<DriverSocketService>();
 
   RideRequest? _cachedRideRequest;
   String? _cachedRideId;
+  String? _cachedRideType;
 
   bool get hasAcceptedRide => _cachedRideRequest != null;
+
+  ApiController get _apiController {
+    if (_cachedRideType == 'delivery') {
+      return deliveryApiController;
+    }
+    return rideApiController;
+  }
 
   void _updateRideRequest(
     RideRequest updated, {
@@ -38,6 +46,7 @@ class RideCubit extends Cubit<RideState> {
   }) async {
     _cachedRideRequest = updated;
     _cachedRideId = updated.rideId;
+    _cachedRideType = updated.rideType;
     emit(RideLoaded(_cachedRideRequest!));
     if (shouldPersist) {
       await addRideRequestToHive(_cachedRideRequest!);
@@ -73,7 +82,7 @@ class RideCubit extends Cubit<RideState> {
       return;
     }
     try {
-      await apiController.post(context, endpoint, body ?? {}, (success, data) {
+      await _apiController.post(context, endpoint, body ?? {}, (success, data) {
         if (success) {
           if (successLog != null) log(successLog);
           if (onSuccess != null && data is Map<String, dynamic>) {
@@ -98,6 +107,7 @@ class RideCubit extends Cubit<RideState> {
   void resetRideRequest({bool shouldRemovePersistence = true}) async {
     _cachedRideRequest = null;
     _cachedRideId = null;
+    _cachedRideType = null;
     emit(RideInitial());
 
     if (shouldRemovePersistence) {
@@ -222,7 +232,7 @@ class RideCubit extends Cubit<RideState> {
       successLog: '[RideCubit] ride cancel',
       onSuccess: (_) {
         context.read<HomeCubit>().endRide();
-        resetRideRequest(shouldRemovePersistence: true);
+        resetRideRequest();
       },
       errorMsg: 'Failed to cancel ride',
       showOverlay: true,
@@ -266,6 +276,33 @@ class RideCubit extends Cubit<RideState> {
   }
 
   Future<void> completeRide(BuildContext context) async {
+    final rideId = _cachedRideRequest?.rideId;
+    final currentStopIndex = 1;
+    await _rideActionWithLocation(
+      context,
+      '$rideId/stop/$currentStopIndex/complete',
+      successLog: '[RideCubit] $currentStopIndex multi-stop ride completed',
+      onSuccess: (data) async {
+        final newData = data['data'];
+        log('[multi-stop] $newData');
+        // _updateRideRequest(
+        //   _cachedRideRequest!.copyWith(
+        //     status: newData['status'],
+        //     paymentMethod: newData['paymentMethod'],
+        //     paymentStatus: newData['paymentStatus'],
+        //   ),
+        // );
+        context.read<HomeCubit>().toggleNearByRides(
+          status: TransitStatus.completed,
+        );
+        await loadDashboard(context, loadAll: false);
+      },
+      errorMsg: 'Failed to end ride',
+      showOverlay: true,
+    );
+  }
+
+  Future<void> completeMultiStopRide(BuildContext context) async {
     final rideId = _cachedRideRequest?.rideId;
     await _rideActionWithLocation(
       context,
@@ -321,7 +358,7 @@ class RideCubit extends Cubit<RideState> {
       successLog: '[RideCubit] ride user rated $rating',
       errorMsg: 'Failed to rate user',
       onSuccess: (_) async {
-        resetRideRequest(shouldRemovePersistence: true);
+        resetRideRequest();
         context.read<HomeCubit>().toggleNearByRides(
           status: TransitStatus.initial,
         );
@@ -357,8 +394,6 @@ class RideCubit extends Cubit<RideState> {
               ? LatLng(dropoffCords.last, dropoffCords.first)
               : LatLng(pickupCords.last, pickupCords.first),
     );
-
-    // log('[Updated Eta] $result');
 
     _updateRideRequest(
       _cachedRideRequest!.copyWith(

@@ -16,7 +16,7 @@ import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/routes_params.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../core/constants/documents.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
 
 class UploadButton extends StatelessWidget {
   const UploadButton({super.key});

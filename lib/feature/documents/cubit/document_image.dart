@@ -8,8 +8,8 @@ import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:freedomdriver/utilities/file_service.dart';
 
-import '../../../core/constants/documents.dart';
-import '../../profile/view/profile_image_cropper.dart';
+import 'package:freedomdriver/core/constants/documents.dart';
+import 'package:freedomdriver/feature/profile/view/profile_image_cropper.dart';
 
 class DriverImageCubit extends Cubit<DriverImageState> {
   DriverImageCubit() : super(DriverImageInitial());

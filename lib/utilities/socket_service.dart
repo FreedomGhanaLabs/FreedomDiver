@@ -3,16 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/core/config/api_constants.dart';
+import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/rides/models/request_ride.dart';
+import 'package:freedomdriver/feature/messaging/message_cubit.dart';
+import 'package:freedomdriver/feature/messaging/models/message.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/request_ride.dart';
 import 'package:freedomdriver/utilities/hive/token.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-
-import '../core/di/locator.dart';
-import '../feature/messaging/message_cubit.dart';
-import '../feature/messaging/models/message.dart';
-import '../feature/rides/cubit/ride/ride_cubit.dart';
-import 'notification_service.dart';
 
 class DriverSocketConstants {
   static const String transportWebSocket = 'websocket';
@@ -22,6 +20,7 @@ class DriverSocketConstants {
   static const String autoConnectKey = 'autoConnect';
 
   static const String newRideRequest = 'new_ride_request';
+  static const String newDeliveryRequest = 'new_delivery_request';
   static const String rideAccepted = 'ride_accepted';
   static const String rideStatusUpdated = 'ride_status_updated';
 
@@ -38,6 +37,7 @@ class DriverSocketConstants {
   static const String socketDisconnected = '[Socket] Disconnected';
   static const String socketConnectionError = '[Socket] Connection error: ';
   static const String newRideRequestLog = '[Socket] New ride request: ';
+  static const String newDeliveryRequestLog = '[Socket] New Delivery request: ';
   static const String rideAcceptedLog =
       '[Socket] Confirmation of ride acceptance ';
   static const String rideStatusUpdatedLog = '[Socket] Ride status updated: ';
@@ -82,12 +82,18 @@ class DriverSocketService {
 
     _registerRideEvent<RideRequest>(
       DriverSocketConstants.newRideRequest,
-      (data) => RideRequest.fromJson(data),
+      RideRequest.fromJson,
       (ride) {
         log('${DriverSocketConstants.newRideRequestLog}${ride.toJson()}');
         onNewRideRequest?.call(ride);
       },
     );
+    _registerRideEvent<
+      RideRequest
+    >(DriverSocketConstants.newDeliveryRequest, RideRequest.fromJson, (ride) {
+      // log('${DriverSocketConstants.newDeliveryRequestLog}${ride.toJson()}');
+      onNewRideRequest?.call(ride);
+    });
 
     _socket!.on('ride_message', (data) {
       if (data == null) {
@@ -95,7 +101,17 @@ class DriverSocketService {
         return;
       }
       if (data is Map<String, dynamic>) {
-        //I'm outside the school gate
+        onNewMessage?.call(data['notification']['body']);
+      } else {
+        log('⚠️ Unexpected ride_message data: $data');
+      }
+    });
+    _socket!.on('delivery_message', (data) {
+      if (data == null) {
+        log('⚠️ ride_message received null data.');
+        return;
+      }
+      if (data is Map<String, dynamic>) {
         onNewMessage?.call(data['notification']['body']);
       } else {
         log('⚠️ Unexpected ride_message data: $data');
@@ -134,6 +150,7 @@ class DriverSocketService {
         return;
       }
       if (data is Map<String, dynamic>) {
+        log('[delivery raw data] $data');
         try {
           final parsed = fromJson(data);
           onData(parsed);
@@ -183,12 +200,12 @@ void initSockets(BuildContext context) {
   getIt<DriverSocketService>().connect(
     onNewRideRequest: (ride) async {
       log('[Socket Ride Request] ride request received');
-      await NotificationService.sendNotification(
-        title:
-            ride.type == 'ride' ? 'New Ride Request' : 'New Delivery Request',
-        body: 'Pickup: ${ride.pickupLocation.address}',
-        payload: ride.toJson(),
-      );
+      // await NotificationService.sendNotification(
+      //   title:
+      //       ride.type == 'ride' ? 'New Ride Request' : 'New Delivery Request',
+      //   body: 'Pickup: ${ride.pickupLocation.address}',
+      //   payload: ride.toJson(),
+      // );
 
       rideCubit.foundRide(ride, context);
     },

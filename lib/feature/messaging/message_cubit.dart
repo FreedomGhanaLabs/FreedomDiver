@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
 
-import '../../utilities/hive/messaging.dart';
-import 'models/message.dart';
+import 'package:freedomdriver/utilities/hive/messaging.dart';
+import 'package:freedomdriver/feature/messaging/models/message.dart';
 
 part 'message_state.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_time_line.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_state.dart';
-import 'package:freedomdriver/feature/rides/models/ride_history.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride_history/ride_history_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride_history/ride_history_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/ride_history.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
@@ -97,7 +97,6 @@ class RidesTile extends StatelessWidget {
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: const BorderSide(
-            width: 1,
             strokeAlign: BorderSide.strokeAlignOutside,
             color: Color(0xFFF5F5F5),
           ),
@@ -146,7 +145,6 @@ class RideTab extends StatelessWidget {
           borderRadius: BorderRadius.circular(roundedMd),
           border: Border.all(
             color: isSelected ? Colors.transparent : darkGoldColor,
-            width: 1,
           ),
         ),
         child: Text(
@@ -166,7 +164,6 @@ class RideTab extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(whiteSpace),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildTab(

@@ -15,8 +15,8 @@ import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:intl/intl.dart';
 
-import '../../driver_license/view/license_form.dart';
-import '../../widget/uploaded_document_image.dart';
+import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
+import 'package:freedomdriver/feature/documents/widget/uploaded_document_image.dart';
 
 class GhanaCardForm extends StatefulWidget {
   const GhanaCardForm({super.key});
@@ -135,7 +135,7 @@ class _GhanaCardFormState extends State<GhanaCardForm> {
                 CustomDropDown(
                   label: 'Gender',
                   value: sex,
-                  items: ['Male', 'Female'],
+                  items: const ['Male', 'Female'],
                   onChanged: (value) {
                     setState(() {
                       sex = value;

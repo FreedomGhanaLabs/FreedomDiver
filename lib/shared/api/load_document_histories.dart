@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../feature/documents/cubit/driver_document_cubit.dart';
-import '../../feature/documents/models/driver_documents.dart';
+import 'package:freedomdriver/feature/documents/cubit/driver_document_cubit.dart';
+import 'package:freedomdriver/feature/documents/models/driver_documents.dart';
 
 Future<void> loadDocumentHistories(BuildContext context) async {
   final documentCubit = context.read<DocumentCubit>();

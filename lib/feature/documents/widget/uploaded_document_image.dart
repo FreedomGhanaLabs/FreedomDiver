@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../shared/app_config.dart';
-import '../../../utilities/responsive.dart';
-import '../../../utilities/ui.dart';
+import 'package:freedomdriver/shared/app_config.dart';
+import 'package:freedomdriver/utilities/responsive.dart';
+import 'package:freedomdriver/utilities/ui.dart';
 
 class UploadedDocumentImage extends StatelessWidget {
   const UploadedDocumentImage({super.key, this.documentUrl, required this.heading});

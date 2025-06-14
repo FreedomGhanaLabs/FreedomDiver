@@ -10,8 +10,8 @@ import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:get/get_utils/src/extensions/export.dart';
 
-import '../../../kyc/view/background_verification_screen.dart';
-import '../../../profile/widget/stacked_profile_card.dart';
+import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/profile/widget/stacked_profile_card.dart';
 
 class RiderTimeLine extends StatelessWidget {
   const RiderTimeLine({

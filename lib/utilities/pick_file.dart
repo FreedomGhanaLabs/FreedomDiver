@@ -5,7 +5,7 @@ import 'package:freedomdriver/core/constants/documents.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 
-import '../feature/documents/cubit/document_image.dart';
+import 'package:freedomdriver/feature/documents/cubit/document_image.dart';
 
 void pickFile(
   BuildContext context, {

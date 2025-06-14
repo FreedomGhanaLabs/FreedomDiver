@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../../debt_financial_earnings/cubit/finance/financial_cubit.dart';
-import '../../../debt_financial_earnings/cubit/finance/financial_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_cubit.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_state.dart';
 
 class DriverTotalOrder extends StatelessWidget {
   const DriverTotalOrder({

@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 Future<BitmapDescriptor> createCustomMarker({
   required String fallbackAssetPath,
   String? networkImageUrl,
-  int size = 40, // smaller size
+  int width = 60,
 }) async {
   Uint8List? imageBytes;
 
@@ -35,7 +35,7 @@ Future<BitmapDescriptor> createCustomMarker({
       }
 
       if (imageBytes != null) {
-        return await _roundedBytesToBitmapDescriptor(imageBytes, size);
+        return await _bytesToBitmapDescriptor(imageBytes, width);
       }
     }
   } catch (e) {
@@ -44,10 +44,7 @@ Future<BitmapDescriptor> createCustomMarker({
 
   // Fallback to asset
   final byteData = await rootBundle.load(fallbackAssetPath);
-  return await _roundedBytesToBitmapDescriptor(
-    byteData.buffer.asUint8List(),
-    size,
-  );
+  return await _bytesToBitmapDescriptor(byteData.buffer.asUint8List(), width);
 }
 
 Future<File> _getCachedFile(String url) async {
@@ -56,35 +53,12 @@ Future<File> _getCachedFile(String url) async {
   return File('${dir.path}/$filename.png');
 }
 
-Future<BitmapDescriptor> _roundedBytesToBitmapDescriptor(
+Future<BitmapDescriptor> _bytesToBitmapDescriptor(
   Uint8List bytes,
-  int size,
+  int width,
 ) async {
-  final codec = await ui.instantiateImageCodec(
-    bytes,
-    targetWidth: size,
-    targetHeight: size,
-  );
+  final codec = await ui.instantiateImageCodec(bytes, targetWidth: width);
   final frame = await codec.getNextFrame();
-  final image = frame.image;
-
-  final recorder = ui.PictureRecorder();
-  final canvas = Canvas(recorder);
-
-  final paint = Paint();
-  final rect = Rect.fromLTWH(0, 0, size.toDouble(), size.toDouble());
-  final rrect = RRect.fromRectAndRadius(rect, Radius.circular(size / 2));
-
-  canvas.clipRRect(rrect);
-  paint.isAntiAlias = true;
-  canvas.drawImageRect(
-    image,
-    Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
-    rect,
-    paint,
-  );
-
-  final roundedImage = await recorder.endRecording().toImage(size, size);
-  final data = await roundedImage.toByteData(format: ui.ImageByteFormat.png);
-  return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
+  final data = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+  return BitmapDescriptor.bytes(data!.buffer.asUint8List());
 }

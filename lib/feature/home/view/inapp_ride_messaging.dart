@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
@@ -13,8 +13,8 @@ import 'package:freedomdriver/shared/widgets/primary_button.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../messaging/message_cubit.dart';
-import '../../messaging/models/message.dart';
+import 'package:freedomdriver/feature/messaging/message_cubit.dart';
+import 'package:freedomdriver/feature/messaging/models/message.dart';
 
 class InappRideMessaging extends StatefulWidget {
   const InappRideMessaging({super.key});

@@ -2,19 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
+import 'package:freedomdriver/shared/api/api_controller.dart';
+import 'package:freedomdriver/shared/widgets/toaster.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
-import '../feature/driver/cubit/driver_cubit.dart';
-import '../shared/api/api_controller.dart';
-import '../shared/widgets/toaster.dart';
 
 class DriverLocationService {
   StreamSubscription<Position>? _positionStream;
 
   static const LocationSettings _locationSettings = LocationSettings(
     accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 0,
   );
 
   // Handles permission check and shows appropriate toasts
@@ -88,6 +86,8 @@ class DriverLocationService {
       await context.read<DriverCubit>().updateDriverLocation(context, [
         position.longitude,
         position.latitude,
+        // 6.736301,
+        // 7.801245,
       ]);
       // lat -  7.801245,
       // long - 6.736301

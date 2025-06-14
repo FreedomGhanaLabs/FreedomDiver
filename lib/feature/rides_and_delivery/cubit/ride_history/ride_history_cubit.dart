@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride_history/ride_history_state.dart';
-import 'package:freedomdriver/feature/rides/models/ride_history.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride_history/ride_history_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/ride_history.dart';
 import 'package:freedomdriver/shared/api/api_controller.dart';
 import 'package:get/get.dart';
 

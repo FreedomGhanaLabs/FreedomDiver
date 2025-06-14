@@ -6,9 +6,8 @@ T? safeParse<T>(dynamic json, T Function(Map<String, dynamic>) fromJson) {
 }
 
 class RideRequest {
-
   factory RideRequest.fromJson(Map<String, dynamic> json) => RideRequest(
-    rideId: json['rideId'].toString(),
+    rideId: json['rideId'] ?? json['deliveryId'],
     user: safeParse(json['user'], User.fromJson),
     pickupLocation: Location.fromJson(json['pickupLocation']),
     dropoffLocation: Location.fromJson(json['dropoffLocation']),
@@ -135,7 +134,6 @@ class RideRequest {
 }
 
 class User {
-
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json['id'].toString(),
     name: json['name'].toString(),
@@ -151,7 +149,6 @@ class User {
 }
 
 class Location {
-
   factory Location.fromJson(Map<String, dynamic> json) => Location(
     type: json['type'].toString(),
     coordinates:
@@ -179,7 +176,6 @@ class Location {
 }
 
 class Distance {
-
   factory Distance.fromJson(Map<String, dynamic> json) =>
       Distance(value: json['value'] as int, text: json['text'].toString());
   Distance({required this.value, required this.text});
@@ -191,7 +187,6 @@ class Distance {
 }
 
 class DurationInfo {
-
   factory DurationInfo.fromJson(Map<String, dynamic> json) =>
       DurationInfo(value: json['value'] as int, text: json['text'].toString());
   DurationInfo({required this.value, required this.text});

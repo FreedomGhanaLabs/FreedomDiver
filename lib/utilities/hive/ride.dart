@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:freedomdriver/feature/rides/models/request_ride.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/request_ride.dart';
 import 'package:hive/hive.dart';
 
 const String rideKey = 'ride';

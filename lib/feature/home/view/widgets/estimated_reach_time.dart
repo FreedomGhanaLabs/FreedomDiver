@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freedomdriver/core/constants/ride.dart';
 import 'package:freedomdriver/feature/home/view/widgets/rider_indicator.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/gradient_text.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../../rides/cubit/ride/ride_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
 
 class EstimatedReachTime extends StatelessWidget {
   const EstimatedReachTime({super.key});
@@ -24,7 +24,7 @@ class EstimatedReachTime extends StatelessWidget {
             (toPickup ? ride?.etaToPickup?.text : ride?.etaToDropoff?.text)
                 ?.toString();
 
-        String timeText = getTimeText(isAccepted) ?? '0 min';
+        final String timeText = getTimeText(isAccepted) ?? '0 min';
         final parts = timeText.split(' ');
         final time = parts.isNotEmpty ? parts[0] : '0';
         final unit = parts.length > 1 ? parts[1] : 'min';

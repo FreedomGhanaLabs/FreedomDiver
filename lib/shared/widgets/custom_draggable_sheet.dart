@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_config.dart';
+import 'package:freedomdriver/shared/app_config.dart';
 
 class CustomBottomSheet extends StatelessWidget {
   const CustomBottomSheet({

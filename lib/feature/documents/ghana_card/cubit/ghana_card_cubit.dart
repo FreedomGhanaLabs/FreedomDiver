@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../ghana_card.model.dart';
-import 'ghana_card_state.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/ghana_card.model.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/cubit/ghana_card_state.dart';
 
 class GhanaCardCubit extends Cubit<GhanaCardState> {
   GhanaCardCubit() : super(GhanaCardInitial());

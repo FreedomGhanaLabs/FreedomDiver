@@ -16,7 +16,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 
-import '../../driver/cubit/driver_cubit.dart';
+import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
 
 class DocumentCubit extends Cubit<DocumentState> {
   DocumentCubit() : super(DocumentInitial());

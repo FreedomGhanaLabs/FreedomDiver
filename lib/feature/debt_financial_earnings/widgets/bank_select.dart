@@ -3,8 +3,8 @@ import 'package:freedomdriver/feature/kyc/view/background_verification_screen.da
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 
-import '../models/bank.dart';
-import '../services/bank.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/bank.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/services/bank.dart';
 
 class BankDropdown extends StatefulWidget {
 

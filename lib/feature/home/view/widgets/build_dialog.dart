@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../../documents/driver_license/view/license_form.dart';
-import '../../../kyc/view/background_verification_screen.dart';
-import 'home_widgets.dart';
+import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
+import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
+import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 
 class CustomRideDialog {
   factory CustomRideDialog() => _instance;

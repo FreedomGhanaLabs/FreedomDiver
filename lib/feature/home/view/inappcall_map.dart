@@ -12,8 +12,8 @@ import 'package:freedomdriver/feature/home/view/inapp_ride_messaging.dart';
 import 'package:freedomdriver/feature/home/view/utilities/calculate_bearing.dart';
 import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_cubit.dart';
-import 'package:freedomdriver/feature/rides/cubit/ride/ride_state.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
@@ -26,12 +26,12 @@ import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../shared/widgets/custom_draggable_sheet.dart';
-import '../../../utilities/copy_to_clipboard.dart';
-import '../../../utilities/tts.dart';
-import 'utilities/create_custom_marker.dart';
-import 'utilities/google_map_apis.dart';
-import 'utilities/launch_map_navigation.dart';
+import 'package:freedomdriver/shared/widgets/custom_draggable_sheet.dart';
+import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
+import 'package:freedomdriver/utilities/tts.dart';
+import 'package:freedomdriver/feature/home/view/utilities/create_custom_marker.dart';
+import 'package:freedomdriver/feature/home/view/utilities/google_map_apis.dart';
+import 'package:freedomdriver/feature/home/view/utilities/launch_map_navigation.dart';
 
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});

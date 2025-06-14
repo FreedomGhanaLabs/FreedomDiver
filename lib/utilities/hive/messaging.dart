@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 
-import '../../feature/messaging/models/message.dart';
+import 'package:freedomdriver/feature/messaging/models/message.dart';
 
 const String messagingKey = 'messages';
 const String messageBoxKey = 'messaging';

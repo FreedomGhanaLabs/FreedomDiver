@@ -109,7 +109,7 @@ class VehicleInformationContainerState
             ),
           ),
           const VSpace(4),
-          Container(
+          DecoratedBox(
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: Colors.black.withValues(alpha: 0.209)),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:freedomdriver/feature/rides/models/request_ride.dart';
+import 'package:freedomdriver/feature/rides_and_delivery/models/request_ride.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/text_style.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
@@ -43,7 +43,6 @@ class RideDetailTile extends StatelessWidget {
         color: const Color(0x0FFFBA40),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: 1,
             strokeAlign: BorderSide.strokeAlignOutside,
             color: Colors.black.withValues(alpha: 0.2),
           ),

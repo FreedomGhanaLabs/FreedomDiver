@@ -27,12 +27,12 @@ import 'package:freedomdriver/router/error_route_screen.dart';
 import 'package:freedomdriver/shared/screens/success_screen.dart';
 import 'package:freedomdriver/shared/screens/verification_status_screen.dart';
 
-import '../feature/documents/ghana_card/view/ghana_card_form.dart';
-import '../feature/documents/motorcycle/view/motorcycle_image.dart';
-import '../feature/home/view/inapp_ride_messaging.dart';
-import '../feature/profile/view/debt_management_screen.dart';
-import '../feature/profile/view/profile_image_cropper.dart';
-import '../feature/profile/view/profile_picture.dart';
+import 'package:freedomdriver/feature/documents/ghana_card/view/ghana_card_form.dart';
+import 'package:freedomdriver/feature/documents/motorcycle/view/motorcycle_image.dart';
+import 'package:freedomdriver/feature/home/view/inapp_ride_messaging.dart';
+import 'package:freedomdriver/feature/profile/view/debt_management_screen.dart';
+import 'package:freedomdriver/feature/profile/view/profile_image_cropper.dart';
+import 'package:freedomdriver/feature/profile/view/profile_picture.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   log('Next Route: ${settings.name}');

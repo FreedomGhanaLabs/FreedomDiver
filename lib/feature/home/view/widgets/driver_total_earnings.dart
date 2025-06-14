@@ -6,7 +6,7 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 
-import '../../../debt_financial_earnings/cubit/finance/financial_state.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/cubit/finance/financial_state.dart';
 
 
 class DriverTotalEarnings extends StatelessWidget {

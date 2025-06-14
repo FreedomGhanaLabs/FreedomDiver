@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../models/bank.dart';
+import 'package:freedomdriver/feature/debt_financial_earnings/models/bank.dart';
 
 class BankService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'https://api.paystack.co'));
