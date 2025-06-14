@@ -79,8 +79,8 @@ class _DebtManagementScreenState extends State<DebtManagementScreen> {
 }
 
 class DebtHistorySection extends StatelessWidget {
-  final List<DebtPaymentHistory> debtPaymentHistory;
   const DebtHistorySection({super.key, required this.debtPaymentHistory});
+  final List<DebtPaymentHistory> debtPaymentHistory;
 
   @override
   Widget build(BuildContext context) {
@@ -144,8 +144,8 @@ class DebtHistorySection extends StatelessWidget {
 }
 
 class DebtStatusCard extends StatelessWidget {
-  final Debt debt;
   const DebtStatusCard({super.key, required this.debt});
+  final Debt debt;
 
   @override
   Widget build(BuildContext context) {
@@ -291,8 +291,8 @@ class DebtCard extends StatelessWidget {
 }
 
 class DebtPaymentForm extends StatefulWidget {
-  final Debt debt;
   const DebtPaymentForm({super.key, required this.debt});
+  final Debt debt;
 
   @override
   State<DebtPaymentForm> createState() => DebtPaymentFormState();

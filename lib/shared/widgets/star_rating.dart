@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 
 class StarRating extends StatelessWidget {
-  final int rating;
-  final int maxRating;
-  final double size;
-  final ValueChanged<int> onRatingChanged;
-  final Color? filledColor;
-  final Color? unfilledColor;
 
   const StarRating({
     super.key,
@@ -18,6 +12,12 @@ class StarRating extends StatelessWidget {
     this.filledColor,
     this.unfilledColor,
   });
+  final int rating;
+  final int maxRating;
+  final double size;
+  final ValueChanged<int> onRatingChanged;
+  final Color? filledColor;
+  final Color? unfilledColor;
 
   @override
   Widget build(BuildContext context) {

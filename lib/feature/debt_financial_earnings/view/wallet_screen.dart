@@ -163,8 +163,8 @@ class _WalletScreenState extends State<WalletScreen> {
 // --- Reusable Widgets ---
 
 class _BalanceSection extends StatelessWidget {
-  final dynamic finance;
   const _BalanceSection({required this.finance});
+  final dynamic finance;
 
   @override
   Widget build(BuildContext context) {
@@ -201,8 +201,8 @@ class _MomoSection extends StatelessWidget {
 }
 
 class _ActionButtons extends StatelessWidget {
-  final VoidCallback onWithdraw;
   const _ActionButtons({required this.onWithdraw});
+  final VoidCallback onWithdraw;
 
   @override
   Widget build(BuildContext context) {
@@ -266,9 +266,6 @@ class _ActionButtons extends StatelessWidget {
 // --- Generic Form Section Widget ---
 
 class FormSection extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final List<Widget> children;
 
   const FormSection({
     super.key,
@@ -276,6 +273,9 @@ class FormSection extends StatelessWidget {
     required this.subtitle,
     required this.children,
   });
+  final String title;
+  final String subtitle;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

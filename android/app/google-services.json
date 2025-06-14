@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "649061197267",
-    "project_id": "freedomrider",
-    "storage_bucket": "freedomrider.firebasestorage.app"
+    "project_number": "868061640964",
+    "project_id": "freedom-main-app",
+    "storage_bucket": "freedom-main-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:649061197267:android:7b3f07854d794152113b26",
+        "mobilesdk_app_id": "1:868061640964:android:52626d38f408b24f2cb851",
         "android_client_info": {
           "package_name": "com.freedomghana.app.rider"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD00MPHcIJ05-EU0hMmwju6UTtLcf34SXI"
+          "current_key": "AIzaSyCgYScf1giacL_9wAzFL0ZaLClvzOi3rRo"
         }
       ],
       "services": {

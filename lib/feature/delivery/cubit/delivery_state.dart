@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:freedomdriver/feature/rides/models/request_ride.dart';
 
 abstract class DeliveryState extends Equatable {
   @override
@@ -9,17 +10,9 @@ class DeliveryInitial extends DeliveryState {}
 
 class DeliveryLoading extends DeliveryState {}
 
-class DeliveryUpdating extends DeliveryState {
-  DeliveryUpdating(this.ride);
-  final   ride;
-
-  @override
-  List<Object?> get props => [ride];
-}
-
 class DeliveryLoaded extends DeliveryState {
   DeliveryLoaded(this.ride);
-  final  ride;
+  final RideRequest ride;
 
   @override
   List<Object?> get props => [ride];

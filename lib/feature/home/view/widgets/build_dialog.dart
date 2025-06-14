@@ -47,12 +47,12 @@ class CustomRideDialog {
 }
 
 class _RideDialogWidget extends StatefulWidget {
-  final VoidCallback onDismiss;
-  final double verticalPadding;
   const _RideDialogWidget({
     required this.onDismiss,
     required this.verticalPadding,
   });
+  final VoidCallback onDismiss;
+  final double verticalPadding;
 
   @override
   State<_RideDialogWidget> createState() => _RideDialogWidgetState();

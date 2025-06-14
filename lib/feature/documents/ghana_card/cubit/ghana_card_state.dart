@@ -13,18 +13,18 @@ class GhanaCardInitial extends GhanaCardState {}
 class GhanaCardLoading extends GhanaCardState {}
 
 class GhanaCardLoaded extends GhanaCardState {
-  final GhanaCard ghanaCard;
 
   const GhanaCardLoaded(this.ghanaCard);
+  final GhanaCard ghanaCard;
 
   @override
   List<Object?> get props => [ghanaCard];
 }
 
 class GhanaCardError extends GhanaCardState {
-  final String message;
 
   const GhanaCardError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

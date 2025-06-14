@@ -1,15 +1,5 @@
 // debt_status_model.dart
 class Debt {
-  final double currentDebt;
-  final double debtThreshold;
-  final int debtPercentage;
-  final String debtStatus;
-  final bool canAcceptRides;
-  final int warningThreshold;
-  final int suspensionThreshold;
-  final double walletBalance;
-  final double availableBalance;
-  final List<DebtPaymentHistory>? debtPaymentHistory;
 
   Debt({
     required this.currentDebt,
@@ -35,6 +25,16 @@ class Debt {
     walletBalance: (json['walletBalance'] as num).toDouble(),
     availableBalance: (json['availableBalance'] as num).toDouble(),
   );
+  final double currentDebt;
+  final double debtThreshold;
+  final int debtPercentage;
+  final String debtStatus;
+  final bool canAcceptRides;
+  final int warningThreshold;
+  final int suspensionThreshold;
+  final double walletBalance;
+  final double availableBalance;
+  final List<DebtPaymentHistory>? debtPaymentHistory;
 
   Debt copyWith({
     double? currentDebt,
@@ -64,12 +64,6 @@ class Debt {
 }
 
 class DebtPaymentHistory {
-  final double amount;
-  final String method;
-  final String reference;
-  final String status;
-  final String notes;
-  final DateTime paymentDate;
 
   DebtPaymentHistory({
     required this.amount,
@@ -90,6 +84,12 @@ class DebtPaymentHistory {
       paymentDate: DateTime.parse(json['paymentDate']),
     );
   }
+  final double amount;
+  final String method;
+  final String reference;
+  final String status;
+  final String notes;
+  final DateTime paymentDate;
 
   Map<String, dynamic> toJson() {
     return {

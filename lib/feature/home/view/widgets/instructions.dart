@@ -3,9 +3,9 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 
 class InstructionList extends StatelessWidget {
-  final List<String> instructions;
 
   const InstructionList({required this.instructions, super.key});
+  final List<String> instructions;
 
   @override
   Widget build(BuildContext context) {

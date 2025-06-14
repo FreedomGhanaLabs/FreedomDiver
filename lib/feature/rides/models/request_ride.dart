@@ -6,6 +6,30 @@ T? safeParse<T>(dynamic json, T Function(Map<String, dynamic>) fromJson) {
 }
 
 class RideRequest {
+
+  factory RideRequest.fromJson(Map<String, dynamic> json) => RideRequest(
+    rideId: json['rideId'].toString(),
+    user: safeParse(json['user'], User.fromJson),
+    pickupLocation: Location.fromJson(json['pickupLocation']),
+    dropoffLocation: Location.fromJson(json['dropoffLocation']),
+    estimatedDistance: safeParse(json['estimatedDistance'], Distance.fromJson),
+    estimatedDuration: safeParse(
+      json['estimatedDuration'],
+      DurationInfo.fromJson,
+    ),
+    etaToPickup: safeParse(json['etaToPickup'], DurationInfo.fromJson),
+    etaToDropoff: safeParse(json['etaToDropoff'], DurationInfo.fromJson),
+    totalFare: (json['totalFare'] as num?)?.toInt(),
+    driverEarnings: (json['driverEarnings'] as num?)?.toInt() ?? 0,
+    status: json['status']?.toString() ?? '',
+    paymentMethod: json['paymentMethod']?.toString() ?? '',
+    paymentStatus: json['paymentStatus']?.toString() ?? '',
+    type: json['type'].toString(),
+    estimatedFare: (json['estimatedFare'] as num?)?.toDouble() ?? 0.0,
+    currency: json['currency'].toString(),
+    isMultiStop: json['isMultiStop'] as bool? ?? false,
+    rideType: json['rideType'].toString(),
+  );
   RideRequest({
     required this.rideId,
     this.user,
@@ -45,30 +69,6 @@ class RideRequest {
   final String currency;
   final bool isMultiStop;
   final String rideType;
-
-  factory RideRequest.fromJson(Map<String, dynamic> json) => RideRequest(
-    rideId: json['rideId'].toString(),
-    user: safeParse(json['user'], User.fromJson),
-    pickupLocation: Location.fromJson(json['pickupLocation']),
-    dropoffLocation: Location.fromJson(json['dropoffLocation']),
-    estimatedDistance: safeParse(json['estimatedDistance'], Distance.fromJson),
-    estimatedDuration: safeParse(
-      json['estimatedDuration'],
-      DurationInfo.fromJson,
-    ),
-    etaToPickup: safeParse(json['etaToPickup'], DurationInfo.fromJson),
-    etaToDropoff: safeParse(json['etaToDropoff'], DurationInfo.fromJson),
-    totalFare: (json['totalFare'] as num?)?.toInt(),
-    driverEarnings: (json['driverEarnings'] as num?)?.toInt() ?? 0,
-    status: json['status']?.toString() ?? '',
-    paymentMethod: json['paymentMethod']?.toString() ?? '',
-    paymentStatus: json['paymentStatus']?.toString() ?? '',
-    type: json['type'].toString(),
-    estimatedFare: (json['estimatedFare'] as num?)?.toDouble() ?? 0.0,
-    currency: json['currency'].toString(),
-    isMultiStop: json['isMultiStop'] as bool? ?? false,
-    rideType: json['rideType'].toString(),
-  );
 
   Map<String, dynamic> toJson() => {
     'rideId': rideId,
@@ -135,31 +135,22 @@ class RideRequest {
 }
 
 class User {
-  User({required this.id, required this.name, required this.phone});
-
-  final String id;
-  final String name;
-  final String phone;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json['id'].toString(),
     name: json['name'].toString(),
     phone: json['phone'].toString(),
   );
+  User({required this.id, required this.name, required this.phone});
+
+  final String id;
+  final String name;
+  final String phone;
 
   Map<String, dynamic> toJson() => {'id': id, 'name': name, 'phone': phone};
 }
 
 class Location {
-  Location({
-    required this.type,
-    required this.coordinates,
-    required this.address,
-  });
-
-  final String type;
-  final List<double> coordinates;
-  final String address;
 
   factory Location.fromJson(Map<String, dynamic> json) => Location(
     type: json['type'].toString(),
@@ -170,6 +161,15 @@ class Location {
         [],
     address: json['address'].toString(),
   );
+  Location({
+    required this.type,
+    required this.coordinates,
+    required this.address,
+  });
+
+  final String type;
+  final List<double> coordinates;
+  final String address;
 
   Map<String, dynamic> toJson() => {
     'type': type,
@@ -179,25 +179,25 @@ class Location {
 }
 
 class Distance {
+
+  factory Distance.fromJson(Map<String, dynamic> json) =>
+      Distance(value: json['value'] as int, text: json['text'].toString());
   Distance({required this.value, required this.text});
 
   final int value;
   final String text;
 
-  factory Distance.fromJson(Map<String, dynamic> json) =>
-      Distance(value: json['value'] as int, text: json['text'].toString());
-
   Map<String, dynamic> toJson() => {'value': value, 'text': text};
 }
 
 class DurationInfo {
+
+  factory DurationInfo.fromJson(Map<String, dynamic> json) =>
+      DurationInfo(value: json['value'] as int, text: json['text'].toString());
   DurationInfo({required this.value, required this.text});
 
   final int value;
   final String text;
-
-  factory DurationInfo.fromJson(Map<String, dynamic> json) =>
-      DurationInfo(value: json['value'] as int, text: json['text'].toString());
 
   Map<String, dynamic> toJson() => {'value': value, 'text': text};
 }

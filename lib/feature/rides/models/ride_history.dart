@@ -1,11 +1,4 @@
 class RideHistory {
-  final bool success;
-  final int count;
-  final int totalPages;
-  final int currentPage;
-  final double totalEarnings;
-  final double totalCommission;
-  final List<Ride> data;
 
   RideHistory({
     required this.success,
@@ -28,48 +21,16 @@ class RideHistory {
       data: List<Ride>.from(json['data'].map((x) => Ride.fromJson(x))),
     );
   }
+  final bool success;
+  final int count;
+  final int totalPages;
+  final int currentPage;
+  final double totalEarnings;
+  final double totalCommission;
+  final List<Ride> data;
 }
 
 class Ride {
-  final String id;
-  final Map<String, dynamic> estimatedDistance;
-  final Map<String, dynamic> estimatedDuration;
-  final Map<String, dynamic> weatherConditions;
-  final Map<String, dynamic> user;
-  final Location pickupLocation;
-  final Location dropoffLocation;
-  final bool isMultiStop;
-  final double baseFare;
-  final double distanceFare;
-  final double timeFare;
-  final double multiStopFare;
-  final double waitingTimeFare;
-  final int waitingTime;
-  final double surgeMultiplier;
-  final double discount;
-  final String currency;
-  final double platformCommission;
-  final double driverEarnings;
-  final String demandLevel;
-  final String status;
-  final String paymentStatus;
-  final String paymentMethod;
-  final String? cancelledBy;
-  final List<Location> stopLocations;
-  final List<Message> messages;
-  final DateTime requestedAt;
-  final double totalFare;
-  final int version;
-  final DateTime? acceptedAt;
-  final String driver;
-  final Map<String, dynamic>? etaToPickup;
-  final DateTime? arrivedAt;
-  final Map<String, dynamic>? etaToDropoff;
-  final DateTime? startedAt;
-  final DateTime? completedAt;
-  final DateTime? paymentCompletedAt;
-  final Rating? userRating;
-  final Rating? driverRating;
 
   Ride({
     required this.id,
@@ -177,13 +138,48 @@ class Ride {
               : null,
     );
   }
+  final String id;
+  final Map<String, dynamic> estimatedDistance;
+  final Map<String, dynamic> estimatedDuration;
+  final Map<String, dynamic> weatherConditions;
+  final Map<String, dynamic> user;
+  final Location pickupLocation;
+  final Location dropoffLocation;
+  final bool isMultiStop;
+  final double baseFare;
+  final double distanceFare;
+  final double timeFare;
+  final double multiStopFare;
+  final double waitingTimeFare;
+  final int waitingTime;
+  final double surgeMultiplier;
+  final double discount;
+  final String currency;
+  final double platformCommission;
+  final double driverEarnings;
+  final String demandLevel;
+  final String status;
+  final String paymentStatus;
+  final String paymentMethod;
+  final String? cancelledBy;
+  final List<Location> stopLocations;
+  final List<Message> messages;
+  final DateTime requestedAt;
+  final double totalFare;
+  final int version;
+  final DateTime? acceptedAt;
+  final String driver;
+  final Map<String, dynamic>? etaToPickup;
+  final DateTime? arrivedAt;
+  final Map<String, dynamic>? etaToDropoff;
+  final DateTime? startedAt;
+  final DateTime? completedAt;
+  final DateTime? paymentCompletedAt;
+  final Rating? userRating;
+  final Rating? driverRating;
 }
 
 class Location {
-  final String type;
-  final List<double> coordinates;
-  final String address;
-  final String? id;
 
   Location({
     required this.type,
@@ -202,14 +198,13 @@ class Location {
       id: json['_id'],
     );
   }
+  final String type;
+  final List<double> coordinates;
+  final String address;
+  final String? id;
 }
 
 class Message {
-  final String sender;
-  final String text;
-  final DateTime timestamp;
-  final bool isRead;
-  final String id;
 
   Message({
     required this.sender,
@@ -228,13 +223,14 @@ class Message {
       id: json['_id'],
     );
   }
+  final String sender;
+  final String text;
+  final DateTime timestamp;
+  final bool isRead;
+  final String id;
 }
 
 class Rating {
-  final int rating;
-  final String comment;
-  final DateTime timestamp;
-  final String id;
 
   Rating({
     required this.rating,
@@ -251,4 +247,8 @@ class Rating {
       id: json['_id'],
     );
   }
+  final int rating;
+  final String comment;
+  final DateTime timestamp;
+  final String id;
 }

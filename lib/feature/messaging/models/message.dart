@@ -1,11 +1,6 @@
 import 'dart:convert';
 
 class MessageModel {
-  final String sender;
-  final String userId;
-  final String riderId;
-  final String content;
-  final DateTime timestamp;
 
   MessageModel({
     required this.sender,
@@ -24,6 +19,11 @@ class MessageModel {
       timestamp: DateTime.parse(json['timestamp']),
     );
   }
+  final String sender;
+  final String userId;
+  final String riderId;
+  final String content;
+  final DateTime timestamp;
 
   Map<String, dynamic> toJson() => {
     'sender': sender,

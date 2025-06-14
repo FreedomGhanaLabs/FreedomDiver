@@ -125,9 +125,6 @@ class ProfileCard extends StatelessWidget {
 }
 
 class ProfileStatLink extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
-  final String? icon;
 
   const ProfileStatLink({
     super.key,
@@ -135,6 +132,9 @@ class ProfileStatLink extends StatelessWidget {
     required this.onTap,
     this.icon,
   });
+  final String text;
+  final VoidCallback onTap;
+  final String? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -289,8 +289,8 @@ class DriverContactInfo extends StatelessWidget {
 }
 
 class ProfileTitleText extends StatelessWidget {
-  final String name;
   const ProfileTitleText(this.name, {super.key});
+  final String name;
 
   @override
   Widget build(BuildContext context) {

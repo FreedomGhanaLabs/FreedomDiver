@@ -7,9 +7,9 @@ import '../models/bank.dart';
 import '../services/bank.dart';
 
 class BankDropdown extends StatefulWidget {
-  final Function(String bankCode) onBankSelected;
 
   const BankDropdown({super.key, required this.onBankSelected});
+  final Function(String bankCode) onBankSelected;
 
   @override
   BankDropdownState createState() => BankDropdownState();

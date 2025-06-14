@@ -41,17 +41,6 @@ extension DriverDocumentTypeExtension on DriverDocumentType {
 }
 
 class DriverDocument {
-  final String overallStatus;
-  final DocumentDetail? driverLicense;
-  final DocumentHistory? driverLicenseHistory;
-  final SimpleDocument? ghanaCard;
-  final DocumentHistory? ghanaCardHistory;
-  final SimpleDocument? profilePicture;
-  final DocumentHistory? profilePictureHistory;
-  final SimpleDocument? motorcycleImage;
-  final DocumentHistory? motorcycleImageHistory;
-  final AddressProof? addressProof;
-  final DocumentHistory? addressProofHistory;
 
   DriverDocument({
     required this.overallStatus,
@@ -92,6 +81,17 @@ class DriverDocument {
               : null,
     );
   }
+  final String overallStatus;
+  final DocumentDetail? driverLicense;
+  final DocumentHistory? driverLicenseHistory;
+  final SimpleDocument? ghanaCard;
+  final DocumentHistory? ghanaCardHistory;
+  final SimpleDocument? profilePicture;
+  final DocumentHistory? profilePictureHistory;
+  final SimpleDocument? motorcycleImage;
+  final DocumentHistory? motorcycleImageHistory;
+  final AddressProof? addressProof;
+  final DocumentHistory? addressProofHistory;
 
   DriverDocument copyWith({
     String? overallStatus,
@@ -134,12 +134,6 @@ class DriverDocument {
 }
 
 class DocumentDetail {
-  final String documentUrl;
-  final String licenseNumber;
-  final String verificationStatus;
-  final String? adminComments;
-  final DateTime uploadedAt;
-  final DateTime? verifiedAt;
 
   DocumentDetail({
     required this.documentUrl,
@@ -163,6 +157,12 @@ class DocumentDetail {
               : null,
     );
   }
+  final String documentUrl;
+  final String licenseNumber;
+  final String verificationStatus;
+  final String? adminComments;
+  final DateTime uploadedAt;
+  final DateTime? verifiedAt;
 
   Map<String, dynamic> toJson() => {
     'documentUrl': documentUrl,
@@ -175,9 +175,6 @@ class DocumentDetail {
 }
 
 class SimpleDocument {
-  final String verificationStatus;
-  final String? adminComments;
-  final DateTime uploadedAt;
 
   SimpleDocument({
     required this.verificationStatus,
@@ -192,6 +189,9 @@ class SimpleDocument {
       uploadedAt: DateTime.parse(json['uploadedAt']),
     );
   }
+  final String verificationStatus;
+  final String? adminComments;
+  final DateTime uploadedAt;
 
   Map<String, dynamic> toJson() => {
     'verificationStatus': verificationStatus,
@@ -201,17 +201,6 @@ class SimpleDocument {
 }
 
 class AddressProof {
-  final String documentUrl;
-  final String addressType;
-  final String street;
-  final String city;
-  final String state;
-  final String country;
-  final String postalCode;
-  final String verificationStatus;
-  final String? adminComments;
-  final DateTime uploadedAt;
-  final DateTime? verifiedAt;
 
   AddressProof({
     required this.documentUrl,
@@ -245,6 +234,17 @@ class AddressProof {
               : null,
     );
   }
+  final String documentUrl;
+  final String addressType;
+  final String street;
+  final String city;
+  final String state;
+  final String country;
+  final String postalCode;
+  final String verificationStatus;
+  final String? adminComments;
+  final DateTime uploadedAt;
+  final DateTime? verifiedAt;
 
   Map<String, dynamic> toJson() => {
     'documentUrl': documentUrl,
@@ -262,9 +262,6 @@ class AddressProof {
 }
 
 class DocumentHistory {
-  final String documentType;
-  final HDocument current;
-  final List<HDocument> history;
 
   DocumentHistory({
     required this.documentType,
@@ -282,6 +279,9 @@ class DocumentHistory {
               .toList(),
     );
   }
+  final String documentType;
+  final HDocument current;
+  final List<HDocument> history;
 
   Map<String, dynamic> toJson() {
     return {
@@ -293,11 +293,6 @@ class DocumentHistory {
 }
 
 class HDocument {
-  final String documentUrl;
-  final String verificationStatus;
-  final DateTime uploadedAt;
-  final DateTime? verifiedAt;
-  final String? adminComments;
 
   HDocument({
     required this.documentUrl,
@@ -319,6 +314,11 @@ class HDocument {
       adminComments: json['adminComments'].toString(),
     );
   }
+  final String documentUrl;
+  final String verificationStatus;
+  final DateTime uploadedAt;
+  final DateTime? verifiedAt;
+  final String? adminComments;
 
   Map<String, dynamic> toJson() {
     return {

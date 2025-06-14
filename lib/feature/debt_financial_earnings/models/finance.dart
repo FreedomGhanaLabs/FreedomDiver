@@ -1,22 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class Finance extends Equatable {
-  final double walletBalance;
-  final double availableBalance;
-  final double debt;
-  final String debtStatus;
-  final double debtPercentage;
-  final bool bankDetailsProvided;
-  final bool momoDetailsProvided;
-  final List pendingWithdrawals;
-  final double totalEarnings;
-  final int rideCount;
-  final List<Transaction> recentTransactions;
-  final List<Withdrawal> withdrawals;
-  final List<EarningRide> rides;
-  final List<EarningsReport> earningsReport;
-  final PaymentBreakdown paymentBreakdown;
-  final WithdrawalMethods withdrawalMethods;
 
   const Finance({
     required this.walletBalance,
@@ -94,6 +78,22 @@ class Finance extends Equatable {
       ),
     );
   }
+  final double walletBalance;
+  final double availableBalance;
+  final double debt;
+  final String debtStatus;
+  final double debtPercentage;
+  final bool bankDetailsProvided;
+  final bool momoDetailsProvided;
+  final List pendingWithdrawals;
+  final double totalEarnings;
+  final int rideCount;
+  final List<Transaction> recentTransactions;
+  final List<Withdrawal> withdrawals;
+  final List<EarningRide> rides;
+  final List<EarningsReport> earningsReport;
+  final PaymentBreakdown paymentBreakdown;
+  final WithdrawalMethods withdrawalMethods;
 
   Map<String, dynamic> toJson() {
     return {
@@ -176,10 +176,6 @@ class Finance extends Equatable {
 }
 
 class Transaction extends Equatable {
-  final double amount;
-  final String type;
-  final String date;
-  final String reference;
 
   const Transaction({
     required this.amount,
@@ -194,6 +190,10 @@ class Transaction extends Equatable {
     date: json['date'] ?? '',
     reference: json['reference'] ?? '',
   );
+  final double amount;
+  final String type;
+  final String date;
+  final String reference;
 
   Map<String, dynamic> toJson() => {
     'amount': amount,
@@ -207,12 +207,6 @@ class Transaction extends Equatable {
 }
 
 class Withdrawal extends Equatable {
-  final double amount;
-  final String method;
-  final String status;
-  final String reference;
-  final String createdAt;
-  final String? processedAt;
 
   const Withdrawal({
     required this.amount,
@@ -231,6 +225,12 @@ class Withdrawal extends Equatable {
     createdAt: json['createdAt'] ?? '',
     processedAt: json['processedAt'],
   );
+  final double amount;
+  final String method;
+  final String status;
+  final String reference;
+  final String createdAt;
+  final String? processedAt;
 
   Map<String, dynamic> toJson() => {
     'amount': amount,
@@ -253,12 +253,6 @@ class Withdrawal extends Equatable {
 }
 
 class EarningRide extends Equatable {
-  final String id;
-  final double fare;
-  final double driverEarnings;
-  final String completedAt;
-  final String pickupLocation;
-  final String dropoffLocation;
 
   const EarningRide({
     required this.id,
@@ -277,6 +271,12 @@ class EarningRide extends Equatable {
     pickupLocation: json['pickupLocation'] ?? '',
     dropoffLocation: json['dropoffLocation'] ?? '',
   );
+  final String id;
+  final double fare;
+  final double driverEarnings;
+  final String completedAt;
+  final String pickupLocation;
+  final String dropoffLocation;
 
   Map<String, dynamic> toJson() => {
     '_id': id,
@@ -299,9 +299,6 @@ class EarningRide extends Equatable {
 }
 
 class EarningsReport extends Equatable {
-  final String period;
-  final double totalEarnings;
-  final int rideCount;
 
   const EarningsReport({
     required this.period,
@@ -314,6 +311,9 @@ class EarningsReport extends Equatable {
     totalEarnings: json['totalEarnings']?.toDouble() ?? 0.0,
     rideCount: json['rideCount'] ?? 0,
   );
+  final String period;
+  final double totalEarnings;
+  final int rideCount;
 
   Map<String, dynamic> toJson() => {
     'period': period,
@@ -326,9 +326,6 @@ class EarningsReport extends Equatable {
 }
 
 class PaymentBreakdown extends Equatable {
-  final PaymentChannel cash;
-  final PaymentChannel card;
-  final PaymentChannel mobileMoney;
 
   const PaymentBreakdown({
     required this.cash,
@@ -342,6 +339,9 @@ class PaymentBreakdown extends Equatable {
         card: PaymentChannel.fromJson(json['card'] ?? {}),
         mobileMoney: PaymentChannel.fromJson(json['mobile_money'] ?? {}),
       );
+  final PaymentChannel cash;
+  final PaymentChannel card;
+  final PaymentChannel mobileMoney;
 
   Map<String, dynamic> toJson() => {
     'cash': cash.toJson(),
@@ -354,8 +354,6 @@ class PaymentBreakdown extends Equatable {
 }
 
 class PaymentChannel extends Equatable {
-  final double total;
-  final int count;
 
   const PaymentChannel({required this.total, required this.count});
 
@@ -363,6 +361,8 @@ class PaymentChannel extends Equatable {
     total: json['total']?.toDouble() ?? 0.0,
     count: json['count'] ?? 0,
   );
+  final double total;
+  final int count;
 
   Map<String, dynamic> toJson() => {'total': total, 'count': count};
 
@@ -371,8 +371,6 @@ class PaymentChannel extends Equatable {
 }
 
 class WithdrawalMethods extends Equatable {
-  final bool bank;
-  final bool momo;
 
   const WithdrawalMethods({required this.bank, required this.momo});
 
@@ -381,6 +379,8 @@ class WithdrawalMethods extends Equatable {
         bank: json['bank'] ?? false,
         momo: json['momo'] ?? false,
       );
+  final bool bank;
+  final bool momo;
 
   Map<String, dynamic> toJson() => {'bank': bank, 'momo': momo};
 
@@ -389,11 +389,6 @@ class WithdrawalMethods extends Equatable {
 }
 
 class PendingWithdrawal {
-  final double amount;
-  final String method;
-  final String status;
-  final String reference;
-  final DateTime createdAt;
 
   PendingWithdrawal({
     required this.amount,
@@ -412,6 +407,11 @@ class PendingWithdrawal {
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
+  final double amount;
+  final String method;
+  final String status;
+  final String reference;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() {
     return {
