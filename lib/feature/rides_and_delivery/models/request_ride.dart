@@ -7,10 +7,14 @@ T? safeParse<T>(dynamic json, T Function(Map<String, dynamic>) fromJson) {
 
 class RideRequest {
   factory RideRequest.fromJson(Map<String, dynamic> json) => RideRequest(
-    rideId: json['rideId'] ?? json['deliveryId'],
+    rideId: json['rideId'] ?? json['deliveryId'] ?? '',
     user: safeParse(json['user'], User.fromJson),
     pickupLocation: Location.fromJson(json['pickupLocation']),
     dropoffLocation: Location.fromJson(json['dropoffLocation']),
+    dropoffLocations:
+        (json['dropoffLocations'] as List?)
+            ?.map((e) => Location.fromJson(e as Map<String, dynamic>))
+            .toList(),
     estimatedDistance: safeParse(json['estimatedDistance'], Distance.fromJson),
     estimatedDuration: safeParse(
       json['estimatedDuration'],
@@ -22,23 +26,28 @@ class RideRequest {
     driverEarnings: (json['driverEarnings'] as num?)?.toInt() ?? 0,
     status: json['status']?.toString() ?? '',
     paymentMethod: json['paymentMethod']?.toString() ?? '',
-    paymentStatus: json['paymentStatus']?.toString() ?? '',
-    type: json['type'].toString(),
+    paymentStatus: json['paymentStatus']?.toString(),
+    type: json['type']?.toString() ?? '',
     estimatedFare: (json['estimatedFare'] as num?)?.toDouble() ?? 0.0,
-    currency: json['currency'].toString(),
+    currency: json['currency']?.toString() ?? '',
     isMultiStop: json['isMultiStop'] as bool? ?? false,
-    rideType: json['rideType'].toString(),
+    rideType: json['rideType']?.toString() ?? '',
+    packageSize: json['packageSize']?.toString(),
+    packageType: json['packageType']?.toString(),
+    numberOfStops: (json['numberOfStops'] as num?)?.toInt(),
   );
+
   RideRequest({
     required this.rideId,
     this.user,
     required this.pickupLocation,
     required this.dropoffLocation,
-    required this.estimatedDistance,
-    required this.estimatedDuration,
-    required this.etaToPickup,
-    required this.etaToDropoff,
-    required this.totalFare,
+    this.dropoffLocations,
+    this.estimatedDistance,
+    this.estimatedDuration,
+    this.etaToPickup,
+    this.etaToDropoff,
+    this.totalFare,
     required this.driverEarnings,
     required this.status,
     required this.paymentMethod,
@@ -48,12 +57,16 @@ class RideRequest {
     required this.currency,
     required this.isMultiStop,
     required this.rideType,
+    this.packageSize,
+    this.packageType,
+    this.numberOfStops,
   });
 
   final String rideId;
   final User? user;
   final Location pickupLocation;
   final Location dropoffLocation;
+  final List<Location>? dropoffLocations;
   final Distance? estimatedDistance;
   final DurationInfo? estimatedDuration;
   final DurationInfo? etaToPickup;
@@ -68,12 +81,16 @@ class RideRequest {
   final String currency;
   final bool isMultiStop;
   final String rideType;
+  final String? packageSize;
+  final String? packageType;
+  final int? numberOfStops;
 
   Map<String, dynamic> toJson() => {
     'rideId': rideId,
     'user': user?.toJson(),
     'pickupLocation': pickupLocation.toJson(),
     'dropoffLocation': dropoffLocation.toJson(),
+    'dropoffLocations': dropoffLocations?.map((e) => e.toJson()).toList(),
     'estimatedDistance': estimatedDistance?.toJson(),
     'estimatedDuration': estimatedDuration?.toJson(),
     'etaToPickup': etaToPickup?.toJson(),
@@ -88,6 +105,9 @@ class RideRequest {
     'currency': currency,
     'isMultiStop': isMultiStop,
     'rideType': rideType,
+    'packageSize': packageSize,
+    'packageType': packageType,
+    'numberOfStops': numberOfStops,
   };
 
   RideRequest copyWith({
@@ -95,6 +115,7 @@ class RideRequest {
     User? user,
     Location? pickupLocation,
     Location? dropoffLocation,
+    List<Location>? dropoffLocations,
     Distance? estimatedDistance,
     DurationInfo? estimatedDuration,
     DurationInfo? etaToPickup,
@@ -109,12 +130,16 @@ class RideRequest {
     String? currency,
     bool? isMultiStop,
     String? rideType,
+    String? packageSize,
+    String? packageType,
+    int? numberOfStops,
   }) {
     return RideRequest(
       rideId: rideId ?? this.rideId,
       user: user ?? this.user,
       pickupLocation: pickupLocation ?? this.pickupLocation,
       dropoffLocation: dropoffLocation ?? this.dropoffLocation,
+      dropoffLocations: dropoffLocations ?? this.dropoffLocations,
       estimatedDistance: estimatedDistance ?? this.estimatedDistance,
       estimatedDuration: estimatedDuration ?? this.estimatedDuration,
       etaToPickup: etaToPickup ?? this.etaToPickup,
@@ -129,6 +154,9 @@ class RideRequest {
       currency: currency ?? this.currency,
       isMultiStop: isMultiStop ?? this.isMultiStop,
       rideType: rideType ?? this.rideType,
+      packageSize: packageSize ?? this.packageSize,
+      packageType: packageType ?? this.packageType,
+      numberOfStops: numberOfStops ?? this.numberOfStops,
     );
   }
 }

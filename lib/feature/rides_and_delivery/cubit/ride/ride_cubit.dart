@@ -46,7 +46,7 @@ class RideCubit extends Cubit<RideState> {
   }) async {
     _cachedRideRequest = updated;
     _cachedRideId = updated.rideId;
-    _cachedRideType = updated.rideType;
+    _cachedRideType = updated.type;
     emit(RideLoaded(_cachedRideRequest!));
     if (shouldPersist) {
       await addRideRequestToHive(_cachedRideRequest!);
