@@ -11,9 +11,11 @@
         "Gofreedom",
         "Inapp",
         "inappcall",
+        "mocktail",
         "Momo",
         "motorcycleimage",
         "println",
-        "profilepicture"
+        "profilepicture",
+        "screenutil"
     ]
 }
