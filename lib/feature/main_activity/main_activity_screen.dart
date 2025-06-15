@@ -38,7 +38,6 @@ class _MainActivityScreenState extends State<_MainActivityScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     loadDashboard(context);
-    initSockets(context);
   }
 
   @override

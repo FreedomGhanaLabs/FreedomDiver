@@ -15,7 +15,7 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
     emit(state.copyWith(rideStatus: TransitStatus.searching));
-    Timer(const Duration(seconds: 1), () {
+    Timer(const Duration(milliseconds: 300), () {
       emit(state.copyWith(rideStatus: TransitStatus.found));
     });
   }

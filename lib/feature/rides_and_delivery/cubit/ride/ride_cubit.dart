@@ -303,10 +303,9 @@ class RideCubit extends Cubit<RideState> {
   }
 
   Future<void> completeRide(BuildContext context) async {
-    final rideId = _cachedRideRequest?.rideId;
     await _rideActionWithLocation(
       context,
-      '$rideId/complete',
+      '$_cachedRideId/complete',
       successLog: '[RideCubit] ride completed',
       onSuccess: (data) async {
         final newData = data['data'];

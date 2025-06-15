@@ -62,40 +62,64 @@ class CustomScreen extends StatelessWidget {
               if (showDivider) const CustomDivider(height: 6),
               differentUi ??
                   Expanded(
-                    child: RefreshIndicator.adaptive(
+                    child:
+                        onRefresh != null
+                            ? RefreshIndicator.adaptive(
                       onRefresh: onRefresh ?? () async {},
                       color: thickFillColor,
                       backgroundColor: Colors.white,
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal:
-                              Responsive.isBigMobile(context)
-                                  ? whiteSpace
-                                  : smallWhiteSpace,
-                        ),
-                        // mainAxisSize: MainAxisSize.min,
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (bodyHeader != null) ...[
-                            const VSpace(smallWhiteSpace),
-                            Text(bodyHeader ?? '', style: normalTextStyle),
-                          ],
-                          if (bodyDescription != null)
-                            Text(
-                              bodyDescription ?? '',
-                              style: descriptionTextStyle,
+                              child: CustomScreenListView(
+                                bodyHeader: bodyHeader,
+                                bodyDescription: bodyDescription,
+                                children: children,
+                              ),
+                            )
+                            : CustomScreenListView(
+                              bodyHeader: bodyHeader,
+                              bodyDescription: bodyDescription,
+                              children: children,
                             ),
-                          const VSpace(smallWhiteSpace),
-                          ...children,
-                          const VSpace(whiteSpace),
-                        ],
-                      ),
-                    ),
                   ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomScreenListView extends StatelessWidget {
+  const CustomScreenListView({
+    super.key,
+    required this.bodyHeader,
+    required this.bodyDescription,
+    required this.children,
+  });
+
+  final String? bodyHeader;
+  final String? bodyDescription;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.symmetric(
+        horizontal:
+            Responsive.isBigMobile(context) ? whiteSpace : smallWhiteSpace,
+      ),
+      // mainAxisSize: MainAxisSize.min,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (bodyHeader != null) ...[
+          const VSpace(smallWhiteSpace),
+          Text(bodyHeader ?? '', style: normalTextStyle),
+        ],
+        if (bodyDescription != null)
+          Text(bodyDescription ?? '', style: descriptionTextStyle),
+        const VSpace(smallWhiteSpace),
+        ...children,
+        const VSpace(whiteSpace),
+      ],
     );
   }
 }

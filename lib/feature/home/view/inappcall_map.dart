@@ -10,6 +10,9 @@ import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/driver/extension.dart';
 import 'package:freedomdriver/feature/home/view/inapp_ride_messaging.dart';
 import 'package:freedomdriver/feature/home/view/utilities/calculate_bearing.dart';
+import 'package:freedomdriver/feature/home/view/utilities/create_custom_marker.dart';
+import 'package:freedomdriver/feature/home/view/utilities/google_map_apis.dart';
+import 'package:freedomdriver/feature/home/view/utilities/launch_map_navigation.dart';
 import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
@@ -18,20 +21,16 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/custom_divider.dart';
+import 'package:freedomdriver/shared/widgets/custom_draggable_sheet.dart';
 import 'package:freedomdriver/shared/widgets/decorated_back_button.dart';
+import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
 import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/show_custom_modal.dart';
+import 'package:freedomdriver/utilities/tts.dart';
 import 'package:freedomdriver/utilities/ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:freedomdriver/shared/widgets/custom_draggable_sheet.dart';
-import 'package:freedomdriver/utilities/copy_to_clipboard.dart';
-import 'package:freedomdriver/utilities/tts.dart';
-import 'package:freedomdriver/feature/home/view/utilities/create_custom_marker.dart';
-import 'package:freedomdriver/feature/home/view/utilities/google_map_apis.dart';
-import 'package:freedomdriver/feature/home/view/utilities/launch_map_navigation.dart';
 
 class InAppCallMap extends StatefulWidget {
   const InAppCallMap({super.key});
@@ -283,7 +282,7 @@ class _InAppCallMapState extends State<InAppCallMap> {
                     backgroundColor: WidgetStatePropertyAll(Colors.white),
                   ),
                   tooltip: 'Navigation Instructions',
-                  icon: const Icon(Icons.precision_manufacturing_outlined),
+                  icon: const Icon(Icons.book),
                   onPressed: () async {
                     final instructions = await getNavigationSteps(
                       destination: _destinationLocation!,
@@ -338,7 +337,10 @@ class _InAppCallMapState extends State<InAppCallMap> {
                               ),
                             ],
                           ),
-                          OutlinedContainer(rideType: ride?.rideType ?? ''),
+                          OutlinedContainer(
+                            rideType:
+                                ride?.type == 'delivery' ? 'Dispatch' : 'Rider',
+                          ),
                         ],
                       ),
                     ),

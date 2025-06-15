@@ -10,8 +10,10 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
+import 'package:get/get.dart';
 
 class CustomRideDialog {
+
   factory CustomRideDialog() => _instance;
   CustomRideDialog._internal();
   static final CustomRideDialog _instance = CustomRideDialog._internal();
@@ -64,12 +66,20 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
     text: 'Too far from my current location',
   );
 
-  late final AnimationController _controller;
-  late final Animation<double> _scaleAnimation;
-  late final Animation<double> _fadeAnimation;
-  bool isDeclining = false;
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 400),
+  );
+  late final Animation<double> _scaleAnimation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticOut,
+  );
+  late final Animation<double> _fadeAnimation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeInOut,
+  );
 
-  // For slide and pinch gesture
+  bool isDeclining = false;
   double _offsetX = 0.0;
   double _scale = 1.0;
   bool _isDismissing = false;
@@ -80,18 +90,6 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _scaleAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    );
-    _fadeAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
     _controller.forward();
   }
 
@@ -102,34 +100,26 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
   }
 
   void _handleHorizontalDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      _offsetX += details.delta.dx;
-    });
+    setState(() => _offsetX += details.delta.dx);
   }
 
   void _handleHorizontalDragEnd(DragEndDetails details) {
     if (_offsetX.abs() > _slideDismissThreshold) {
       _dismissDialog();
     } else {
-      setState(() {
-        _offsetX = 0.0;
-      });
+      setState(() => _offsetX = 0.0);
     }
   }
 
   void _handleScaleUpdate(ScaleUpdateDetails details) {
-    setState(() {
-      _scale = details.scale;
-    });
+    setState(() => _scale = details.scale);
   }
 
   void _handleScaleEnd(ScaleEndDetails details) {
     if (_scale < _pinchDismissThreshold) {
       _dismissDialog();
     } else {
-      setState(() {
-        _scale = 1.0;
-      });
+      setState(() => _scale = 1.0);
     }
   }
 
@@ -137,6 +127,111 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
     if (_isDismissing) return;
     _isDismissing = true;
     widget.onDismiss();
+  }
+
+  Widget _buildDialogContent(BuildContext context, RideState state) {
+    final ride = state is RideLoaded ? state.ride : null;
+
+    if (ride == null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildDialogHeader(context, ride),
+          const VSpace(extraSmallWhiteSpace),
+          Text(
+            'No ride/delivery request yet...',
+            style: paragraphTextStyle.copyWith(color: Colors.grey.shade500),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildDialogHeader(context, ride),
+        const VSpace(smallWhiteSpace),
+        buildCustomerDetail(context, ride),
+        if (isDeclining)
+          buildField('Say reasons for declining', reasonController),
+        Row(
+          children: [
+            Expanded(
+              child: SimpleButton(
+                title: 'Decline',
+                onPressed: () => _onDeclinePressed(context),
+              ),
+            ),
+            const HSpace(extraSmallWhiteSpace),
+            Expanded(
+              child: SimpleButton(
+                title: 'Accept',
+                onPressed: () => context.read<RideCubit>().acceptRide(context),
+                backgroundColor: thickFillColor,
+              ),
+            ),
+          ],
+        ),
+        SimpleButton(
+          title: 'Clear ${ride.type.capitalize} Request',
+          onPressed: () => context.read<RideCubit>().resetRideRequest(),
+          backgroundColor: gradient2,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDialogHeader(BuildContext context, dynamic ride) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          ride == null ? 'Ride Request' : 'New ${ride.type} request!',
+          style: const TextStyle(
+            fontSize: paragraphText,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+    
+        Row(
+          children: [
+            if (ride != null)
+              OutlinedContainer(
+                rideType: ride?.type == 'delivery' ? 'Dispatch' : 'Rider',
+              ),
+            const HSpace(extraSmallWhiteSpace),
+            IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => context.dismissRideDialog(),
+              icon: const Icon(Icons.cancel),
+              tooltip: 'Close dialog',
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _onDeclinePressed(BuildContext context) {
+    if (isDeclining) {
+      context.read<RideCubit>().rejectRide(
+        context,
+        reason: reasonController.text.trim(),
+      );
+      setState(() => isDeclining = false);
+    } else {
+      setState(() => isDeclining = true);
+    }
+  }
+
+  double _dialogWidth(BuildContext context) {
+    if (Responsive.isTablet(context)) {
+      return tabletWidth - whiteSpace;
+    } else if (Responsive.isBigMobile(context)) {
+      return Responsive.width(context) * 0.85;
+    } else {
+      return Responsive.width(context) * 0.9;
+    }
   }
 
   @override
@@ -162,115 +257,14 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                       child: Transform.scale(
                         scale: _scale,
                         child: Container(
-                          width:
-                              Responsive.isTablet(context)
-                                  ? tabletWidth - whiteSpace
-                                  : Responsive.isBigMobile(context)
-                                  ? Responsive.width(context) * 0.85
-                                  : Responsive.width(context) * 0.9,
+                          width: _dialogWidth(context),
                           padding: const EdgeInsets.all(smallWhiteSpace),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(medWhiteSpace),
                           ),
                           child: BlocBuilder<RideCubit, RideState>(
-                            builder: (context, state) {
-                              final ride =
-                                  state is RideLoaded ? state.ride : null;
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        ride == null
-                                            ? 'Ride Request'
-                                            : 'New ${ride.type == "delivery" ? "Delivery" : "Ride"} Request!',
-                                        style: const TextStyle(
-                                          fontSize: paragraphText,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          OutlinedContainer(
-                                            rideType:
-                                                ride?.type == 'delivery'
-                                                    ? 'Dispatch'
-                                                    : 'Rider',
-                                          ),
-                                          // const RideTypeChip(),
-                                          const HSpace(extraSmallWhiteSpace),
-                                          IconButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed:
-                                                () =>
-                                                    context.dismissRideDialog(),
-                                            icon: const Icon(Icons.cancel),
-                                            tooltip: 'Close dialog',
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const VSpace(smallWhiteSpace),
-                                  if (ride != null) ...[
-                                    buildCustomerDetail(context, ride),
-                                    if (isDeclining)
-                                      buildField(
-                                        'Say reasons for declining',
-                                        reasonController,
-                                      ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: SimpleButton(
-                                            title: 'Decline',
-                                            onPressed: () {
-                                              if (isDeclining) {
-                                                context
-                                                    .read<RideCubit>()
-                                                    .rejectRide(
-                                                      context,
-                                                      reason:
-                                                          reasonController.text
-                                                              .trim(),
-                                                    );
-                                                setState(() {
-                                                  isDeclining = false;
-                                                });
-                                                return;
-                                              }
-                                              setState(() {
-                                                isDeclining = true;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        const HSpace(extraSmallWhiteSpace),
-                                        Expanded(
-                                          child: SimpleButton(
-                                            title: 'Accept',
-                                            onPressed: () {
-                                              context
-                                                  .read<RideCubit>()
-                                                  .acceptRide(context);
-                                            },
-                                            backgroundColor: thickFillColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ] else
-                                    Text(
-                                      'No ride request yet...',
-                                      style: paragraphTextStyle,
-                                    ),
-                                ],
-                              );
-                            },
+                            builder: _buildDialogContent,
                           ),
                         ),
                       ),
@@ -287,11 +281,6 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
 }
 
 extension RideDialogExtension on BuildContext {
-  void showRideDialog() {
-    CustomRideDialog.show(context: this);
-  }
-
-  void dismissRideDialog() {
-    CustomRideDialog.dismiss();
-  }
+  void showRideDialog() => CustomRideDialog.show(context: this);
+  void dismissRideDialog() => CustomRideDialog.dismiss();
 }

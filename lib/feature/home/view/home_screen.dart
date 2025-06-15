@@ -30,6 +30,7 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/star_rating.dart';
+import 'package:freedomdriver/utilities/format_number_with_prefix.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
@@ -57,6 +58,12 @@ class _HomeScreenState extends State<_HomeScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    loadDashboard(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -71,6 +78,7 @@ class _HomeScreenState extends State<_HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: smallWhiteSpace),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   VSpace(Responsive.top(context) + extraSmallWhiteSpace),
                   const HomeHeader(),
@@ -98,9 +106,6 @@ class HomeContent extends StatelessWidget {
         final rideHistory = state is RideHistoryLoaded ? state.ride : null;
         final firstRide = rideHistory?.data[0];
 
-        if (firstRide == null) {
-          return const SizedBox();
-        }
         return Expanded(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -113,15 +118,22 @@ class HomeContent extends StatelessWidget {
                 children: [
                   const HomeActivity(),
                   const VSpace(smallWhiteSpace),
-                  RiderTimeLine(
-                    // activityType: ActivityType.delivery,
-                    currency: firstRide.currency,
-                    fare: firstRide.totalFare,
-                    status: firstRide.status,
-                    riderId: firstRide.id,
-                    destinationDetails: firstRide.dropoffLocation.address,
-                    pickUpDetails: firstRide.pickupLocation.address,
-                  ),
+                  if (state is RideHistoryLoading) showProgressIndicator(),
+                  if (state is RideHistoryError)
+                    Text(
+                      'Failed to load activity',
+                      style: descriptionTextStyle,
+                    ),
+                  if (firstRide != null)
+                    RiderTimeLine(
+                      // activityType: ActivityType.delivery,
+                      currency: firstRide.currency,
+                      fare: firstRide.totalFare,
+                      status: firstRide.status,
+                      riderId: firstRide.id,
+                      destinationDetails: firstRide.dropoffLocation.address,
+                      pickUpDetails: firstRide.pickupLocation.address,
+                    ),
                 ],
               ),
               const VSpace(whiteSpace),
@@ -190,19 +202,173 @@ class _HomeRideState extends State<HomeRide> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) {
-        final isRideActive = state.rideStatus == TransitStatus.accepted;
-        final isRideCompleted = state.rideStatus == TransitStatus.completed;
+      builder: (context, homeState) {
         return BlocBuilder<RideCubit, RideState>(
           builder: (context, rideState) {
             final rideDetails = rideState is RideLoaded ? rideState.ride : null;
-            final isRideAcceptedStatus = rideDetails?.status == acceptedRide;
-            final isRideArrivedStatus = rideDetails?.status == arrivedRide;
-            final isRideStartedStatus = rideDetails?.status == inProgressRide;
-            final isRideCompletedStatus = rideDetails?.status == completedRide;
-            final checkIfCashRide =
+            final rideStatus = homeState.rideStatus;
+            final isRideActive = rideStatus == TransitStatus.accepted;
+            final isRideCompleted = rideStatus == TransitStatus.completed;
+            final rideType = rideDetails?.type ?? '';
+            final isMultiStop = rideDetails?.isMultiStop ?? false;
+            final isAccepted = rideDetails?.status == acceptedRide;
+            final isArrived = rideDetails?.status == arrivedRide;
+            final isStarted = rideDetails?.status == inProgressRide;
+            final isCompleted = rideDetails?.status == completedRide;
+            final isCashPending =
                 rideDetails?.paymentMethod == 'cash' &&
                 rideDetails?.paymentStatus == 'pending';
+
+            Widget buildActionButton() {
+              String title;
+              VoidCallback? onPressed;
+              Color backgroundColor = thickFillColor;
+
+              if (isAccepted) {
+                title = 'Arrived At Pickup';
+                onPressed =
+                    () => context.read<RideCubit>().arrivedRide(context);
+              } else if (isArrived) {
+                title = 'Start ${rideType.capitalize}';
+                onPressed = () => context.read<RideCubit>().startRide(context);
+                backgroundColor = Colors.black;
+              } else if (isStarted) {
+                if (isMultiStop) {
+                  title =
+                      'Complete ${getOrdinal(rideDetails?.numberOfStops ?? 0)}/4 Stop';
+                  onPressed =
+                      () => context.read<RideCubit>().completeMultiStopRide(
+                        context,
+                      );
+                } else {
+                  title = 'Complete ${rideType.capitalize}';
+                  onPressed =
+                      () => context.read<RideCubit>().completeRide(context);
+                }
+                backgroundColor = Colors.black;
+              } else if (isCashPending) {
+                title = 'Confirm Cash Payment';
+                onPressed =
+                    () => context.read<RideCubit>().confirmCashPayment(context);
+                backgroundColor = greenColor;
+              } else if (isCompleted && !isCashPending) {
+                title = 'Rate ${rideType == "delivery" ? "Delivery" : "User"}';
+                onPressed =
+                    () => context.read<RideCubit>().rateRideUser(
+                      context,
+                      rating: userRating,
+                      comment: commentController.text,
+                    );
+                backgroundColor = thickFillColor;
+              } else {
+                title = '';
+                onPressed = null;
+              }
+
+              if (title.isEmpty) return const SizedBox.shrink();
+
+              return SimpleButton(
+                title: title,
+                onPressed: onPressed,
+                backgroundColor: backgroundColor,
+              );
+            }
+
+            Widget buildCancelOrFindButton() {
+              final isActive = rideDetails != null && isRideActive;
+              final title =
+                  isActive
+                      ? 'Cancel ${rideDetails.type.capitalize}'
+                      : 'Find Nearby Rides';
+              final backgroundColor = isActive ? redColor : thickFillColor;
+
+              return Expanded(
+                child: SimpleButton(
+                  title: title,
+                  onPressed: () {
+                    if (isActive) {
+                      showCustomModal(
+                        context,
+                        btnCancelText: 'Back',
+                        btnOkText: 'Cancel ${rideDetails.type.capitalize}',
+                        btnCancelOnPress: () {},
+                        btnOkOnPress:
+                            () => context.read<RideCubit>().cancelRide(
+                              context,
+                              reason: reasonController.text.trim(),
+                            ),
+                        child: buildField(
+                          'Say reasons for canceling ${rideDetails.type}',
+                          reasonController,
+                        ),
+                      ).show();
+                    } else {
+                      context.read<HomeCubit>().toggleNearByRides();
+                    }
+                  },
+                  backgroundColor: backgroundColor,
+                ),
+              );
+            }
+
+            List<Widget> buildNavigateButton() {
+              if (rideDetails != null &&
+                  rideStatus == TransitStatus.accepted &&
+                  !isArrived) {
+                return [
+                  const HSpace(extraSmallWhiteSpace),
+                  Expanded(
+                    child: SimpleButton(
+                      title: 'Navigate',
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(InAppCallMap.routeName);
+                      },
+                      backgroundColor: greyColor,
+                      textStyle: paragraphTextStyle.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ];
+              }
+              return const [SizedBox.shrink()];
+            }
+
+            Widget buildRatingSection() {
+              if (rideDetails != null && isCompleted && !isCashPending) {
+                return Column(
+                  children: [
+                    Text(
+                      'How will you rate this $rideType? Tap to rate User',
+                      style: const TextStyle(fontSize: normalText),
+                    ),
+                    const VSpace(extraSmallWhiteSpace),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        StarRating(
+                          rating: userRating,
+                          onRatingChanged: (rating) {
+                            setState(() {
+                              userRating = rating;
+                              showCommentField = true;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const VSpace(extraSmallWhiteSpace),
+                    if (showCommentField)
+                      buildField(
+                        'Say something about the user',
+                        commentController,
+                      ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            }
+
             return Container(
               padding: const EdgeInsets.all(medWhiteSpace),
               decoration: ShapeDecoration(
@@ -230,7 +396,7 @@ class _HomeRideState extends State<HomeRide> {
                   const VSpace(extraSmallWhiteSpace),
                   const GoogleMapView(),
                   const VSpace(smallWhiteSpace),
-                  if (state.rideStatus == TransitStatus.searching)
+                  if (rideStatus == TransitStatus.searching)
                     Text(
                       'Searching for ride requests near you…',
                       textAlign: TextAlign.center,
@@ -240,146 +406,20 @@ class _HomeRideState extends State<HomeRide> {
                         fontWeight: FontWeight.w500,
                       ),
                     )
-                  else if (state.rideStatus == TransitStatus.accepted &&
-                      !isRideCompletedStatus &&
-                      !isRideArrivedStatus)
+                  else if (rideDetails != null &&
+                      rideStatus == TransitStatus.accepted &&
+                      !isCompleted &&
+                      !isArrived)
                     const EstimatedReachTime(),
                   const VSpace(smallWhiteSpace),
-                  if (isRideCompletedStatus && !checkIfCashRide)
-                    Column(
-                      children: [
-                        Text(
-                          'How will you rate this ${rideDetails?.type ?? "ride"}? Tap to rate User',
-                          style: const TextStyle(fontSize: normalText),
-                        ),
-                        const VSpace(extraSmallWhiteSpace),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            StarRating(
-                              rating: userRating,
-                              onRatingChanged: (rating) {
-                                setState(() {
-                                  userRating = rating;
-                                  if (!showCommentField) {
-                                    showCommentField = true;
-                                  }
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        const VSpace(extraSmallWhiteSpace),
-                        if (showCommentField)
-                          buildField(
-                            'Say something about the user',
-                            commentController,
-                          ),
-                      ],
-                    ),
-                  if (isRideActive || isRideCompleted)
+                  buildRatingSection(),
+                  if (rideDetails != null && (isRideActive || isRideCompleted))
+                    Row(children: [Expanded(child: buildActionButton())]),
+                  if (!isCompleted)
                     Row(
                       children: [
-                        Expanded(
-                          child: SimpleButton(
-                            title:
-                                isRideAcceptedStatus
-                                    ? 'Arrived At Pickup'
-                                    : isRideArrivedStatus
-                                    ? 'Start ${rideDetails?.type.capitalize}'
-                                    : isRideStartedStatus
-                                    ? 'Complete ${rideDetails?.type.capitalize}'
-                                    : checkIfCashRide
-                                    ? 'Confirm Cash Payment'
-                                    : 'Rate ${rideDetails?.type == "delivery" ? "Delivery" : "User"}',
-                            onPressed: () {
-                              if (isRideAcceptedStatus) {
-                                context.read<RideCubit>().arrivedRide(context);
-                              } else if (isRideArrivedStatus) {
-                                context.read<RideCubit>().startRide(context);
-                              } else if (isRideStartedStatus) {
-                                context.read<RideCubit>().completeRide(context);
-                              } else if (checkIfCashRide) {
-                                context.read<RideCubit>().confirmCashPayment(
-                                  context,
-                                );
-                              } else {
-                                context.read<RideCubit>().rateRideUser(
-                                  context,
-                                  rating: userRating,
-                                  comment: commentController.text,
-                                );
-                              }
-                            },
-                            backgroundColor:
-                                isRideAcceptedStatus || isRideCompletedStatus
-                                    ? thickFillColor
-                                    : isRideStartedStatus
-                                    ? Colors.black
-                                    : greenColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (!isRideCompletedStatus)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SimpleButton(
-                            title:
-                                isRideActive
-                                    ? 'Cancel ${rideDetails?.type.capitalize}'
-                                    : 'Find Nearby Rides',
-                            onPressed: () {
-                              if (isRideActive) {
-                                showCustomModal(
-                                  context,
-                                  btnCancelText: 'Back',
-                                  btnOkText:
-                                      'Cancel ${rideDetails?.type.capitalize}',
-                                  btnCancelOnPress: () {},
-                                  btnOkOnPress:
-                                      () =>
-                                          context.read<RideCubit>().cancelRide(
-                                            context,
-                                            reason:
-                                                reasonController.text.trim(),
-                                          ),
-                                  child: buildField(
-                                    'Say reasons for canceling ${rideDetails?.type}',
-                                    reasonController,
-                                  ),
-                                ).show();
-                              } else {
-                                context.read<HomeCubit>().toggleNearByRides();
-                              }
-                            },
-                            backgroundColor:
-                                isRideActive ? redColor : thickFillColor,
-                          ),
-                        ),
-                        const HSpace(extraSmallWhiteSpace),
-                        if (!isRideArrivedStatus)
-                          Expanded(
-                            child: SimpleButton(
-                              title:
-                                  state.rideStatus == TransitStatus.accepted
-                                      ? 'Navigate'
-                                      : 'Search Another Area',
-                              onPressed: () {
-                                if (state.rideStatus ==
-                                    TransitStatus.accepted) {
-                                  Navigator.of(
-                                    context,
-                                  ).pushNamed(InAppCallMap.routeName);
-                                }
-                              },
-                              backgroundColor: greyColor,
-                              textStyle: paragraphTextStyle.copyWith(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
+                        buildCancelOrFindButton(),
+                        ...buildNavigateButton(),
                       ],
                     ),
                 ],
