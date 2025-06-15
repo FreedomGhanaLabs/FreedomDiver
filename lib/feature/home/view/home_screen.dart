@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:freedomdriver/core/constants/ride.dart';
-import 'package:freedomdriver/core/di/locator.dart';
 import 'package:freedomdriver/feature/debt_financial_earnings/widgets/earnings_background_widget.dart';
 import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
 import 'package:freedomdriver/feature/driver/cubit/driver_cubit.dart';
@@ -31,7 +30,6 @@ import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/shared/widgets/app_icon.dart';
 import 'package:freedomdriver/shared/widgets/star_rating.dart';
-import 'package:freedomdriver/utilities/driver_location_service.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/show_custom_modal.dart';
 import 'package:freedomdriver/utilities/ui.dart';
@@ -56,12 +54,6 @@ class _HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<_HomeScreen> {
   void navigateToInAppCallAndMap() {
     Navigator.of(context).pushNamed(InAppCallMap.routeName);
-  }
-
-  @override
-  void initState() {
-    getIt<DriverLocationService>().sendCurrentLocationOnce(context);
-    super.initState();
   }
 
   @override

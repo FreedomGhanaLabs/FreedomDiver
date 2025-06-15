@@ -33,6 +33,14 @@ class _MainActivityScreen extends StatefulWidget {
 }
 
 class _MainActivityScreenState extends State<_MainActivityScreen> {
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadDashboard(context);
+    initSockets(context);
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

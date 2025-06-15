@@ -13,6 +13,7 @@ class DriverLocationService {
 
   static const LocationSettings _locationSettings = LocationSettings(
     accuracy: LocationAccuracy.bestForNavigation,
+    distanceFilter: 10,
   );
 
   // Handles permission check and shows appropriate toasts
@@ -43,7 +44,8 @@ class DriverLocationService {
     return true;
   }
 
-  Future<Position> getCurrentLocation(BuildContext context) async {
+  Future<Position?> getCurrentLocation(BuildContext context) async {
+    if (!context.mounted) return null;
     final hasPermission = await _handlePermission(context);
     if (!hasPermission) {
       return Future.error('Location permission not granted.');
@@ -55,6 +57,7 @@ class DriverLocationService {
   }
 
   Future<void> sendCurrentLocationOnce(BuildContext context) async {
+    if (!context.mounted) return;
     try {
       final position = await getCurrentLocation(context);
       await sendToBackend(context, position);
@@ -64,6 +67,7 @@ class DriverLocationService {
   }
 
   Future<void> startLiveLocationUpdates(BuildContext context) async {
+    if (!context.mounted) return;
     if (!await _handlePermission(context)) return;
 
     _positionStream?.cancel(); // Prevent multiple listeners
@@ -80,7 +84,11 @@ class DriverLocationService {
     _positionStream = null;
   }
 
-  Future<void> sendToBackend(BuildContext context, Position position) async {
+  Future<void> sendToBackend(BuildContext context, Position? position) async {
+    debugPrint(
+      'Couldn\'t send location: ${position?.latitude}, ${position?.longitude}',
+    );
+    if (position == null) return;
     debugPrint('Sending location: ${position.latitude}, ${position.longitude}');
     try {
       await context.read<DriverCubit>().updateDriverLocation(context, [

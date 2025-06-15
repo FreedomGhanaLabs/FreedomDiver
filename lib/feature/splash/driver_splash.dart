@@ -35,8 +35,6 @@ class _DriverSplashScreenState extends State<DriverSplashScreen> {
   }
 
   Future<void> _navigateUser() async {
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-
     final [isFirstTimer, token] = await Future.wait([
       getOnboardingFromHive(),
       getTokenFromHive(),

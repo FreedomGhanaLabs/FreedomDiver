@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
+import 'package:freedomdriver/feature/home/view/inappcall_map.dart';
+import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
+import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
 import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_cubit.dart';
 import 'package:freedomdriver/feature/rides_and_delivery/cubit/ride/ride_state.dart';
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/app_colors.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
 import 'package:freedomdriver/utilities/ui.dart';
-
-import 'package:freedomdriver/feature/documents/driver_license/view/license_form.dart';
-import 'package:freedomdriver/feature/kyc/view/background_verification_screen.dart';
-import 'package:freedomdriver/feature/home/view/widgets/home_widgets.dart';
 
 class CustomRideDialog {
   factory CustomRideDialog() => _instance;
@@ -69,6 +69,14 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
   late final Animation<double> _fadeAnimation;
   bool isDeclining = false;
 
+  // For slide and pinch gesture
+  double _offsetX = 0.0;
+  double _scale = 1.0;
+  bool _isDismissing = false;
+
+  static const double _slideDismissThreshold = 120.0;
+  static const double _pinchDismissThreshold = 0.7;
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +101,44 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
     super.dispose();
   }
 
+  void _handleHorizontalDragUpdate(DragUpdateDetails details) {
+    setState(() {
+      _offsetX += details.delta.dx;
+    });
+  }
+
+  void _handleHorizontalDragEnd(DragEndDetails details) {
+    if (_offsetX.abs() > _slideDismissThreshold) {
+      _dismissDialog();
+    } else {
+      setState(() {
+        _offsetX = 0.0;
+      });
+    }
+  }
+
+  void _handleScaleUpdate(ScaleUpdateDetails details) {
+    setState(() {
+      _scale = details.scale;
+    });
+  }
+
+  void _handleScaleEnd(ScaleEndDetails details) {
+    if (_scale < _pinchDismissThreshold) {
+      _dismissDialog();
+    } else {
+      setState(() {
+        _scale = 1.0;
+      });
+    }
+  }
+
+  void _dismissDialog() {
+    if (_isDismissing) return;
+    _isDismissing = true;
+    widget.onDismiss();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -106,142 +152,133 @@ class _RideDialogWidgetState extends State<_RideDialogWidget>
                 opacity: _fadeAnimation,
                 child: ScaleTransition(
                   scale: _scaleAnimation,
-                  child: Container(
-                    width:
-                        Responsive.isTablet(context)
-                            ? tabletWidth - whiteSpace
-                            : Responsive.isBigMobile(context)
-                            ? Responsive.width(context) * 0.85
-                            : Responsive.width(context) * 0.9,
-                    padding: const EdgeInsets.all(smallWhiteSpace),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(medWhiteSpace),
-                    ),
-                    child: BlocBuilder<RideCubit, RideState>(
-                      builder: (context, state) {
-                        final ride = state is RideLoaded ? state.ride : null;
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  ride == null
-                                      ? 'Ride Request'
-                                      : 'New Ride Request!',
-                                  style: const TextStyle(
-                                    fontSize: normalText,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    const RideTypeChip(),
-                                    const HSpace(extraSmallWhiteSpace),
-                                    IconButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed:
-                                          () => context.dismissRideDialog(),
-                                      icon: const Icon(Icons.cancel),
-                                      tooltip: 'Close dialog',
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const VSpace(smallWhiteSpace),
-                            
-                            if (ride != null) ...[
-                              buildCustomerDetail(context, ride),
-                              if (isDeclining)
-                                buildField(
-                                  'Say reasons for declining',
-                                  reasonController,
-                                ),
-                              Row(
+                  child: GestureDetector(
+                    onHorizontalDragUpdate: _handleHorizontalDragUpdate,
+                    onHorizontalDragEnd: _handleHorizontalDragEnd,
+                    onScaleUpdate: _handleScaleUpdate,
+                    onScaleEnd: _handleScaleEnd,
+                    child: Transform.translate(
+                      offset: Offset(_offsetX, 0),
+                      child: Transform.scale(
+                        scale: _scale,
+                        child: Container(
+                          width:
+                              Responsive.isTablet(context)
+                                  ? tabletWidth - whiteSpace
+                                  : Responsive.isBigMobile(context)
+                                  ? Responsive.width(context) * 0.85
+                                  : Responsive.width(context) * 0.9,
+                          padding: const EdgeInsets.all(smallWhiteSpace),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(medWhiteSpace),
+                          ),
+                          child: BlocBuilder<RideCubit, RideState>(
+                            builder: (context, state) {
+                              final ride =
+                                  state is RideLoaded ? state.ride : null;
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Expanded(
-                                    child: SimpleButton(
-                                      title: 'Decline',
-                                      onPressed: () {
-                                        if (isDeclining) {
-                                          context.read<RideCubit>().rejectRide(
-                                            context,
-                                            reason:
-                                                reasonController.text.trim(),
-                                          );
-                                          setState(() {
-                                            isDeclining = false;
-                                          });
-                                          return;
-                                        }
-                                        setState(() {
-                                          isDeclining = true;
-                                        });
-                                      },
-                                    ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        ride == null
+                                            ? 'Ride Request'
+                                            : 'New ${ride.type == "delivery" ? "Delivery" : "Ride"} Request!',
+                                        style: const TextStyle(
+                                          fontSize: paragraphText,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          OutlinedContainer(
+                                            rideType:
+                                                ride?.type == 'delivery'
+                                                    ? 'Dispatch'
+                                                    : 'Rider',
+                                          ),
+                                          // const RideTypeChip(),
+                                          const HSpace(extraSmallWhiteSpace),
+                                          IconButton(
+                                            padding: EdgeInsets.zero,
+                                            onPressed:
+                                                () =>
+                                                    context.dismissRideDialog(),
+                                            icon: const Icon(Icons.cancel),
+                                            tooltip: 'Close dialog',
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  const HSpace(extraSmallWhiteSpace),
-                                  Expanded(
-                                    child: SimpleButton(
-                                      title: 'Accept',
-                                      onPressed: () {
-                                        context.read<RideCubit>().acceptRide(
-                                          context,
-                                        );
-                                      },
-                                      backgroundColor: thickFillColor,
+                                  const VSpace(smallWhiteSpace),
+                                  if (ride != null) ...[
+                                    buildCustomerDetail(context, ride),
+                                    if (isDeclining)
+                                      buildField(
+                                        'Say reasons for declining',
+                                        reasonController,
+                                      ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: SimpleButton(
+                                            title: 'Decline',
+                                            onPressed: () {
+                                              if (isDeclining) {
+                                                context
+                                                    .read<RideCubit>()
+                                                    .rejectRide(
+                                                      context,
+                                                      reason:
+                                                          reasonController.text
+                                                              .trim(),
+                                                    );
+                                                setState(() {
+                                                  isDeclining = false;
+                                                });
+                                                return;
+                                              }
+                                              setState(() {
+                                                isDeclining = true;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        const HSpace(extraSmallWhiteSpace),
+                                        Expanded(
+                                          child: SimpleButton(
+                                            title: 'Accept',
+                                            onPressed: () {
+                                              context
+                                                  .read<RideCubit>()
+                                                  .acceptRide(context);
+                                            },
+                                            backgroundColor: thickFillColor,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
+                                  ] else
+                                    Text(
+                                      'No ride request yet...',
+                                      style: paragraphTextStyle,
+                                    ),
                                 ],
-                              ),
-                            ] else
-                              Text(
-                                'No ride request yet...',
-                                style: paragraphTextStyle,
-                              )
-                             
-                          ],
-                        );
-                      },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class RideTypeChip extends StatelessWidget {
-  const RideTypeChip({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: medWhiteSpace),
-      height: 30,
-      padding: const EdgeInsets.symmetric(
-        horizontal: medWhiteSpace,
-        vertical: 2,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
-        borderRadius: BorderRadius.circular(roundedMd),
-      ),
-      child: Center(
-        child: Text(
-          'Rider',
-          style: TextStyle(
-            fontSize: paragraphText,
-            fontWeight: FontWeight.w400,
-            color: darkGoldColor,
           ),
         ),
       ),

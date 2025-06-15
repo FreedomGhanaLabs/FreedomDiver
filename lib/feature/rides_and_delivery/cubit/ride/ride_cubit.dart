@@ -91,9 +91,7 @@ class RideCubit extends Cubit<RideState> {
           if (dismissDialog) context.dismissRideDialog();
         } else {
           if (data is String && data.contains('already accepted')) {
-            _cachedRideRequest = null;
-            _cachedRideId = null;
-            emit(RideInitial());
+            resetRideRequest();
           }
           onError?.call(data);
           if (dismissDialog) context.dismissRideDialog();
@@ -147,6 +145,7 @@ class RideCubit extends Cubit<RideState> {
     Map<String, dynamic>? extraBody,
     String? successLog,
     Function(Map<String, dynamic> data)? onSuccess,
+    Function(dynamic response)? onError,
     String? errorMsg,
     bool showOverlay = false,
   }) async {
@@ -162,6 +161,7 @@ class RideCubit extends Cubit<RideState> {
       },
       successLog: successLog,
       onSuccess: onSuccess,
+      onError: onError,
       errorMsg: errorMsg,
       showOverlay: showOverlay,
     );
@@ -192,6 +192,11 @@ class RideCubit extends Cubit<RideState> {
         );
       },
       errorMsg: 'Failed to accept ride',
+      onError: (response) {
+        if (response is String && response.endsWith('already cancelled')) {
+          resetRideRequest();
+        }
+      },
       showOverlay: true,
     );
   }
@@ -207,33 +212,29 @@ class RideCubit extends Cubit<RideState> {
       body: {'reason': reason ?? 'Too far from my current location'},
       successLog: '[RideCubit] ride rejected',
       onSuccess: (_) => resetRideRequest(),
+      onError: (_) => resetRideRequest(),
       errorMsg: 'Failed to reject ride',
       showOverlay: true,
     );
   }
 
-  Future<void> cancelRide(
-    BuildContext context, {
-    String? rideId,
-    String? reason,
-    double? lat,
-    double? long,
-  }) async {
+  Future<void> cancelRide(BuildContext context, {String? reason}) async {
     logRide('cancel');
     if (_cachedRideRequest == null) return;
     await _rideActionWithLocation(
       context,
-      '${rideId ?? _cachedRideId}/cancel',
+      '$_cachedRideId/cancel',
       extraBody: {
         'reason': reason ?? 'Too far from my current location',
-        if (lat != null) 'latitude': lat,
-        if (long != null) 'longitude': long,
+        'latitude': context.driverCords?.last,
+        'longitude': context.driverCords?.first,
       },
       successLog: '[RideCubit] ride cancel',
       onSuccess: (_) {
         context.read<HomeCubit>().endRide();
         resetRideRequest();
       },
+      onError: (_) => resetRideRequest(),
       errorMsg: 'Failed to cancel ride',
       showOverlay: true,
     );
@@ -275,12 +276,11 @@ class RideCubit extends Cubit<RideState> {
     );
   }
 
-  Future<void> completeRide(BuildContext context) async {
-    final rideId = _cachedRideRequest?.rideId;
+  Future<void> completeMultiStopRide(BuildContext context) async {
     final currentStopIndex = 1;
     await _rideActionWithLocation(
       context,
-      '$rideId/stop/$currentStopIndex/complete',
+      '$_cachedRideId/stop/$currentStopIndex/complete',
       successLog: '[RideCubit] $currentStopIndex multi-stop ride completed',
       onSuccess: (data) async {
         final newData = data['data'];
@@ -302,7 +302,7 @@ class RideCubit extends Cubit<RideState> {
     );
   }
 
-  Future<void> completeMultiStopRide(BuildContext context) async {
+  Future<void> completeRide(BuildContext context) async {
     final rideId = _cachedRideRequest?.rideId;
     await _rideActionWithLocation(
       context,

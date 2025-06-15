@@ -3,11 +3,22 @@ import 'package:freedomdriver/feature/rides_and_delivery/models/request_ride.dar
 import 'package:freedomdriver/shared/app_config.dart';
 import 'package:freedomdriver/shared/theme/text_style.dart';
 import 'package:freedomdriver/utilities/responsive.dart';
+import 'package:get/get.dart';
 
-Widget buildCustomerDetail(BuildContext context, [RideRequest? ride]) {
+Column buildCustomerDetail(BuildContext context, [RideRequest? ride]) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
+      if (ride?.type == 'delivery') ...[
+        RideDetailTile(
+          title: 'Package Size',
+          subtitle: ride?.packageSize ?? '',
+        ),
+        RideDetailTile(
+          title: 'Package Type',
+          subtitle: ride?.packageType?.capitalize ?? '',
+        ),
+      ],
       RideDetailTile(
         title: 'Pickup Location',
         subtitle: ride?.pickupLocation.address ?? '',
@@ -44,7 +55,7 @@ class RideDetailTile extends StatelessWidget {
         shape: RoundedRectangleBorder(
           side: BorderSide(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: Colors.black.withValues(alpha: 0.2),
+            color: Colors.grey.shade300,
           ),
           borderRadius: BorderRadius.circular(roundedLg),
         ),
